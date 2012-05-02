@@ -158,7 +158,7 @@ void MobilityModule::batteryLevelHandler(int batteryLevel)
 
     emit batteryLevelChanged(battery_level_);
 
-    //LogInfo("Battery level changed to: " + ToString(battery_level_));
+    LogInfo("Battery level changed to: " + ToString(battery_level_));
 }
 
 void MobilityModule::usingBatteryHandler(QSystemDeviceInfo::PowerState powerState)
@@ -270,7 +270,7 @@ void MobilityModule::networkQualityHandler(QSystemNetworkInfo::NetworkMode mode,
     if(network_quality_ != strength && network_mode_ == networkModeMap_.value(mode))
     {
         network_quality_ = strength;
-        //LogInfo("Network quality changed to: " + ToString(network_quality_));
+        LogInfo("Network quality changed to: " + ToString(network_quality_));
         emit networkQualityChanged(network_quality_);
     }
 }
@@ -359,10 +359,10 @@ void MobilityModule::OnScriptEngineCreated(QScriptEngine* engine)
 
 extern "C"
 {
-    DLLEXPORT void TundraPluginMain(Framework *fw)
-    {
-        Framework::SetInstance(fw); // Inside this DLL, remember the pointer to the global framework object.
-        IModule *module = new MobilityModule();
-        fw->RegisterModule(module);
-    }
+DLLEXPORT void TundraPluginMain(Framework *fw)
+{
+    Framework::SetInstance(fw); // Inside this DLL, remember the pointer to the global framework object.
+    IModule *module = new MobilityModule();
+    fw->RegisterModule(module);
+}
 }

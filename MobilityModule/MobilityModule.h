@@ -95,7 +95,7 @@ public:
         ScreenSaver = 4
     };
 
-    //MODULE_LOGGING_FUNCTIONS
+    MODULE_LOGGING_FUNCTIONS
 
     /// Default constructor.
     MobilityModule();
