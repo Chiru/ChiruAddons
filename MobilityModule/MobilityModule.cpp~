@@ -359,10 +359,10 @@ void MobilityModule::OnScriptEngineCreated(QScriptEngine* engine)
 
 extern "C"
 {
-    DLLEXPORT void TundraPluginMain(Framework *fw)
-    {
-        Framework::SetInstance(fw); // Inside this DLL, remember the pointer to the global framework object.
-        IModule *module = new MobilityModule();
-        fw->RegisterModule(module);
-    }
+DLLEXPORT void TundraPluginMain(Framework *fw)
+{
+    Framework::SetInstance(fw); // Inside this DLL, remember the pointer to the global framework object.
+    IModule *module = new MobilityModule();
+    fw->RegisterModule(module);
+}
 }
