@@ -2,7 +2,7 @@ macro(use_package_qtmobility)
         message (STATUS "** Configuring QtMobility")
         
         execute_process(COMMAND qmake -query QMAKE_MKSPECS 
-                        OUTPUT_VARIABLE QT4_MKSPECS)
+                        OUTPUT_VARIABLE QT4_MKSPECS OUTPUT_STRIP_TRAILING_WHITESPACE)
         
         # Use the mobility.prf for determining QtMobility installation location
         # \todo Verify this works in Windows
