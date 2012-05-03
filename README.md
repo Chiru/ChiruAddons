@@ -18,6 +18,6 @@ root:
 
  git clone git://github.com/Chiru/ChiruAddons.git src/ChiruAddons
 
-Of use the SSH equivalent, if you prefer.
+Or use the SSH equivalent, if you prefer.
 
 
