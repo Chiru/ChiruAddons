@@ -4,11 +4,9 @@
 
 #include <QUrl>
 
+#include "RdfModuleFwd.h"
 #include "CoreTypes.h"
-
 #include "IWorld.h"
-//class IWorld;
-class IStatement;
 
 class INode : public QObject
 {
@@ -20,6 +18,7 @@ class INode : public QObject
     Q_ENUMS(NodeType)
 
     friend class IStatement;
+
 public:
     enum NodeType
     {

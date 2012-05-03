@@ -6,6 +6,13 @@
 
 #pragma once
 
+class IStatement;
+class IWorld;
+class INode;
+class IModel;
+class RdfNode;
+class RdfStatement;
+
 /*#include <boost/smart_ptr.hpp>
 #include <QSet>
 

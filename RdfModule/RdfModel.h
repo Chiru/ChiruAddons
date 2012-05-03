@@ -2,18 +2,15 @@
 
 #pragma once
 
+#include "RdfModuleFwd.h"
+#include "IModel.h"
+#include "CoreTypes.h"
+
 #include <redland.h>
 #include <QObject>
 #include <QUrl>
 #include <QVariant>
 #include <QMap>
-
-#include "CoreTypes.h"
-#include "RdfModuleFwd.h"
-
-#include "IModel.h"
-
-class RdfStatement;
 
 class RdfXmlModel : public IModel
 {
