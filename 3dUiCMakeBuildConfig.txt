@@ -1,0 +1,4 @@
+AddProject(Application CanvasPlugin)
+
+add_subdirectory(src/ChiruAddons/3dUiModule)
+add_subdirectory(src/ChiruAddons/RdfModule)
