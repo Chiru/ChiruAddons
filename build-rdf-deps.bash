@@ -13,7 +13,7 @@ RAPTOR=raptor2-2.0.7
 RASQAL=rasqal-0.9.28
 REDLAND=redland-1.0.15
 
-viewer=$(dirname $(readlink -f $0))/..
+viewer=$(dirname $(readlink -f $0))/../..
 deps=$viewer/../naali-deps
 prefix=$deps/install
 build=$deps/build
