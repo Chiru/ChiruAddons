@@ -2,13 +2,11 @@
 
 #pragma once
 
-#include <QObject>
-#include <redland.h>
-
+#include "RdfModuleFwd.h"
 #include "IWorld.h"
 
-class RdfNode;
-class RdfStatement;
+#include <QObject>
+#include <redland.h>
 
 class RdfWorld :  public IWorld
 {

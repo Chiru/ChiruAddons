@@ -2,20 +2,18 @@
 
 #pragma once
 
-#include <QUrl>
-#include <QVariant>
-#include <QObject>
-
 #include "CoreTypes.h"
 #include "RdfModuleFwd.h"
 
-class IWorld;
-class IStatement;
+#include <QUrl>
+#include <QVariant>
+#include <QObject>
 
 class IModel : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(ModelType type READ Type)
+    Q_ENUMS(RdfModel::ModelType)
 
 public:
     enum ModelType
@@ -23,7 +21,6 @@ public:
         None   = 0,
         RdfXml = 1
     };
-    Q_ENUMS(RdfModel::ModelType)
 
     IModel(IWorld* world) : type(None),
         world(world)

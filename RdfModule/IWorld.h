@@ -2,11 +2,9 @@
 
 #pragma once
 
-#include <QUrl>
+#include "RdfModuleFwd.h"
 
-class IModel;
-class INode;
-class IStatement;
+#include <QUrl>
 
 class IWorld : public QObject
 {

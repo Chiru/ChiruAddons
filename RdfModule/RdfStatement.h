@@ -2,11 +2,12 @@
 
 #pragma once
 
-#include <redland.h>
-#include <QObject>
-
+#include "RdfModuleFwd.h"
 #include "CoreTypes.h"
 #include "IStatement.h"
+
+#include <redland.h>
+#include <QObject>
 
 class RdfStatement : public IStatement
 {

@@ -2,14 +2,14 @@
 
 #pragma once
 
+#include "RdfModuleFwd.h"
+#include "CoreTypes.h"
+#include "INode.h"
+
 #include <redland.h>
 #include <raptor.h>
 #include <QObject>
 #include <QUrl>
-
-#include "RdfModuleFwd.h"
-#include "CoreTypes.h"
-#include "INode.h"
 
 class RdfNode : public INode
 {
@@ -22,7 +22,7 @@ public:
     RdfNode(QString lit, IWorld* world);
     /// Construct a new blank node with a private identifier.
     RdfNode(IWorld* world);
-    /// Create copy of given node. Note! both nodes shares the same pointer.
+    /// Create copy of given node. Note! both nodes share the same pointer.
     RdfNode(INode* node, IWorld* world);
     RdfNode(librdf_node* node, IWorld* world);
 

@@ -1,13 +1,12 @@
 // For conditions of distribution and use, see copyright notice in LICENSE
 
 #pragma once
-#include <QObject>
-#include <QSet>
-#include "CoreTypes.h"
+
+#include "RdfModuleFwd.h"
 #include "RdfModuleApi.h"
 
-class IModel;
-class IWorld;
+#include <QObject>
+#include <QSet>
 
 class RDF_MODULE_API RdfFactory : public QObject
 {

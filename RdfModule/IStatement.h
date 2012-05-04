@@ -2,13 +2,10 @@
 
 #pragma once
 
-#include <QObject>
-
+#include "RdfModuleFwd.h"
 #include "CoreTypes.h"
 
-class INode;
-class IWorld;
-class IModel;
+#include <QObject>
 
 class IStatement : public QObject
 {
