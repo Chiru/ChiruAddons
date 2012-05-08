@@ -12,13 +12,13 @@ namespace CieMap
     class ContainerFactory;
 }
 
-class CieMapModule: public IModule
+class C3DUiModule: public IModule
 {
     Q_OBJECT
 
 public:
-    CieMapModule();
-    virtual ~CieMapModule();
+    C3DUiModule();
+    virtual ~C3DUiModule();
 
     void Load();
     void Initialize();

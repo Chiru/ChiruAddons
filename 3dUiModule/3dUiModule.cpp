@@ -49,23 +49,23 @@ Q_DECLARE_METATYPE(SemWeb::MemoryStore *)
 Q_DECLARE_METATYPE(DragDropWidget *)
 Q_DECLARE_METATYPE(CieMap::VisualContainer *)
 
-CieMapModule::CieMapModule() :
+C3DUiModule::C3DUiModule() :
     IModule("CieMap")
 {
 }
 
-CieMapModule::~CieMapModule()
+C3DUiModule::~C3DUiModule()
 {
     if (containerFactory) delete containerFactory;
 }
 
-void CieMapModule::Load()
+void C3DUiModule::Load()
 {
 }
 
-void CieMapModule::Initialize()
+void C3DUiModule::Initialize()
 {
-    framework_->RegisterDynamicObject("CieMapModule", this);
+    framework_->RegisterDynamicObject("C3DUiModule", this);
     containerFactory = new CieMap::ContainerFactory();
 }
 
@@ -110,28 +110,7 @@ QScriptValue CreateMemoryStore(QScriptContext *ctx, QScriptEngine *engine)
     return engine->toScriptValue(s);
 }
 
-/*QScriptValue CreateContainer(QScriptContext *ctx, QScriptEngine *engine)
-{
-    QScriptValue module = engine->globalObject().property("CieMapModule");
-    if (module.isNull()) 
-        return ctx->throwError(QScriptContext::UnknownError, "CreateVisualContainer(): Couldn't find an instance of \"CieMapModule\" object.");
-
-    CieMap::VisualContainer *c = 0;
-    if (ctx->argumentCount() == 1)
-    {
-        c = new CieMap::VisualContainer(dynamic_cast<QWidget *>(ctx->argument(1).toQObject()));
-        QList<CieMap::IVisualContainer*> args;
-        args.push_back(c);
-        QScriptValue* retVal = module.property("ContainerFactory").property("CreateContainer").call(engine->globalObject(), new QScriptValueList(&args));
-        module.setProperty("tempContainer", retVal);
-    }
-    else
-        return ctx->throwError(QScriptContext::TypeError, "VisualContainer(): invalid number of arguments provided.");
-
-    return engine->toScriptValue(c);
-}*/
-
-void CieMapModule::OnScriptEngineCreated(QScriptEngine* engine)
+void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
 {
     qScriptRegisterQObjectMetaType<CieMap::IContainer *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::IEventManager *>(engine);
@@ -160,13 +139,9 @@ void CieMapModule::OnScriptEngineCreated(QScriptEngine* engine)
     qScriptRegisterQObjectMetaType<CieMap::VisualContainer *>(engine);
     QScriptValue ctorVisualContainer = engine->newFunction(CreateVisualContainer);
     engine->globalObject().setProperty("VisualContainer", ctorVisualContainer);
-
-
-    /*QScriptValue ctorVisualContainer = engine->newFunction(CreateContainer);
-    engine->globalObject().setProperty("Container", ctorContainer);*/
 }
 
-CieMap::ContainerFactory* CieMapModule::ContainerFactory() const
+CieMap::ContainerFactory* C3DUiModule::ContainerFactory() const
 {
     return containerFactory;
 }
@@ -176,6 +151,6 @@ extern "C"
 DLLEXPORT void TundraPluginMain(Framework *fw)
 {
     Framework::SetInstance(fw); // Inside this DLL, remember the pointer to the global framework object.
-    fw->RegisterModule(new CieMapModule());
+    fw->RegisterModule(new C3DUiModule());
 }
 }
