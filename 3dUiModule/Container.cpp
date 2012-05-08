@@ -29,10 +29,12 @@ Container::Container(IVisualContainer *vc) :
     eventMgr = new CieMap::EventManager();
 }
 
-IContainer *ContainerFactory::CreateContainer(IVisualContainer *visualContainer)
+CieMap::IContainer *ContainerFactory::CreateContainer(CieMap::IVisualContainer *visualContainer, CieMap::IVisualContainer* parent)
 {
     IContainer *container =  new Container(visualContainer);
     visualContainer->SetOwner(container);
+    if (parent)
+        container->SetParent(parent->Owner());
     return container;
 }
 
@@ -50,6 +52,7 @@ void Container::SetParent(IContainer *parent)
         {
             assert(static_cast<Container *>(parentContainer));
             static_cast<Container *>(parentContainer)->AddChild(this);
+            emit ParentChanged(parent);
         }
     }
 }
@@ -81,7 +84,9 @@ bool Container::IsInActiveRegion(IContainer *otherContainer) const
         /// @todo Print error throw new NullReferenceException("otherContainer.Visual cannot be null");
         return false;
     }
-    return Visual()->IsInsideActiveRegion(otherContainer->Visual());
+    //return Visual()->IsInsideActiveRegion(otherContainer->Visual());
+    //\todo Add implementation --Joosua.
+    return true;
 }
 
 void Container::DropToActive(const Tag &tag, IContainer *container)
@@ -106,6 +111,7 @@ void Container::AddChild(IContainer *c)
 
     childContainers.push_back(c);
     layout->Manage(c);
+    emit ChildAdded(c);
 }
 
 void Container::RemoveChild(IContainer *c)
@@ -116,6 +122,7 @@ void Container::RemoveChild(IContainer *c)
         /// @todo Print error
         return;
     }
+    emit ChildAboutToBeRemoved(c);
     childContainers.erase(it);
     layout->Remove(c);
 }

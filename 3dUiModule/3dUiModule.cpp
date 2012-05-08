@@ -18,6 +18,7 @@
 #include "ScriptServices.h"
 #include "MemoryStore.h"
 #include "LoggingFunctions.h"
+#include "VisualContainer.h"
 
 #include "CoreDefines.h"
 #include "Framework.h"
@@ -25,6 +26,9 @@
 #include "SceneAPI.h"
 #include "IComponentFactory.h"
 #include "DragDropWidget.h"
+
+#include "RdfModule.h"
+#include "IWorld.h"
 
 #include <QScriptEngine>
 
@@ -43,15 +47,16 @@ Q_DECLARE_METATYPE(CieMap::IHttpRequestService *)
 Q_DECLARE_METATYPE(CieMap::HttpRequest *)
 Q_DECLARE_METATYPE(SemWeb::MemoryStore *)
 Q_DECLARE_METATYPE(DragDropWidget *)
+Q_DECLARE_METATYPE(CieMap::VisualContainer *)
 
 CieMapModule::CieMapModule() :
-    IModule("CieMap"),
-    factory(0)
+    IModule("CieMap")
 {
 }
 
 CieMapModule::~CieMapModule()
 {
+    if (containerFactory) delete containerFactory;
 }
 
 void CieMapModule::Load()
@@ -61,7 +66,7 @@ void CieMapModule::Load()
 void CieMapModule::Initialize()
 {
     framework_->RegisterDynamicObject("CieMapModule", this);
-//    framework_->Console()->RegisterCommand("test", "test", this, SLOT(Test(const QString &)));
+    containerFactory = new CieMap::ContainerFactory();
 }
 
 QScriptValue CreateDragDropWidget(QScriptContext *ctx, QScriptEngine *engine)
@@ -76,6 +81,55 @@ QScriptValue CreateDragDropWidget(QScriptContext *ctx, QScriptEngine *engine)
 
     return engine->toScriptValue(w);
 }
+
+QScriptValue CreateVisualContainer(QScriptContext *ctx, QScriptEngine *engine)
+{
+    CieMap::VisualContainer *c = 0;
+    if (ctx->argumentCount() == 1)
+    {
+        c = new CieMap::VisualContainer(dynamic_cast<QWidget *>(ctx->argument(1).toQObject()));
+    }
+    else
+        return ctx->throwError(QScriptContext::TypeError, "VisualContainer(): invalid number of arguments provided.");
+
+    return engine->toScriptValue(c);
+}
+
+QScriptValue CreateMemoryStore(QScriptContext *ctx, QScriptEngine *engine)
+{
+    SemWeb::MemoryStore *s = 0;
+    if (ctx->argumentCount() == 1)
+    {
+        QObject* obj = ctx->argument(0).toQObject();
+        IWorld* world = dynamic_cast<IWorld *>(obj);
+        s = new SemWeb::MemoryStore(world);
+    }
+    else
+        return ctx->throwError(QScriptContext::TypeError, "MemoryStore(): invalid number of arguments provided.");
+
+    return engine->toScriptValue(s);
+}
+
+/*QScriptValue CreateContainer(QScriptContext *ctx, QScriptEngine *engine)
+{
+    QScriptValue module = engine->globalObject().property("CieMapModule");
+    if (module.isNull()) 
+        return ctx->throwError(QScriptContext::UnknownError, "CreateVisualContainer(): Couldn't find an instance of \"CieMapModule\" object.");
+
+    CieMap::VisualContainer *c = 0;
+    if (ctx->argumentCount() == 1)
+    {
+        c = new CieMap::VisualContainer(dynamic_cast<QWidget *>(ctx->argument(1).toQObject()));
+        QList<CieMap::IVisualContainer*> args;
+        args.push_back(c);
+        QScriptValue* retVal = module.property("ContainerFactory").property("CreateContainer").call(engine->globalObject(), new QScriptValueList(&args));
+        module.setProperty("tempContainer", retVal);
+    }
+    else
+        return ctx->throwError(QScriptContext::TypeError, "VisualContainer(): invalid number of arguments provided.");
+
+    return engine->toScriptValue(c);
+}*/
 
 void CieMapModule::OnScriptEngineCreated(QScriptEngine* engine)
 {
@@ -94,11 +148,27 @@ void CieMapModule::OnScriptEngineCreated(QScriptEngine* engine)
     qScriptRegisterQObjectMetaType<CieMap::IHttpRequestService *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::HttpRequest *>(engine);
     /// @todo CieMap::Position3
+
     qScriptRegisterQObjectMetaType<SemWeb::MemoryStore *>(engine);
+    QScriptValue ctorMemoryStore = engine->newFunction(CreateMemoryStore);
+    engine->globalObject().setProperty("MemoryStore", ctorMemoryStore);
 
     qScriptRegisterQObjectMetaType<DragDropWidget *>(engine);
     QScriptValue ctorDragDropWidget = engine->newFunction(CreateDragDropWidget);
     engine->globalObject().setProperty("DragDropWidget", ctorDragDropWidget);
+
+    qScriptRegisterQObjectMetaType<CieMap::VisualContainer *>(engine);
+    QScriptValue ctorVisualContainer = engine->newFunction(CreateVisualContainer);
+    engine->globalObject().setProperty("VisualContainer", ctorVisualContainer);
+
+
+    /*QScriptValue ctorVisualContainer = engine->newFunction(CreateContainer);
+    engine->globalObject().setProperty("Container", ctorContainer);*/
+}
+
+CieMap::ContainerFactory* CieMapModule::ContainerFactory() const
+{
+    return containerFactory;
 }
 
 extern "C"

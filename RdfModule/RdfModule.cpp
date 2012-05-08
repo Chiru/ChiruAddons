@@ -6,7 +6,6 @@
 #include "RdfNode.h"
 #include "RdfStatement.h"
 #include "RdfWorld.h"
-#include "RdfFactory.h"
 
 #include "CoreDefines.h"
 #include "Framework.h"
@@ -24,11 +23,8 @@ Q_DECLARE_METATYPE(INode *)
 Q_DECLARE_METATYPE(IWorld *)
 Q_DECLARE_METATYPE(IStatement *)
 
-Q_DECLARE_METATYPE(RdfFactory *);
-
 RdfModule::RdfModule() :
-    IModule("Rdf"),
-    factory(0)
+    IModule("Rdf")
 {
 }
 
@@ -43,8 +39,7 @@ void RdfModule::Load()
 void RdfModule::Initialize()
 {
     framework_->RegisterDynamicObject("RdfModule", this);
-    factory = new RdfFactory();
-    framework_->RegisterDynamicObject("RdfFactory", factory);
+    world = new RdfWorld();
 //    framework_->Console()->RegisterCommand("test", "test", this, SLOT(Test(const QString &)));
 }
 
@@ -61,14 +56,12 @@ void RdfModule::OnScriptEngineCreated(QScriptEngine* engine)
     qScriptRegisterQObjectMetaType<IWorld *>(engine);
     qScriptRegisterQObjectMetaType<IStatement *>(engine);
 
-    qScriptRegisterQObjectMetaType<RdfFactory *>(engine);
-
     qRegisterMetaType<RdfNode::NodeType>("NodeType");
 }
 
-RdfFactory* RdfModule::GetRdfFactory()
+IWorld* RdfModule::GetWorld() const
 {
-    return factory;
+    return world;
 }
 
 extern "C"

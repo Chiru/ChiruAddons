@@ -14,10 +14,10 @@ namespace CieMap
 class IContainer : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(IContainer* parent READ Parent WRITE SetParent);
+    Q_PROPERTY(CieMap::IContainer* parent READ Parent WRITE SetParent);
     Q_PROPERTY(SemWeb::MemoryStore* rdfStore READ RdfStore WRITE SetRdfStore);
-    Q_PROPERTY(IEventManager* eventManager READ EventManager);
-    Q_PROPERTY(IVisualContainer* visual READ Visual);
+    Q_PROPERTY(CieMap::IEventManager* eventManager READ EventManager);
+    Q_PROPERTY(CieMap::IVisualContainer* visual READ Visual);
     Q_PROPERTY(int childCount READ ChildCount);
 
 public:

@@ -4,7 +4,6 @@
 #include "3dUiModuleFwd.h"
 
 #include <QObject>
-
 #include <vector>
 
 namespace CieMap
@@ -14,16 +13,17 @@ class ContainerFactory : public QObject
 {
     Q_OBJECT
 
-public:
+public slots:
     /// Creates a new instance of the container class and associates it with the specified visual container.
     /** @note sets the owner of the visual container to the new container
         @param visualContainer Visual container that should be associated with the new container */
-    static IContainer *CreateContainer(IVisualContainer *visualContainer);
+    CieMap::IContainer *CreateContainer(CieMap::IVisualContainer *visualContainer, CieMap::IVisualContainer* parent = 0);
 };
 
 /// Generic container and a base class for other types of containers.
 class Container : public IContainer
 {
+    Q_OBJECT
     friend class ContainerFactory;
     /// Default constructor should not be used.
     Container();
@@ -57,6 +57,11 @@ public:
     /// Remove a child container
     /** @param c Child container */
     void RemoveChild(IContainer *c);
+
+signals:
+    void ParentChanged(IContainer* newParent);
+    void ChildAdded(IContainer* child);
+    void ChildAboutToBeRemoved(IContainer* child);
 };
 
 }

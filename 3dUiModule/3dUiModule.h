@@ -5,9 +5,11 @@
 #include "IModule.h"
 
 class QScriptEngine;
+class IWorld;
+
 namespace CieMap
 {
-    class CieFactory;
+    class ContainerFactory;
 }
 
 class CieMapModule: public IModule
@@ -21,9 +23,12 @@ public:
     void Load();
     void Initialize();
 
+public slots:
+    CieMap::ContainerFactory* ContainerFactory() const;
+
 private slots:
     void OnScriptEngineCreated(QScriptEngine* engine);
 
 private:
-    CieMap::CieFactory* factory;
+    CieMap::ContainerFactory* containerFactory;
 };

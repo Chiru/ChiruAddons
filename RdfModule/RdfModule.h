@@ -7,10 +7,12 @@
 
 class QScriptEngine;
 class RdfFactory;
+class IWorld;
 
 class RDF_MODULE_API RdfModule: public IModule
 {
     Q_OBJECT
+    Q_PROPERTY(IWorld* theWorld READ GetWorld)
 
 public:
     RdfModule();
@@ -18,13 +20,11 @@ public:
 
     void Load();
     void Initialize();
-
-public slots:
-    RdfFactory* GetRdfFactory();
+    IWorld* GetWorld() const;
 
 private slots:
     void OnScriptEngineCreated(QScriptEngine* engine);
 
 private:
-    RdfFactory* factory;
+    IWorld* world;
 };

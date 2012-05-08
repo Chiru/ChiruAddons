@@ -19,9 +19,10 @@ public:
     {
     }
 
-    virtual INode* CreateResource(QUrl uri) = 0;
-    virtual INode* CreateNode() = 0;
-    virtual INode* CreateLiteral(QString lit_v) = 0;
+    virtual IModel* CreateModel() = 0;
+    virtual INode*  CreateResource(QUrl uri) = 0;
+    virtual INode*  CreateNode() = 0;
+    virtual INode*  CreateLiteral(QString lit_v) = 0;
 
     virtual IStatement* CreateStatement(IStatement* statement) = 0;
     virtual IStatement* CreateStatement(INode* subject, INode* predicate, INode* object) = 0;

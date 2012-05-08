@@ -27,6 +27,11 @@ RdfWorld::~RdfWorld()
         librdf_free_world(world);
 }
 
+IModel* RdfWorld::CreateModel()
+{
+    return new RdfXmlModel(this);
+}
+
 INode* RdfWorld::CreateResource(QUrl uri)
 {
     return new RdfNode(uri, this);
