@@ -27,7 +27,7 @@ RdfWorld::~RdfWorld()
         librdf_free_world(world);
 }
 
-IModel* RdfWorld::CreateModel()
+IModel* RdfWorld::CreateModel() 
 {
     return new RdfXmlModel(this);
 }
