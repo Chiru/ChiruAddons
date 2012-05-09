@@ -80,7 +80,7 @@ function MovieContainer(parent)
                     this.movies.push(movie);
             }
 
-            // Display three of movie objects in GraphicsViewCanvas.
+            // Display three movie objects in GraphicsViewCanvas.
             // \todo add date time check what movies are about to start and display them.
             if (this.movies.length > 3)
             {
@@ -125,13 +125,19 @@ MovieContainer.prototype.DisplayMovie = function(movie)
 }
 
 scene.EntityCreated.connect(this, function(entity){
-    if (entity.name == "MovieContainer" && entity.graphicsviewcanvas)
+    if (entity.name == "MovieContainer")
     {
-        entity.graphicsviewcanvas.GraphicsView().mouseTracking = true;
-        var container = new MovieContainer(null)
-        entity.graphicsviewcanvas.GraphicsScene().addWidget(container.visual);
-        movieContainers.push(container);
-    }
+        if (entity.graphicsviewcanvas)
+        {
+            CreateContainer(entity);
+        }
+        else
+        {
+            entity.ComponentAdded.connect(this, function(component){
+                CreateContainer(component.ParentEntity());
+            });
+        }
+    } 
 })
 
 var mapContainer = new Container();
@@ -143,11 +149,16 @@ for(var i = 0; i < entities.length; ++i)
 {
     if (entities[i].name == "MovieContainer" && entities[i].graphicsviewcanvas)
     {
-        entities[i].graphicsviewcanvas.GraphicsView().mouseTracking = true;
-        var container = new MovieContainer(null)
-        entities[i].graphicsviewcanvas.GraphicsScene().addWidget(container.visual);
-        movieContainers.push(container);
+        CreateContainer(entities[i]);
     }
+}
+
+function CreateContainer(entity)
+{
+    entity.graphicsviewcanvas.GraphicsView().mouseTracking = true;
+    var container = new MovieContainer(null)
+    entity.graphicsviewcanvas.GraphicsScene().addWidget(container.visual);
+    movieContainers.push(container);
 }
 
 function OnScriptDestroyed()
