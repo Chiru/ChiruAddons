@@ -5,14 +5,14 @@
 class IModel;
 class IWorld;
 
-class MemoryStore : public QObject
+class RdfMemoryStore : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(IModel* store READ Model)
+    Q_PROPERTY(IModel* model READ Model)
 
 public:
-    MemoryStore(IWorld* world);
-    virtual ~MemoryStore();
+    RdfMemoryStore(IWorld* world);
+    virtual ~RdfMemoryStore();
 
     IModel* Model() const { return model; }
 

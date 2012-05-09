@@ -17,7 +17,7 @@ public:
 
     bool HasScript(const Tag &tag) const;
 
-    void CallScript(const Tag &tag, SemWeb::MemoryStore *refStore);
+    void CallScript(const Tag &tag, RdfMemoryStore *refStore);
 
 private:
     ScriptManager *scriptManager;

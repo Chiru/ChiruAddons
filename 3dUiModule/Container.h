@@ -30,7 +30,7 @@ class Container : public IContainer
     /// Use ContainerFactory to create new containers
     explicit Container(IVisualContainer *vc);
 
-    SemWeb::MemoryStore *rdfMemoryStore;
+    RdfMemoryStore *rdfMemoryStore;
     std::vector<IContainer *> childContainers; ///< List of child containers
     IContainer *parentContainer;
     IEventManager *eventMgr;
@@ -39,8 +39,8 @@ class Container : public IContainer
 
 public:
      // IContainer overrides
-    void SetRdfStore(SemWeb::MemoryStore *rdfStore) { rdfMemoryStore = rdfStore; }
-    SemWeb::MemoryStore *RdfStore() const { return rdfMemoryStore; }
+    void SetRdfStore(RdfMemoryStore *rdfStore) { rdfMemoryStore = rdfStore; }
+    RdfMemoryStore *RdfStore() const { return rdfMemoryStore; }
     IEventManager *EventManager() const { return eventMgr; }
     IVisualContainer *Visual() const { return visualUnity; }
     void SetParent(IContainer *parent);

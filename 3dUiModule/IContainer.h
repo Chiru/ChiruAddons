@@ -15,7 +15,7 @@ class IContainer : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(CieMap::IContainer* parent READ Parent WRITE SetParent);
-    Q_PROPERTY(SemWeb::MemoryStore* rdfStore READ RdfStore WRITE SetRdfStore);
+    Q_PROPERTY(RdfMemoryStore* rdfStore READ RdfStore WRITE SetRdfStore);
     Q_PROPERTY(CieMap::IEventManager* eventManager READ EventManager);
     Q_PROPERTY(CieMap::IVisualContainer* visual READ Visual);
     Q_PROPERTY(int childCount READ ChildCount);
@@ -33,8 +33,8 @@ public:
     virtual void SetParent(IContainer *parent) = 0;
 
     /// The RDF data that is associated with the container
-    virtual SemWeb::MemoryStore *RdfStore() const = 0;
-    virtual void SetRdfStore(SemWeb::MemoryStore *store) = 0;
+    virtual RdfMemoryStore *RdfStore() const = 0;
+    virtual void SetRdfStore(RdfMemoryStore *store) = 0;
 
     /// Event manager for this container. Shared by all containers.
     virtual IEventManager *EventManager() const = 0;

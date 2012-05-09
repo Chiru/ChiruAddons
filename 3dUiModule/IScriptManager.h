@@ -39,7 +39,7 @@ public:
         @param id id of the script to run.
         @param tag Tag that is passed to the script.
         @param rdfStore RDF data that is passed to the script. */
-    void RunScript(int id, const Tag &tag, SemWeb::MemoryStore *rdfStore);
+    void RunScript(int id, const Tag &tag, RdfMemoryStore *rdfStore);
 };
 
 }

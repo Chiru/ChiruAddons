@@ -1,9 +1,7 @@
 #pragma once
 
-namespace SemWeb
-{
-    class MemoryStore;
-}
+
+class RdfMemoryStore;
 
 namespace CieMap
 {

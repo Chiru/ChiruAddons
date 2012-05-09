@@ -12,7 +12,7 @@ bool HttpRequestResponse::IsReady()
     return ready;
 }
 
-SemWeb::MemoryStore *HttpRequestResponse::Data()
+RdfMemoryStore *HttpRequestResponse::Data()
 {
     // TODO lock (this)
         return requestResponse;
@@ -22,7 +22,7 @@ void HttpRequestResponse::SetResponse(const QByteArray/*byte[]*/ &response)
 {
     //TODO
 /*
-    MemoryStore memoryStore = new MemoryStore();
+    RdfMemoryStore memoryStore = new RdfMemoryStore();
     string error = null;
 
     using (StreamReader xmlStream = new StreamReader(new MemoryStream(response)))
@@ -30,7 +30,7 @@ void HttpRequestResponse::SetResponse(const QByteArray/*byte[]*/ &response)
         try
         {
             //Console.Out.WriteLine(System.Text.Encoding.UTF8.GetString(response));
-            memoryStore.Import(new RdfXmlReader(xmlStream));
+            RdfMemoryStore.Import(new RdfXmlReader(xmlStream));
         }
         catch (System.Xml.XmlException e)
         {
@@ -40,7 +40,7 @@ void HttpRequestResponse::SetResponse(const QByteArray/*byte[]*/ &response)
 
     lock (this)
     {
-        requestResponse = memoryStore;
+        requestResponse = RdfMemoryStore;
         ready = true;
         Error = error;
     }

@@ -1,4 +1,4 @@
-#include "MemoryStore.h"
+#include "RdfMemoryStore.h"
 
 #include "IModel.h"
 #include "RdfModule.h"
@@ -7,17 +7,17 @@
 #include "CoreTypes.h"
 #include "LoggingFunctions.h"
 
-MemoryStore::MemoryStore(IWorld* world):
+RdfMemoryStore::RdfMemoryStore(IWorld* world):
     model(0)
 {
     assert(world && "World object was a null.");
     if (world)
         model = world->CreateModel();
     else
-        LogError("MemoryStore(): Null rdf world object was passed.");
+        LogError("RdfMemoryStore(): Null rdf world object was passed.");
 }
 
-MemoryStore::~MemoryStore()
+RdfMemoryStore::~RdfMemoryStore()
 {
     if (model)
         delete model;

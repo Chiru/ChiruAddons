@@ -15,7 +15,7 @@ public:
     /// Run the script
     /** @param tag Tag that is associated with this script
         @param rdfStore RDF data that is passed to the script. */
-    virtual void Run(const Tag &tag, SemWeb::MemoryStore *rdfStore) = 0;
+    virtual void Run(const Tag &tag, RdfMemoryStore *rdfStore) = 0;
 };
 
 }
