@@ -1,3 +1,5 @@
+// For conditions of distribution and use, see copyright notice in LICENSE
+
 #include "RdfMemoryStore.h"
 
 #include "IModel.h"
@@ -6,6 +8,7 @@
 #include "IWorld.h"
 #include "CoreTypes.h"
 #include "LoggingFunctions.h"
+#include "CoreDefines.h"
 
 RdfMemoryStore::RdfMemoryStore(IWorld* world):
     model(0)
@@ -19,6 +22,5 @@ RdfMemoryStore::RdfMemoryStore(IWorld* world):
 
 RdfMemoryStore::~RdfMemoryStore()
 {
-    if (model)
-        delete model;
+    SAFE_DELETE(model);
 }

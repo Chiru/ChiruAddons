@@ -1,3 +1,5 @@
+// For conditions of distribution and use, see copyright notice in LICENSE
+
 #include "VisualContainer.h"
 #include "Container.h"
 #include "Framework.h"

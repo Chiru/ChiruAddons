@@ -1,3 +1,5 @@
+// For conditions of distribution and use, see copyright notice in LICENSE
+
 // TODO using System.Threading;
 //using SemWeb; TODO
 

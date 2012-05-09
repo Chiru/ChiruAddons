@@ -1,3 +1,5 @@
+// For conditions of distribution and use, see copyright notice in LICENSE
+
 #include "Container.h"
 #include "EventManager.h"
 #include "Layout.h"

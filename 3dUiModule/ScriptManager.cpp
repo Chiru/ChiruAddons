@@ -1,3 +1,5 @@
+// For conditions of distribution and use, see copyright notice in LICENSE
+
 //using SemWeb; TODO
 
 #include "ScriptManager.h"
