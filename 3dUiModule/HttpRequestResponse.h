@@ -34,7 +34,7 @@ public:
     /// The response to the request.
     /** Only read after IsReady has been set to true.
         If there was an error during the request, this is set to the description of the error. */
-    RdfMemoryStore *Data();
+    IMemoryStore *Data();
 
     /// Set the response from preprocessors.
     /** The response should be RdfXml data in a bytearray (UTF-8)
@@ -51,7 +51,7 @@ public:
 private:
     QString errorDescription;
     bool ready;
-    RdfMemoryStore *requestResponse;
+    IMemoryStore *requestResponse;
 };
 
 }

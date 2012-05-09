@@ -58,7 +58,7 @@ std::vector<int> ScriptManager::ScriptIdsForTag(const Tag &tag) const
     return ids;
 }
 
-void ScriptManager::RunScript(int id, const Tag &tag, RdfMemoryStore *rdfStore)
+void ScriptManager::RunScript(int id, const Tag &tag, IMemoryStore *rdfStore)
 {
     if (id != InvalidId && id >= 0 && id < (int)scripts.size())
     {

@@ -34,7 +34,7 @@ public:
     /// Calls a script based on the specified tag
     /** @param tag Tag associated with the script
         @param rdfStore RDF data that is passed to the script. */
-    virtual void CallScript(const Tag &tag, RdfMemoryStore *rdfStore) = 0;
+    virtual void CallScript(const Tag &tag, IMemoryStore *rdfStore) = 0;
 };
 
 }

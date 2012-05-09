@@ -9,7 +9,7 @@
 class IStatement;
 class IWorld;
 class INode;
-class IModel;
+class IMemoryStore;
 class RdfNode;
 class RdfStatement;
 

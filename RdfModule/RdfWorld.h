@@ -17,7 +17,7 @@ public:
     ~RdfWorld();
 
 public slots:
-    virtual IModel* CreateModel(); 
+    virtual IMemoryStore* CreateStore(); 
     virtual INode* CreateResource(QUrl uri);
     virtual INode* CreateNode();
     virtual INode* CreateLiteral(QString lit_v);

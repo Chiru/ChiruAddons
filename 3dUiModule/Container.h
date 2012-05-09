@@ -32,7 +32,7 @@ class Container : public IContainer
     /// Use ContainerFactory to create new containers
     explicit Container(IVisualContainer *vc);
 
-    RdfMemoryStore *rdfMemoryStore;
+    IMemoryStore *rdfMemoryStore;
     std::vector<IContainer *> childContainers; ///< List of child containers
     IContainer *parentContainer;
     IEventManager *eventMgr;
@@ -41,8 +41,8 @@ class Container : public IContainer
 
 public:
      // IContainer overrides
-    void SetRdfStore(RdfMemoryStore *rdfStore) { rdfMemoryStore = rdfStore; }
-    RdfMemoryStore *RdfStore() const { return rdfMemoryStore; }
+    void SetRdfStore(IMemoryStore *rdfStore) { rdfMemoryStore = rdfStore; }
+    IMemoryStore *RdfStore() const { return rdfMemoryStore; }
     IEventManager *EventManager() const { return eventMgr; }
     IVisualContainer *Visual() const { return visualUnity; }
     void SetParent(IContainer *parent);

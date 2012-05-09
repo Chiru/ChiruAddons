@@ -2,7 +2,7 @@
 
 #include "RdfModule.h"
 
-#include "RdfModel.h"
+#include "RdfMemoryStore.h"
 #include "RdfNode.h"
 #include "RdfStatement.h"
 #include "RdfWorld.h"
@@ -13,12 +13,12 @@
 
 #include <QScriptEngine>
 
-Q_DECLARE_METATYPE(RdfXmlModel *)
+Q_DECLARE_METATYPE(RdfMemoryStore *)
 Q_DECLARE_METATYPE(RdfNode *)
 Q_DECLARE_METATYPE(RdfWorld *)
 Q_DECLARE_METATYPE(RdfStatement *)
 
-Q_DECLARE_METATYPE(IModel *)
+Q_DECLARE_METATYPE(IMemoryStore *)
 Q_DECLARE_METATYPE(INode *)
 Q_DECLARE_METATYPE(IWorld *)
 Q_DECLARE_METATYPE(IStatement *)
@@ -43,18 +43,37 @@ void RdfModule::Initialize()
 //    framework_->Console()->RegisterCommand("test", "test", this, SLOT(Test(const QString &)));
 }
 
+QScriptValue CreateRdfMemoryStore(QScriptContext *ctx, QScriptEngine *engine)
+{
+    RdfMemoryStore *s = 0;
+    if (ctx->argumentCount() == 1)
+    {
+        QObject* obj = ctx->argument(0).toQObject();
+        IWorld* world = dynamic_cast<IWorld *>(obj);
+        s = new RdfMemoryStore(world);
+    }
+    else
+        return ctx->throwError(QScriptContext::TypeError, "RdfMemoryStore(): invalid number of arguments provided.");
+
+    return engine->toScriptValue(s);
+}
+
 void RdfModule::OnScriptEngineCreated(QScriptEngine* engine)
 {
     // RDF objects.
-    qScriptRegisterQObjectMetaType<RdfXmlModel *>(engine);
+    qScriptRegisterQObjectMetaType<RdfMemoryStore *>(engine);
     qScriptRegisterQObjectMetaType<RdfNode *>(engine);
     qScriptRegisterQObjectMetaType<RdfWorld *>(engine);
     qScriptRegisterQObjectMetaType<RdfStatement *>(engine);
 
-    qScriptRegisterQObjectMetaType<IModel *>(engine);
+    qScriptRegisterQObjectMetaType<IMemoryStore *>(engine);
     qScriptRegisterQObjectMetaType<INode *>(engine);
     qScriptRegisterQObjectMetaType<IWorld *>(engine);
     qScriptRegisterQObjectMetaType<IStatement *>(engine);
+
+    qScriptRegisterQObjectMetaType<RdfMemoryStore *>(engine);
+    QScriptValue ctorRdfMemoryStore = engine->newFunction(CreateRdfMemoryStore);
+    engine->globalObject().setProperty("RdfMemoryStore", ctorRdfMemoryStore);
 
     qRegisterMetaType<RdfNode::NodeType>("NodeType");
 }

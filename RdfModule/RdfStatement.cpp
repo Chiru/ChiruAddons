@@ -3,7 +3,7 @@
 #include "RdfStatement.h"
 #include "RdfNode.h"
 #include "RdfWorld.h"
-#include "RdfModel.h"
+#include "RdfMemoryStore.h"
 #include "LoggingFunctions.h"
 
 RdfStatement::RdfStatement(IWorld* world) : IStatement(world)

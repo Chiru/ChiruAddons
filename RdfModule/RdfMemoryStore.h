@@ -3,7 +3,7 @@
 #pragma once
 
 #include "RdfModuleFwd.h"
-#include "IModel.h"
+#include "IMemoryStore.h"
 #include "CoreTypes.h"
 
 #include <redland.h>
@@ -12,13 +12,13 @@
 #include <QVariant>
 #include <QMap>
 
-class RdfXmlModel : public IModel
+class RdfMemoryStore : public IMemoryStore
 {
     Q_OBJECT
 
 public:
-    RdfXmlModel(IWorld* world);
-    virtual ~RdfXmlModel();
+    RdfMemoryStore(IWorld* world);
+    virtual ~RdfMemoryStore();
 
 public slots:
     bool FromUri(QUrl uri);

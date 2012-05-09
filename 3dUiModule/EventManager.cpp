@@ -20,7 +20,7 @@ bool EventManager::HasScript(const Tag &tag) const
     return (scriptManager->ScriptIdsForTag(tag).size() > 0);
 }
 
-void EventManager::CallScript(const Tag &tag, RdfMemoryStore *rdfStore)
+void EventManager::CallScript(const Tag &tag, IMemoryStore *rdfStore)
 {
     foreach(int id, scriptManager->ScriptIdsForTag(tag))
         scriptManager->RunScript(id, tag, rdfStore);

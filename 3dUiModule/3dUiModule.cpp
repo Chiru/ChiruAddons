@@ -16,7 +16,6 @@
 #include "RdfVocabulary.h"
 #include "ScriptManager.h"
 #include "ScriptServices.h"
-#include "RdfMemoryStore.h"
 #include "LoggingFunctions.h"
 #include "VisualContainer.h"
 
@@ -45,7 +44,6 @@ Q_DECLARE_METATYPE(CieMap::Tag *)
 Q_DECLARE_METATYPE(CieMap::IScript *)
 Q_DECLARE_METATYPE(CieMap::IHttpRequestService *)
 Q_DECLARE_METATYPE(CieMap::HttpRequest *)
-Q_DECLARE_METATYPE(RdfMemoryStore *)
 Q_DECLARE_METATYPE(DragDropWidget *)
 Q_DECLARE_METATYPE(CieMap::VisualContainer *)
 
@@ -95,21 +93,6 @@ QScriptValue CreateVisualContainer(QScriptContext *ctx, QScriptEngine *engine)
     return engine->toScriptValue(c);
 }
 
-QScriptValue CreateRdfMemoryStore(QScriptContext *ctx, QScriptEngine *engine)
-{
-    RdfMemoryStore *s = 0;
-    if (ctx->argumentCount() == 1)
-    {
-        QObject* obj = ctx->argument(0).toQObject();
-        IWorld* world = dynamic_cast<IWorld *>(obj);
-        s = new RdfMemoryStore(world);
-    }
-    else
-        return ctx->throwError(QScriptContext::TypeError, "RdfMemoryStore(): invalid number of arguments provided.");
-
-    return engine->toScriptValue(s);
-}
-
 void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
 {
     qScriptRegisterQObjectMetaType<CieMap::IContainer *>(engine);
@@ -127,10 +110,6 @@ void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
     qScriptRegisterQObjectMetaType<CieMap::IHttpRequestService *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::HttpRequest *>(engine);
     /// @todo CieMap::Position3
-
-    qScriptRegisterQObjectMetaType<RdfMemoryStore *>(engine);
-    QScriptValue ctorRdfMemoryStore = engine->newFunction(CreateRdfMemoryStore);
-    engine->globalObject().setProperty("RdfMemoryStore", ctorRdfMemoryStore);
 
     qScriptRegisterQObjectMetaType<DragDropWidget *>(engine);
     QScriptValue ctorDragDropWidget = engine->newFunction(CreateDragDropWidget);

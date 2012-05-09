@@ -19,7 +19,7 @@ public:
 
     bool HasScript(const Tag &tag) const;
 
-    void CallScript(const Tag &tag, RdfMemoryStore *refStore);
+    void CallScript(const Tag &tag, IMemoryStore *refStore);
 
 private:
     ScriptManager *scriptManager;

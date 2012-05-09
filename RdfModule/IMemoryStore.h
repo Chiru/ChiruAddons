@@ -9,11 +9,11 @@
 #include <QVariant>
 #include <QObject>
 
-class IModel : public QObject
+class IMemoryStore : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(ModelType type READ Type)
-    Q_ENUMS(RdfModel::ModelType)
+    Q_ENUMS(IMemoryStore::ModelType)
 
 public:
     enum ModelType
@@ -22,12 +22,12 @@ public:
         RdfXml = 1
     };
 
-    IModel(IWorld* world) : type(None),
+    IMemoryStore(IWorld* world) : type(None),
         world(world)
     {
     }
 
-    virtual ~IModel()
+    virtual ~IMemoryStore()
     {
     }
 
@@ -48,5 +48,3 @@ protected:
     IWorld* world;
     ModelType type;
 };
-
-//Q_DECLARE_INTERFACE(IModel, "Tundra.RdfModule.IModel")

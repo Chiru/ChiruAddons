@@ -19,7 +19,7 @@ public:
     {
     }
 
-    virtual IModel* CreateModel() = 0; 
+    virtual IMemoryStore* CreateStore() = 0; 
     virtual INode*  CreateResource(QUrl uri) = 0;
     virtual INode*  CreateNode() = 0;
     virtual INode*  CreateLiteral(QString lit_v) = 0;

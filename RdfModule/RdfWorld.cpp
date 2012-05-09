@@ -1,7 +1,7 @@
 // For conditions of distribution and use, see copyright notice in LICENSE
 
 #include "RdfWorld.h"
-#include "RdfModel.h"
+#include "RdfMemoryStore.h"
 #include "RdfNode.h"
 #include "RdfStatement.h"
 #include "LoggingFunctions.h"
@@ -27,9 +27,9 @@ RdfWorld::~RdfWorld()
         librdf_free_world(world);
 }
 
-IModel* RdfWorld::CreateModel() 
+IMemoryStore* RdfWorld::CreateStore() 
 {
-    return new RdfXmlModel(this);
+    return new RdfMemoryStore(this);
 }
 
 INode* RdfWorld::CreateResource(QUrl uri)

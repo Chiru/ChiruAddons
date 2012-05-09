@@ -11,7 +11,7 @@ class IStatement : public QObject
 {
     Q_OBJECT
 
-    friend class IModel;
+    friend class IMemoryStore;
     friend class IWorld;
 
 public:

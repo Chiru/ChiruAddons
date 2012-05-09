@@ -11,7 +11,7 @@ bool HttpRequestResponse::IsReady()
     return ready;
 }
 
-RdfMemoryStore *HttpRequestResponse::Data()
+IMemoryStore *HttpRequestResponse::Data()
 {
     // TODO lock (this)
         return requestResponse;
@@ -21,7 +21,7 @@ void HttpRequestResponse::SetResponse(const QByteArray/*byte[]*/ &response)
 {
     //TODO
 /*
-    RdfMemoryStore memoryStore = new RdfMemoryStore();
+    IMemoryStore memoryStore = new IMemoryStore();
     string error = null;
 
     using (StreamReader xmlStream = new StreamReader(new MemoryStream(response)))
@@ -29,7 +29,7 @@ void HttpRequestResponse::SetResponse(const QByteArray/*byte[]*/ &response)
         try
         {
             //Console.Out.WriteLine(System.Text.Encoding.UTF8.GetString(response));
-            RdfMemoryStore.Import(new RdfXmlReader(xmlStream));
+            IMemoryStore.Import(new RdfXmlReader(xmlStream));
         }
         catch (System.Xml.XmlException e)
         {

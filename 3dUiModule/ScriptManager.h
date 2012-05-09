@@ -65,7 +65,7 @@ public:
 
     std::vector<int> ScriptIdsForTag(const Tag &tag) const;
 
-    void RunScript(int id, const Tag &tag, RdfMemoryStore *rdfStore);
+    void RunScript(int id, const Tag &tag, IMemoryStore *rdfStore);
 
 private:
     QMap<Tag, int> tags;

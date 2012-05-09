@@ -1,6 +1,6 @@
 // For conditions of distribution and use, see copyright notice in LICENSE
 
-#include "RdfModel.h"
+#include "RdfMemoryStore.h"
 #include "RdfWorld.h"
 #include "RdfStatement.h"
 
@@ -8,7 +8,7 @@
 
 Q_DECLARE_METATYPE(RdfStatement *)
 
-RdfXmlModel::RdfXmlModel(IWorld* world) : IModel(world),
+RdfMemoryStore::RdfMemoryStore(IWorld* world) : IMemoryStore(world),
     type(RdfXml)
 {
     RdfWorld* rdfWorld = dynamic_cast<RdfWorld*>(world);
@@ -21,18 +21,18 @@ RdfXmlModel::RdfXmlModel(IWorld* world) : IModel(world),
    
 }
 
-RdfXmlModel::~RdfXmlModel()
+RdfMemoryStore::~RdfMemoryStore()
 {
     if (model)
         librdf_free_model(model);
 }
 
-bool RdfXmlModel::FromUri(QUrl uri)
+bool RdfMemoryStore::FromUri(QUrl uri)
 {
     return true;
 }
 
-bool RdfXmlModel::FromString(QString data)
+bool RdfMemoryStore::FromString(QString data)
 {
     RdfWorld* rdfWorld = dynamic_cast<RdfWorld*>(world);
     assert(rdfWorld && "Failed to dynamic cast IWorld to RdfWorld");
@@ -49,7 +49,7 @@ bool RdfXmlModel::FromString(QString data)
     return false;
 }
 
-QString RdfXmlModel::toString() const
+QString RdfMemoryStore::toString() const
 {
     QString str = "";
     unsigned char* c = librdf_model_to_string(model, 0, 0, 0, 0);
@@ -57,7 +57,7 @@ QString RdfXmlModel::toString() const
     return str;
 }
 
-QVariantList RdfXmlModel::Select(IStatement* statement)
+QVariantList RdfMemoryStore::Select(IStatement* statement)
 {
     RdfStatement* rdfStatement = dynamic_cast<RdfStatement*>(statement);
 
@@ -80,7 +80,7 @@ QVariantList RdfXmlModel::Select(IStatement* statement)
     return statements;
 }
 
-QVariantList RdfXmlModel::Statements()
+QVariantList RdfMemoryStore::Statements()
 {
     librdf_stream* stream = librdf_model_as_stream(model);
     QVariantList statements;
@@ -94,7 +94,7 @@ QVariantList RdfXmlModel::Statements()
     return statements;
 }
 
-bool RdfXmlModel::AddStatement(IStatement* statement)
+bool RdfMemoryStore::AddStatement(IStatement* statement)
 {
     if (statement->IsValid())
     {
@@ -111,7 +111,7 @@ bool RdfXmlModel::AddStatement(IStatement* statement)
     return false;
 } 
 
-bool RdfXmlModel::RemoveStatement(IStatement* statement)
+bool RdfMemoryStore::RemoveStatement(IStatement* statement)
 {
     if (statement->IsValid())
     {

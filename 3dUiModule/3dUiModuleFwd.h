@@ -2,7 +2,7 @@
 
 #pragma once
 
-class RdfMemoryStore;
+class IMemoryStore;
 
 namespace CieMap
 {
