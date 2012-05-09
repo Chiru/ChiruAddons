@@ -1,10 +1,22 @@
-// IconScript.js
+// IconScript.js - handles behavior of in-world 3D icons
+// - automatic scaling,
+// - rotating towards camera,
+// - and showing of info bubbles
 
 // !ref: InfoBubblePrefab.txml
 
 engine.IncludeFile("Log.js");
+/*
+var icons = [];
+
+function Icon()
+{
+    this.entity = null;
+    this.infoBubble = null;
+}
 
 const showInfoTreshold = 20;
+*/
 
 sceneinteract.EntityClicked.connect(OnEntityClicked);
 
