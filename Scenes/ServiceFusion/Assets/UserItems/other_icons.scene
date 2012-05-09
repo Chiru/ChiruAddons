@@ -1,0 +1,143 @@
+<scene formatVersion="1.0" upAxis="y" unitsPerMeter="100" unitType="centimeters" minOgreVersion="1.7" ogreMaxVersion="2.3.18" author="OgreMax Scene Exporter (www.ogremax.com)" application="3DS Max">
+    <environment>
+        <colourAmbient r="0.333333" g="0.333333" b="0.333333" />
+        <colourBackground r="0" g="0" b="0" />
+        <clipping near="0" far="10000" />
+    </environment>
+    <nodes>
+        <node name="visa_card">
+            <position x="36.6682" y="0.648776" z="0.397251" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="visa_card" castShadows="true" receiveShadows="true" meshFile="visa_card.mesh">
+                <subentities>
+                    <subentity index="0" materialName="visa_card" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="calendar">
+            <position x="24.6034" y="3.66535" z="0.161974" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="calendar" castShadows="true" receiveShadows="true" meshFile="calendar.mesh">
+                <subentities>
+                    <subentity index="0" materialName="calendar" />
+                    <subentity index="1" materialName="calendar_front_page" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="info_bubble">
+            <position x="44.849" y="5.19268" z="1.00124" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="info_bubble" castShadows="true" receiveShadows="true" meshFile="info_bubble.mesh">
+                <subentities>
+                    <subentity index="0" materialName="info_bubble" />
+                    <subentity index="1" materialName="lower_text" />
+                    <subentity index="2" materialName="upper_text" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="news_tablet">
+            <position x="57.0394" y="5.45678" z="0.90652" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="news_tablet" castShadows="true" receiveShadows="true" meshFile="news_tablet.mesh">
+                <subentities>
+                    <subentity index="0" materialName="news_tablet" />
+                    <subentity index="1" materialName="news_window" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="radio_1">
+            <position x="30.4976" y="4.05234" z="0.501785" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="radio_1" castShadows="true" receiveShadows="true" meshFile="radio_1.mesh">
+                <subentities>
+                    <subentity index="0" materialName="radio" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="info_bubble_shadow">
+            <position x="44.849" y="0.576181" z="1.00124" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="info_bubble_shadow" castShadows="true" receiveShadows="true" meshFile="info_bubble_shadow.mesh">
+                <subentities>
+                    <subentity index="0" materialName="info_bubble_shadow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="master_card">
+            <position x="36.6682" y="2.05613" z="0.397251" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="master_card" castShadows="true" receiveShadows="true" meshFile="master_card.mesh">
+                <subentities>
+                    <subentity index="0" materialName="master_card" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="nordea_card">
+            <position x="36.6682" y="3.44864" z="0.397251" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="nordea_card" castShadows="true" receiveShadows="true" meshFile="nordea_card.mesh">
+                <subentities>
+                    <subentity index="0" materialName="nordea_card" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="pohjola_card">
+            <position x="36.6682" y="4.84876" z="0.397251" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="pohjola_card" castShadows="true" receiveShadows="true" meshFile="pohjola_card.mesh">
+                <subentities>
+                    <subentity index="0" materialName="pohjola_card" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="sampo_card">
+            <position x="36.6682" y="6.23157" z="0.397251" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="sampo_card" castShadows="true" receiveShadows="true" meshFile="sampo_card.mesh">
+                <subentities>
+                    <subentity index="0" materialName="sampo_card" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="saasto_card">
+            <position x="36.6682" y="7.66849" z="0.397251" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="saasto_card" castShadows="true" receiveShadows="true" meshFile="saasto_card.mesh">
+                <subentities>
+                    <subentity index="0" materialName="saasto_card" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="ID_card">
+            <position x="36.6682" y="9.03018" z="0.397251" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="ID_card" castShadows="true" receiveShadows="true" meshFile="ID_card.mesh">
+                <subentities>
+                    <subentity index="0" materialName="id_card" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="news_tablet_shadow">
+            <position x="57.0394" y="0.576181" z="0.906521" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="news_tablet_shadow" castShadows="true" receiveShadows="true" meshFile="news_tablet_shadow.mesh">
+                <subentities>
+                    <subentity index="0" materialName="news_tablet_shadow" />
+                </subentities>
+            </entity>
+        </node>
+    </nodes>
+</scene>

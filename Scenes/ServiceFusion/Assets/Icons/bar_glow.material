@@ -1,0 +1,19 @@
+material bar_glow
+{
+    technique
+    {
+        pass
+        {
+             ambient 0.588235 0.588235 0.588235 1
+            diffuse 0.588235 0.588235 0.588235 1
+            specular 0 0 0 1 10
+            emissive 1 1 1 1
+            scene_blend alpha_blend
+		depth_write off
+            texture_unit
+            {
+                texture local://bar_icon_glow_LightingMap_with_alpha.png
+            }
+        }
+    }
+}

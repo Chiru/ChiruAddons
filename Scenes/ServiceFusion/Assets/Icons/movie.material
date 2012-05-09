@@ -1,0 +1,17 @@
+material movie
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.745098 0.745098 0.745098 1
+            diffuse 0.745098 0.745098 0.745098 1
+            specular 0 0 0 1 10
+            emissive 1 1 1 1
+            texture_unit
+            {
+                texture local://MovieTheaterIconAO.png
+            }
+        }
+    }
+}

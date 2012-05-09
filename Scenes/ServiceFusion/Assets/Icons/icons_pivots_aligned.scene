@@ -1,0 +1,249 @@
+<scene formatVersion="1.0" upAxis="y" unitsPerMeter="100" unitType="centimeters" minOgreVersion="1.7" ogreMaxVersion="2.3.18" author="OgreMax Scene Exporter (www.ogremax.com)" application="3DS Max">
+    <environment>
+        <colourAmbient r="0.333333" g="0.333333" b="0.333333" />
+        <colourBackground r="0" g="0" b="0" />
+        <clipping near="0" far="10000" />
+    </environment>
+    <nodes>
+        <node name="theater_icon">
+            <position x="-3.54135" y="4.58818" z="-5.89895" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="theater_icon" castShadows="true" receiveShadows="true" meshFile="theater_icon.mesh">
+                <subentities>
+                    <subentity index="0" materialName="theater" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="art_icon">
+            <position x="-3.45303" y="4.49182" z="-0.134262" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="art_icon" castShadows="true" receiveShadows="true" meshFile="art_icon.mesh">
+                <subentities>
+                    <subentity index="0" materialName="art_ao" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="pub_icon">
+            <position x="4.68433" y="3.82763" z="-0.153978" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="pub_icon" castShadows="true" receiveShadows="true" meshFile="pub_icon.mesh">
+                <subentities>
+                    <subentity index="0" materialName="pub" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="bar_icon">
+            <position x="0.357202" y="3.91616" z="-0.128259" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="bar_icon" castShadows="true" receiveShadows="true" meshFile="bar_icon.mesh">
+                <subentities>
+                    <subentity index="0" materialName="bar" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="bike_park_icon">
+            <position x="9.25539" y="3.82665" z="-0.176165" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="bike_park_icon" castShadows="true" receiveShadows="true" meshFile="bike_park_icon.mesh">
+                <subentities>
+                    <subentity index="0" materialName="bike" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="quitar_icon">
+            <position x="5.21308" y="4.07908" z="-5.94229" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="quitar_icon" castShadows="true" receiveShadows="true" meshFile="quitar_icon.mesh">
+                <subentities>
+                    <subentity index="0" materialName="quitar" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="violin_icon">
+            <position x="0.844487" y="4.30214" z="-5.84389" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="violin_icon" castShadows="true" receiveShadows="true" meshFile="violin_icon.mesh">
+                <subentities>
+                    <subentity index="0" materialName="violin" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="movie_icon">
+            <position x="9.38401" y="4.19349" z="-5.78728" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="movie_icon" castShadows="true" receiveShadows="true" meshFile="movie_icon.mesh">
+                <subentities>
+                    <subentity index="0" materialName="movie" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="bike_icon_glow_plane">
+            <position x="9.25539" y="3.82665" z="-0.176165" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="bike_icon_glow_plane" castShadows="true" receiveShadows="true" meshFile="bike_icon_glow_plane.mesh">
+                <subentities>
+                    <subentity index="0" materialName="bike_glow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="theater_icon_glow_plane">
+            <position x="-3.54135" y="4.58818" z="-5.89895" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="theater_icon_glow_plane" castShadows="true" receiveShadows="true" meshFile="theater_icon_glow_plane.mesh">
+                <subentities>
+                    <subentity index="0" materialName="theater_glow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="violin_icon_glow_plane">
+            <position x="0.844487" y="4.30214" z="-5.84389" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="violin_icon_glow_plane" castShadows="true" receiveShadows="true" meshFile="violin_icon_glow_plane.mesh">
+                <subentities>
+                    <subentity index="0" materialName="violin_glow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="quitar_icon_glow_plane">
+            <position x="5.21308" y="4.07908" z="-5.94229" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="quitar_icon_glow_plane" castShadows="true" receiveShadows="true" meshFile="quitar_icon_glow_plane.mesh">
+                <subentities>
+                    <subentity index="0" materialName="quitar_glow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="movie_icon_shadow">
+            <position x="9.38401" y="2.81997" z="-5.78728" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="movie_icon_shadow" castShadows="true" receiveShadows="true" meshFile="movie_icon_shadow.mesh">
+                <subentities>
+                    <subentity index="0" materialName="movie_drop_shadow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="art_icon_glow_plane">
+            <position x="-3.45303" y="4.49182" z="-0.134262" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="art_icon_glow_plane" castShadows="true" receiveShadows="true" meshFile="art_icon_glow_plane.mesh">
+                <subentities>
+                    <subentity index="0" materialName="art_glow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="bar_icon_glow_plane">
+            <position x="0.357202" y="3.91616" z="-0.128259" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="bar_icon_glow_plane" castShadows="true" receiveShadows="true" meshFile="bar_icon_glow_plane.mesh">
+                <subentities>
+                    <subentity index="0" materialName="bar_glow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="pub_icon_glow_plane">
+            <position x="4.68433" y="3.82763" z="-0.153978" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="pub_icon_glow_plane" castShadows="true" receiveShadows="true" meshFile="pub_icon_glow_plane.mesh">
+                <subentities>
+                    <subentity index="0" materialName="pub_glow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="bike_park_icon_w_front_glow_shadow001">
+            <position x="9.25539" y="2.81997" z="-0.176165" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="bike_park_icon_w_front_glow_shadow001" castShadows="true" receiveShadows="true" meshFile="bike_park_icon_w_front_glow_shadow001.mesh">
+                <subentities>
+                    <subentity index="0" materialName="bike_area_shadow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="pub_icon_shadow">
+            <position x="4.68433" y="2.81997" z="-0.153978" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="pub_icon_shadow" castShadows="true" receiveShadows="true" meshFile="pub_icon_shadow.mesh">
+                <subentities>
+                    <subentity index="0" materialName="pub_drop_shadow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="bar_icon_shadow">
+            <position x="0.357202" y="2.81997" z="-0.128259" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="bar_icon_shadow" castShadows="true" receiveShadows="true" meshFile="bar_icon_shadow.mesh">
+                <subentities>
+                    <subentity index="0" materialName="bar_drop_shadow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="art_icon_shadow">
+            <position x="-3.45303" y="2.81997" z="-0.134262" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="art_icon_shadow" castShadows="true" receiveShadows="true" meshFile="art_icon_shadow.mesh">
+                <subentities>
+                    <subentity index="0" materialName="art_shadow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="theater_icon_shadow">
+            <position x="-3.54135" y="2.81997" z="-5.89895" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="theater_icon_shadow" castShadows="true" receiveShadows="true" meshFile="theater_icon_shadow.mesh">
+                <subentities>
+                    <subentity index="0" materialName="theater_drop_shadow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="violin_icon_shadow">
+            <position x="0.844487" y="2.81997" z="-5.84389" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="violin_icon_shadow" castShadows="true" receiveShadows="true" meshFile="violin_icon_shadow.mesh">
+                <subentities>
+                    <subentity index="0" materialName="violin_drop_shadow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="quitar_icon_shadow">
+            <position x="5.21308" y="2.81997" z="-5.94229" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="quitar_icon_shadow" castShadows="true" receiveShadows="true" meshFile="quitar_icon_shadow.mesh">
+                <subentities>
+                    <subentity index="0" materialName="quitar_drop_shadow" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="movie_icon_glow_plane">
+            <position x="9.38401" y="4.19349" z="-5.78728" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="movie_icon_glow_plane" castShadows="true" receiveShadows="true" meshFile="movie_icon_glow_plane.mesh">
+                <subentities>
+                    <subentity index="0" materialName="movie_glow" />
+                </subentities>
+            </entity>
+        </node>
+    </nodes>
+</scene>
