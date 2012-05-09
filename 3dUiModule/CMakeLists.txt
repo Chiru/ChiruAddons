@@ -14,7 +14,7 @@ QT4_WRAP_CPP(MOC_SRCS ${MOC_FILES})
 
 use_core_modules(Framework)
 
-use_modules(${PROJECT_SOURCE_DIR}/src/Cie/RdfModule)
+use_modules(${PROJECT_SOURCE_DIR}/src/ChiruAddons/RdfModule)
 
 build_library(${TARGET_NAME} SHARED ${SOURCE_FILES} ${MOC_SRCS})
 
