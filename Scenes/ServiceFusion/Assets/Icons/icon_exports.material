@@ -1,0 +1,559 @@
+
+material bar_glow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture bar_icon_glow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material art_glow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture art_icon_glow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material movie
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.745098 0.745098 0.745098 1
+			diffuse 0.745098 0.745098 0.745098 1
+			specular 0 0 0 1 10
+			emissive 1 1 1 1
+
+			texture_unit
+			{
+				texture MovieTheaterIconAO.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material pub_glow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture pub_icon_glow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material movie_glow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.745098 0.745098 0.745098 1
+			diffuse 0.745098 0.745098 0.745098 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture movie_icon_glow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material quitar_glow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.745098 0.745098 0.745098 1
+			diffuse 0.745098 0.745098 0.745098 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture quitar_icon_glow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material violin_glow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.745098 0.745098 0.745098 1
+			diffuse 0.745098 0.745098 0.745098 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture violin_icon_glow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material theater_glow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.745098 0.745098 0.745098 1
+			diffuse 0.745098 0.745098 0.745098 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture theater_icon_glow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material pub_shadow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture pub_icon_shadow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material bike_shadow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.745098 0.745098 0.745098 1
+			diffuse 0.745098 0.745098 0.745098 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture bike_icon_shadow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material art_shadow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture art_icon_shadow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material art
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			emissive 1 1 1 1
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture art_iconCompleteMap.tga
+			}
+		}
+
+	}
+
+}
+
+
+
+material bar_shadow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture bar_icon_shadow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material bar
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			emissive 1 1 1 1
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture bar_iconCompleteMap.tga
+			}
+		}
+
+	}
+
+}
+
+
+
+material pub
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			emissive 1 1 1 1
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture pub_iconCompleteMap.tga
+			}
+		}
+
+	}
+
+}
+
+
+
+material bike
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			emissive 1 1 1 1
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture bike_park_iconCompleteMap.tga
+			}
+		}
+
+	}
+
+}
+
+
+
+material theater
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			emissive 1 1 1 1
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture theater_iconCompleteMap.tga
+			}
+		}
+
+	}
+
+}
+
+
+
+material violin
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			emissive 1 1 1 1
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture violinCompleteMap.tga
+			}
+		}
+
+	}
+
+}
+
+
+
+material quitar
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0 0 0 1 10
+			emissive 1 1 1 1
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture QuitarCompleteMap.tga
+			}
+		}
+
+	}
+
+}
+
+
+
+material bike_glow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.745098 0.745098 0.745098 1
+			diffuse 0.745098 0.745098 0.745098 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture bike_icon_glow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material theater_shadow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.745098 0.745098 0.745098 1
+			diffuse 0.745098 0.745098 0.745098 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture theater_icon_shadow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material violin_shadow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.745098 0.745098 0.745098 1
+			diffuse 0.745098 0.745098 0.745098 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture violin_icon_shadow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material quitar_shadow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.745098 0.745098 0.745098 1
+			diffuse 0.745098 0.745098 0.745098 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture quitar_icon_shadow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
+
+material movie_shadow
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.745098 0.745098 0.745098 1
+			diffuse 0.745098 0.745098 0.745098 1
+			specular 0 0 0 1 10
+			scene_blend one one_minus_src_alpha
+
+			texture_unit
+			{
+				texture movie_icon_shadow_LightingMap_with_alpha.png
+			}
+		}
+
+	}
+
+}
+
+
