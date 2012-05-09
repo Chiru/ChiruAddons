@@ -75,9 +75,13 @@ void KinectCapture::updateRGBImage()
     if(!kinect_interface_->isRunning())
         return;
 
-    if(cloud_mutex_.tryLock()) {
+    if(cloud_mutex_.tryLock())
+    {
         if(!current_cloud_.get())
+        {
+            cloud_mutex_.unlock();
             return;
+        }
 
         PointCloud::ConstPtr cloud = current_cloud_;
         cloud_mutex_.unlock();
