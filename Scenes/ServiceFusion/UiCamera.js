@@ -9,7 +9,51 @@ var sceneIndex = -1;
 // Scene rotation
 const scenes = ["Scene1.txml", "Scene2.txml", "Scene3.txml"];
 var currentContent = [];
-var calendarWidget = null;
+
+var cameraData =
+{
+    connected : false,
+    rotate :
+    {
+        sensitivity : 0.3
+    },
+    move :
+    {
+        //sensitivity : 30.0,
+        sensitivity : 20.0,
+        amount : new float3(0,0,0)
+    },
+    motion : new float3(0,0,0)
+};
+
+var lastTouchTimestamp = frame.WallClockTime();
+const cMoveZSpeed = 0.03;//0.005; // was 0.0007 in Unity
+const minTiltAngle = 110;
+const maxTiltAngle = 170;
+var moving = false; // Is camera in moving state
+var tilting = false; // Is camera in tilting state
+
+// Entry point for the script
+if (!framework.IsHeadless())
+{
+    engine.ImportExtension("qt.core");
+    engine.ImportExtension("qt.gui");
+    engine.IncludeFile("Log.js");
+    engine.IncludeFile("MathUtils.js");
+
+    ic = input.RegisterInputContextRaw("UiCamera", 102);
+    ic.KeyEventReceived.connect(HandleKeyEvent);
+    ic.MouseEventReceived.connect(HandleMouseEvent);
+
+    frame.DelayedExecute(1).Triggered.connect(ApplyCamera);
+    me.Action("ResetCamera").Triggered.connect(ResetCamera);
+}
+
+function OnScriptDestroyed()
+{
+    input.UnregisterInputContextRaw("UiCamera");
+    ClearScene();
+}
 
 function MoveToNextScene()
 {
@@ -51,43 +95,8 @@ function SwitchScene()
     // TODO Reset camera etc?
 }
 
-if (!framework.IsHeadless())
-{
-    frame.DelayedExecute(1).Triggered.connect(ApplyCamera);
-    me.Action("ResetCamera").Triggered.connect(ResetCamera);
-}
-
-function CreateUserWidgets()
-{
-/*
-    var ents = scene.LoadSceneXML(asset.GetAsset("ScreenPrefab.txml").DiskSource(), false, false, 0);
-    if (ents.length == 0)
-    {
-        LogE("Could not instantiate ScreenPrefab.txml");
-        return;
-    }
-
-    ents[0].name = "Calendar";
-    var t = ents[0].placeable.transform;
-    t.pos = new float3(6.0, 1.25, -10.0);
-    t.rot = new float3(90.0, -90.0, 90.0);
-    ents[0].placeable.transform = t;
-
-    var p = ents[0].placeable.parentRef;
-    p.ref = me.id;
-    ents[0].placeable.parentRef = p;
-
-    var calendar = scene.EntityByName("calendar");
-    calendarWidget = new QCalendarWidget();
-    calendarWidget.gridVisible = true;
-    calendar.graphicsviewcanvas.GraphicsScene().addWidget(calendarWidget);
-    calendarWidget.show();
-*/
-}
-
 function ApplyCamera()
 {
-//    me.camera.nearPlane = 5.0; // Try to push the near plane as far as possible so that objects faraway have as little Z fighting as possible.
 //    scene.EntityByName("FreeLookCamera").camera.nearPlane = 5.0;
 //    scene.EntityByName("FreeLookCamera").soundlistener.active = false;
     me.camera.SetActive();
@@ -95,8 +104,6 @@ function ApplyCamera()
     ResetCamera();
 
     frame.Updated.connect(Update);
-
-//    frame.DelayedExecute(5).Triggered.connect(CreateUserWidgets);
 
     // Load the first scene.
     ++sceneIndex;
@@ -108,58 +115,26 @@ function ApplyCamera()
 }
 
 // TODO touch input
-function OnTouchBegin(e) { }
-function OnTouchUpdate(e) { }
-function OnTouchEnd(e) { }
+function OnTouchBegin(e)
+{
+    lastTouchTimestamp = frame.WallClockTime();
+}
+
+function OnTouchUpdate(e)
+{
+    lastTouchTimestamp = frame.WallClockTime();
+}
+
+function OnTouchEnd(e)
+{
+    lastTouchTimestamp = frame.WallClockTime();
+}
 
 function ResetCamera()
 {
-//    lastTouchTimestamp = frame.WallClockTime();
+    lastTouchTimestamp = frame.WallClockTime();
     var resetTr = scene.EntityByName("UiCameraCameraSpawnPos").placeable.transform;
-//    var resetTr = scene.EntityByName("FreeLookCameraSpawnPos").placeable.transform;
     me.placeable.transform = resetTr;
-}
-
-var cameraData =
-{
-    connected : false,
-    rotate :
-    {
-        sensitivity : 0.3
-    },
-    move :
-    {
-        //sensitivity : 30.0,
-        sensitivity : 20.0,
-        amount : new float3(0,0,0)
-    },
-    motion : new float3(0,0,0)
-};
-
-//const cMoveZSpeed = 0.005; // was 0.0007 in Unity
-//const cRotateSpeed = 1;
-//const cReferenceHeight = 768;
-
-var moving = false; // Is camera in moving state
-var tilting = false; // Is camera in tilting state
-
-function OnScriptDestroyed()
-{
-    input.UnregisterInputContextRaw("UiCamera");
-    if (calendarWidget && !framework.IsExiting())
-        calendarWidget.deleteLater();
-}
-
-if (!server.IsRunning())
-{
-    engine.ImportExtension("qt.core");
-    engine.ImportExtension("qt.gui");
-    engine.IncludeFile("Log.js");
-    engine.IncludeFile("MathUtils.js");
-
-    ic = input.RegisterInputContextRaw("UiCamera", 102);
-    ic.KeyEventReceived.connect(HandleKeyEvent);
-    ic.MouseEventReceived.connect(HandleMouseEvent);
 }
 
 function HandleKeyEvent(e)
@@ -180,45 +155,6 @@ function HandleKeyEvent(e)
         ResetCamera();
 }
 
-const minTiltAngle = 1.0;
-const maxTiltAngle = 70.0;
-const tiltSpeed = 0.22;
-// The plane on which the camera tilts
-var tiltPlane;
-// Point on the globe the camera is looking at
-var cameraLookAtPosition;// = new float3(0,0,0);
-var globePosition = null; 
-
-function UpdateRotateParams()
-{
-    return; // TODO
-    cameraPos = renderer.MainCamera().placeable.WorldPosition();
-    var cameraFwd = renderer.MainCamera().placeable.transform.Orientation().Mul(scene.ForwardVector());
-    var ray = new Ray(cameraPos, cameraFwd);
-    cameraLookAtPosition = ray.GetPoint(10);
-
-    var mousePos = input.MousePos();
-    var relX = mousePos.x()/ui.GraphicsScene().width();
-    var relY = mousePos.y()/ui.GraphicsScene().height();
-    var mouseRay = renderer.MainCameraComponent().GetMouseRay(relX, relY);
-    var pos = mouseRay.GetPoint(10);
-
-    tiltPlane = new Plane(cameraLookAtPosition, cameraPos, pos);
-
-    return;
-    var result = scene.ogre.Raycast(ray, -1);
-    if (result.entity)
-    {
-        var entityPos = result.entity.placeable ? result.entity.placeable.WorldPosition() : result.pos;
-        cameraLookAtPosition = result.pos;
-        tiltPlane = new Plane(cameraLookAtPosition, cameraPos, entityPos);
-    }
-    else
-    {
-        cameraLookAtPosition = ray.GetPoint(200);
-        tiltPlane = new Plane(cameraLookAtPosition, cameraPos, cameraLookAtPosition);
-    }
-}
 // TODO: copy-paste from ObjectMove.js
 function IsObjectMovable(e)
 {
@@ -239,85 +175,20 @@ function HandleMouseEvent(e)
         }
         else if (tilting)
         {
-            var cameraEntity = renderer.MainCamera();
-            const localForward = scene.ForwardVector();
-            const localUp = cameraEntity.camera.upVector;
-            const worldUp = scene.UpVector();
-
-//            var mouseYDelta = mousePosPrev.y() - input.MousePos().y();
-//            var d = mouseYDelta * cMoveZSpeed * 30;
-            const cMoveZSpeed = 0.005; // was 0.0007 in Unity
-            var d = e.relativeY * cMoveZSpeed * 30;
-            
-            var newPos = cameraEntity.placeable.WorldPosition();
-            var direction = worldUp;
-
-            newPos = newPos.Add(direction.Mul(d));
-
-            cameraEntity.placeable.SetPosition(newPos);
-
-            var cameraFwd = cameraEntity.placeable.transform.Orientation().Mul(scene.ForwardVector()).Normalized();
-            var ray = new Ray(cameraEntity.placeable.WorldPosition(), cameraFwd);
-/*
-            var mousePos = input.MousePos();
-            var relX = mousePos.x()/ui.GraphicsScene().width();
-            var relY = mousePos.y()/ui.GraphicsScene().height();
-            var ray = renderer.MainCameraComponent().GetMouseRay(relX, relY);
-*/
-/*
-            var r = scene.ogre.Raycast(ray, -1);
-            if (r.entity)
-            {
-                var dir = r.pos.Sub(cameraEntity.placeable.WorldPosition()).Normalized();
-                var q = Quat.LookAt(localForward, dir, localUp, worldUp);
-                Log(q);
-                cameraEntity.placeable.SetOrientation(q);
-            }*/
-
-/*
-//            Log("globePosition " + globePosition);
-//            Log("cameraLookAtPosition " + cameraLookAtPosition);
-
-            var cameraPos = renderer.MainCamera().placeable.WorldPosition();
-
-            var v1 = cameraLookAtPosition.Sub(globePosition);
-            var v2 =  cameraPos.Sub(cameraLookAtPosition);
-            // BUG: AngleBetween buggy, returns NaN for unnormalized vectors
-            //var cameraAngle = v1.AngleBetween(v2);
-            var cameraAngle = RadToDeg(v1.Normalized().AngleBetweenNorm(v2.Normalized()));
-
-            Log(e.relativeY);
-            cameraAngle -= e.relativeY * tiltSpeed;
-            cameraAngle = Clamp(cameraAngle, minTiltAngle, maxTiltAngle)
-//            Log("cameraAngle should be" + cameraAngle);
-
-            var targetUpVector = cameraLookAtPosition.Sub(globePosition);
-            targetUpVector.Normalize();
-//            Log("AAAAAAAAA " + targetUpVector);
-            var l = cameraPos.Sub(cameraLookAtPosition).Length();
-//            Log("l " + l);
-            targetUpVector = targetUpVector.Mul(l);
-//            Log("BBBBBBBBBBB " + targetUpVector);
-            targetUpVector = new Quat(tiltPlane.normal, DegToRad(cameraAngle)).Mul(targetUpVector);
-//            Log("CCCCCCCCCCCC " + targetUpVector);
-            cameraPos = cameraLookAtPosition.Add(targetUpVector);
-//            Log("cameraPos should be " + cameraPos);
-            var t = renderer.MainCamera().placeable.transform;
-            //t.pos = cameraPos;
-            //Log("t.pos was " + t.pos);
-            
-            //Log("t.pos IS " + t.pos);
-//            Quat.LookAt(localForward, targetDirection, localUp, worldUp);
-            var targetLookatDir = cameraLookAtPosition.Sub(cameraPos).Normalized();
-            t.rot = Quat.LookAt(scene.ForwardVector(), targetLookatDir, scene.UpVector(), scene.UpVector());
-            renderer.MainCamera().placeable.transform = t;
-*/
-
-        /* OLD TEMP CODE
-            var transform = me.placeable.transform;            transform.rot.x -= cameraData.rotate.sensitivity * e.relativeY;
-            transform.rot.x = Clamp(transform.rot.x, -90.0, 90.0);
+            var transform = me.placeable.transform;
+            transform.rot.x -= cameraData.rotate.sensitivity * e.relativeY;
+            var oldRotX = transform.rot.x;
+            transform.rot.x = Clamp(transform.rot.x, minTiltAngle, maxTiltAngle);
             me.placeable.transform = transform;
-        */
+
+            if (oldRotX > minTiltAngle && oldRotX < maxTiltAngle)
+            {
+                var d = e.relativeY * cMoveZSpeed * 30;
+                var cameraEntity = renderer.MainCamera(); // scene.EntityByName("UiCamera");
+                var newPos = cameraEntity.placeable.WorldPosition();
+                newPos = newPos.Add(scene.UpVector().Mul(d));
+                cameraEntity.placeable.SetPosition(newPos);
+            }
         }
         break;
     case 2: // MouseScroll
@@ -352,7 +223,6 @@ function HandleMouseEvent(e)
         moving = false;
         tilting = false;
         StopMovement();
-        UpdateRotateParams();
         break;
     default:
         break;
@@ -411,28 +281,8 @@ function Update(frametime)
 {
     if (!me.camera.IsActive())
         return;
-
-/*
-    scene.ogre.DebugDrawSoundSource(cameraLookAtPosition, 1, 10, 1,0,0);
-    if (globePosition);
-        scene.ogre.DebugDrawSoundSource(globePosition, 1, 10, 0,0,1);
-    if (tiltPlane)
-        scene.ogre.DebugDrawPlane(tiltPlane, 0,0,1);
-    if (targetUpVector)
-*/
     if (cameraData.move.amount.x == 0 && cameraData.move.amount.y == 0 && cameraData.move.amount.z == 0)
         return;
-/* DEBUG
-    cameraPos = renderer.MainCamera().placeable.WorldPosition();
-    var cameraFwd = renderer.MainCamera().placeable.transform.Orientation().Mul(scene.ForwardVector());
-    var ray = new Ray(cameraPos, cameraFwd);
-    var r = scene.ogre.Raycast(ray, -1);
-    if (r.entity)
-        Log("hit " + r.entity.name);
-    else
-        Log("no hit");
-    scene.ogre.DebugDrawLine(ray.pos, ray.dir.Mul(300), 1,0,0);
-*/
 
     cameraData.motion.x = cameraData.move.amount.x * cameraData.move.sensitivity * frametime;
     cameraData.motion.y = cameraData.move.amount.y * cameraData.move.sensitivity * frametime;
@@ -457,9 +307,9 @@ function HandleMove(deltaX, deltaY, deltaZ)
     if (!me.camera.IsActive())
         return;
     // forward/backward
-    cameraData.move.amount.z = /*-1 * */ deltaY;
+    cameraData.move.amount.z = 2 * deltaY;
     // right/left
-    cameraData.move.amount.x = /*-1 * */ deltaX;
+    cameraData.move.amount.x = 2 * deltaX;
     // up/down
     var scroll = deltaZ/60;
     cameraData.move.amount.y = Clamp(scroll, -5, 5);
