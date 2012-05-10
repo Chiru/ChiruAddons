@@ -10,13 +10,25 @@ Controls
 ========
 - Mouse + keyboard
  * LMB drag terrain - camera movement
- * (TODO/IN PROGRESS: RMB + drag terrain - camera tilting)
+ * RMB + drag terrain - camera tilting
+ * TODO Mouse scroll, zoom/depth movement
  * Ctrl + Left arrow/Right arrow - Switch scene
  * 1 + LMB drag object - Move object
  * Ctrl + 1 + LMB drag object - Zoom object
  * 2 + RMB drag object - Rotate object
  * Ctrl + R - Reset camera's transform
  * Ctrl + E - Reset selected object's transform
-- Touch input
+- Touch input TODO
  * not implemented yet
- * TODO list of touch gestures and actions
+ * Scene
+  - Move to next/prev. scene
+  - Move in scene
+  - Tilt scene
+  - "Zoom" scene (depth movement)
+ * Object
+  - Object selection
+  - moving object
+   * object rotation (yaw, pitch)
+   * object roll
+   * "Zoom" object (depth movement)
+ * Scene reset
