@@ -87,13 +87,13 @@
    <attribute value="false" name="active"/>
   </component>
  </entity>
- <entity id="3" sync="1">
+  <entity id="4" sync="1">
   <component type="EC_Name" sync="1">
    <attribute value="UiCameraCameraSpawnPos" name="name"/>
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="1">
-   <attribute value="0,30,0,163,0,180,1,1,1" name="Transform"/>
+   <attribute value="35.539722,85.491188,-114.965569,163,0,180,1,1,1" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="0" name="Selection layer"/>
@@ -101,7 +101,7 @@
    <attribute value="" name="Parent bone name"/>
   </component>
  </entity>
- <entity id="4" sync="1">
+ <entity id="5" sync="1">
   <component type="EC_Name" sync="1">
    <attribute value="FreeLookCameraSpawnPos" name="name"/>
    <attribute value="" name="description"/>
@@ -115,7 +115,7 @@
    <attribute value="" name="Parent bone name"/>
   </component>
  </entity>
- <entity id="14">
+ <entity id="6">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://visa_card.mesh" name="Mesh ref"/>
@@ -138,7 +138,7 @@
   </component>
  <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
  </entity>
- <entity id="13">
+ <entity id="7">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://calendar.mesh" name="Mesh ref"/>
@@ -181,7 +181,7 @@
     <attribute value="1" name="Submesh"/>
   </component>
  </entity>
- <entity id="12">
+ <entity id="8">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://radio_1.mesh" name="Mesh ref"/>
@@ -211,7 +211,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
  </entity>
- <entity id="11">
+ <entity id="9">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://master_card.mesh" name="Mesh ref"/>
@@ -257,7 +257,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
  </entity>
- <entity id="9">
+ <entity id="11">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pohjola_card.mesh" name="Mesh ref"/>
@@ -280,7 +280,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
  </entity>
- <entity id="8">
+ <entity id="12">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://sampo_card.mesh" name="Mesh ref"/>
@@ -303,7 +303,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
  </entity>
- <entity id="7">
+ <entity id="13">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://saasto_card.mesh" name="Mesh ref"/>
@@ -326,7 +326,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
  </entity>
- <entity id="8">
+ <entity id="14">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://ID_card.mesh" name="Mesh ref"/>
