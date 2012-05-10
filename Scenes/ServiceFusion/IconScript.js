@@ -6,29 +6,21 @@
 // !ref: InfoBubblePrefab.txml
 
 engine.IncludeFile("Log.js");
-/*
-var icons = [];
 
-function Icon()
-{
-    this.entity = null;
-    this.infoBubble = null;
-}
-
-const showInfoTreshold = 20;
-*/
+// TODO
+//const showInfoTreshold = 20;
 
 sceneinteract.EntityClicked.connect(OnEntityClicked);
 
 function IsEntityAnIcon(e)
 {
-    return e.placeable && e.mesh && e.dynamiccomponent && e.dynamiccomponent.name == "Icon";
+    return e.placeable != null && e.mesh != null && e.dynamiccomponent != null && e.dynamiccomponent.name == "Icon";
 }
 
 function ShowInfoBubble(entity)
 {
     var infoBubbleVisible = entity.dynamiccomponent.GetAttribute("infoBubbleVisible");
-    if (infoBubbleVisible) // Info bubble visible, remove it.
+    if (infoBubbleVisible != undefined && infoBubbleVisible) // Info bubble visible, remove it.
     {
         var infoBubbleId = entity.dynamiccomponent.GetAttribute("infoBubbleId");
         var infoBubble = scene.EntityById(infoBubbleId);
@@ -37,7 +29,6 @@ function ShowInfoBubble(entity)
             LogE("Trying to remove non-existing info bubble with entity ID " + infoBubbleId);
             return;
         }
-
         // TODO: crashes to EC_GraphicsViewCanvas::OnMaterialChanged. Fow now, only hiding the entity.
         //scene.RemoveEntity(infoBubbleId);
         infoBubble.placeable.visible = false;
@@ -56,15 +47,18 @@ function ShowInfoBubble(entity)
             }
 
             var infoBubble = ents[0];
+            infoBubble.temporary = true;
             infoBubble.placeable.SetPosition(entity.placeable.WorldPosition());
+            infoBubble.placeable.SetScale(2,2,2);
             /*
             var t = infoBubble.placeable.transform;
             t.rot = new float3(0, 180, 0);
             t.pos = entity.placeable.WorldPosition();
             infoBubble.placeable.transform = t;
             */
+            entity.dynamiccomponent.CreateAttribute("bool", "infoBubbleVisible");
             entity.dynamiccomponent.SetAttribute("infoBubbleVisible", infoBubble.placeable.visible);
-            entity.dynamiccomponent.CreateAttribute("uint", "infoBubbleId", infoBubble.id);
+            entity.dynamiccomponent.CreateAttribute("uint", "infoBubbleId");
             entity.dynamiccomponent.SetAttribute("infoBubbleId", infoBubble.id);
         }
         else
