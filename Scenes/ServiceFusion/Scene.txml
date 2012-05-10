@@ -202,6 +202,13 @@
    <attribute value="UiCamera" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
+  <component type="EC_Script" sync="true">
+   <attribute value="Radio.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
   <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
  </entity>
  <entity id="11">
