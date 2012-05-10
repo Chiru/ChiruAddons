@@ -4,11 +4,10 @@
 // !ref: Scene1.txml
 // !ref: Scene2.txml
 // !ref: Scene3.txml
-// !ref: Scene4.txml
 
 var sceneIndex = -1;
 // Scene rotation
-const scenes = ["Scene1.txml", "Scene2.txml", "Scene3.txml" ,"Scene4.txml" ];
+const scenes = ["Scene1.txml", "Scene2.txml", "Scene3.txml"];
 var currentContent = [];
 var calendarWidget = null;
 
@@ -240,7 +239,42 @@ function HandleMouseEvent(e)
         }
         else if (tilting)
         {
-            return;
+            var cameraEntity = renderer.MainCamera();
+            const localForward = scene.ForwardVector();
+            const localUp = cameraEntity.camera.upVector;
+            const worldUp = scene.UpVector();
+
+//            var mouseYDelta = mousePosPrev.y() - input.MousePos().y();
+//            var d = mouseYDelta * cMoveZSpeed * 30;
+            const cMoveZSpeed = 0.005; // was 0.0007 in Unity
+            var d = e.relativeY * cMoveZSpeed * 30;
+            
+            var newPos = cameraEntity.placeable.WorldPosition();
+            var direction = worldUp;
+
+            newPos = newPos.Add(direction.Mul(d));
+
+            cameraEntity.placeable.SetPosition(newPos);
+
+            var cameraFwd = cameraEntity.placeable.transform.Orientation().Mul(scene.ForwardVector()).Normalized();
+            var ray = new Ray(cameraEntity.placeable.WorldPosition(), cameraFwd);
+/*
+            var mousePos = input.MousePos();
+            var relX = mousePos.x()/ui.GraphicsScene().width();
+            var relY = mousePos.y()/ui.GraphicsScene().height();
+            var ray = renderer.MainCameraComponent().GetMouseRay(relX, relY);
+*/
+/*
+            var r = scene.ogre.Raycast(ray, -1);
+            if (r.entity)
+            {
+                var dir = r.pos.Sub(cameraEntity.placeable.WorldPosition()).Normalized();
+                var q = Quat.LookAt(localForward, dir, localUp, worldUp);
+                Log(q);
+                cameraEntity.placeable.SetOrientation(q);
+            }*/
+
+/*
 //            Log("globePosition " + globePosition);
 //            Log("cameraLookAtPosition " + cameraLookAtPosition);
 
@@ -277,12 +311,10 @@ function HandleMouseEvent(e)
             var targetLookatDir = cameraLookAtPosition.Sub(cameraPos).Normalized();
             t.rot = Quat.LookAt(scene.ForwardVector(), targetLookatDir, scene.UpVector(), scene.UpVector());
             renderer.MainCamera().placeable.transform = t;
-
-            //endRotation = Quat(float3x4.LookAt(new float3(0,0,-1), targetLookatDirection, new float3(0,1,0), new float3(0,1,0)));
+*/
 
         /* OLD TEMP CODE
-            var transform = me.placeable.transform;
-            transform.rot.x -= cameraData.rotate.sensitivity * e.relativeY;
+            var transform = me.placeable.transform;            transform.rot.x -= cameraData.rotate.sensitivity * e.relativeY;
             transform.rot.x = Clamp(transform.rot.x, -90.0, 90.0);
             me.placeable.transform = transform;
         */
