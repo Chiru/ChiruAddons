@@ -129,7 +129,6 @@ function CreateContainer(entity)
     entity.graphicsviewcanvas.GraphicsView().mouseTracking = true;
     var container = new MovieContainer(null)
     entity.graphicsviewcanvas.GraphicsScene().addWidget(container.visual);
-    movieContainers.push(container);
 }
 
 CreateContainer(me);
