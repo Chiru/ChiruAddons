@@ -26,8 +26,15 @@ labelContainer = C3DUiModule.ContainerFactory().CreateContainer(labelVisual, uiW
 labelContainer.rdfStore = new RdfMemoryStore(world);
 var l3 = new QLabel("HLabel3", labelVisual);
 uiWidget.layout().addWidget(labelVisual, 0, 0);
-var proxy = me.graphicsviewcanvas.GraphicsScene().addWidget(uiWidget);
-uiWidget.show(); 
+print(me.GetComponent("EC_GraphicsViewCanvas", "Content"));
+me.GetComponent("EC_GraphicsViewCanvas", "Content").GraphicsScene().addWidget(uiWidget);
+//var proxy = me.graphicsviewcanvas.GraphicsScene().addWidget(uiWidget);
+uiWidget.show();
+
+var titleWidget = new QLabel("Horizontal");
+titleWidget.font = new QFont("Arial", 24);
+me.GetComponent("EC_GraphicsViewCanvas", "Title").GraphicsScene().addWidget(titleWidget);
+titleWidget.show();
 
 function OnScriptDestroyed()
 {
@@ -35,4 +42,6 @@ function OnScriptDestroyed()
         return; // Application shutting down, the widget pointers are garbage.
     if (uiWidget)
         uiWidget.deleteLater();
+    if (titleWidget)
+        titleWidget.deleteLater();
 }

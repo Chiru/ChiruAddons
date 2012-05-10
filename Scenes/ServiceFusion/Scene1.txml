@@ -124,11 +124,17 @@
    <attribute value="-1" name="Collision Layer"/>
    <attribute value="-1" name="Collision Mask"/>
   </component>
-  <component type="EC_GraphicsViewCanvas" sync="true">
-   <attribute value="Texture_Screen_3" name="Output texture"/>
+  <component type="EC_GraphicsViewCanvas" name="Content"sync="true">
+   <attribute value="LoadingScreen.png" name="Output texture"/>
    <attribute value="400" name="Texture width"/>
    <attribute value="200" name="Texture height"/>
    <attribute value="1" name="Submesh"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" name="Title" sync="true">
+   <attribute value="LoadingScreen.png" name="Output texture"/>
+   <attribute value="250" name="Texture width"/>
+   <attribute value="50" name="Texture height"/>
+   <attribute value="2" name="Submesh"/>
   </component>
  </entity>
  <entity id="4" sync="1">
@@ -151,6 +157,13 @@
    <attribute value="1" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Script" sync="true" name="Screen">
+   <attribute value="Screen.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
   </component>
   <component type="EC_Script" sync="true">
    <attribute value="ContainerVertical.js" name="Script ref"/>
@@ -178,11 +191,17 @@
    <attribute value="-1" name="Collision Layer"/>
    <attribute value="-1" name="Collision Mask"/>
   </component>
-  <component type="EC_GraphicsViewCanvas" sync="true">
+  <component type="EC_GraphicsViewCanvas" name="Content"sync="true">
    <attribute value="LoadingScreen.png" name="Output texture"/>
    <attribute value="400" name="Texture width"/>
    <attribute value="200" name="Texture height"/>
    <attribute value="1" name="Submesh"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" name="Title" sync="true">
+   <attribute value="LoadingScreen.png" name="Output texture"/>
+   <attribute value="250" name="Texture width"/>
+   <attribute value="50" name="Texture height"/>
+   <attribute value="2" name="Submesh"/>
   </component>
  </entity>
  <entity id="5" sync="1">
@@ -239,11 +258,17 @@
    <attribute value="-1" name="Collision Layer"/>
    <attribute value="-1" name="Collision Mask"/>
   </component>
-  <component type="EC_GraphicsViewCanvas" sync="true">
-   <attribute value="Texture_Screen_5" name="Output texture"/>
+  <component type="EC_GraphicsViewCanvas" name="Content"sync="true">
+   <attribute value="LoadingScreen.png" name="Output texture"/>
    <attribute value="400" name="Texture width"/>
    <attribute value="200" name="Texture height"/>
    <attribute value="1" name="Submesh"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" name="Title" sync="true">
+   <attribute value="LoadingScreen.png" name="Output texture"/>
+   <attribute value="250" name="Texture width"/>
+   <attribute value="50" name="Texture height"/>
+   <attribute value="2" name="Submesh"/>
   </component>
  </entity>
  <entity id="6" sync="1">
@@ -472,6 +497,13 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
+  <component type="EC_Script" sync="true" name="Screen">
+   <attribute value="Screen.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
   <component type="EC_Script" sync="true">
    <attribute value="MovieContainer.js" name="Script ref"/>
    <attribute value="true" name="Run on load"/>
@@ -479,11 +511,17 @@
    <attribute value="" name="Script application name"/>
    <attribute value="" name="Script class name"/>
   </component>
-  <component type="EC_GraphicsViewCanvas" sync="true">
-   <attribute value="Texture_Screen_4" name="Output texture"/>
-   <attribute value="200" name="Texture width"/>
+  <component type="EC_GraphicsViewCanvas" name="Content"sync="true">
+   <attribute value="LoadingScreen.png" name="Output texture"/>
+   <attribute value="400" name="Texture width"/>
    <attribute value="200" name="Texture height"/>
    <attribute value="1" name="Submesh"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" name="Title" sync="true">
+   <attribute value="LoadingScreen.png" name="Output texture"/>
+   <attribute value="250" name="Texture width"/>
+   <attribute value="50" name="Texture height"/>
+   <attribute value="2" name="Submesh"/>
   </component>
  </entity>
 </scene>
