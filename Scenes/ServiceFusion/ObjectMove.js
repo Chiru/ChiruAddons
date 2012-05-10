@@ -245,6 +245,9 @@ function Update(frameTime)
             {
                 if (input.IsKeyDown(Qt.Key_Control)) // Z movement
                 {
+                    if (selectedObject.dynamiccomponent && selectedObject.dynamiccomponent.name == "UserItem")
+                        return; // Zooming/depth movement of user items not allowed
+
                     var mouseYDelta = mousePosPrev.y() - input.MousePos().y();
                     var d = mouseYDelta * cMoveZSpeed * 30;
 
