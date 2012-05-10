@@ -55,15 +55,21 @@ void MeshConverter::createMesh()
     //ogreManual_->setUseIdentityView(true);
     //ogreManual_->setQueryFlags(0);
 
-    // compute the correct number of values:
+    // estimation for the index count is triangle_size*3*2 and it is always larger than the real value
+    size_t indices_count = 0;
+    for (size_t i = 0; i < polygon_mesh_->polygons.size(); i++)
+        indices_count += polygon_mesh_->polygons[i].vertices.size();
+
     size_t triangle_size = input_cloud_->points.size();
 
-    ogreManual_->estimateVertexCount(triangle_size);
-    LogInfo("Triangle size: "+ ToString(triangle_size));
+    LogInfo("MeshConverter: Vertex count: "+ ToString(triangle_size));
+    LogInfo("MeshConverter: Index count: "+ ToString(indices_count));
 
     LogInfo("MeshConverter: Begin of manual object creation");
     ogreManual_->clear();
-    ogreManual_->begin("CapturedObject", Ogre::RenderOperation::OT_TRIANGLE_LIST);//OT_TRIANGLE_STRIP
+    ogreManual_->estimateVertexCount(triangle_size);
+    ogreManual_->estimateIndexCount(indices_count);
+    ogreManual_->begin("CapturedObject", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
     LogInfo("MeshConverter: Setting positions...");
 
@@ -90,7 +96,7 @@ void MeshConverter::createMesh()
 
     LogInfo("MeshConverter: Object created!");
     double objectCreateTime = pcl::getTime() - startime;
-    LogInfo("Time needed for custom object creation: " + ToString(objectCreateTime));
+    LogInfo("MeshConverter: Time needed for CustomObject creation: " + ToString(objectCreateTime));
 
     LogInfo("MeshConverter: create EC_OgreCustomObject");
     EntityPtr entity = scene_->CreateEntity(scene_->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
