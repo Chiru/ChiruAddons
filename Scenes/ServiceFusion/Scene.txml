@@ -354,17 +354,4 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
  </entity>
- <entity id="9" sync="1">
-  <component type="EC_Name" sync="true">
-   <attribute value="MapContainer" name="name"/>
-   <attribute value="" name="description"/>
-  </component>
-  <component type="EC_Script" sync="true">
-   <attribute value="MovieContainer.js" name="Script ref"/>
-   <attribute value="true" name="Run on load"/>
-   <attribute value="0" name="Run mode"/>
-   <attribute value="" name="Script application name"/>
-   <attribute value="" name="Script class name"/>
-  </component>
- </entity>
 </scene>

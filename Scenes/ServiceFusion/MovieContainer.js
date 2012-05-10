@@ -124,35 +124,6 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     this.visual.layout().addWidget(movieVisual, 0, 0);
 }
 
-scene.EntityCreated.connect(this, function(entity){
-    if (entity.name == "MovieContainer")
-    {
-        if (entity.graphicsviewcanvas)
-        {
-            CreateContainer(entity);
-        }
-        else
-        {
-            entity.ComponentAdded.connect(this, function(component){
-                CreateContainer(component.ParentEntity());
-            });
-        }
-    } 
-})
-
-var mapContainer = new Container();
-// \todo GetAllEntities is deprecated and should be replaced with scene.Entities,
-// but I failed to iterate returned entities --Joosua.
-var entities = scene.GetAllEntities();
-var movieContainers = new Array();
-for(var i = 0; i < entities.length; ++i)
-{
-    if (entities[i].name == "MovieContainer" && entities[i].graphicsviewcanvas)
-    {
-        CreateContainer(entities[i]);
-    }
-}
-
 function CreateContainer(entity)
 {
     entity.graphicsviewcanvas.GraphicsView().mouseTracking = true;
@@ -160,6 +131,8 @@ function CreateContainer(entity)
     entity.graphicsviewcanvas.GraphicsScene().addWidget(container.visual);
     movieContainers.push(container);
 }
+
+CreateContainer(me);
 
 function OnScriptDestroyed()
 {

@@ -536,6 +536,13 @@
    <attribute value="" name="Script application name"/>
    <attribute value="" name="Script class name"/>
   </component>
+  <component type="EC_Script" sync="true">
+   <attribute value="MovieContainer.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
   <component type="EC_GraphicsViewCanvas" sync="true">
    <attribute value="Texture_Screen_4" name="Output texture"/>
    <attribute value="200" name="Texture width"/>
