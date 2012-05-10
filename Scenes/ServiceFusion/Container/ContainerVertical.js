@@ -1,3 +1,5 @@
+me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
+
 engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
 
@@ -26,9 +28,7 @@ labelContainer = C3DUiModule.ContainerFactory().CreateContainer(labelVisual, uiW
 labelContainer.rdfStore = new RdfMemoryStore(world);
 var l3 = new QLabel("VLabel3", labelVisual);
 uiWidget.layout().addWidget(labelVisual, 0, 0);
-print(me.GetComponent("EC_GraphicsViewCanvas", "Content"));
 me.GetComponent("EC_GraphicsViewCanvas", "Content").GraphicsScene().addWidget(uiWidget);
-//var proxy = me.graphicsviewcanvas.GraphicsScene().addWidget(uiWidget);
 uiWidget.show();
 
 var titleWidget = new QLabel("Vertical");
