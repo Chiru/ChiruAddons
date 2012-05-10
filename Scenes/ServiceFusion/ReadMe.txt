@@ -15,6 +15,8 @@ Controls
  * 1 + LMB drag object - Move object
  * Ctrl + 1 + LMB drag object - Zoom object
  * 2 + RMB drag object - Rotate object
+ * Ctrl + R - Reset camera's transform
+ * Ctrl + E - Reset selected object's transform
 - Touch input
  * not implemented yet
  * TODO list of touch gestures and actions
