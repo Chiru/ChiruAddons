@@ -41,7 +41,13 @@ function OnScriptDestroyed()
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
     if (uiWidget)
+    {
         uiWidget.deleteLater();
+        uiWidget = null;
+    }
     if (titleWidget)
+    {
         titleWidget.deleteLater();
+        titleWidget = null;
+    }
 }

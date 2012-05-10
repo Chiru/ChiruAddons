@@ -15,5 +15,8 @@ function OnScriptDestroyed()
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
     if (webView)
+    {
         webView.deleteLater();
+        webView = null;
+    }
 }
