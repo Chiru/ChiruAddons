@@ -84,7 +84,7 @@
    <attribute value="false" name="Cast shadows"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="24.520000,16.708357,91.089157,0.000000,90.000000,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="32.565422,55.658844,3.977242,0.000000,90.000000,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
@@ -125,7 +125,7 @@
    <attribute value="-1" name="Collision Mask"/>
   </component>
   <component type="EC_GraphicsViewCanvas" sync="true">
-   <attribute value="Texture_Screen_1" name="Output texture"/>
+   <attribute value="Texture_Screen_3" name="Output texture"/>
    <attribute value="400" name="Texture width"/>
    <attribute value="200" name="Texture height"/>
    <attribute value="1" name="Submesh"/>
@@ -145,7 +145,7 @@
    <attribute value="false" name="Cast shadows"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="19.860752,16.708357,91.089157,0.000000,90.000000,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="27.906174,55.658844,3.977242,0.000000,90.000000,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
@@ -199,7 +199,7 @@
    <attribute value="false" name="Cast shadows"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="29.520000,16.750000,91.089157,0.000000,90.000000,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="37.565422,55.700485,3.977242,0.000000,90.000000,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
@@ -240,7 +240,7 @@
    <attribute value="-1" name="Collision Mask"/>
   </component>
   <component type="EC_GraphicsViewCanvas" sync="true">
-   <attribute value="Texture_Screen_2" name="Output texture"/>
+   <attribute value="Texture_Screen_5" name="Output texture"/>
    <attribute value="400" name="Texture width"/>
    <attribute value="200" name="Texture height"/>
    <attribute value="1" name="Submesh"/>
@@ -248,7 +248,7 @@
  </entity>
  <entity id="6" sync="1">
   <component type="EC_Mesh" sync="true">
-   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,29.476273,29.476273,29.476273" name="Transform"/>
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,20.917154,20.917154,20.917154" name="Transform"/>
    <attribute value="local://theater_icon_with_glow.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
    <attribute value="local://theater.material;theater_glow.material" name="Mesh materials"/>
@@ -260,19 +260,18 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="-121.850540,-14.643928,259.483612,165.090530,24.689718,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="-121.850540,-14.643928,259.483612,166.151138,22.798222,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon">
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
  <entity id="7" sync="1">
   <component type="EC_Mesh" sync="true">
-   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,20.680912,20.680912,20.680912" name="Transform"/>
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,19.236645,19.236645,19.236645" name="Transform"/>
    <attribute value="local://art_icon_with_glow.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
    <attribute value="local://art_ao.material;art_glow.material" name="Mesh materials"/>
@@ -284,19 +283,18 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="380.722626,-19.731438,18.437515,157.727234,-43.736313,179.999985,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="380.722626,-19.731438,18.437515,164.127625,-68.869934,-179.999985,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon">
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
  <entity id="8" sync="1">
   <component type="EC_Mesh" sync="true">
-   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,26.736958,26.736958,26.736958" name="Transform"/>
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,23.146748,23.146748,23.146748" name="Transform"/>
    <attribute value="local://pub_icon_with_glow.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
    <attribute value="local://pub.material;pub_glow.material" name="Mesh materials"/>
@@ -308,19 +306,18 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="373.117798,-19.474962,183.918900,162.981064,-30.174892,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="373.117798,-19.474962,183.918900,166.894730,-48.479008,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon">
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
  <entity id="9" sync="1">
   <component type="EC_Mesh" sync="true">
-   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,20.766861,20.766861,20.766861" name="Transform"/>
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,14.121968,14.121968,14.121968" name="Transform"/>
    <attribute value="local://bar_icon_with_glow.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
    <attribute value="local://bar.material;local://bar_glow.material" name="Mesh materials"/>
@@ -332,19 +329,18 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="138.090927,-29.722221,121.637711,156.327881,-3.313245,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="138.090927,-29.722221,121.637711,155.925583,-23.433405,-180.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon">
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
  <entity id="10" sync="1">
   <component type="EC_Mesh" sync="true">
-   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,18.584944,18.584944,18.584944" name="Transform"/>
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,14.206174,14.206174,14.206174" name="Transform"/>
    <attribute value="local://bike_park_icon_with_glow.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
    <attribute value="local://bike.material;bike_glow.material" name="Mesh materials"/>
@@ -356,19 +352,18 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="232.957748,-35.607010,49.617264,152.323975,-20.792566,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="232.957748,-35.607010,49.617264,154.772278,-50.182823,-180.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon">
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
  <entity id="11" sync="1">
   <component type="EC_Mesh" sync="true">
-   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,22.883776,22.883776,22.883776" name="Transform"/>
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,16.885616,16.885616,16.885616" name="Transform"/>
    <attribute value="local://quitar_icon_with_glow.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
    <attribute value="local://quitar.material;quitar_glow.material" name="Mesh materials"/>
@@ -380,19 +375,18 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="192.020752,-27.293098,162.240143,158.957962,-10.237004,-180.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="192.020752,-27.293098,162.240143,160.490356,-29.444475,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon">
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
  <entity id="12" sync="1">
   <component type="EC_Mesh" sync="true">
-   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,32.582668,32.582668,32.582668" name="Transform"/>
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,24.817616,24.817616,24.817616" name="Transform"/>
    <attribute value="local://violin_icon_with_glow.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
    <attribute value="local://violin.material;violin_glow.material" name="Mesh materials"/>
@@ -404,19 +398,18 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="41.509674,-17.212803,370.608185,166.307877,6.766378,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="41.509674,-17.212803,370.608185,168.058212,-0.704395,-180.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon">
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
  <entity id="13" sync="1">
   <component type="EC_Mesh" sync="true">
-   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,29.886044,29.886044,29.886044" name="Transform"/>
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,24.804546,24.804546,24.804546" name="Transform"/>
    <attribute value="local://movie_icon_with_glow.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
    <attribute value="local://movie.material;movie_glow.material" name="Mesh materials"/>
@@ -428,15 +421,14 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="308.965515,-24.179905,284.179535,164.352463,-19.577143,-180.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="308.965515,-24.179905,284.179535,167.228073,-34.412258,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon">
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
  <entity id="14" sync="1">
   <component type="EC_Name" sync="true">
@@ -457,8 +449,7 @@
    <attribute value="0.000000 0.000000 0.000000 1.000000" name="Orientation"/>
    <attribute value="true" name="Draw first"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon">
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
  <entity id="15" sync="1">
   <component type="EC_Name" sync="true">
@@ -474,7 +465,7 @@
    <attribute value="false" name="Cast shadows"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="34.345886,14.688330,91.278366,180.000000,90.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="42.391308,53.638817,4.166451,180.000000,90.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
