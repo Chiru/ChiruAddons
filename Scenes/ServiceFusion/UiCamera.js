@@ -1,13 +1,13 @@
 // UiCamera.js - 3D UI Camera
 
 // !ref: ScreenPrefab.txml
-// !ref: Scene1.txml
+// !ref: Scene1New.txml
 // !ref: Scene2.txml
 // !ref: Scene3.txml
 
 var sceneIndex = -1;
 // Scene rotation
-const scenes = ["Scene1.txml", "Scene2.txml", "Scene3.txml"];
+const scenes = ["Scene1New.txml", "Scene2.txml", "Scene3.txml"];
 var currentContent = [];
 
 var cameraData =

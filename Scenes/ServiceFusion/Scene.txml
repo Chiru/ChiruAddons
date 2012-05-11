@@ -87,13 +87,13 @@
    <attribute value="true" name="active"/>
   </component>
  </entity>
- <entity id="4" sync="1">
+ <entity id="4">
   <component type="EC_Name" sync="true">
    <attribute value="UiCameraCameraSpawnPos" name="name"/>
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="35.539722,85.491188,-114.965569,163.000000,0.000000,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="146.914017,85.491188,-104.832855,163.000000,0.000000,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="0" name="Selection layer"/>

@@ -1,0 +1,19 @@
+material Terrain
+{
+    technique
+    {
+        pass
+        {
+            ambient 1 1 1 1
+            diffuse 0 0 0 1
+            specular 0 0 0 1
+            emissive 0 0 0 1
+            texture_unit
+            {
+                texture oulu_texture_ms_virtual_earth.png
+                tex_address_mode wrap
+                filtering trilinear
+            }
+        }
+    }
+}

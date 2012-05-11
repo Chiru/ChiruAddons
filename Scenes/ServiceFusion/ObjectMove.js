@@ -178,7 +178,8 @@ function HandleKeyEvent(e)
     if (e.HasCtrlModifier() && e.keyCode == Qt.Key_E && selectedObject)
     {
         var t = selectedObject.placeable.transform;
-        t.rot = new float3(-90.0, 90.0, 90.0)
+        // TODO: these values are for the old screen mesh
+        t.rot = new float3(180.0, 90.0, 0.0); //new float3(-90.0, 90.0, 90.0)
         selectedObject.placeable.transform = t;
     }
 }
