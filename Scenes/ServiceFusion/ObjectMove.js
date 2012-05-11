@@ -189,7 +189,7 @@ var selectionTimer = 0;
 
 function IsObjectMovable(e)
 {
-    return e.placeable && !e.terrain && !(e.dynamiccomponent && e.dynamiccomponent.name == "Icon");
+    return e.placeable && !e.terrain && e.dynamiccomponent && !(e.dynamiccomponent && e.dynamiccomponent.name == "Icon");
 }
 
 function Update(frameTime)

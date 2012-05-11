@@ -136,6 +136,7 @@
    <attribute value="50" name="Texture height"/>
    <attribute value="2" name="Submesh"/>
   </component>
+  <component type="EC_DynamicComponent" sync="true" name="Screen"/>
  </entity>
  <entity id="4" sync="1">
   <component type="EC_Name" sync="true">
@@ -203,6 +204,7 @@
    <attribute value="50" name="Texture height"/>
    <attribute value="2" name="Submesh"/>
   </component>
+  <component type="EC_DynamicComponent" sync="true" name="Screen"/>
  </entity>
  <entity id="5" sync="1">
   <component type="EC_Name" sync="true">
@@ -270,6 +272,7 @@
    <attribute value="50" name="Texture height"/>
    <attribute value="2" name="Submesh"/>
   </component>
+  <component type="EC_DynamicComponent" sync="true" name="Screen"/>
  </entity>
  <entity id="6" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -523,5 +526,6 @@
    <attribute value="50" name="Texture height"/>
    <attribute value="2" name="Submesh"/>
   </component>
+  <component type="EC_DynamicComponent" sync="true" name="Screen"/>
  </entity>
 </scene>

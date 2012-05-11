@@ -160,7 +160,7 @@ function HandleKeyEvent(e)
 // TODO: copy-paste from ObjectMove.js
 function IsObjectMovable(e)
 {
-    return e.placeable && !e.terrain && !(e.dynamiccomponent && e.dynamiccomponent.name == "Icon");
+    return e.placeable && !e.terrain && e.dynamiccomponent && !(e.dynamiccomponent && e.dynamiccomponent.name == "Icon");
 }
 
 function HandleMouseEvent(e)

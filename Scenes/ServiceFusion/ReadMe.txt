@@ -11,7 +11,7 @@ Controls
 - Mouse + keyboard
  * LMB drag terrain - camera movement
  * RMB + drag terrain - camera tilting
- * Mouse scroll, zoom/depth movement
+ * LMB + mouse scroll - zoom/depth movement
  * Ctrl + Left arrow/Right arrow - Switch scene
  * 1 + LMB drag object - Move object
  * Ctrl + 1 + LMB drag object - Zoom object
