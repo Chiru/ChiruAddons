@@ -42,8 +42,6 @@
    <attribute value="" name="Parent bone name"/>
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon">
-   <attribute value="false" type="bool" name="infoBubbleVisible"/>
-   <attribute value="18" type="uint" name="infoBubbleId"/>
   </component>
  </entity>
  <entity id="3" sync="1">
@@ -68,8 +66,6 @@
    <attribute value="" name="Parent bone name"/>
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon">
-   <attribute value="false" type="bool" name="infoBubbleVisible"/>
-   <attribute value="19" type="uint" name="infoBubbleId"/>
   </component>
  </entity>
  <entity id="4" sync="1">
@@ -94,8 +90,6 @@
    <attribute value="" name="Parent bone name"/>
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon">
-   <attribute value="false" type="bool" name="infoBubbleVisible"/>
-   <attribute value="16" type="uint" name="infoBubbleId"/>
   </component>
   <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
    <attribute value="true" name="Is visible"/>
@@ -125,8 +119,6 @@
    <attribute value="" name="Parent bone name"/>
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon">
-   <attribute value="true" type="bool" name="infoBubbleVisible"/>
-   <attribute value="22" type="uint" name="infoBubbleId"/>
   </component>
  </entity>
  <entity id="6" sync="1">
@@ -151,8 +143,6 @@
    <attribute value="" name="Parent bone name"/>
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon">
-   <attribute value="false" type="bool" name="infoBubbleVisible"/>
-   <attribute value="17" type="uint" name="infoBubbleId"/>
   </component>
  </entity>
  <entity id="7" sync="1">
@@ -177,8 +167,6 @@
    <attribute value="" name="Parent bone name"/>
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon">
-   <attribute value="true" type="bool" name="infoBubbleVisible"/>
-   <attribute value="21" type="uint" name="infoBubbleId"/>
   </component>
  </entity>
  <entity id="8" sync="1">
@@ -226,8 +214,6 @@
    <attribute value="" name="Parent bone name"/>
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon">
-   <attribute value="false" type="bool" name="infoBubbleVisible"/>
-   <attribute value="20" type="uint" name="infoBubbleId"/>
   </component>
  </entity>
  <entity id="10" sync="1">
