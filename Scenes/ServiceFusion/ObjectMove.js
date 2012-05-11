@@ -281,6 +281,8 @@ function Update(frameTime)
             {
                 if (input.IsMouseButtonDown(1))
                 {
+                    if (selectedObject.dynamiccomponent && selectedObject.dynamiccomponent.name == "UserItem")
+                        return; // Zooming/depth movement of user items not allowed
                     var d = new float2(mousePosPrev.x()-input.MousePos().x(), mousePosPrev.y()-input.MousePos().y());
                     d = d.Mul(cReferenceHeight / ui.GraphicsScene().height() * cRotateSpeed /* *50 */); // *50 in Unity commented out
 
