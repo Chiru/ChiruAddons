@@ -30,6 +30,8 @@ var lastTouchTimestamp = frame.WallClockTime();
 const cMoveZSpeed = 0.03;//0.005; // was 0.0007 in Unity
 const minTiltAngle = 110;
 const maxTiltAngle = 170;
+const minDistanceFromGround = 50;
+const maxDistanceFromGround = 400;
 var moving = false; // Is camera in moving state
 var tilting = false; // Is camera in tilting state
 
@@ -184,16 +186,24 @@ function HandleMouseEvent(e)
             if (oldRotX > minTiltAngle && oldRotX < maxTiltAngle)
             {
                 var d = e.relativeY * cMoveZSpeed * 30;
-                var cameraEntity = renderer.MainCamera(); // scene.EntityByName("UiCamera");
-                var newPos = cameraEntity.placeable.WorldPosition();
+                var newPos = me.placeable.WorldPosition();
                 newPos = newPos.Add(scene.UpVector().Mul(d));
-                cameraEntity.placeable.SetPosition(newPos);
+                me.placeable.SetPosition(newPos);
             }
         }
         break;
     case 2: // MouseScroll
         if (moving)
-            HandleMove(0, 0, e.relativeZ);
+        {
+//            HandleMove(0, 0, e.relativeZ);
+            var d = Clamp(e.relativeZ/30, -5, 5);
+            var newPos = me.placeable.WorldPosition();
+            var dir = me.placeable.Orientation().Mul(scene.ForwardVector()).Normalized();
+            var r = scene.ogre.Raycast(new Ray(newPos, dir), -1);
+            newPos = newPos.Add(dir.Mul(d));
+            me.placeable.SetPosition(newPos);
+            // TODO Use minDistanceFromGround and maxDistanceFromGround 
+        }
         break;
     case 3: // MousePressed
         if (e.button == 1)
@@ -311,7 +321,7 @@ function HandleMove(deltaX, deltaY, deltaZ)
     // right/left
     cameraData.move.amount.x = 2 * deltaX;
     // up/down
-    var scroll = deltaZ/60;
+    var scroll = deltaZ/30;
     cameraData.move.amount.y = Clamp(scroll, -5, 5);
 }
 
