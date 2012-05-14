@@ -1,5 +1,6 @@
 Getting Started
 ===============
+- IMPORTANT: Due to QtNetwork/Webkit regression issues introduced in Qt 4.8, use Qt version 4.7.x, for now
 - Scene.txml is the "entry point" of the application.
 - Use "--config ServiceFusionPlugins.xml" when running the application.
 - F.ex:
