@@ -280,7 +280,6 @@ function ToggleCamera()
         me.camera.SetActive();
         if (freeLookCameraEntity.soundlistener)
             freeLookCameraEntity.soundlistener.active = false;
-        UpdateRotateParams();
     }
 }
 
