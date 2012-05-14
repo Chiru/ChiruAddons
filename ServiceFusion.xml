@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Tundra>
+  <plugin path="RdfModule" />
   <plugin path="3dUiModule" />
   <plugin path="CanvasPlugin" />
 </Tundra>
