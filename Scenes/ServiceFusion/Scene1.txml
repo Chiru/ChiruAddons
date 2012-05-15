@@ -91,11 +91,6 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon">
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
  <entity id="5" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -354,11 +349,6 @@
    <attribute value="-1" name="Collision Layer"/>
    <attribute value="-1" name="Collision Mask"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
  <entity id="77">
   <component type="EC_Name" sync="true">
@@ -426,11 +416,6 @@
    <attribute value="0.000000 0.000000 0.000000" name="Angular velocity"/>
    <attribute value="-1" name="Collision Layer"/>
    <attribute value="-1" name="Collision Mask"/>
-  </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
   </component>
  </entity>
  <entity id="76">
@@ -500,11 +485,6 @@
    <attribute value="-1" name="Collision Layer"/>
    <attribute value="-1" name="Collision Mask"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
  <entity id="75">
   <component type="EC_Name" sync="true">
@@ -573,11 +553,6 @@
    <attribute value="-1" name="Collision Layer"/>
    <attribute value="-1" name="Collision Mask"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
  <entity id="74">
   <component type="EC_Name" sync="true">
@@ -645,11 +620,6 @@
    <attribute value="0.000000 0.000000 0.000000" name="Angular velocity"/>
    <attribute value="-1" name="Collision Layer"/>
    <attribute value="-1" name="Collision Mask"/>
-  </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
   </component>
  </entity>
 </scene>

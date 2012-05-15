@@ -143,7 +143,7 @@
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://calendar.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
-   <attribute value="local://calendar.material;local://calendar_front_page.material" name="Mesh materials"/>
+   <attribute value="local://calendar.material;local://screen.material" name="Mesh materials"/>
    <attribute value="0" name="Draw distance"/>
    <attribute value="true" name="Cast shadows"/>
   </component>
@@ -176,8 +176,8 @@
   </component>
   <component type="EC_GraphicsViewCanvas" sync="true">
    <attribute value="Texture_Screen_1" name="Output texture"/>
-   <attribute value="512" name="Texture width"/>
-   <attribute value="512" name="Texture height"/>
+   <attribute value="260" name="Texture width"/>
+   <attribute value="260" name="Texture height"/>
    <attribute value="1" name="Submesh"/>
   </component>
  </entity>
