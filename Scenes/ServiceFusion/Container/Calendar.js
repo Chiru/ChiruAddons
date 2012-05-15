@@ -4,18 +4,10 @@ engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
 
 var calendarWidget = new QCalendarWidget();
+calendarWidget.size = new QSize(me.graphicsviewcanvas.width, me.graphicsviewcanvas.height);
 calendarWidget.gridVisible = true;
 me.graphicsviewcanvas.GraphicsScene().addWidget(calendarWidget);
 calendarWidget.show();
-
-//calendarWidget.pos = new QPoint(70,-300);
-frame.DelayedExecute(2).Triggered.connect(RepositionWidget);
-
-function RepositionWidget()
-{
-    if (calendarWidget)
-        calendarWidget.pos = new QPoint(65,-300);
-}
 
 function OnScriptDestroyed()
 {

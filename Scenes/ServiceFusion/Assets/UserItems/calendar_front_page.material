@@ -4,10 +4,9 @@ material calendar_front_page
     {
         pass
         {
-            //ambient 0.427451 0.427451 0.427451 1
-            //diffuse 0.427451 0.427451 0.427451 1
-            //specular 0 0 0 1 10
-            emissive 1 1 1 1
+            ambient 0.427451 0.427451 0.427451 1
+            diffuse 0.427451 0.427451 0.427451 1
+            specular 0 0 0 1 10
         }
     }
 }

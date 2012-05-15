@@ -7,7 +7,7 @@ engine.IncludeFile("print.js");
 
 var webView = new QGraphicsWebView();
 webView.url = new QUrl("http://m.kaleva.fi");
-webView.size = new QSize(199,199);
+webView.size = new QSize(me.graphicsviewcanvas.width, me.graphicsviewcanvas.height);
 me.graphicsviewcanvas.GraphicsScene().addItem(webView);
 
 function OnScriptDestroyed()
