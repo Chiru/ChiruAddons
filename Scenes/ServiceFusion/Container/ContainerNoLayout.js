@@ -11,7 +11,8 @@ var world = RdfModule.theWorld;
 var uiWidget = new VisualContainer(null);
 var rootContainer = C3DUiModule.ContainerFactory().CreateContainer(uiWidget);
 rootContainer.rdfStore = new RdfMemoryStore(world);
-uiWidget.size = new QSize(370, 200);
+var content = me.GetComponent("EC_GraphicsViewCanvas", "Content");
+uiWidget.size = new QSize(content.width, content.height);
 
 var labelVisual = new VisualContainer(uiWidget);
 labelVisual.move(100,100);
@@ -21,7 +22,7 @@ var label = new QLabel("FreeLabel", labelVisual);
 label.font = new QFont("Arial", 24);
 label.setAttribute(Qt.WA_DeleteOnClose);
 labelVisual.size = label.sizeHint;
-me.GetComponent("EC_GraphicsViewCanvas", "Content").GraphicsScene().addWidget(uiWidget);
+content.GraphicsScene().addWidget(uiWidget);
 uiWidget.show();
 
 var titleWidget = new QLabel("NoLayout");
