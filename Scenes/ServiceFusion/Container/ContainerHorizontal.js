@@ -8,7 +8,8 @@ var world = RdfModule.theWorld;
 var uiWidget = new VisualContainer(null);
 var rootContainer = C3DUiModule.ContainerFactory().CreateContainer(uiWidget);
 rootContainer.rdfStore = new RdfMemoryStore(world);
-uiWidget.size = new QSize(370, 200);
+var content = me.GetComponent("EC_GraphicsViewCanvas", "Content")
+uiWidget.size = new QSize(content.width, content.height);
 uiWidget.setLayout(new QHBoxLayout());
 
 var labelVisual = new VisualContainer(uiWidget);
@@ -29,7 +30,7 @@ labelContainer.rdfStore = new RdfMemoryStore(world);
 var l3 = new QLabel("HLabel3", labelVisual);
 uiWidget.layout().addWidget(labelVisual, 0, 0);
 
-me.GetComponent("EC_GraphicsViewCanvas", "Content").GraphicsScene().addWidget(uiWidget);
+content.GraphicsScene().addWidget(uiWidget);
 uiWidget.show();
 
 var titleWidget = new QLabel("Horizontal");

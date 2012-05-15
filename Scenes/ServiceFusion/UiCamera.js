@@ -52,8 +52,11 @@ if (!framework.IsHeadless())
 
 function OnScriptDestroyed()
 {
-    input.UnregisterInputContextRaw("UiCamera");
-    ClearScene();
+    if (!framework.IsExiting())
+    {
+        input.UnregisterInputContextRaw("UiCamera");
+        ClearScene();
+    }
 }
 
 function MoveToNextScene()

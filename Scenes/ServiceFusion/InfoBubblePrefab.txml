@@ -21,7 +21,7 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Script" sync="true">
+  <component type="EC_Script" name="Screen" sync="true">
    <attribute value="Screen.js" name="Script ref"/>
    <attribute value="true" name="Run on load"/>
    <attribute value="0" name="Run mode"/>

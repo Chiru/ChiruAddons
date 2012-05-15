@@ -5,10 +5,8 @@ material info_bubble
         pass
         {
             ambient 0 0 0 1
-            diffuse 0.905882 0.905882 0.905882 1
             specular 0 0 0 1 63.2193
             emissive 1 1 1 1
-            scene_blend one one_minus_src_alpha
             texture_unit
             {
                 texture local://info_bubbleCompleteMap.tga

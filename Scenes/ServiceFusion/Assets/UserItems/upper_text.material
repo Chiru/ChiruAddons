@@ -6,6 +6,10 @@ material upper_text
         {
             specular 0 0 0 1 10
             emissive 1 1 1 1
+            texture_unit
+            {
+                texture LoadingScreen.png
+            }
         }
     }
 }

@@ -7,7 +7,6 @@ material info_bubble_shadow
             ambient 0.0588235 0.0588235 0.0588235 1
             diffuse 0.0588235 0.0588235 0.0588235 1
             specular 0 0 0 1 10
-		emissive 1 1 1 1
             scene_blend alpha_blend
 		depth_write off
             texture_unit

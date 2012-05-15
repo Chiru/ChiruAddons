@@ -436,14 +436,14 @@
   </component>
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,2.000000,0.000000,0.000000,0.000000,0.000000,2.000000,2.000000,2.000000" name="Transform"/>
-   <attribute value="merge_News.mesh" name="Mesh ref"/>
+   <attribute value="local://info_bubble.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
-   <attribute value="local://IDCardBorders.material;local://screen.material;local://NewsImageHead.material" name="Mesh materials"/>
+   <attribute value="local://info_bubble.material;local://lower_text.material;local://upper_text.material" name="Mesh materials"/>
    <attribute value="0" name="Draw distance"/>
    <attribute value="false" name="Cast shadows"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="125.940193,55.700485,22.371557,180.0,90.0,0.0,3.036838,3.036839,3.036838" name="Transform"/>
+   <attribute value="125.940193,55.700485,22.371557,0.0,180.0,0.0,2.0,2.0,2.0" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
@@ -485,13 +485,13 @@
   </component>
   <component type="EC_GraphicsViewCanvas" sync="true" name="Content">
    <attribute value="Texture_ScreenContent_5" name="Output texture"/>
-   <attribute value="400" name="Texture width"/>
+   <attribute value="370" name="Texture width"/>
    <attribute value="200" name="Texture height"/>
    <attribute value="1" name="Submesh"/>
   </component>
   <component type="EC_GraphicsViewCanvas" sync="true" name="Title">
    <attribute value="Texture_ScreenTitle_6" name="Output texture"/>
-   <attribute value="250" name="Texture width"/>
+   <attribute value="150" name="Texture width"/>
    <attribute value="50" name="Texture height"/>
    <attribute value="2" name="Submesh"/>
   </component>
@@ -546,17 +546,47 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Screen"/>
  </entity>
- <entity id="16" sync="1">
+ <entity id="67">
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="news_tablet.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="news_tablet.material;screen.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="173.045227,63.725334,0.353348,0.000000,180.000000,0.000000,5.000000,5.000000,5.000000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
   <component type="EC_Name" sync="true">
-   <attribute value="IconScript" name="name"/>
+   <attribute value="news_tablet" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Script" sync="true">
-   <attribute value="IconScript.js" name="Script ref"/>
+  <component type="EC_GraphicsViewCanvas" sync="true">
+   <attribute value="Texture_Screen_34" name="Output texture"/>
+   <attribute value="512" name="Texture width"/>
+   <attribute value="512" name="Texture height"/>
+   <attribute value="1" name="Submesh"/>
+  </component>
+  <component type="EC_Script" sync="true" name="Screen">
+   <attribute value="Screen.js" name="Script ref"/>
    <attribute value="true" name="Run on load"/>
    <attribute value="0" name="Run mode"/>
    <attribute value="" name="Script application name"/>
    <attribute value="" name="Script class name"/>
   </component>
+  <component type="EC_Script" sync="true" name="WebView">
+   <attribute value="WebView.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Screen"/>
  </entity>
 </scene>
