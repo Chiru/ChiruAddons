@@ -3,6 +3,7 @@
 #include "StableHeaders.h"
 #include "DebugOperatorNew.h"
 #include "LoggingFunctions.h"
+#include "CloudFilter.h"
 
 #include "KinectCapture.h"
 
@@ -15,6 +16,9 @@ namespace ObjectCapture
 {
 
 KinectCapture::KinectCapture() :
+    cloud_filter_(new CloudFilter()),
+    current_cluster_(PointCloud::Ptr(new PointCloud)),
+    extract_object_(false),
     rgb_update_frequency_(15)
 {
     kinect_interface_ = new pcl::OpenNIGrabber();
@@ -33,6 +37,16 @@ KinectCapture::~KinectCapture()
 {
     kinect_interface_->stop();
     delete kinect_interface_;
+}
+
+bool KinectCapture::getExtractObject()
+{
+    return extract_object_;
+}
+
+void KinectCapture::setExtractObject(bool value)
+{
+    extract_object_ = value;
 }
 
 void KinectCapture::startCapture()
@@ -63,7 +77,10 @@ PointCloud::ConstPtr KinectCapture::currentCloud()
 {
     cloud_mutex_.lock();
     PointCloud::ConstPtr cloud;
-    cloud = current_cloud_;
+    if(extract_object_)
+        cloud = current_cluster_;
+    else
+        cloud = current_cloud_;
     cloud_mutex_.unlock();
     return cloud;
 }
@@ -83,18 +100,40 @@ void KinectCapture::updateRGBImage()
             return;
         }
 
+
         PointCloud::ConstPtr cloud = current_cloud_;
+        PointCloud::Ptr cluster;
+        if(extract_object_)
+            cluster = current_cluster_;
+
         cloud_mutex_.unlock();
 
         cloud->points.size(); // Just here to ensure compiler doesn't optimize cloud out
 
         QRgb value;
-        for(int u = 0; u < 480; u++) {
-            for(int v = 0; v < 640; v++) {
-                if(isnan(cloud->points[(u*640)+v].x))
-                    value = qRgb(255, 63, 139);
+        int cluster_index = 0;
+        for(int u = 0; u < 480; u++)
+        {
+            for(int v = 0; v < 640; v++)
+            {
+                int cloud_index = (u*640)+v;
+                if(isnan(cloud->points[cloud_index].x))
+                    //value = qRgb(255, 63, 139);
+                    value = qRgb(0, 0, 0);
                 else
-                    value = qRgb(cloud->points[(u*640)+v].r, cloud->points[(u*640)+v].g, cloud->points[(u*640)+v].b);
+                    value = qRgb(cloud->points[cloud_index].r, cloud->points[cloud_index].g, cloud->points[cloud_index].b);
+
+                // Experimental
+                if(extract_object_)
+                {
+                    if(cloud->points[cloud_index].x == cluster->points[cluster_index].x && cloud->points[cloud_index].y == cluster->points[cluster_index].y)
+                    {
+                        // Set red to FFh on selected pixels
+                        value = (value | (0xff << 16));
+                        cluster_index++;
+                    }
+                }
+
                 rgb_frame_.setPixel(v, u, value);
             }
         }
@@ -110,6 +149,14 @@ void KinectCapture::kinect_callback_(const PointCloud::ConstPtr &cloud)
         current_cloud_ = cloud;
         cloud_mutex_.unlock();
 
+        if(extract_object_)
+        {
+            cloud_mutex_.lock();
+            current_cluster_ = cloud_filter_->segmentCloud(current_cloud_, 0.08);
+            cloud_mutex_.unlock();
+            emit cloudUpdated(current_cluster_);
+            return;
+        }
         emit cloudUpdated(current_cloud_);
     }
 }

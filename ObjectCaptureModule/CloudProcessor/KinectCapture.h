@@ -16,6 +16,7 @@ namespace pcl
 
 namespace ObjectCapture
 {
+class CloudFilter;
 
 class KinectCapture : public QObject
 {
@@ -26,6 +27,12 @@ public:
     ~KinectCapture();
 
     bool isRunning();
+
+    /// Returns wether object extraction is in use or not
+    bool getExtractObject();
+
+    /// Set object extraction on or off
+    void setExtractObject(bool value);
 
     void kinect_callback_ (const PointCloud::ConstPtr &cloud);
 
@@ -44,10 +51,14 @@ private slots:
 private:
     pcl::Grabber *kinect_interface_;
     PointCloud::ConstPtr current_cloud_;
+    PointCloud::Ptr current_cluster_;
     QImage rgb_frame_;
     int rgb_update_frequency_; // Hz
     QTimer rgb_update_timer_;
     QMutex cloud_mutex_;
+    CloudFilter *cloud_filter_;
+
+    bool extract_object_;
 };
 
 }
