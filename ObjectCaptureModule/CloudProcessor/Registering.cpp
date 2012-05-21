@@ -19,7 +19,10 @@ IncrementalRegister::IncrementalRegister() :
     ransac_outlier_threshold_(0.05f),
     uniform_leafsize_(0.01f)
 {
+}
 
+IncrementalRegister::~IncrementalRegister()
+{
 }
 
 void IncrementalRegister::registerCloud(PointCloud::ConstPtr cloud)
