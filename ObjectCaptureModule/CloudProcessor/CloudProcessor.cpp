@@ -24,7 +24,7 @@ CloudProcessor::CloudProcessor() :
 {
     bool check;
 
-    check = connect(kinect_capture_, SIGNAL(liveFeedUpdated(QImage)), this, SIGNAL(liveFeedUpdated(QImage)));
+    check = connect(kinect_capture_, SIGNAL(RGBUpdated(QImage)), this, SIGNAL(liveFeedUpdated(QImage)));
     Q_ASSERT(check);
 
     check = connect(register_, SIGNAL(globalModelUpdated(PointCloud::Ptr)), this, SLOT(handleGlobalModelUpdated(PointCloud::Ptr)));
