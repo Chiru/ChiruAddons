@@ -47,9 +47,11 @@ PointCloud::Ptr CloudFilter::filterDepth(PointCloud::ConstPtr cloud, float minDe
 PointCloud::Ptr CloudFilter::filterDensity(PointCloud::ConstPtr cloud, float leafSize)
 {
     PointCloud::Ptr output(new PointCloud);
-    voxelgrid_filter_.setLeafSize(leafSize, leafSize, leafSize);
-    voxelgrid_filter_.setInputCloud(cloud);
-    voxelgrid_filter_.filter(*output);
+    pcl::PointCloud<int> indices;
+    uniform_sampling_.setRadiusSearch(leafSize);
+    uniform_sampling_.setInputCloud(cloud);
+    uniform_sampling_.compute(indices);
+    pcl::copyPointCloud(*cloud, indices.points, *output);
     LogInfo("ObjectCapture: Density filtered cloud from " + QString::number(cloud->points.size()) + " points to " + QString::number(output->points.size()) + " points.");
     return output;
 }

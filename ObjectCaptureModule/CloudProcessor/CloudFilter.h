@@ -4,7 +4,8 @@
 
 #include "ObjectCaptureModuleDefines.h"
 #include <pcl/filters/passthrough.h>
-#include <pcl/filters/voxel_grid.h>
+//#include <pcl/filters/voxel_grid.h>
+#include <pcl/keypoints/uniform_sampling.h>
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/search/kdtree.h>
 #include <pcl/segmentation/extract_clusters.h>
@@ -40,9 +41,9 @@ public:
     PointCloud::Ptr segmentCloud(PointCloud::ConstPtr cloud, float cluster_tolerance);
 
 private:
-    pcl::PassThrough<pcl::PointXYZRGBA> passthrough_filter_;
+    pcl::PassThrough<pcl::PointXYZRGBA> passthrough_filter_; // CHANGE TO PointT
     pcl::SACSegmentation<pcl::PointXYZRGBA> sac_segmentation_;
-    pcl::VoxelGrid<pcl::PointXYZRGBA> voxelgrid_filter_;
+    pcl::UniformSampling<pcl::PointXYZRGBA> uniform_sampling_;
     pcl::EuclideanClusterExtraction<pcl::PointXYZRGBA> cluster_extractor_;
     pcl::ExtractIndices<pcl::PointXYZRGBA> indice_extractor_;
 };
