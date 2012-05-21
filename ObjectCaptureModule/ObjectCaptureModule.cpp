@@ -46,11 +46,11 @@ ObjectCaptureModule::ObjectCaptureModule() :
     worker_thread_->start();
 
     bool check;
-    check = connect(cloud_processor_, SIGNAL(RGBUpdated(QImage)), this, SIGNAL(previewFrameUpdated(QImage)), Qt::QueuedConnection);
+    check = connect(cloud_processor_, SIGNAL(liveFeedUpdated(QImage)), this, SIGNAL(previewFrameUpdated(QImage)), Qt::QueuedConnection);
     Q_ASSERT(check);
 
-    check = connect(cloud_processor_, SIGNAL(registrationFinished(PointCloud::Ptr)), mesh_reconstructor_, SLOT(processCloud(PointCloud::Ptr)), Qt::QueuedConnection);
-    Q_ASSERT(check);
+//    check = connect(cloud_processor_, SIGNAL(globalModelUpdated(PointCloud::Ptr)), mesh_reconstructor_, SLOT(processCloud(PointCloud::Ptr)), Qt::QueuedConnection);
+//    Q_ASSERT(check);
 
     check = connect(mesh_reconstructor_, SIGNAL(cloudProcessingFinished(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)),
                     mesh_converter_, SLOT(Create(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)), Qt::QueuedConnection);
