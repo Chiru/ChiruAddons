@@ -12,6 +12,7 @@ namespace ObjectCapture
 {
 class KinectCapture;
 class CloudFilter;
+class IncrementalRegister;
 
 class CloudProcessor : public QObject
 {
@@ -27,13 +28,15 @@ public slots:
     void startCapture();
     void stopCapture();
     void captureCloud();
-    void registerClouds();
+    void rewindCloud();
+    void finalizeCapturing();
 
 signals:
-    void RGBUpdated(const QImage &frame);
-    void registrationFinished(PointCloud::Ptr cloud);
+    void liveFeedUpdated(const QImage &frame);
+    void globalModelUpdated(PointCloud::Ptr cloud);
 
 private slots:
+    void handleGlobalModelUpdated(PointCloud::Ptr cloud);
 
 protected:
     void moveToOrigo(PointCloud::Ptr cloud);
@@ -43,6 +46,7 @@ private:
     CloudFilter *cloud_filter_;
     QList<PointCloud::ConstPtr> captured_clouds_;
     PointCloud::Ptr final_cloud_;
+    IncrementalRegister *register_;
 };
 
 }

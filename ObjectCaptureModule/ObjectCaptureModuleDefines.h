@@ -5,6 +5,9 @@
 
 namespace ObjectCapture
 {
-    typedef pcl::PointCloud<pcl::PointXYZRGBA> PointCloud;
+    typedef pcl::PointXYZRGBA PointT;
+    typedef pcl::PointCloud<PointT> PointCloud;
     typedef pcl::PointCloud<pcl::Normal> SurfaceNormals;
+    typedef pcl::PointNormal PointNormalT;
+    typedef pcl::PointCloud<PointNormalT> PointCloudWithNormals;
 }
