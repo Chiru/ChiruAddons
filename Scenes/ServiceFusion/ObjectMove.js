@@ -1,4 +1,5 @@
 // !ref: ScreenPrefab.txml
+// !ref: InfoBubblePrefab.txml
 
 const cMoveZSpeed = 0.005; // was 0.0007 in Unity
 const cRotateSpeed = 1;
@@ -40,7 +41,7 @@ if (!server.IsRunning())
 // TODO touch input
 function OnTouchBegin(e)
 {
-    Log("OnTouchBegin " + e.touchPoints().length);
+    Log("ObjectMove OnTouchBegin " + e.touchPoints().length);
     lastTouchTimestamp = frame.WallClockTime();
 /*
     var touches = e.touchPoints();
@@ -55,7 +56,7 @@ function OnTouchBegin(e)
 
 function OnTouchUpdate(e)
 {
-    Log("OnTouchUpdate " + e.touchPoints().length);
+    Log("ObjectMove OnTouchUpdate " + e.touchPoints().length);
     lastTouchTimestamp = frame.WallClockTime();
 /*
     var touches = e.touchPoints();
@@ -89,7 +90,7 @@ function OnTouchUpdate(e)
 
 function OnTouchEnd(e)
 {
-    Log("OnTouchEnd");
+    Log("ObjectMove OnTouchEnd");
 }
 
 // QByteArray's toString not exposed in QtScript, must do it manually.

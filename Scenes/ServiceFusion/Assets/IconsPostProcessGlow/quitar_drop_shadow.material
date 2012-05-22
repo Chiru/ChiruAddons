@@ -1,0 +1,18 @@
+material quitar_drop_shadow
+{
+    technique
+    {
+        pass
+        {
+            ambient 0 0 0 1
+            diffuse 0 0 0 1
+            specular 0 0 0 1 10
+            scene_blend alpha_blend
+		depth_write off
+            texture_unit
+            {
+                texture local://quitar_icon_shadowShadowsMap.tga
+            }
+        }
+    }
+}

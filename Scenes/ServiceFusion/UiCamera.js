@@ -120,16 +120,19 @@ function ApplyCamera()
 // TODO touch input
 function OnTouchBegin(e)
 {
+    Log("UiCamera OnTouchBegin " + e.touchPoints().length);
     lastTouchTimestamp = frame.WallClockTime();
 }
 
 function OnTouchUpdate(e)
 {
+    Log("UiCamera OnTouchUpdate " + e.touchPoints().length);
     lastTouchTimestamp = frame.WallClockTime();
 }
 
 function OnTouchEnd(e)
 {
+    Log("UiCamera OnTouchEnd");
     lastTouchTimestamp = frame.WallClockTime();
 }
 

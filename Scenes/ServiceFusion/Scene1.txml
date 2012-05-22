@@ -5,27 +5,75 @@
    <attribute value="Environment" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_EnvironmentLight" sync="true">
-   <attribute value="0.639000 0.639000 0.639000 1.000000" name="Sunlight color"/>
-   <attribute value="0.364000 0.364000 0.364000 1.000000" name="Ambient light color"/>
-   <attribute value="-1.000000 -1.000000 -1.000000" name="Sunlight direction vector"/>
-   <attribute value="true" name="Sunlight cast shadows"/>
-   <attribute value="1" name="Brightness"/>
+  <component type="EC_SkyX" sync="true">
+   <attribute value="1" name="Cloud type"/>
+   <attribute value="0" name="Time multiplier"/>
+   <attribute value="14" name="Time [0-24]"/>
+   <attribute value="7.5" name="Time sunrise [0-24]"/>
+   <attribute value="20.5" name="Time sunset [0-24]"/>
+   <attribute value="50" name="Cloud coverage [0-100]"/>
+   <attribute value="50" name="Cloud average size [0-100]"/>
+   <attribute value="100" name="Cloud height"/>
+   <attribute value="58.3333321" name="Moon phase [0-100]"/>
+   <attribute value="9.75" name="Sun inner radius"/>
+   <attribute value="10.25" name="Sun outer radius"/>
+   <attribute value="0" name="Wind direction"/>
+   <attribute value="5" name="Wind speed"/>
   </component>
-  <component type="EC_Sky" sync="true">
-   <attribute value="RexSkyBox" name="Material"/>
-   <attribute value="rex_sky_front.dds;rex_sky_back.dds;rex_sky_left.dds;rex_sky_right.dds;rex_sky_top.dds;rex_sky_bot.dds" name="Texture"/>
-   <attribute value="50" name="Distance"/>
-   <attribute value="0.000000 0.000000 0.000000 1.000000" name="Orientation"/>
-   <attribute value="true" name="Draw first"/>
+  <component type="EC_OgreCompositor" sync="true" name="Glow">
+   <attribute value="true" name="Enabled"/>
+   <attribute value="Glow" name="Compositor ref"/>
+   <attribute value="-1" name="Priority"/>
+   <attribute value="GlowBlurSize=3.5;GlowBrightness=0.45" name="Parameters"/>
+  </component>
+ </entity>
+ <entity id="11" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="Terrain" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="Plane.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="Terrain.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-129.000000,-60.000000,-100.000000,0.000000,0.000000,0.000000,400.000000,1.000000,400.000000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_RigidBody" sync="true">
+   <attribute value="0" name="Mass"/>
+   <attribute value="0" name="Shape type"/>
+   <attribute value="4.000000 1.000000 4.000000" name="Size"/>
+   <attribute value="" name="Collision mesh ref"/>
+   <attribute value="0.5" name="Friction"/>
+   <attribute value="0" name="Restitution"/>
+   <attribute value="0" name="Linear damping"/>
+   <attribute value="0" name="Angular damping"/>
+   <attribute value="1.000000 1.000000 1.000000" name="Linear factor"/>
+   <attribute value="1.000000 1.000000 1.000000" name="Angular factor"/>
+   <attribute value="false" name="Kinematic"/>
+   <attribute value="false" name="Phantom"/>
+   <attribute value="false" name="Draw Debug"/>
+   <attribute value="0.000000 0.000000 0.000000" name="Linear velocity"/>
+   <attribute value="0.000000 0.000000 0.000000" name="Angular velocity"/>
+   <attribute value="-1" name="Collision Layer"/>
+   <attribute value="-1" name="Collision Mask"/>
   </component>
  </entity>
  <entity id="2" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,28.381348,28.381348,28.381348" name="Transform"/>
-   <attribute value="local://movie_icon_with_glow.mesh" name="Mesh ref"/>
+   <attribute value="local://movie_icon.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
-   <attribute value="local://movie.material;movie_glow.material" name="Mesh materials"/>
+   <attribute value="local://movie.material" name="Mesh materials"/>
    <attribute value="0" name="Draw distance"/>
    <attribute value="true" name="Cast shadows"/>
   </component>
@@ -47,9 +95,9 @@
  <entity id="3" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,24.945673,24.945673,24.945673" name="Transform"/>
-   <attribute value="local://violin_icon_with_glow.mesh" name="Mesh ref"/>
+   <attribute value="local://violin_icon.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
-   <attribute value="local://violin.material;violin_glow.material" name="Mesh materials"/>
+   <attribute value="local://violin.material" name="Mesh materials"/>
    <attribute value="0" name="Draw distance"/>
    <attribute value="true" name="Cast shadows"/>
   </component>
@@ -71,14 +119,14 @@
  <entity id="4" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,34.488186,34.488186,34.488186" name="Transform"/>
-   <attribute value="local://quitar_icon_with_glow.mesh" name="Mesh ref"/>
+   <attribute value="local://guitar_icon.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
-   <attribute value="local://quitar.material;quitar_glow.material" name="Mesh materials"/>
+   <attribute value="local://guitar.material" name="Mesh materials"/>
    <attribute value="0" name="Draw distance"/>
    <attribute value="true" name="Cast shadows"/>
   </component>
   <component type="EC_Name" sync="true">
-   <attribute value="quitar_icon" name="name"/>
+   <attribute value="guitar_icon" name="name"/>
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
@@ -95,9 +143,9 @@
  <entity id="5" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,7.163886,7.163886,7.163886" name="Transform"/>
-   <attribute value="local://bike_park_icon_with_glow.mesh" name="Mesh ref"/>
+   <attribute value="local://bike_park_icon.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
-   <attribute value="local://bike.material;bike_glow.material" name="Mesh materials"/>
+   <attribute value="local://bike.material" name="Mesh materials"/>
    <attribute value="0" name="Draw distance"/>
    <attribute value="true" name="Cast shadows"/>
   </component>
@@ -119,9 +167,9 @@
  <entity id="6" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,12.450219,12.450219,12.450219" name="Transform"/>
-   <attribute value="local://bar_icon_with_glow.mesh" name="Mesh ref"/>
+   <attribute value="local://bar_icon.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
-   <attribute value="local://bar.material;local://bar_glow.material" name="Mesh materials"/>
+   <attribute value="local://bar.material" name="Mesh materials"/>
    <attribute value="0" name="Draw distance"/>
    <attribute value="true" name="Cast shadows"/>
   </component>
@@ -143,9 +191,9 @@
  <entity id="7" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,16.926273,16.926273,16.926273" name="Transform"/>
-   <attribute value="local://pub_icon_with_glow.mesh" name="Mesh ref"/>
+   <attribute value="local://pub_icon.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
-   <attribute value="local://pub.material;pub_glow.material" name="Mesh materials"/>
+   <attribute value="local://pub.material" name="Mesh materials"/>
    <attribute value="0" name="Draw distance"/>
    <attribute value="true" name="Cast shadows"/>
   </component>
@@ -167,9 +215,9 @@
  <entity id="8" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,12.178720,12.178720,12.178720" name="Transform"/>
-   <attribute value="local://art_icon_with_glow.mesh" name="Mesh ref"/>
+   <attribute value="local://art_icon.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
-   <attribute value="local://art_ao.material;art_glow.material" name="Mesh materials"/>
+   <attribute value="local://art_ao.material" name="Mesh materials"/>
    <attribute value="0" name="Draw distance"/>
    <attribute value="true" name="Cast shadows"/>
   </component>
@@ -190,9 +238,9 @@
  <entity id="9" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,19.955561,19.955561,19.955561" name="Transform"/>
-   <attribute value="local://theater_icon_with_glow.mesh" name="Mesh ref"/>
+   <attribute value="local://theater_icon.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
-   <attribute value="local://theater.material;theater_glow.material" name="Mesh materials"/>
+   <attribute value="local://theater.material" name="Mesh materials"/>
    <attribute value="0" name="Draw distance"/>
    <attribute value="true" name="Cast shadows"/>
   </component>
@@ -231,74 +279,6 @@
   <component type="EC_Name" sync="true">
    <attribute value="oulu" name="name"/>
    <attribute value="" name="description"/>
-  </component>
- </entity>
- <entity id="11" sync="1">
-  <component type="EC_Name" sync="true">
-   <attribute value="Environment" name="name"/>
-   <attribute value="" name="description"/>
-  </component>
-  <component type="EC_EnvironmentLight" sync="true">
-   <attribute value="0.639000 0.639000 0.639000 1.000000" name="Sunlight color"/>
-   <attribute value="0.364000 0.364000 0.364000 1.000000" name="Ambient light color"/>
-   <attribute value="-1.000000 -1.000000 -1.000000" name="Sunlight direction vector"/>
-   <attribute value="true" name="Sunlight cast shadows"/>
-   <attribute value="1" name="Brightness"/>
-  </component>
-  <component type="EC_Mesh" sync="true">
-   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
-   <attribute value="Plane.mesh" name="Mesh ref"/>
-   <attribute value="" name="Skeleton ref"/>
-   <attribute value="Terrain.material" name="Mesh materials"/>
-   <attribute value="0" name="Draw distance"/>
-   <attribute value="false" name="Cast shadows"/>
-  </component>
-  <component type="EC_Sky" sync="true">
-   <attribute value="RexSkyBox" name="Material"/>
-   <attribute value="rex_sky_front.dds;rex_sky_back.dds;rex_sky_left.dds;rex_sky_right.dds;rex_sky_top.dds;rex_sky_bot.dds" name="Texture"/>
-   <attribute value="50" name="Distance"/>
-   <attribute value="0.000000 0.000000 0.000000 1.000000" name="Orientation"/>
-   <attribute value="true" name="Draw first"/>
-  </component>
-  <component type="EC_Placeable" sync="true">
-   <attribute value="-129.000000,-60.000000,-100.000000,0.000000,0.000000,0.000000,400.000000,1.000000,400.000000" name="Transform"/>
-   <attribute value="false" name="Show bounding box"/>
-   <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
-   <attribute value="" name="Parent entity ref"/>
-   <attribute value="" name="Parent bone name"/>
-  </component>
-  <component type="EC_RigidBody" sync="true">
-   <attribute value="0" name="Mass"/>
-   <attribute value="0" name="Shape type"/>
-   <attribute value="4.000000 1.000000 4.000000" name="Size"/>
-   <attribute value="" name="Collision mesh ref"/>
-   <attribute value="0.5" name="Friction"/>
-   <attribute value="0" name="Restitution"/>
-   <attribute value="0" name="Linear damping"/>
-   <attribute value="0" name="Angular damping"/>
-   <attribute value="1.000000 1.000000 1.000000" name="Linear factor"/>
-   <attribute value="1.000000 1.000000 1.000000" name="Angular factor"/>
-   <attribute value="false" name="Kinematic"/>
-   <attribute value="false" name="Phantom"/>
-   <attribute value="false" name="Draw Debug"/>
-   <attribute value="0.000000 0.000000 0.000000" name="Linear velocity"/>
-   <attribute value="0.000000 0.000000 0.000000" name="Angular velocity"/>
-   <attribute value="-1" name="Collision Layer"/>
-   <attribute value="-1" name="Collision Mask"/>
-  </component>
- </entity>
- <entity id="12">
-  <component type="EC_Name" sync="true">
-   <attribute value="IconScript" name="name"/>
-   <attribute value="" name="description"/>
-  </component>
-  <component type="EC_Script" sync="true">
-   <attribute value="IconScript.js" name="Script ref"/>
-   <attribute value="true" name="Run on load"/>
-   <attribute value="0" name="Run mode"/>
-   <attribute value="" name="Script application name"/>
-   <attribute value="" name="Script class name"/>
   </component>
  </entity>
  <entity id="78">
