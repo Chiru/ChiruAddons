@@ -11,7 +11,7 @@ material id_card
             scene_blend one one_minus_src_alpha
             texture_unit
             {
-                texture local://NewIdCard.png
+                texture local://IdCard.png
             }
         }
     }

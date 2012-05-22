@@ -12,7 +12,7 @@ material pub
 
 			texture_unit
 			{
-				texture pub_iconCompleteMap.tga
+				texture pub_iconCompleteMap.png
 			}
 		}
 

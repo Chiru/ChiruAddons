@@ -3,11 +3,11 @@ me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
 engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
 engine.ImportExtension("qt.webkit");
-engine.IncludeFile("print.js");
 
 var webView = new QGraphicsWebView();
 webView.url = new QUrl("http://m.kaleva.fi");
-webView.size = new QSize(me.graphicsviewcanvas.width, me.graphicsviewcanvas.height);
+webView.pos = new QPoint(20, 20);
+webView.size = new QSize(me.graphicsviewcanvas.width - 30, me.graphicsviewcanvas.height - 20);
 me.graphicsviewcanvas.GraphicsScene().addItem(webView);
 
 function OnScriptDestroyed()

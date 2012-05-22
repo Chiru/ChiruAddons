@@ -12,7 +12,7 @@ material art_ao
             emissive 0.45 1 1 1
             texture_unit
             {
-                texture local://art_iconCompleteMap.tga
+                texture local://art_iconCompleteMap.png
             }
         }
     }

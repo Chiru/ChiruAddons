@@ -12,7 +12,7 @@ material theater
             emissive 0.4 1 1 1
             texture_unit
             {
-                texture local://theater_iconCompleteMap.tga
+                texture local://theater_iconCompleteMap.png
             }
         }
     }

@@ -12,7 +12,7 @@ material bar
             emissive 0.42 1 1 1
             texture_unit
             {
-                texture local://bar_iconCompleteMap.tga
+                texture local://bar_iconCompleteMap.png
             }
         }
     }

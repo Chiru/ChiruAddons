@@ -12,7 +12,7 @@ material pub
             emissive 0.4 1 1 1
             texture_unit
             {
-                texture local://pub_iconCompleteMap.tga
+                texture local://pub_iconCompleteMap.png
             }
         }
     }

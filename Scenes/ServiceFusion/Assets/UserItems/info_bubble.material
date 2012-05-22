@@ -9,7 +9,7 @@ material info_bubble
             emissive 1 1 1 1
             texture_unit
             {
-                texture local://info_bubbleCompleteMap.tga
+                texture local://info_bubbleCompleteMap.png
             }
         }
     }

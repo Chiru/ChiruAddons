@@ -11,7 +11,7 @@ material news_tablet
             scene_blend one one_minus_src_alpha
             texture_unit
             {
-                texture local://news_tabletCompleteMap.tga
+                texture local://news_tabletCompleteMap.png
             }
         }
     }

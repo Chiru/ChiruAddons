@@ -12,7 +12,7 @@ material guitar
             emissive 0.4 1 1 1
             texture_unit
             {
-                texture local://QuitarCompleteMap.tga
+                texture local://guitar_iconCompleteMap.png
             }
         }
     }
