@@ -2,10 +2,11 @@
 
 // !ref: Scene1.txml
 // !ref: Scene2.txml
+// !ref: Scene3.txml
 
 var sceneIndex = -1;
 // Scene rotation
-const scenes = ["Scene1.txml", "Scene2.txml"];
+const scenes = ["Scene1.txml", "Scene2.txml", "Scene3.txml"];
 var currentContent = [];
 
 var cameraData =
