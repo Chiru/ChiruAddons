@@ -22,8 +22,9 @@ CloudProcessor::CloudProcessor() :
     cloud_filter_(new CloudFilter()),
     register_(new IncrementalRegister())
 {
-    bool check;
+    kinect_capture_->setExtractObject(true);
 
+    bool check;
     check = connect(kinect_capture_, SIGNAL(RGBUpdated(QImage)), this, SIGNAL(liveFeedUpdated(QImage)));
     Q_ASSERT(check);
 

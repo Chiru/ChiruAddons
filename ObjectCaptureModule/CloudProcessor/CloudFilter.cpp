@@ -40,7 +40,7 @@ PointCloud::Ptr CloudFilter::filterDepth(PointCloud::ConstPtr cloud, float minDe
     passthrough_filter_.setFilterLimits(minDepth, maxDepth);
     passthrough_filter_.setInputCloud(cloud);
     passthrough_filter_.filter(*output);
-    LogInfo("ObjectCapture: Depth filtered cloud from " + QString::number(cloud->points.size()) + " points to " + QString::number(output->points.size()) + " points.");
+    LogDebug("ObjectCapture: Depth filtered cloud from " + QString::number(cloud->points.size()) + " points to " + QString::number(output->points.size()) + " points.");
     return output;
 }
 
@@ -52,7 +52,7 @@ PointCloud::Ptr CloudFilter::filterDensity(PointCloud::ConstPtr cloud, float lea
     uniform_sampling_.setInputCloud(cloud);
     uniform_sampling_.compute(indices);
     pcl::copyPointCloud(*cloud, indices.points, *output);
-    LogInfo("ObjectCapture: Density filtered cloud from " + QString::number(cloud->points.size()) + " points to " + QString::number(output->points.size()) + " points.");
+    LogDebug("ObjectCapture: Density filtered cloud from " + QString::number(cloud->points.size()) + " points to " + QString::number(output->points.size()) + " points.");
     return output;
 }
 
@@ -67,7 +67,7 @@ PointCloud::Ptr CloudFilter::removePlanar(PointCloud::ConstPtr cloud)
     indice_extractor_.setIndices(inliers);
     indice_extractor_.setNegative(true);
     indice_extractor_.filter(*output);
-    LogInfo("ObjectCapture: Removed planar of " + QString::number(cloud->points.size() - output->points.size()) + " points from the cloud.");
+    LogDebug("ObjectCapture: Removed planar of " + QString::number(cloud->points.size() - output->points.size()) + " points from the cloud.");
     return output;
 }
 

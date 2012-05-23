@@ -27,8 +27,8 @@ KinectCapture::KinectCapture() :
     boost::function<void (const PointCloud::ConstPtr&)> f = boost::bind(&KinectCapture::kinect_callback_, this, _1);
     kinect_interface_->registerCallback(f);
 
-    bool check;
-    check = connect(&rgb_update_timer_, SIGNAL(timeout()), this, SLOT(updateRGBImage()));
+    //bool check;
+    //check = connect(&rgb_update_timer_, SIGNAL(timeout()), this, SLOT(updateRGBImage()));
 
     rgb_update_timer_.start(1000/rgb_update_frequency_);
 }
@@ -87,6 +87,8 @@ PointCloud::ConstPtr KinectCapture::currentCloud()
 
 void KinectCapture::updateRGBImage()
 {
+    static bool first_time = true; // for debugging
+
     /// \todo need to create new image for each frame?
     /// \todo figure out a way avoid innecessary copying of rgb values.
     if(!kinect_interface_->isRunning())
@@ -124,17 +126,32 @@ void KinectCapture::updateRGBImage()
                     value = qRgb(cloud->points[cloud_index].r, cloud->points[cloud_index].g, cloud->points[cloud_index].b);
 
                 // Experimental
-                if(extract_object_)
+                /*
+                float px = cloud->points[cloud_index].x;
+                float py = cloud->points[cloud_index].y;
+                float pz = cloud->points[cloud_index].z;
+
+                if(extract_object_ && !first_time)
                 {
-                    if(cloud->points[cloud_index].x == cluster->points[cluster_index].x && cloud->points[cloud_index].y == cluster->points[cluster_index].y)
+                    for(int i = 0; i < cluster->points.size(); ++i)
                     {
-                        // Set red to FFh on selected pixels
-                        value = (value | (0xff << 16));
-                        cluster_index++;
+                        float qx = cluster->points[i].x;
+                        float qy = cluster->points[i].y;
+                        float qz = cluster->points[i].z;
+                        // Calculate Euclidean distance
+                        float distance = sqrt(pow(px-qx, 2.0f) + pow(py-qy, 2.0f) + pow(pz-qz, 2.0f));
+                        if(distance <= 0.01) // change to use the same distance as uniform sampling
+                        {
+                            unsigned int red = ((value >> 16) & 0xff) + 0x64;
+                            red = (red <= 0xff) ? red : 0xff;
+                            value = (value | ((red) << 16));
+                            break;
+                        }
                     }
-                }
+                }*/
 
                 rgb_frame_.setPixel(v, u, value);
+                first_time = false;
             }
         }
 
@@ -152,11 +169,17 @@ void KinectCapture::kinect_callback_(const PointCloud::ConstPtr &cloud)
         if(extract_object_)
         {
             cloud_mutex_.lock();
-            current_cluster_ = cloud_filter_->segmentCloud(current_cloud_, 0.08);
+
+            PointCloud::Ptr depth_filtered = cloud_filter_->filterDepth(current_cloud_, 0.0f, 1.5f); // Move params to class members
+            PointCloud::Ptr downsampled = cloud_filter_->filterDensity(depth_filtered, 0.01f); // --*--
+
+            current_cluster_ = cloud_filter_->segmentCloud(downsampled, 0.08);
             cloud_mutex_.unlock();
+            updateRGBImage();
             emit cloudUpdated(current_cluster_);
             return;
         }
+        updateRGBImage();
         emit cloudUpdated(current_cloud_);
     }
 }

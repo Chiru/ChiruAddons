@@ -102,6 +102,7 @@ void ObjectCaptureModule::captureCloud()
 void ObjectCaptureModule::finalizeCapturing()
 {
     cloud_processor_->finalizeCapturing();
+    mesh_reconstructor_->processCloud(cloud_processor_->finalCloud());
 }
 
 void ObjectCaptureModule::meshReconstructed()
