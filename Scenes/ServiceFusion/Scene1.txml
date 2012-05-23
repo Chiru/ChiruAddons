@@ -5,26 +5,18 @@
    <attribute value="Environment" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_SkyX" sync="true">
-   <attribute value="1" name="Cloud type"/>
-   <attribute value="0" name="Time multiplier"/>
-   <attribute value="14" name="Time [0-24]"/>
-   <attribute value="7.5" name="Time sunrise [0-24]"/>
-   <attribute value="20.5" name="Time sunset [0-24]"/>
-   <attribute value="50" name="Cloud coverage [0-100]"/>
-   <attribute value="50" name="Cloud average size [0-100]"/>
-   <attribute value="100" name="Cloud height"/>
-   <attribute value="58.3333321" name="Moon phase [0-100]"/>
-   <attribute value="9.75" name="Sun inner radius"/>
-   <attribute value="10.25" name="Sun outer radius"/>
-   <attribute value="0" name="Wind direction"/>
-   <attribute value="5" name="Wind speed"/>
-  </component>
   <component type="EC_OgreCompositor" sync="true" name="Glow">
    <attribute value="true" name="Enabled"/>
    <attribute value="Glow" name="Compositor ref"/>
    <attribute value="-1" name="Priority"/>
    <attribute value="GlowBlurSize=3.5;GlowBrightness=0.45" name="Parameters"/>
+  </component>
+  <component type="EC_EnvironmentLight" sync="true">
+   <attribute value="0.639000 0.639000 0.639000 1.000000" name="Sunlight color"/>
+   <attribute value="0.364000 0.364000 0.364000 1.000000" name="Ambient light color"/>
+   <attribute value="-1.000000 -1.000000 -1.000000" name="Sunlight direction vector"/>
+   <attribute value="true" name="Sunlight cast shadows"/>
+   <attribute value="1" name="Brightness"/>
   </component>
  </entity>
  <entity id="11" sync="1">
