@@ -45,6 +45,7 @@ if (!framework.IsHeadless())
     ic = input.RegisterInputContextRaw("UiCamera", 102);
     ic.KeyEventReceived.connect(HandleKeyEvent);
     ic.MouseEventReceived.connect(HandleMouseEvent);
+    ic.GestureEventReceived(HandleGestureEvent);
 
     frame.DelayedExecute(1).Triggered.connect(ApplyCamera);
     me.Action("ResetCamera").Triggered.connect(ResetCamera);
@@ -116,6 +117,7 @@ function ApplyCamera()
     input.TouchBegin.connect(OnTouchBegin);
     input.TouchUpdate.connect(OnTouchUpdate);
     input.TouchEnd.connect(OnTouchEnd);
+    Log("input.IsGesturesEnabled() " + input.IsGesturesEnabled());
 }
 
 // TODO touch input
@@ -166,6 +168,11 @@ function HandleKeyEvent(e)
 function IsObjectMovable(e)
 {
     return e.placeable && !e.terrain && e.dynamiccomponent && !(e.dynamiccomponent && e.dynamiccomponent.name == "Icon");
+}
+
+function HandleGestureEvent(e)
+{
+    Log("HandleGestureEvent :" + e.eventType);
 }
 
 function HandleMouseEvent(e)
