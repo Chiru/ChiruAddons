@@ -20,7 +20,6 @@ namespace ObjectCapture
 
 MeshConverter::MeshConverter(Framework *framework) :
     framework_(framework),
-    ogreManual_(0),
     input_cloud_(new pcl::PointCloud<pcl::PointXYZRGBNormal>)
 {
 }
@@ -29,15 +28,15 @@ MeshConverter::~MeshConverter()
 {
 }
 
-void MeshConverter::CreateMesh(pcl::PolygonMesh::Ptr inputMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr inputCloud)
+Ogre::ManualObject* MeshConverter::CreateMesh(pcl::PolygonMesh::Ptr inputMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr inputCloud)
 {
     polygon_mesh_ = inputMesh;
     input_cloud_ = inputCloud;
 
-    this->createManualObject(Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    return createManualObject(Ogre::RenderOperation::OT_TRIANGLE_LIST);
 }
 
-void MeshConverter::CreatePointMesh(PointCloud::Ptr inputCloud)
+Ogre::ManualObject* MeshConverter::CreatePointMesh(PointCloud::Ptr inputCloud)
 {
     input_cloud_->points.resize(inputCloud->size());
     LogInfo("MeshReconstructor::processCloud poinst in cloud:" + ToString(inputCloud->size()));
@@ -55,10 +54,10 @@ void MeshConverter::CreatePointMesh(PointCloud::Ptr inputCloud)
         input_cloud_->points[i].data_c[2] = 1;
     }
 
-    this->createManualObject(Ogre::RenderOperation::OT_POINT_LIST);
+    return createManualObject(Ogre::RenderOperation::OT_POINT_LIST);
 }
 
-void MeshConverter::createManualObject(Ogre::RenderOperation::OperationType operationType)
+Ogre::ManualObject* MeshConverter::createManualObject(Ogre::RenderOperation::OperationType operationType)
 {
     scene_ = framework_->Scene()->MainCameraScene();
     if (scene_)
@@ -67,14 +66,14 @@ void MeshConverter::createManualObject(Ogre::RenderOperation::OperationType oper
     Ogre::SceneManager* sceneMgr = world->OgreSceneManager();
 
     // ManualObject must be created within the same thread as the OgreRendering is running!
-    ogreManual_ = sceneMgr->createManualObject(world->GetUniqueObjectName("ImportedMesh"));
+    Ogre::ManualObject *ogreManual = sceneMgr->createManualObject(world->GetUniqueObjectName("ImportedMesh"));
 
     double startime = pcl::getTime();
 
-    //ogreManual_->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
-    //ogreManual_->setUseIdentityProjection(true);
-    //ogreManual_->setUseIdentityView(true);
-    //ogreManual_->setQueryFlags(0);
+    //ogreManual->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+    //ogreManual->setUseIdentityProjection(true);
+    //ogreManual->setUseIdentityView(true);
+    //ogreManual->setQueryFlags(0);
 
     // estimation for the index count is triangle_size*3*2 and it is always larger than the real value
     size_t triangle_size = input_cloud_->points.size();
@@ -92,11 +91,11 @@ void MeshConverter::createManualObject(Ogre::RenderOperation::OperationType oper
     //LogInfo("MeshConverter: Index count: "+ ToString(indices_count));
 
     //LogInfo("MeshConverter: Begin of manual object creation");
-    ogreManual_->clear();
-    ogreManual_->estimateVertexCount(triangle_size);
-    ogreManual_->estimateIndexCount(indices_count);
-    ogreManual_->begin("CapturedObject", operationType);
-    ogreManual_->setDynamic(false);
+    ogreManual->clear();
+    ogreManual->estimateVertexCount(triangle_size);
+    ogreManual->estimateIndexCount(indices_count);
+    ogreManual->begin("CapturedObject", operationType);
+    ogreManual->setDynamic(false);
 
     //LogInfo("MeshConverter: Setting positions...");
 
@@ -106,13 +105,13 @@ void MeshConverter::createManualObject(Ogre::RenderOperation::OperationType oper
         Ogre::Real g = (Ogre::Real)input_cloud_->points[i].g / (Ogre::Real)255;
         Ogre::Real b = (Ogre::Real)input_cloud_->points[i].b / (Ogre::Real)255;
 
-        ogreManual_->colour(r, g, b);
-        ogreManual_->position(input_cloud_->points[i].x, input_cloud_->points[i].y, input_cloud_->points[i].z);
+        ogreManual->colour(r, g, b);
+        ogreManual->position(input_cloud_->points[i].x, input_cloud_->points[i].y, input_cloud_->points[i].z);
 
         if (operationType == Ogre::RenderOperation::OT_POINT_LIST)
-            ogreManual_->index(i);
+            ogreManual->index(i);
         else
-            ogreManual_->normal(input_cloud_->points[i].data_c[0], input_cloud_->points[i].data_c[1], input_cloud_->points[i].data_c[2]);
+            ogreManual->normal(input_cloud_->points[i].data_c[0], input_cloud_->points[i].data_c[1], input_cloud_->points[i].data_c[2]);
     }
 
     if (operationType == Ogre::RenderOperation::OT_TRIANGLE_LIST)
@@ -123,40 +122,21 @@ void MeshConverter::createManualObject(Ogre::RenderOperation::OperationType oper
             for (size_t j = 0; j < polygon_mesh_->polygons[i].vertices.size(); j++)
             {
                 int index = polygon_mesh_->polygons[i].vertices[j];
-                ogreManual_->index(index);
+                ogreManual->index(index);
             }
         }
     }
 
-    ogreManual_->end();
+    ogreManual->end();
 
     //LogInfo("MeshConverter: Object created!");
     double objectCreateTime = pcl::getTime() - startime;
     LogInfo("MeshConverter: Time needed for CustomObject creation: " + ToString(objectCreateTime));
 
-    this->addMeshToScene(ogreManual_);
-
+    //this->addMeshToScene(ogreManual);
+    return ogreManual;
 }
 
-void MeshConverter::addMeshToScene(Ogre::ManualObject *mesh)
-{
-    LogInfo("MeshConverter: create EC_OgreCustomObject");
 
-    if (!entity_)
-        entity_ = scene_->CreateEntity(scene_->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
-
-    ComponentPtr componentPtr = entity_->GetOrCreateComponent("EC_OgreCustomObject", AttributeChange::LocalOnly, false);
-    EC_OgreCustomObject *customObject = dynamic_cast<EC_OgreCustomObject*>(componentPtr.get());
-
-    customObject->SetName("ImportedMesh");
-    customObject->CommitChanges(mesh);
-
-    // Get EC_Placeable for custom ombject
-    componentPtr = entity_->GetOrCreateComponent("EC_Placeable", AttributeChange::LocalOnly, false);
-    EC_Placeable *placeable = dynamic_cast<EC_Placeable*>(componentPtr.get());
-    placeable->SetTransform(Quat(1.0, 0.0, 0.0, 0.0), float3(0.0, 1.0, -30.0), float3(10.0, 10.0, 10.0));
-
-    customObject->SetPlaceable(componentPtr);
-}
 
 } // end of namespace ObjectCapture

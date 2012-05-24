@@ -9,6 +9,11 @@
 
 #include "IModule.h"
 #include "CoreStringUtils.h"
+#include "Math/float3.h"
+#include "Math/Quat.h"
+#include "Math/MathFwd.h"
+#include "Entity.h"
+#include "OgreModuleFwd.h"
 
 #include "ObjectCaptureModuleDefines.h"
 #include "pcl/PolygonMesh.h"
@@ -24,7 +29,7 @@ class MeshReconstructor;
 class MeshConverter;
 
 /**
- *  XMPP Communications support for tundra
+ *  Implementation of Chiru object capture.
  *
  *  Uses QXMPP library to provide presence, text and voice communications.
  *
@@ -75,6 +80,10 @@ signals:
 
 private slots:
     void meshReconstructed();
+    void addObjectToScene(EntityPtr entity, Ogre::ManualObject *mesh, Quat orientation, float3 position, float3 scale); // Refactor name?
+    void visualizeLiveCloud(PointCloud::Ptr cloud);
+    void visualizeGlobalModel(PointCloud::Ptr cloud);
+    void visualizeFinalMesh(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr);
 
 private:
     CloudProcessor *cloud_processor_;

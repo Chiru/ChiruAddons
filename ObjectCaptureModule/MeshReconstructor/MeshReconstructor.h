@@ -35,6 +35,7 @@ private slots:
 
     void ConvertPolygonsToCollada();
 
+
 signals:
     void cloudProcessingFinished(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr);
 

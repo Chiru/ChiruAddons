@@ -24,12 +24,11 @@ public:
     ~MeshConverter();
 
 public slots:
-    void CreateMesh(pcl::PolygonMesh::Ptr inputMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr inputCloud);
-    void CreatePointMesh(PointCloud::Ptr inputCloud);
+    Ogre::ManualObject* CreateMesh(pcl::PolygonMesh::Ptr inputMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr inputCloud);
+    Ogre::ManualObject* CreatePointMesh(PointCloud::Ptr inputCloud);
 
 private slots:
-    void createManualObject(Ogre::RenderOperation::OperationType operationType);
-    void addMeshToScene(Ogre::ManualObject *mesh);
+    Ogre::ManualObject* createManualObject(Ogre::RenderOperation::OperationType operationType);
 
 private:
     pcl::PolygonMesh::Ptr polygon_mesh_;
@@ -38,10 +37,6 @@ private:
     Framework *framework_;
     OgreWorldWeakPtr world_;
     Scene *scene_;
-
-    Ogre::ManualObject *ogreManual_;
-    EntityPtr entity_;
-
 };
 
 } // end of namespace ObjectCapture

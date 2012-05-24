@@ -16,8 +16,9 @@
 #include "Scene.h"
 #include "IComponent.h"
 #include "AssetReference.h"
+#include "OgreManualObject.h"
+#include "EC_OgreCustomObject.h"
 
-#include "Entity.h"
 #include "EC_Mesh.h"
 #include "EC_Placeable.h"
 
@@ -65,15 +66,13 @@ void ObjectCaptureModule::Initialize()
     worker_thread_->start();
 
     bool check;
-//    check = connect(cloud_processor_, SIGNAL(liveFeedUpdated(QImage)), this, SIGNAL(previewFrameUpdated(QImage)), Qt::QueuedConnection);
-//    Q_ASSERT(check);
 
-    check = connect(cloud_processor_, SIGNAL(liveCloudUpdated(PointCloud::Ptr)), mesh_converter_, SLOT(CreatePointMesh(PointCloud::Ptr)), Qt::QueuedConnection);
+    check = connect(cloud_processor_, SIGNAL(liveCloudUpdated(PointCloud::Ptr)), this, SLOT(visualizeLiveCloud(PointCloud::Ptr)), Qt::QueuedConnection);
     Q_ASSERT(check);
 
     check = connect(mesh_reconstructor_, SIGNAL(cloudProcessingFinished(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)),
-                    mesh_converter_, SLOT(CreateMesh(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)), Qt::QueuedConnection);
-    //check = connect(mesh_reconstructor_, SIGNAL(cloudProcessingFinished(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)), this, SLOT(meshReconstructed()), Qt::QueuedConnection);
+                    this, SLOT(visualizeFinalMesh(pcl::PolygonMesh::Ptr,pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)), Qt::QueuedConnection);
+
     Q_ASSERT(check);
 }
 
@@ -104,6 +103,21 @@ void ObjectCaptureModule::finalizeCapturing()
 {
     cloud_processor_->finalizeCapturing();
     mesh_reconstructor_->processCloud(cloud_processor_->finalCloud());
+}
+
+void ObjectCaptureModule::visualizeLiveCloud(PointCloud::Ptr cloud)
+{
+
+}
+
+void ObjectCaptureModule::visualizeGlobalModel(PointCloud::Ptr cloud)
+{
+
+}
+
+void ObjectCaptureModule::visualizeFinalMesh(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)
+{
+
 }
 
 void ObjectCaptureModule::meshReconstructed()
@@ -140,6 +154,28 @@ void ObjectCaptureModule::meshReconstructed()
         scene->EmitEntityCreated(meshEntity, AttributeChange::LocalOnly);
         emit objectCaptured(meshEntity->Id());
     }
+}
+
+void ObjectCaptureModule::addObjectToScene(EntityPtr entity, Ogre::ManualObject *mesh, Quat orientation, float3 position, float3 scale)
+{
+    //LogInfo("MeshConverter: create EC_OgreCustomObject");
+
+    if (!entity.get())
+        return;
+        //entity_ = scene_->CreateEntity(scene_->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
+
+    ComponentPtr componentPtr = entity->GetOrCreateComponent("EC_OgreCustomObject", AttributeChange::LocalOnly, false);
+    EC_OgreCustomObject *customObject = dynamic_cast<EC_OgreCustomObject*>(componentPtr.get());
+
+    customObject->SetName("ImportedMesh");
+    customObject->CommitChanges(mesh);
+
+    // Get EC_Placeable for custom ombject
+    componentPtr = entity->GetOrCreateComponent("EC_Placeable", AttributeChange::LocalOnly, false);
+    EC_Placeable *placeable = dynamic_cast<EC_Placeable*>(componentPtr.get());
+    placeable->SetTransform(orientation, position, scale);
+
+    customObject->SetPlaceable(componentPtr);
 }
 
 }// end of namespace: ObjectCapture
