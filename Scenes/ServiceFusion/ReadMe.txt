@@ -1,7 +1,8 @@
 Getting Started
 ===============
 - IMPORTANT: Due to QtNetwork/Webkit regression issues introduced in Qt 4.8, use Qt version 4.7.x, for now
-- If desiring to use touch input, the command line switch --ogreCaptureTopWindow is most likely needed
+- If desiring to use touch input, the command line switch --ogreCaptureTopWindow is most likely needed.
+  Also, detaching any external monitors is most likely required.
 - Scene.txml is the "entry point" of the application.
 - Use "--config ServiceFusionPlugins.xml" when running the application.
 - F.ex:
