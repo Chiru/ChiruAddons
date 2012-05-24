@@ -28,6 +28,9 @@ CloudProcessor::CloudProcessor() :
     check = connect(kinect_capture_, SIGNAL(RGBUpdated(QImage)), this, SIGNAL(liveFeedUpdated(QImage)));
     Q_ASSERT(check);
 
+    check = connect(kinect_capture_, SIGNAL(currentClusterUpdated(PointCloud::Ptr)), this, SIGNAL(liveCloudUpdated(PointCloud::Ptr)));
+    Q_ASSERT(check);
+
     check = connect(register_, SIGNAL(globalModelUpdated(PointCloud::Ptr)), this, SLOT(handleGlobalModelUpdated(PointCloud::Ptr)));
     Q_ASSERT(check);
 }

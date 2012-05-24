@@ -31,7 +31,7 @@ ObjectCaptureModule::ObjectCaptureModule() :
     IModule("ObjectCapture"),
     cloud_processor_(new CloudProcessor()),
     mesh_reconstructor_(new MeshReconstructor()),
-    mesh_converter_(new MeshConverter(this)),
+    mesh_converter_(0),
     worker_thread_(new QThread)
 {
     qRegisterMetaType<PointCloud>("PointCloud");
@@ -40,22 +40,6 @@ ObjectCaptureModule::ObjectCaptureModule() :
     qRegisterMetaType<pcl::PolygonMesh::Ptr>("pcl::PolygonMesh::Ptr");
     qRegisterMetaType<pcl::PointCloud<pcl::PointXYZRGBNormal> >("pcl::PointCloud<pcl::PointXYZRGBNormal>");
     qRegisterMetaType<pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr>("pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr");
-
-    mesh_reconstructor_->moveToThread(worker_thread_);
-    cloud_processor_->moveToThread(worker_thread_);
-    worker_thread_->start();
-
-    bool check;
-    check = connect(cloud_processor_, SIGNAL(liveFeedUpdated(QImage)), this, SIGNAL(previewFrameUpdated(QImage)), Qt::QueuedConnection);
-    Q_ASSERT(check);
-
-//    check = connect(cloud_processor_, SIGNAL(globalModelUpdated(PointCloud::Ptr)), mesh_reconstructor_, SLOT(processCloud(PointCloud::Ptr)), Qt::QueuedConnection);
-//    Q_ASSERT(check);
-
-    check = connect(mesh_reconstructor_, SIGNAL(cloudProcessingFinished(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)),
-                    mesh_converter_, SLOT(Create(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)), Qt::QueuedConnection);
-    //check = connect(mesh_reconstructor_, SIGNAL(cloudProcessingFinished(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)), this, SLOT(meshReconstructed()), Qt::QueuedConnection);
-    Q_ASSERT(check);
 }
 
 ObjectCaptureModule::~ObjectCaptureModule()
@@ -74,6 +58,23 @@ void ObjectCaptureModule::Load()
 
 void ObjectCaptureModule::Initialize()
 {
+    mesh_converter_ = new MeshConverter(framework_);
+
+    mesh_reconstructor_->moveToThread(worker_thread_);
+    cloud_processor_->moveToThread(worker_thread_);
+    worker_thread_->start();
+
+    bool check;
+//    check = connect(cloud_processor_, SIGNAL(liveFeedUpdated(QImage)), this, SIGNAL(previewFrameUpdated(QImage)), Qt::QueuedConnection);
+//    Q_ASSERT(check);
+
+    check = connect(cloud_processor_, SIGNAL(liveCloudUpdated(PointCloud::Ptr)), mesh_converter_, SLOT(CreatePointMesh(PointCloud::Ptr)), Qt::QueuedConnection);
+    Q_ASSERT(check);
+
+    check = connect(mesh_reconstructor_, SIGNAL(cloudProcessingFinished(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)),
+                    mesh_converter_, SLOT(CreateMesh(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)), Qt::QueuedConnection);
+    //check = connect(mesh_reconstructor_, SIGNAL(cloudProcessingFinished(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)), this, SLOT(meshReconstructed()), Qt::QueuedConnection);
+    Q_ASSERT(check);
 }
 
 void ObjectCaptureModule::Uninitialize()

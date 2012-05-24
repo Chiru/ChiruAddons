@@ -34,6 +34,7 @@ public slots:
 signals:
     void liveFeedUpdated(const QImage &frame);
     void globalModelUpdated(PointCloud::Ptr cloud);
+    void liveCloudUpdated(PointCloud::Ptr cloud);
 
 private slots:
     void handleGlobalModelUpdated(PointCloud::Ptr cloud);

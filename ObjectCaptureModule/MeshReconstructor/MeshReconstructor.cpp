@@ -7,7 +7,6 @@
 #include "MeshReconstructor.h"
 
 #include <pcl/surface/reconstruction.h>
-#include <pcl/surface/surfel_smoothing.h>
 #include <pcl/surface/mls_omp.h>
 
 #include <pcl/io/io.h>
@@ -53,6 +52,7 @@ void MeshReconstructor::processCloud(PointCloud::Ptr cloud)
 {
     // Convert input cloud PointXYZRGBA to PointXYZRGB cloud
     point_cloud_->points.resize(cloud->size());
+    LogInfo("MeshReconstructor::processCloud poinst in cloud:" + ToString(cloud->size()));
     for (size_t i = 0; i < cloud->points.size(); i++)
     {
         point_cloud_->points[i].x = cloud->points[i].x;

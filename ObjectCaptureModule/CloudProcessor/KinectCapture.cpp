@@ -112,50 +112,52 @@ void KinectCapture::updateRGBImage()
 
         cloud->points.size(); // Just here to ensure compiler doesn't optimize cloud out
 
-        QRgb value;
-        int cluster_index = 0;
-        for(int u = 0; u < 480; u++)
-        {
-            for(int v = 0; v < 640; v++)
-            {
-                int cloud_index = (u*640)+v;
-                if(isnan(cloud->points[cloud_index].x))
-                    //value = qRgb(255, 63, 139);
-                    value = qRgb(0, 0, 0);
-                else
-                    value = qRgb(cloud->points[cloud_index].r, cloud->points[cloud_index].g, cloud->points[cloud_index].b);
+        emit currentClusterUpdated(current_cluster_);
 
-                // Experimental
-                /*
-                float px = cloud->points[cloud_index].x;
-                float py = cloud->points[cloud_index].y;
-                float pz = cloud->points[cloud_index].z;
+//        QRgb value;
+//        int cluster_index = 0;
+//        for(int u = 0; u < 480; u++)
+//        {
+//            for(int v = 0; v < 640; v++)
+//            {
+//                int cloud_index = (u*640)+v;
+//                if(isnan(cloud->points[cloud_index].x))
+//                    //value = qRgb(255, 63, 139);
+//                    value = qRgb(0, 0, 0);
+//                else
+//                    value = qRgb(cloud->points[cloud_index].r, cloud->points[cloud_index].g, cloud->points[cloud_index].b);
 
-                if(extract_object_ && !first_time)
-                {
-                    for(int i = 0; i < cluster->points.size(); ++i)
-                    {
-                        float qx = cluster->points[i].x;
-                        float qy = cluster->points[i].y;
-                        float qz = cluster->points[i].z;
-                        // Calculate Euclidean distance
-                        float distance = sqrt(pow(px-qx, 2.0f) + pow(py-qy, 2.0f) + pow(pz-qz, 2.0f));
-                        if(distance <= 0.01) // change to use the same distance as uniform sampling
-                        {
-                            unsigned int red = ((value >> 16) & 0xff) + 0x64;
-                            red = (red <= 0xff) ? red : 0xff;
-                            value = (value | ((red) << 16));
-                            break;
-                        }
-                    }
-                }*/
+//                // Experimental
+//                /*
+//                float px = cloud->points[cloud_index].x;
+//                float py = cloud->points[cloud_index].y;
+//                float pz = cloud->points[cloud_index].z;
 
-                rgb_frame_.setPixel(v, u, value);
-                first_time = false;
-            }
-        }
+//                if(extract_object_ && !first_time)
+//                {
+//                    for(int i = 0; i < cluster->points.size(); ++i)
+//                    {
+//                        float qx = cluster->points[i].x;
+//                        float qy = cluster->points[i].y;
+//                        float qz = cluster->points[i].z;
+//                        // Calculate Euclidean distance
+//                        float distance = sqrt(pow(px-qx, 2.0f) + pow(py-qy, 2.0f) + pow(pz-qz, 2.0f));
+//                        if(distance <= 0.01) // change to use the same distance as uniform sampling
+//                        {
+//                            unsigned int red = ((value >> 16) & 0xff) + 0x64;
+//                            red = (red <= 0xff) ? red : 0xff;
+//                            value = (value | ((red) << 16));
+//                            break;
+//                        }
+//                    }
+//                }*/
 
-        emit RGBUpdated(rgb_frame_);
+//                rgb_frame_.setPixel(v, u, value);
+//                first_time = false;
+//            }
+//        }
+
+//        emit RGBUpdated(rgb_frame_);
     }
 }
 

@@ -43,6 +43,7 @@ public slots:
 
 signals:
     void cloudUpdated(PointCloud::ConstPtr cloud);
+    void currentClusterUpdated(PointCloud::Ptr cloud);
     void RGBUpdated(const QImage &frame);
 
 private slots:
