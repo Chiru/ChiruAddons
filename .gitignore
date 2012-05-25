@@ -1,0 +1,10 @@
+# Ignore generated files
+*.cxx
+Makefile
+cmake_install.cmake
+*.a
+*.o
+*.so
+
+#Ignore generated folders
+CMakeFiles/
