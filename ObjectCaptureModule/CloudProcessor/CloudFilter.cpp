@@ -48,9 +48,12 @@ PointCloud::Ptr CloudFilter::filterDensity(PointCloud::ConstPtr cloud, float lea
 {
     PointCloud::Ptr output(new PointCloud);
     pcl::PointCloud<int> indices;
-    uniform_sampling_.setRadiusSearch(leafSize);
-    uniform_sampling_.setInputCloud(cloud);
-    uniform_sampling_.compute(indices);
+    if (cloud->size() > 0)
+    {
+        uniform_sampling_.setRadiusSearch(leafSize);
+        uniform_sampling_.setInputCloud(cloud);
+        uniform_sampling_.compute(indices);
+    }
     pcl::copyPointCloud(*cloud, indices.points, *output);
     LogDebug("ObjectCapture: Density filtered cloud from " + QString::number(cloud->points.size()) + " points to " + QString::number(output->points.size()) + " points.");
     return output;
@@ -76,22 +79,26 @@ PointCloud::Ptr CloudFilter::extractLargestCluster(PointCloud::ConstPtr cloud, f
     PointCloud::Ptr output(new PointCloud);
     pcl::search::KdTree<pcl::PointXYZRGBA>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZRGBA>);
     std::vector<pcl::PointIndices> cluster_indices;
-    tree->setInputCloud (cloud);
-    cluster_extractor_.setClusterTolerance(cluster_tolerance);
-    cluster_extractor_.setSearchMethod(tree);
-    cluster_extractor_.setInputCloud(cloud);
-    cluster_extractor_.extract(cluster_indices);
-
-    if(cluster_indices.size() > 0)
+    LogDebug("ObjectCaptureModule: extractLargestCluster: Cloud size: " + QString::number(cloud->size()));
+    if (cloud->size() > 0)
     {
-        pcl::IndicesPtr indices (new std::vector<int>);
-        *indices = cluster_indices[0].indices;
-        indice_extractor_.setInputCloud(cloud);
-        indice_extractor_.setIndices(indices);
-        indice_extractor_.setNegative(false);
-        indice_extractor_.filter(*output);
-        LogInfo("ObjectCapture: Extracted largest cluster of " + QString::number(output->points.size()) + " points from the cloud.");
-        return output;
+        tree->setInputCloud (cloud);
+        cluster_extractor_.setClusterTolerance(cluster_tolerance);
+        cluster_extractor_.setSearchMethod(tree);
+        cluster_extractor_.setInputCloud(cloud);
+        cluster_extractor_.extract(cluster_indices);
+
+        if(cluster_indices.size() > 0)
+        {
+            pcl::IndicesPtr indices (new std::vector<int>);
+            *indices = cluster_indices[0].indices;
+            indice_extractor_.setInputCloud(cloud);
+            indice_extractor_.setIndices(indices);
+            indice_extractor_.setNegative(false);
+            indice_extractor_.filter(*output);
+            LogInfo("ObjectCapture: Extracted largest cluster of " + QString::number(output->points.size()) + " points from the cloud.");
+            return output;
+        }
     }
 
     LogInfo("ObjectCapture: Cluster extraction failed, no clusters found.");
