@@ -20,7 +20,7 @@ class MeshConverter : public QObject
     Q_OBJECT
 
 public:
-    MeshConverter(Framework *framework_);
+    MeshConverter(Framework *framework);
     ~MeshConverter();
 
 public slots:
@@ -28,12 +28,10 @@ public slots:
     Ogre::ManualObject* CreatePointMesh(PointCloud::Ptr inputCloud);
 
 private slots:
-    Ogre::ManualObject* createManualObject(Ogre::RenderOperation::OperationType operationType);
+    /// @return Pointer to unclosed Ogre ManualObject
+    Ogre::ManualObject* createManualObject(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr input_cloud, Ogre::RenderOperation::OperationType operationType);
 
 private:
-    pcl::PolygonMesh::Ptr polygon_mesh_;
-    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr input_cloud_;
-
     Framework *framework_;
     OgreWorldWeakPtr world_;
     Scene *scene_;
