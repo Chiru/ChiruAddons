@@ -111,7 +111,7 @@ function parse_movies($moviesDocResource, $dataSourceUrl, $dataSrcStm)
         $rdfString = $model1->writeRdfToString();
         $model1->close();
 
-        echo utf8_encode($rdfString);
+        echo utf8_decode($rdfString);
     }
 }
 
