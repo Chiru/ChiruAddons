@@ -1,5 +1,3 @@
-
-// blender material: ouluCity
 material ouluCity 
 {
     receive_shadows on
@@ -10,6 +8,8 @@ material ouluCity
             ambient 0.12370516359806061 0.12370516359806061 0.12370516359806061 1.0
             diffuse 1.0 1.0 1.0 1.0
             specular 0.0 0.0 0.0 1.0 12.5
+            // The following are commented out due to not working properly on OpenGL
+            /*
             emissive vertexcolour
             alpha_to_coverage off
             colour_write on
@@ -27,6 +27,7 @@ material ouluCity
             scene_blend_op add
             shading gouraud
             transparent_sorting on
+            */
         }
     }
 }
