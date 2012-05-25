@@ -41,6 +41,13 @@ class ObjectCaptureModule : public IModule
 {
     Q_OBJECT
 
+    struct CloudPosition
+    {
+        Quat orientation;
+        float3 position;
+        float3 scale;
+    };
+
 public:
     /// Default constructor.
     ObjectCaptureModule();
@@ -74,6 +81,12 @@ public slots:
     /// Stops capturing and processes the clouds to a mesh
     void finalizeCapturing();
 
+    void setLiveCloudPosition(Quat orientation, float3 position, float3 scale);
+
+    void setGlobalModelPosition(Quat orientation, float3 position, float3 scale);
+
+    void setFinalMeshPosition(Quat orientation, float3 position, float3 scale);
+
 signals:
     void previewFrameUpdated(const QImage &frame);
     void objectCaptured(unsigned int entityId);
@@ -90,6 +103,10 @@ private:
     MeshReconstructor *mesh_reconstructor_;
     MeshConverter *mesh_converter_;
     QThread *worker_thread_;
+
+    struct CloudPosition live_cloud_position_;
+    struct CloudPosition global_model_position_;
+    struct CloudPosition final_mesh_position_;
 };
 
 } // end of namespace: ObjectCapture

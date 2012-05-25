@@ -70,10 +70,26 @@ void ObjectCaptureModule::Initialize()
     check = connect(cloud_processor_, SIGNAL(liveCloudUpdated(PointCloud::Ptr)), this, SLOT(visualizeLiveCloud(PointCloud::Ptr)), Qt::QueuedConnection);
     Q_ASSERT(check);
 
+    check = connect(cloud_processor_, SIGNAL(globalModelUpdated(PointCloud::Ptr)), this, SLOT(visualizeGlobalModel(PointCloud::Ptr)), Qt::QueuedConnection);
+    Q_ASSERT(check);
+
     check = connect(mesh_reconstructor_, SIGNAL(cloudProcessingFinished(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)),
                     this, SLOT(visualizeFinalMesh(pcl::PolygonMesh::Ptr,pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)), Qt::QueuedConnection);
 
     Q_ASSERT(check);
+
+    // Uggly
+    live_cloud_position_.orientation = Quat(0,0,0,0);
+    live_cloud_position_.position = float3(0,0,0);
+    live_cloud_position_.scale = float3(0,0,0);
+
+    global_model_position_.orientation = Quat(0,0,0,0);
+    global_model_position_.position = float3(0,0,0);
+    global_model_position_.scale = float3(0,0,0);
+
+    final_mesh_position_.orientation = Quat(0,0,0,0);
+    final_mesh_position_.position = float3(0,0,0);
+    final_mesh_position_.scale = float3(0,0,0);
 }
 
 void ObjectCaptureModule::Uninitialize()
@@ -105,19 +121,89 @@ void ObjectCaptureModule::finalizeCapturing()
     mesh_reconstructor_->processCloud(cloud_processor_->finalCloud());
 }
 
+void ObjectCaptureModule::setLiveCloudPosition(Quat orientation, float3 position, float3 scale)
+{
+    live_cloud_position_.orientation = orientation;
+    live_cloud_position_.position = position;
+    live_cloud_position_.scale = scale;
+}
+
+void ObjectCaptureModule::setGlobalModelPosition(Quat orientation, float3 position, float3 scale)
+{
+    global_model_position_.orientation = orientation;
+    global_model_position_.position = position;
+    global_model_position_.scale = scale;
+}
+
+void ObjectCaptureModule::setFinalMeshPosition(Quat orientation, float3 position, float3 scale)
+{
+    final_mesh_position_.orientation = orientation;
+    final_mesh_position_.position = position;
+    final_mesh_position_.scale = scale;
+}
+
 void ObjectCaptureModule::visualizeLiveCloud(PointCloud::Ptr cloud)
 {
+    static EntityPtr entity;
+    static Ogre::ManualObject *previous_mesh = NULL;
 
+    Scene *scene = framework_->Scene()->MainCameraScene();
+
+    if(!entity.get())
+        entity = scene->CreateEntity(scene->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
+
+    Ogre::ManualObject *mesh = mesh_converter_->CreatePointMesh(cloud);
+
+    addObjectToScene(entity, mesh, live_cloud_position_.orientation, live_cloud_position_.position, live_cloud_position_.scale);
+
+    delete previous_mesh; // Might crash depenting on EC_OgreCustomObject implementation
+    previous_mesh = mesh;
 }
 
 void ObjectCaptureModule::visualizeGlobalModel(PointCloud::Ptr cloud)
 {
+    static EntityPtr entity;
+    static Ogre::ManualObject *previous_mesh = NULL;
 
+    Scene *scene = framework_->Scene()->MainCameraScene();
+
+    if(!entity.get())
+        entity = scene->CreateEntity(scene->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
+
+    Ogre::ManualObject *mesh = mesh_converter_->CreatePointMesh(cloud);
+
+    addObjectToScene(entity, mesh, global_model_position_.orientation, global_model_position_.position, global_model_position_.scale);
+
+    delete previous_mesh; // Might crash depenting on EC_OgreCustomObject implementation
+    previous_mesh = mesh;
 }
 
 void ObjectCaptureModule::visualizeFinalMesh(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)
 {
+    // Special case which requires script interaction.
+    // Application needs to be aware of the final entity id, and in control of it's placement etc.
+}
 
+void ObjectCaptureModule::addObjectToScene(EntityPtr entity, Ogre::ManualObject *mesh, Quat orientation, float3 position, float3 scale)
+{
+    //LogInfo("MeshConverter: create EC_OgreCustomObject");
+
+    if (!entity.get())
+        return;
+        //entity_ = scene_->CreateEntity(scene_->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
+
+    ComponentPtr componentPtr = entity->GetOrCreateComponent("EC_OgreCustomObject", AttributeChange::LocalOnly, false);
+    EC_OgreCustomObject *customObject = dynamic_cast<EC_OgreCustomObject*>(componentPtr.get());
+
+    customObject->SetName("ImportedMesh");
+    customObject->CommitChanges(mesh);
+
+    // Get EC_Placeable for custom ombject
+    componentPtr = entity->GetOrCreateComponent("EC_Placeable", AttributeChange::LocalOnly, false);
+    EC_Placeable *placeable = dynamic_cast<EC_Placeable*>(componentPtr.get());
+    placeable->SetTransform(orientation, position, scale);
+
+    customObject->SetPlaceable(componentPtr);
 }
 
 void ObjectCaptureModule::meshReconstructed()
@@ -154,28 +240,6 @@ void ObjectCaptureModule::meshReconstructed()
         scene->EmitEntityCreated(meshEntity, AttributeChange::LocalOnly);
         emit objectCaptured(meshEntity->Id());
     }
-}
-
-void ObjectCaptureModule::addObjectToScene(EntityPtr entity, Ogre::ManualObject *mesh, Quat orientation, float3 position, float3 scale)
-{
-    //LogInfo("MeshConverter: create EC_OgreCustomObject");
-
-    if (!entity.get())
-        return;
-        //entity_ = scene_->CreateEntity(scene_->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
-
-    ComponentPtr componentPtr = entity->GetOrCreateComponent("EC_OgreCustomObject", AttributeChange::LocalOnly, false);
-    EC_OgreCustomObject *customObject = dynamic_cast<EC_OgreCustomObject*>(componentPtr.get());
-
-    customObject->SetName("ImportedMesh");
-    customObject->CommitChanges(mesh);
-
-    // Get EC_Placeable for custom ombject
-    componentPtr = entity->GetOrCreateComponent("EC_Placeable", AttributeChange::LocalOnly, false);
-    EC_Placeable *placeable = dynamic_cast<EC_Placeable*>(componentPtr.get());
-    placeable->SetTransform(orientation, position, scale);
-
-    customObject->SetPlaceable(componentPtr);
 }
 
 }// end of namespace: ObjectCapture
