@@ -2,11 +2,10 @@
 #include "ObjectCaptureModuleDefines.h"
 
 #include "EC_OgreCustomObject.h"
-#include "Ogre.h"
+#include "OgreSceneManager.h"
 #include "OgreWorld.h"
 #include "OgreManualObject.h"
 
-#include "OgreRenderingModule.h"
 #include "Framework.h"
 #include "SceneAPI.h"
 #include "Scene.h"
@@ -19,8 +18,7 @@ namespace ObjectCapture
 {
 
 MeshConverter::MeshConverter(Framework *framework) :
-    framework_(framework),
-    input_cloud_(new pcl::PointCloud<pcl::PointXYZRGBNormal>)
+    framework_(framework)
 {
 }
 
@@ -30,34 +28,51 @@ MeshConverter::~MeshConverter()
 
 Ogre::ManualObject* MeshConverter::CreateMesh(pcl::PolygonMesh::Ptr inputMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr inputCloud)
 {
-    polygon_mesh_ = inputMesh;
-    input_cloud_ = inputCloud;
+    Ogre::ManualObject *manual_object = createManualObject(inputCloud, Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-    return createManualObject(Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    //Add indexing data to the manualobject
+    for (size_t i = 0; i < inputMesh->polygons.size(); i++)
+    {
+        for (size_t j = 0; j < inputMesh->polygons[i].vertices.size(); j++)
+        {
+            int index = inputMesh->polygons[i].vertices[j];
+            manual_object->index(index);
+        }
+    }
+    manual_object->end();
+
+    return manual_object;
 }
 
 Ogre::ManualObject* MeshConverter::CreatePointMesh(PointCloud::Ptr inputCloud)
 {
-    input_cloud_->points.resize(inputCloud->size());
-    LogInfo("MeshReconstructor::processCloud poinst in cloud:" + ToString(inputCloud->size()));
-    for (size_t i = 0; i < input_cloud_->points.size(); i++)
-    {
-        input_cloud_->points[i].x = inputCloud->points[i].x;
-        input_cloud_->points[i].y = inputCloud->points[i].y;
-        input_cloud_->points[i].z = inputCloud->points[i].z;
-        input_cloud_->points[i].r = inputCloud->points[i].r;
-        input_cloud_->points[i].g = inputCloud->points[i].g;
-        input_cloud_->points[i].b = inputCloud->points[i].b;
+    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
+    input_cloud->points.resize(inputCloud->size());
+    //LogInfo("MeshReconstructor::processCloud poinst in cloud:" + ToString(inputCloud->size()));
 
-        input_cloud_->points[i].data_c[0] = 1;
-        input_cloud_->points[i].data_c[1] = 1;
-        input_cloud_->points[i].data_c[2] = 1;
+    //Convert PointXYZRGBA cloud to PointXYZRGBNormal cloud
+    for (size_t i = 0; i < input_cloud->points.size(); i++)
+    {
+        input_cloud->points[i].x = inputCloud->points[i].x;
+        input_cloud->points[i].y = inputCloud->points[i].y;
+        input_cloud->points[i].z = inputCloud->points[i].z;
+        input_cloud->points[i].r = inputCloud->points[i].r;
+        input_cloud->points[i].g = inputCloud->points[i].g;
+        input_cloud->points[i].b = inputCloud->points[i].b;
+
+        //Normals
+        input_cloud->points[i].data_c[0] = 1;
+        input_cloud->points[i].data_c[1] = 1;
+        input_cloud->points[i].data_c[2] = 1;
     }
 
-    return createManualObject(Ogre::RenderOperation::OT_POINT_LIST);
+    Ogre::ManualObject *object = createManualObject(input_cloud, Ogre::RenderOperation::OT_POINT_LIST);
+    object->end();
+
+    return object;
 }
 
-Ogre::ManualObject* MeshConverter::createManualObject(Ogre::RenderOperation::OperationType operationType)
+Ogre::ManualObject* MeshConverter::createManualObject(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr input_cloud, Ogre::RenderOperation::OperationType operationType)
 {
     scene_ = framework_->Scene()->MainCameraScene();
     if (scene_)
@@ -68,24 +83,11 @@ Ogre::ManualObject* MeshConverter::createManualObject(Ogre::RenderOperation::Ope
     // ManualObject must be created within the same thread as the OgreRendering is running!
     Ogre::ManualObject *ogreManual = sceneMgr->createManualObject(world->GetUniqueObjectName("ImportedMesh"));
 
-    double startime = pcl::getTime();
-
-    //ogreManual->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
-    //ogreManual->setUseIdentityProjection(true);
-    //ogreManual->setUseIdentityView(true);
-    //ogreManual->setQueryFlags(0);
+    //double startime = pcl::getTime();
 
     // estimation for the index count is triangle_size*3*2 and it is always larger than the real value
-    size_t triangle_size = input_cloud_->points.size();
-    size_t indices_count = 0;
-
-    if (operationType == Ogre::RenderOperation::OT_TRIANGLE_LIST)
-    {
-        for (size_t i = 0; i < polygon_mesh_->polygons.size(); i++)
-            indices_count += polygon_mesh_->polygons[i].vertices.size();
-    }
-    else
-        indices_count = triangle_size;
+    size_t triangle_size = input_cloud->points.size();
+    size_t indices_count = triangle_size*3*2;
 
     //LogInfo("MeshConverter: Vertex count: "+ ToString(triangle_size));
     //LogInfo("MeshConverter: Index count: "+ ToString(indices_count));
@@ -99,44 +101,26 @@ Ogre::ManualObject* MeshConverter::createManualObject(Ogre::RenderOperation::Ope
 
     //LogInfo("MeshConverter: Setting positions...");
 
-    for (size_t i = 0; i < input_cloud_->points.size(); i++)
+    for (size_t i = 0; i < input_cloud->points.size(); i++)
     {
-        Ogre::Real r = (Ogre::Real)input_cloud_->points[i].r / (Ogre::Real)255;
-        Ogre::Real g = (Ogre::Real)input_cloud_->points[i].g / (Ogre::Real)255;
-        Ogre::Real b = (Ogre::Real)input_cloud_->points[i].b / (Ogre::Real)255;
+        Ogre::Real r = (Ogre::Real)input_cloud->points[i].r / (Ogre::Real)255;
+        Ogre::Real g = (Ogre::Real)input_cloud->points[i].g / (Ogre::Real)255;
+        Ogre::Real b = (Ogre::Real)input_cloud->points[i].b / (Ogre::Real)255;
 
         ogreManual->colour(r, g, b);
-        ogreManual->position(input_cloud_->points[i].x, input_cloud_->points[i].y, input_cloud_->points[i].z);
+        ogreManual->position(input_cloud->points[i].x, input_cloud->points[i].y, input_cloud->points[i].z);
 
         if (operationType == Ogre::RenderOperation::OT_POINT_LIST)
             ogreManual->index(i);
         else
-            ogreManual->normal(input_cloud_->points[i].data_c[0], input_cloud_->points[i].data_c[1], input_cloud_->points[i].data_c[2]);
+            ogreManual->normal(input_cloud->points[i].data_c[0], input_cloud->points[i].data_c[1], input_cloud->points[i].data_c[2]);
     }
-
-    if (operationType == Ogre::RenderOperation::OT_TRIANGLE_LIST)
-    {
-        //LogInfo("MeshConverter: OperationType == OT_TRIANGLE_LIST");
-        for (size_t i = 0; i < polygon_mesh_->polygons.size(); i++)
-        {
-            for (size_t j = 0; j < polygon_mesh_->polygons[i].vertices.size(); j++)
-            {
-                int index = polygon_mesh_->polygons[i].vertices[j];
-                ogreManual->index(index);
-            }
-        }
-    }
-
-    ogreManual->end();
 
     //LogInfo("MeshConverter: Object created!");
-    double objectCreateTime = pcl::getTime() - startime;
-    LogInfo("MeshConverter: Time needed for CustomObject creation: " + ToString(objectCreateTime));
+    //double objectCreateTime = pcl::getTime() - startime;
+    //LogInfo("MeshConverter: Time needed for CustomObject creation: " + ToString(objectCreateTime));
 
-    //this->addMeshToScene(ogreManual);
     return ogreManual;
 }
-
-
 
 } // end of namespace ObjectCapture
