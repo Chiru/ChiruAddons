@@ -38,6 +38,7 @@ signals:
 
 private slots:
     void handleGlobalModelUpdated(PointCloud::Ptr cloud);
+    void handleLiveCloudUpdated(PointCloud::Ptr cloud);
 
 protected:
     void moveToOrigo(PointCloud::Ptr cloud);
@@ -47,6 +48,7 @@ private:
     CloudFilter *cloud_filter_;
     QList<PointCloud::ConstPtr> captured_clouds_;
     PointCloud::Ptr final_cloud_;
+    PointCloud::Ptr live_cloud_;
     IncrementalRegister *register_;
 };
 

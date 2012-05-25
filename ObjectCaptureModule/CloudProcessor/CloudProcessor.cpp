@@ -28,7 +28,7 @@ CloudProcessor::CloudProcessor() :
     check = connect(kinect_capture_, SIGNAL(RGBUpdated(QImage)), this, SIGNAL(liveFeedUpdated(QImage)));
     Q_ASSERT(check);
 
-    check = connect(kinect_capture_, SIGNAL(currentClusterUpdated(PointCloud::Ptr)), this, SIGNAL(liveCloudUpdated(PointCloud::Ptr)));
+    check = connect(kinect_capture_, SIGNAL(currentClusterUpdated(PointCloud::Ptr)), this, SLOT(handleLiveCloudUpdated(PointCloud::Ptr)));
     Q_ASSERT(check);
 
     check = connect(register_, SIGNAL(globalModelUpdated(PointCloud::Ptr)), this, SLOT(handleGlobalModelUpdated(PointCloud::Ptr)));
@@ -68,6 +68,13 @@ void CloudProcessor::handleGlobalModelUpdated(PointCloud::Ptr cloud)
     final_cloud_ = cloud;
     moveToOrigo(final_cloud_);
     emit globalModelUpdated(final_cloud_);
+}
+
+void CloudProcessor::handleLiveCloudUpdated(PointCloud::Ptr cloud)
+{
+    live_cloud_ = cloud;
+    moveToOrigo(live_cloud_);
+    emit liveCloudUpdated(live_cloud_);
 }
 
 /// \todo unnecessary, refactor.
