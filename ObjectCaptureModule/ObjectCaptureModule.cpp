@@ -79,15 +79,15 @@ void ObjectCaptureModule::Initialize()
     Q_ASSERT(check);
 
     // Uggly
-    live_cloud_position_.orientation = Quat(0,0,0,0);
+    live_cloud_position_.orientation = Quat(1,0,0,0);
     live_cloud_position_.position = float3(0,0,0);
     live_cloud_position_.scale = float3(0,0,0);
 
-    global_model_position_.orientation = Quat(0,0,0,0);
+    global_model_position_.orientation = Quat(1,0,0,0);
     global_model_position_.position = float3(0,0,0);
     global_model_position_.scale = float3(0,0,0);
 
-    final_mesh_position_.orientation = Quat(0,0,0,0);
+    final_mesh_position_.orientation = Quat(1,0,0,0);
     final_mesh_position_.position = float3(0,0,0);
     final_mesh_position_.scale = float3(0,0,0);
 }
@@ -178,10 +178,21 @@ void ObjectCaptureModule::visualizeGlobalModel(PointCloud::Ptr cloud)
     previous_mesh = mesh;
 }
 
-void ObjectCaptureModule::visualizeFinalMesh(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr)
+void ObjectCaptureModule::visualizeFinalMesh(pcl::PolygonMesh::Ptr polygonMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud)
 {
     // Special case which requires script interaction.
     // Application needs to be aware of the final entity id, and in control of it's placement etc.
+
+    static EntityPtr entity;
+    Scene *scene = framework_->Scene()->MainCameraScene();
+
+    if(!entity.get())
+        entity = scene->CreateEntity(scene->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
+
+    Ogre::ManualObject *mesh = mesh_converter_->CreateMesh(polygonMesh, cloud);
+    addObjectToScene(entity, mesh, final_mesh_position_.orientation, final_mesh_position_.position, final_mesh_position_.scale);
+
+    emit objectCaptured(entity->Id());
 }
 
 void ObjectCaptureModule::addObjectToScene(EntityPtr entity, Ogre::ManualObject *mesh, Quat orientation, float3 position, float3 scale)
@@ -208,8 +219,10 @@ void ObjectCaptureModule::addObjectToScene(EntityPtr entity, Ogre::ManualObject 
 
 void ObjectCaptureModule::meshReconstructed()
 {
-    mesh_reconstructor_->convertVtkToMesh();
+    //Deprecated!
+    /// \todo Remove this slot
 
+    mesh_reconstructor_->convertVtkToMesh();
     Scene *scene = framework_->Scene()->MainCameraScene();
 
     EntityPtr entity_ = scene->CreateEntity(scene->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);

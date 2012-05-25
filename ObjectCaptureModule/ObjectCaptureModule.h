@@ -96,7 +96,7 @@ private slots:
     void addObjectToScene(EntityPtr entity, Ogre::ManualObject *mesh, Quat orientation, float3 position, float3 scale); // Refactor name?
     void visualizeLiveCloud(PointCloud::Ptr cloud);
     void visualizeGlobalModel(PointCloud::Ptr cloud);
-    void visualizeFinalMesh(pcl::PolygonMesh::Ptr, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr);
+    void visualizeFinalMesh(pcl::PolygonMesh::Ptr polygonMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud);
 
 private:
     CloudProcessor *cloud_processor_;
