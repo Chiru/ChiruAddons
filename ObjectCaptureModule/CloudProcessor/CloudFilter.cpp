@@ -85,7 +85,9 @@ PointCloud::Ptr CloudFilter::extractLargestCluster(PointCloud::ConstPtr cloud, f
     PointCloud::Ptr output(new PointCloud);
     pcl::search::KdTree<pcl::PointXYZRGBA>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZRGBA>);
     std::vector<pcl::PointIndices> cluster_indices;
-    if (cloud->points.size() > 0)
+
+    // Cluster extraction occasionally crashes if it fails to extract cluster from the too small input cloud.
+    if (cloud->points.size() > 100)
     {
         tree->setInputCloud (cloud);
         cluster_extractor_.setClusterTolerance(cluster_tolerance);
