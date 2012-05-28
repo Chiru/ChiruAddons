@@ -120,8 +120,8 @@ void MeshReconstructor::MovingLeastSquares()
     mls.setPolynomialFit (true);
     mls.setPolynomialOrder(2);
     mls.setSearchMethod (tree);
-    mls.setSearchRadius (0.03);
-    mls.setSqrGaussParam(0.0009);
+    mls.setSearchRadius (0.1); //0.03
+    mls.setSqrGaussParam(0.009); //0.0009
 
     // Reconstruct
     mls.reconstruct (*smoothed_cloud_);
@@ -160,12 +160,12 @@ void MeshReconstructor::GreedyProjection_Mesher()
     pcl::search::KdTree<pcl::PointXYZRGBNormal>::Ptr tree2 (new pcl::search::KdTree<pcl::PointXYZRGBNormal>());
     mesher.setSearchMethod(tree2);
 
-    mesher.setSearchRadius(0.05);
+    mesher.setSearchRadius(0.5);//0.05
     mesher.setConsistentVertexOrdering(true); // Requires PCL-1.5 or higher!
 
-    mesher.setMu(2.5);
-    mesher.setMaximumNearestNeighbors(1000);
-    mesher.setMaximumSurfaceAngle(M_PI/4);
+    mesher.setMu(5.0); //2.5
+    mesher.setMaximumNearestNeighbors(400);
+    mesher.setMaximumSurfaceAngle(M_PI); // M_PI/4
     mesher.setMinimumAngle(M_PI/18); // 10 degrees
     mesher.setMaximumAngle(2*M_PI/3); // 120 degrees
     mesher.setNormalConsistency(false);
