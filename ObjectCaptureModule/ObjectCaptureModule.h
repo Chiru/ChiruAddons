@@ -78,6 +78,9 @@ public slots:
     /// Saves current cloud
     void captureCloud();
 
+    /// Removes the latest captured cloud
+    void rewindCloud();
+
     /// Stops capturing and processes the clouds to a mesh
     void finalizeCapturing();
 

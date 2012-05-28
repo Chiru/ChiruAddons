@@ -115,6 +115,11 @@ void ObjectCaptureModule::captureCloud()
     cloud_processor_->captureCloud();
 }
 
+void ObjectCaptureModule::rewindCloud()
+{
+    cloud_processor_->rewindCloud();
+}
+
 void ObjectCaptureModule::finalizeCapturing()
 {
     cloud_processor_->finalizeCapturing();
