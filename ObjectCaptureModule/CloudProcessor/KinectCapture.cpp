@@ -110,7 +110,7 @@ void KinectCapture::updateRGBImage()
 
         cloud_mutex_.unlock();
 
-        cloud->points.size(); // Just here to ensure compiler doesn't optimize cloud out
+        //cloud->points.size(); // Just here to ensure compiler doesn't optimize cloud out
 
         emit currentClusterUpdated(current_cluster_);
     }
@@ -130,12 +130,21 @@ void KinectCapture::kinect_callback_(const PointCloud::ConstPtr &cloud)
             PointCloud::Ptr depth_filtered = cloud_filter_->filterDepth(current_cloud_, 0.0f, 1.5f); // Move params to class members
             PointCloud::Ptr downsampled = cloud_filter_->filterDensity(depth_filtered, 0.01f); // --*--
 
-            current_cluster_ = cloud_filter_->segmentCloud(downsampled, 0.08);
+            PointCloud::Ptr clustered = cloud_filter_->segmentCloud(downsampled, 0.08);
+            if(clustered->points.size() <= 0) // Segmentation failed, skip this frame.
+            {
+                cloud_mutex_.unlock();
+                return;
+            }
+
+            current_cluster_ = clustered;
             cloud_mutex_.unlock();
+
             updateRGBImage();
             emit cloudUpdated(current_cluster_); // Refactor these emits
             return;
         }
+
         updateRGBImage();
         emit cloudUpdated(current_cloud_);
     }

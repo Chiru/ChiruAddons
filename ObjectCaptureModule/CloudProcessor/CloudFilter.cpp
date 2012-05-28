@@ -37,10 +37,13 @@ CloudFilter::~CloudFilter()
 PointCloud::Ptr CloudFilter::filterDepth(PointCloud::ConstPtr cloud, float minDepth, float maxDepth)
 {
     PointCloud::Ptr output(new PointCloud);
-    passthrough_filter_.setFilterLimits(minDepth, maxDepth);
-    passthrough_filter_.setInputCloud(cloud);
-    passthrough_filter_.filter(*output);
-    LogDebug("ObjectCapture: Depth filtered cloud from " + QString::number(cloud->points.size()) + " points to " + QString::number(output->points.size()) + " points.");
+    if(cloud->points.size() > 0)
+    {
+        passthrough_filter_.setFilterLimits(minDepth, maxDepth);
+        passthrough_filter_.setInputCloud(cloud);
+        passthrough_filter_.filter(*output);
+        LogDebug("ObjectCapture: Depth filtered cloud from " + QString::number(cloud->points.size()) + " points to " + QString::number(output->points.size()) + " points.");
+    }
     return output;
 }
 
@@ -48,7 +51,7 @@ PointCloud::Ptr CloudFilter::filterDensity(PointCloud::ConstPtr cloud, float lea
 {
     PointCloud::Ptr output(new PointCloud);
     pcl::PointCloud<int> indices;
-    if (cloud->size() > 0)
+    if (cloud->points.size() > 0)
     {
         uniform_sampling_.setRadiusSearch(leafSize);
         uniform_sampling_.setInputCloud(cloud);
@@ -64,13 +67,16 @@ PointCloud::Ptr CloudFilter::removePlanar(PointCloud::ConstPtr cloud)
     PointCloud::Ptr output(new PointCloud);
     pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
     pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
-    sac_segmentation_.setInputCloud(cloud);
-    sac_segmentation_.segment(*inliers, *coefficients);
-    indice_extractor_.setInputCloud(cloud);
-    indice_extractor_.setIndices(inliers);
-    indice_extractor_.setNegative(true);
-    indice_extractor_.filter(*output);
-    LogDebug("ObjectCapture: Removed planar of " + QString::number(cloud->points.size() - output->points.size()) + " points from the cloud.");
+    if(cloud->points.size() > 0)
+    {
+        sac_segmentation_.setInputCloud(cloud);
+        sac_segmentation_.segment(*inliers, *coefficients);
+        indice_extractor_.setInputCloud(cloud);
+        indice_extractor_.setIndices(inliers);
+        indice_extractor_.setNegative(true);
+        indice_extractor_.filter(*output);
+        LogDebug("ObjectCapture: Removed planar of " + QString::number(cloud->points.size() - output->points.size()) + " points from the cloud.");
+    }
     return output;
 }
 
@@ -79,8 +85,7 @@ PointCloud::Ptr CloudFilter::extractLargestCluster(PointCloud::ConstPtr cloud, f
     PointCloud::Ptr output(new PointCloud);
     pcl::search::KdTree<pcl::PointXYZRGBA>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZRGBA>);
     std::vector<pcl::PointIndices> cluster_indices;
-    LogDebug("ObjectCaptureModule: extractLargestCluster: Cloud size: " + QString::number(cloud->size()));
-    if (cloud->size() > 0)
+    if (cloud->points.size() > 0)
     {
         tree->setInputCloud (cloud);
         cluster_extractor_.setClusterTolerance(cluster_tolerance);
@@ -96,19 +101,22 @@ PointCloud::Ptr CloudFilter::extractLargestCluster(PointCloud::ConstPtr cloud, f
             indice_extractor_.setIndices(indices);
             indice_extractor_.setNegative(false);
             indice_extractor_.filter(*output);
-            LogInfo("ObjectCapture: Extracted largest cluster of " + QString::number(output->points.size()) + " points from the cloud.");
+            LogDebug("ObjectCapture: Extracted largest cluster of " + QString::number(output->points.size()) + " points from the cloud.");
             return output;
         }
     }
 
-    LogInfo("ObjectCapture: Cluster extraction failed, no clusters found.");
+    LogError("ObjectCapture: Cluster extraction failed, no clusters found.");
     pcl::copyPointCloud(*cloud, *output);
     return output;
 }
 
 PointCloud::Ptr CloudFilter::segmentCloud(PointCloud::ConstPtr cloud, float cluster_tolerance)
 {
-    return extractLargestCluster(removePlanar(cloud), cluster_tolerance);
+    if(cloud->points.size() > 0)
+        return extractLargestCluster(removePlanar(cloud), cluster_tolerance);
+    else
+        return PointCloud::Ptr(new PointCloud);
 }
 
 }

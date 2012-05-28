@@ -116,11 +116,10 @@ void IncrementalRegister::registerPair(PointCloud::Ptr src, PointCloud::Ptr tgt,
 
     pcl::IterativeClosestPoint<PointNormalT, PointNormalT> reg;
     reg.setTransformationEpsilon (1e-6);
-    // Set the maximum distance between two correspondences (src<->tgt) to 10cm
-    // Note: adjust this based on the size of your datasets
-    reg.setMaxCorrespondenceDistance (0.07); // 0.3 w
-    reg.setRANSACOutlierRejectionThreshold(0.05); // 0.2 w
-    // Set the point representation
+
+    reg.setMaxCorrespondenceDistance (icp_corr_distance_); // 0.3 w
+    reg.setRANSACOutlierRejectionThreshold(ransac_outlier_threshold_); // 0.2 w
+
     reg.setPointRepresentation (boost::make_shared<const CurvaturePointRepresentation> (point_representation));
 
     reg.setInputCloud (points_with_normals_src);
