@@ -1,15 +1,34 @@
 // !ref: ScreenPrefab.txml
 // !ref: InfoBubblePrefab.txml
 
+/*
+- Touch input - TODO/IN PROGRESS
+ * Scene
+  - Move to next/prev. scene - 3 finger x-axis sweep
+  - Move in scene - 1 finger drag
+  - Tilt scene - 2 finger y-axis drag
+  - "Zoom" scene (depth movement) - 2 finger pinching
+ * Object
+  - Object selection - long press
+  - moving object
+   * object rotation (yaw, pitch) - select object, second finger y-axis drag
+   * object roll - select object, rotate second finger around object
+   * "Zoom" object (depth movement) - select object, one finder bottom-right corner of the screen, second finger y-axis drag
+ * Scene reset - 5 finger long touch
+*/
+
 const cMoveZSpeed = 0.005; // was 0.0007 in Unity
 const cRotateSpeed = 1;
 const cReferenceHeight = 768;
-
+const longTouchTime = 2;
 var selectedObject = null;
 
 var touchOffset = new float3(0,0,0);
+var useTouchInput = false;
 
 var lastTouchTimestamp = frame.WallClockTime();
+var prevFrameMouseX = -1;
+var prevFrameMouseY = -1;
 
 function OnScriptDestroyed()
 {
@@ -17,13 +36,12 @@ function OnScriptDestroyed()
 }
 
 // Entry point
-if (!server.IsRunning())
+if (!framework.IsHeadless())
 {
     engine.ImportExtension("qt.core");
     engine.ImportExtension("qt.gui");
     engine.IncludeFile("Log.js");
     engine.IncludeFile("MathUtils.js");
-//    engine.IncludeFile("copy.js");
     frame.Updated.connect(Update);
 
     var ic = input.RegisterInputContextRaw("3dUiObjectMove", 90);
@@ -38,65 +56,55 @@ if (!server.IsRunning())
     ui.GraphicsView().DropEvent.connect(HandleDropEvent);
 }
 
-// TODO touch input
+// QByteArray's toString not exposed in QtScript, must do it manually.
+QByteArray.prototype.toString = function()
+{
+    return new QTextStream(this, QIODevice.ReadOnly).readAll();
+}
+
 function OnTouchBegin(e)
 {
-    Log("ObjectMove OnTouchBegin " + e.touchPoints().length);
+    useTouchInput = true;
+//    Log("ObjectMove OnTouchBegin " + e.touchPoints().length);
     lastTouchTimestamp = frame.WallClockTime();
-/*
+
     var touches = e.touchPoints();
+    var numFingers = touches.length;
     for(i in touches)
     {
         prevFrameMouseX = touches[i].pos().x();
         prevFrameMouseY = touches[i].pos().y();
         return;
     }
-*/
 }
 
 function OnTouchUpdate(e)
 {
-    Log("ObjectMove OnTouchUpdate " + e.touchPoints().length);
+//    Log("ObjectMove OnTouchUpdate " + e.touchPoints().length);
     lastTouchTimestamp = frame.WallClockTime();
-/*
+
     var touches = e.touchPoints();
+    var numFingers = touches.length;
     for(i in touches)
     {
         var x = touches[i].pos().x();
         var y = touches[i].pos().y();
-
-//    var uiitem = input.ItemAtCoords(x,y);
- //     if (uiitem == null)
-  //    {
-        var deltaX = x - prevFrameMouseX;
-        var deltaY = y - prevFrameMouseY;
-
-        deltaX = deltaX * Math.min(3.0, Math.max(1.0, Math.abs(deltaX) / 3.0));
-
-        deltaRotation += deltaX / ui.GraphicsView().width;
-
-        cameraPitchAmount = Math.max(cameraPitchMin, Math.min(cameraPitchMax, cameraPitchAmount + deltaY / ui.GraphicsView().height));
-//      }
- //   }
-//    else
-//       deltaRotation = 0;
+//        var deltaX = x - prevFrameMouseX;
+//        var deltaY = y - prevFrameMouseY;
+//        deltaX = deltaX * Math.min(3.0, Math.max(1.0, Math.abs(deltaX) / 3.0));
+//        deltaRotation += deltaX / ui.GraphicsView().width;
+//        cameraPitchAmount = Math.max(cameraPitchMin, Math.min(cameraPitchMax, cameraPitchAmount + deltaY / ui.GraphicsView().height));
 
         prevFrameMouseX = x;//input.MousePos().x();
         prevFrameMouseY = y;//input.MousePos().y();
         return;
     }
-*/
+
 }
 
 function OnTouchEnd(e)
 {
-    Log("ObjectMove OnTouchEnd");
-}
-
-// QByteArray's toString not exposed in QtScript, must do it manually.
-QByteArray.prototype.toString = function()
-{
-    return new QTextStream(this, QIODevice.ReadOnly).readAll();
+//    Log("ObjectMove OnTouchEnd");
 }
 
 function HandleDragEnterEvent(e)
@@ -112,12 +120,25 @@ function HandleDragMoveEvent(e)
     if (data.length > 0)
         e.acceptProposedAction();
 }
+
 function CurrentMouseRay()
 {
-    var mousePos = input.MousePos();
-    var relX = mousePos.x()/ui.GraphicsScene().width();
-    var relY = mousePos.y()/ui.GraphicsScene().height();
-    return renderer.MainCameraComponent().GetMouseRay(relX, relY);
+    var x, y;
+    if (useTouchInput)
+    {
+        x = prevFrameMouseX, y = prevFrameMouseY;
+    }
+    else
+    {
+        var mousePos = input.MousePos();
+        x = mousePos.x(), y = mousePos.y();
+    }
+    return renderer.MainCameraComponent().GetMouseRay(x/ui.GraphicsScene().width(), y/ui.GraphicsScene().height());
+}
+
+function ScreenPointToRay(x, y)
+{
+    return renderer.MainCameraComponent().GetMouseRay(x/ui.GraphicsScene().width(), y/ui.GraphicsScene().height());
 }
 
 function HandleDropEvent(e)
@@ -179,8 +200,7 @@ function HandleKeyEvent(e)
     if (e.HasCtrlModifier() && e.keyCode == Qt.Key_E && selectedObject)
     {
         var t = selectedObject.placeable.transform;
-        // TODO: these values are for the old screen mesh
-        t.rot = new float3(180.0, 90.0, 0.0); //new float3(-90.0, 90.0, 90.0)
+        t.rot = new float3(180.0, 90.0, 0.0);
         selectedObject.placeable.transform = t;
     }
 }
@@ -229,9 +249,9 @@ function Update(frameTime)
         if (selectionTimer > 2)
         {
             var mousePos = input.MousePos();
-            var result = scene.ogre.Raycast(mousePos.x(), mousePos.y());
-            if (result.entity && result.entity.placeable)
-                selectedObject = result.entity; //SelectObject(result.entity, true);
+            var r = scene.ogre.Raycast(mousePos.x(), mousePos.y());
+            if (r.entity && r.entity.placeable)
+                selectedObject = r.entity;
             else
                 selectedObject = null;
                 

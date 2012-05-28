@@ -120,17 +120,32 @@ function ApplyCamera()
     Log("input.IsGesturesEnabled() " + input.IsGesturesEnabled());
 }
 
-// TODO touch input
 function OnTouchBegin(e)
 {
     Log("UiCamera OnTouchBegin " + e.touchPoints().length);
     lastTouchTimestamp = frame.WallClockTime();
 }
 
+var sceneResetTimer = 0;
+
 function OnTouchUpdate(e)
 {
     Log("UiCamera OnTouchUpdate " + e.touchPoints().length);
     lastTouchTimestamp = frame.WallClockTime();
+    var touches = e.touchPoints();
+    var numFingers = touches.length;
+    if (numFingers == 5)
+    {
+        sceneResetTimer += (frame.WallClockTime() - lastTouchTimestamp);
+        Log(sceneResetTimer);
+        if (sceneResetTimer >= 5)
+        {
+            ResetScene();
+            sceneResetTimer = 0;
+        }
+    }
+    else
+        sceneResetTimer = 0;
 }
 
 function OnTouchEnd(e)
@@ -162,6 +177,8 @@ function HandleKeyEvent(e)
         ToggleCamera();
     if (e.HasCtrlModifier() && e.keyCode == Qt.Key_R)
         ResetCamera();
+    if (e.HasCtrlModifier() && e.HasAltModifier() && e.keyCode == Qt.Key_R)
+        SwitchScene(); // Resets the scene
 }
 
 // TODO: copy-paste from ObjectMove.js

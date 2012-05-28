@@ -1,12 +1,15 @@
+Service Fusion Tundra Application
+*********************************
+
 Getting Started
 ===============
+- For now at least, ServiceFusion application is a standalone application with no Tundra client-server functionality whatsoever.
 - IMPORTANT: Due to QtNetwork/Webkit regression issues introduced in Qt 4.8, use Qt version 4.7.x, for now
-- If desiring to use touch input, the command line switch --ogreCaptureTopWindow is most likely needed.
-  Also, detaching any external monitors is most likely required.
+- If desiring to use touch input, the Tundra command-line switch --ogreCaptureTopWindow is most likely needed.
+  Also, detaching any external monitor and mouse devices is most likely required.
 - Scene.txml is the "entry point" of the application.
-- Use "--config ServiceFusionPlugins.xml" when running the application.
-- F.ex:
-  cd <TundraBin>
+- Use "--config ServiceFusionPlugins.xml" when running the application, f.ex.
+  cd <Tundra>/bin
   Tundra --config ../src/ChiruAddons/ServiceFusionPlugins.xml --file ../src/ChiruAddons/Scenes/ServiceFusion/Scene.txml
 
 Controls
@@ -21,12 +24,12 @@ Controls
  * 2 + RMB drag object - Rotate object
  * Ctrl + R - Reset camera's transform
  * Ctrl + E - Reset selected object's transform
-- Touch input TODO
+- Touch input - TODO/IN PROGRESS
  * not implemented yet
  * Scene
   - Move to next/prev. scene - 3 finger x-axis sweep
   - Move in scene - 1 finger drag
-  - Tilt scene - 2 finger y-axis drag
+  - Tilt scene - 3 finger y-axis drag
   - "Zoom" scene (depth movement) - 2 finger pinching
  * Object
   - Object selection - long press
