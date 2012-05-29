@@ -102,27 +102,27 @@ void ObjectCaptureModule::Update(f64 frametime)
 
 void ObjectCaptureModule::startCapturing()
 {
-    cloud_processor_->startCapture();
+    QMetaObject::invokeMethod(cloud_processor_, "startCapture", Qt::QueuedConnection);
 }
 
 void ObjectCaptureModule::stopCapturing()
 {
-    cloud_processor_->stopCapture();
+    QMetaObject::invokeMethod(cloud_processor_, "stopCapture", Qt::QueuedConnection);
 }
 
 void ObjectCaptureModule::captureCloud()
 {
-    cloud_processor_->captureCloud();
+    QMetaObject::invokeMethod(cloud_processor_, "captureCloud", Qt::QueuedConnection);
 }
 
 void ObjectCaptureModule::rewindCloud()
 {
-    cloud_processor_->rewindCloud();
+    QMetaObject::invokeMethod(cloud_processor_, "rewindCloud", Qt::QueuedConnection);
 }
 
 void ObjectCaptureModule::finalizeCapturing()
 {
-    cloud_processor_->finalizeCapturing();
+    QMetaObject::invokeMethod(cloud_processor_, "finalizeCapturing", Qt::QueuedConnection);
     mesh_reconstructor_->processCloud(cloud_processor_->finalCloud());
 }
 
