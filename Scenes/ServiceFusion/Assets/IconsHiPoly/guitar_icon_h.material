@@ -1,0 +1,19 @@
+material guitar_icon_h
+{
+    technique
+    {
+        scheme glow
+
+        pass
+        {
+            ambient 1 1 1 1
+            diffuse 1 1 1 1
+            specular 0 0 0 1 10
+            emissive 0.4 1 1 1
+            texture_unit
+            {
+                texture local://guitar_icon_hCompleteMap.png
+            }
+        }
+    }
+}
