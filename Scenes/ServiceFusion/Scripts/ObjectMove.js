@@ -25,10 +25,11 @@ var selectedObject = null;
 
 var touchOffset = new float3(0,0,0);
 var useTouchInput = false;
-
+var touchEventPrevFrame = null;
 var lastTouchTimestamp = frame.WallClockTime();
 var prevFrameMouseX = -1;
 var prevFrameMouseY = -1;
+var touchDeltaX, touchDeltaY;
 
 function OnScriptDestroyed()
 {
@@ -42,7 +43,7 @@ if (!framework.IsHeadless())
     engine.ImportExtension("qt.gui");
     engine.IncludeFile("Log.js");
     engine.IncludeFile("MathUtils.js");
-    frame.Updated.connect(Update);
+    engine.IncludeFile("TouchInputObject.js");
 
     var ic = input.RegisterInputContextRaw("3dUiObjectMove", 90);
     ic.KeyEventReceived.connect(HandleKeyEvent);
@@ -54,6 +55,8 @@ if (!framework.IsHeadless())
     ui.GraphicsView().DragEnterEvent.connect(HandleDragEnterEvent);
     ui.GraphicsView().DragMoveEvent.connect(HandleDragMoveEvent);
     ui.GraphicsView().DropEvent.connect(HandleDropEvent);
+    
+    frame.Updated.connect(Update);
 }
 
 // QByteArray's toString not exposed in QtScript, must do it manually.
@@ -64,6 +67,7 @@ QByteArray.prototype.toString = function()
 
 function OnTouchBegin(e)
 {
+    touchEventPrevFrame = e;
     useTouchInput = true;
 //    Log("ObjectMove OnTouchBegin " + e.touchPoints().length);
     lastTouchTimestamp = frame.WallClockTime();
@@ -74,36 +78,68 @@ function OnTouchBegin(e)
     {
         prevFrameMouseX = touches[i].pos().x();
         prevFrameMouseY = touches[i].pos().y();
-        return;
+        break;
+    }
+
+    BeginMove();
+}
+
+function BeginMove()
+{
+    var r = scene.ogre.Raycast(CurrentMouseRay(), -1);
+    if (r.entity && IsObjectMovable(r.entity))
+        selectedObject = r.entity;
+    else
+        selectedObject = null;
+
+    if (selectedObject) // calculate click/touch offset
+    {
+        var cameraEntity = renderer.MainCamera();
+//        var cameraEntity = scene.EntityByName("UiCamera");
+        var ray = CurrentMouseRay();
+        var camFwd = cameraEntity.placeable.WorldOrientation().Mul(scene.ForwardVector());
+        var orientedPlane = new Plane(camFwd.Mul(-1), 0);
+        var movePlane = new Plane(camFwd, orientedPlane.Distance(selectedObject.placeable.WorldPosition()));
+        var r = IntersectRayPlane(movePlane, ray);
+        if (r.intersects)
+        {
+            var moveTo = ray.GetPoint(r.distance);
+            touchOffset = selectedObject.placeable.WorldPosition().Sub(moveTo);
+        }
     }
 }
 
 function OnTouchUpdate(e)
 {
 //    Log("ObjectMove OnTouchUpdate " + e.touchPoints().length);
+    touchEventPrevFrame = e;
     lastTouchTimestamp = frame.WallClockTime();
-
+    touchActive = true;
     var touches = e.touchPoints();
     var numFingers = touches.length;
     for(i in touches)
     {
-        var x = touches[i].pos().x();
-        var y = touches[i].pos().y();
-//        var deltaX = x - prevFrameMouseX;
-//        var deltaY = y - prevFrameMouseY;
+        var x = Math.round(touches[i].pos().x());
+        var y = Math.round(touches[i].pos().y());
+        
+        touchDeltaX = x - prevFrameMouseX;
+        touchDeltaY = y - prevFrameMouseY;
+
 //        deltaX = deltaX * Math.min(3.0, Math.max(1.0, Math.abs(deltaX) / 3.0));
 //        deltaRotation += deltaX / ui.GraphicsView().width;
 //        cameraPitchAmount = Math.max(cameraPitchMin, Math.min(cameraPitchMax, cameraPitchAmount + deltaY / ui.GraphicsView().height));
 
-        prevFrameMouseX = x;//input.MousePos().x();
-        prevFrameMouseY = y;//input.MousePos().y();
-        return;
+        prevFrameMouseX = x;
+        prevFrameMouseY = y;
+        break;
     }
 
 }
 
 function OnTouchEnd(e)
 {
+    touchEventPrevFrame = e;
+    touchActive = false;
 //    Log("ObjectMove OnTouchEnd");
 }
 
@@ -214,34 +250,23 @@ function IsObjectMovable(e)
     return e.placeable && !e.terrain && e.dynamiccomponent && !(e.dynamiccomponent && e.dynamiccomponent.name == "Icon");
 }
 
+var touchActive = false;
+
 function Update(frameTime)
 {
-    if (input.IsMouseButtonPressed(1))
+/*
+    if (useTouchInput && touchEventPrevFrame)
     {
-        var r = scene.ogre.Raycast(CurrentMouseRay(), -1);
-        if (r.entity && IsObjectMovable(r.entity))
-            selectedObject = r.entity;
-        else
-            selectedObject = null;
-
-        if (selectedObject) // calculate click/touch offset
-        {
-            var cameraEntity = renderer.MainCamera();
-    //        var cameraEntity = scene.EntityByName("UiCamera");
-            var ray = CurrentMouseRay();
-            var camFwd = cameraEntity.placeable.WorldOrientation().Mul(scene.ForwardVector());
-            var orientedPlane = new Plane(camFwd.Mul(-1), 0);
-            var movePlane = new Plane(camFwd, orientedPlane.Distance(selectedObject.placeable.WorldPosition()));
-            var r = IntersectRayPlane(movePlane, ray);
-            if (r.intersects)
-            {
-                var moveTo = ray.GetPoint(r.distance);
-                touchOffset = selectedObject.placeable.WorldPosition().Sub(moveTo);
-            }
-        }
+        //TouchSelect(touchEventPrevFrame);
+        TouchMove(touchEventPrevFrame);
+        TouchRotate(touchEventPrevFrame);
+        return;
     }
+*/
+    if (input.IsMouseButtonPressed(1))
+        BeginMove();
 
-    if (input.IsMouseButtonDown(1))
+    if (touchActive || input.IsMouseButtonDown(1))
     {
 //        Log("MouseButtonDown " + frameTime);
 /*
@@ -261,7 +286,7 @@ function Update(frameTime)
 */
         if (selectedObject)
         {
-            var move = input.IsKeyDown(Qt.Key_1);
+            var move = useTouchInput ? true : input.IsKeyDown(Qt.Key_1);
             var rotate = input.IsKeyDown(Qt.Key_2);
             if (move)
             {
@@ -361,6 +386,7 @@ function MoveSelected(/*QPoint*/pos)
         //camFwd = camFwd.Mul(-1);
         var movePlane = new Plane(camFwd, orientedPlane.Distance(selectedObject.placeable.WorldPosition()));
 
+        // Uncomment the following lines to enable debug drawing.
 //        scene.ogre.DebugDrawLine(ray.pos, ray.dir.Mul(200), 1,0,0);
 //        scene.ogre.DebugDrawPlane(orientedPlane, 0,0,1);
 //        scene.ogre.DebugDrawPlane(movePlane, 0,1,0);

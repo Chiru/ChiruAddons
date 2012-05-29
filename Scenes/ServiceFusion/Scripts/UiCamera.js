@@ -33,6 +33,9 @@ const minDistanceFromGround = 50;
 const maxDistanceFromGround = 400;
 var moving = false; // Is camera in moving state
 var tilting = false; // Is camera in tilting state
+var prevFrameMouseX = -1;
+var prevFrameMouseY = -1;
+var useTouchInput = false;
 
 // Entry point for the script
 if (!framework.IsHeadless())
@@ -108,8 +111,6 @@ function ApplyCamera()
     me.soundlistener.active = true;
     ResetCamera();
 
-    frame.Updated.connect(Update);
-
     // Load the first scene.
     ++sceneIndex;
     SwitchScene();
@@ -117,23 +118,34 @@ function ApplyCamera()
     input.TouchBegin.connect(OnTouchBegin);
     input.TouchUpdate.connect(OnTouchUpdate);
     input.TouchEnd.connect(OnTouchEnd);
-    Log("input.IsGesturesEnabled() " + input.IsGesturesEnabled());
+//    Log("input.IsGesturesEnabled() " + input.IsGesturesEnabled());
+    frame.Updated.connect(Update);
 }
 
 function OnTouchBegin(e)
 {
-    Log("UiCamera OnTouchBegin " + e.touchPoints().length);
+    useTouchInput = true;
+//    Log("UiCamera OnTouchBegin " + e.touchPoints().length);
     lastTouchTimestamp = frame.WallClockTime();
+    var touches = e.touchPoints();
+    for(i in touches)
+    {
+        prevFrameMouseX = Math.round(touches[i].pos().x());
+        prevFrameMouseY = Math.round(touches[i].pos().y());
+        break; // for now, just use the pos from the first touch
+    }
 }
 
 var sceneResetTimer = 0;
+var touchDeltaX, touchDeltaY;
 
 function OnTouchUpdate(e)
 {
-    Log("UiCamera OnTouchUpdate " + e.touchPoints().length);
+//    Log("UiCamera OnTouchUpdate " + e.touchPoints().length);
     lastTouchTimestamp = frame.WallClockTime();
     var touches = e.touchPoints();
     var numFingers = touches.length;
+/*
     if (numFingers == 5)
     {
         sceneResetTimer += (frame.WallClockTime() - lastTouchTimestamp);
@@ -146,12 +158,36 @@ function OnTouchUpdate(e)
     }
     else
         sceneResetTimer = 0;
+*/
+    for(i in touches)
+    {
+        var x = Math.round(touches[i].pos().x());
+        var y = Math.round(touches[i].pos().y());
+        
+        touchDeltaX = x - prevFrameMouseX;
+        touchDeltaY = y - prevFrameMouseY;
+
+        prevFrameMouseX = x;
+        prevFrameMouseY = y;
+        break; // for now, just use the pos from the first touch
+    }
+    
+    if (numFingers == 2 && tilting == false)
+    {
+        //Log("Tilting true");
+        moving = false;
+        tilting = true;
+    }
+    else
+        tilting = false;
 }
 
 function OnTouchEnd(e)
 {
-    Log("UiCamera OnTouchEnd");
+//    Log("UiCamera OnTouchEnd");
     lastTouchTimestamp = frame.WallClockTime();
+    StopMovement();
+    prevFrameMouseX = prevFrameMouseY = -1;
 }
 
 function ResetCamera()
@@ -202,19 +238,24 @@ function HandleMouseEvent(e)
     case 1: // MouseMove
         if (moving)
         {
-            HandleMove(e.relativeX, e.relativeY, 0);
+            if (input.ItemAtCoords(e.x, e.y))
+                StopMovement(); // Mouse went on top of drop-down console or some other widget, abort movement.
+            else
+                HandleMove(e.relativeX, e.relativeY, 0);
         }
         else if (tilting)
         {
+            var relY = useTouchInput ? touchDeltaY : e.relativeY;//e.y - prevFrameMouseY; // e.relativeY;
+            //Log("tilting relY " + relY);
             var transform = me.placeable.transform;
-            transform.rot.x -= cameraData.rotate.sensitivity * e.relativeY;
+            transform.rot.x -= cameraData.rotate.sensitivity * relY/*e.relativeY*/;
             var oldRotX = transform.rot.x;
             transform.rot.x = Clamp(transform.rot.x, minTiltAngle, maxTiltAngle);
             me.placeable.transform = transform;
 
             if (oldRotX > minTiltAngle && oldRotX < maxTiltAngle)
             {
-                var d = e.relativeY * cMoveZSpeed * 30;
+                var d = relY/*e.relativeY*/ * cMoveZSpeed * 30;
                 var newPos = me.placeable.WorldPosition();
                 newPos = newPos.Add(scene.UpVector().Mul(d));
                 me.placeable.SetPosition(newPos);
@@ -240,12 +281,14 @@ function HandleMouseEvent(e)
             var result = scene.ogre.Raycast(e.x, e.y);
             //if (result.entity && !result.entity.dynamiccomponent && result.entity.dynamiccomponent.name != "Icon" && !result.entity.graphicsviewcanvas)
             moving = !(result.entity && IsObjectMovable(result.entity));
+            Log("ghgfhgfhgfhgfhgfhgfhgfh " + moving);
         }
         else if (e.button == 2)
         {
             var result = scene.ogre.Raycast(e.x, e.y);
             //if (result.entity && result.entity.dynamiccomponent && result.entity.dynamiccomponent.name != "Icon" && !result.entity.graphicsviewcanvas)
             tilting = !(result.entity && IsObjectMovable(result.entity));
+            Log("fdshjdsfhsfd");
             if (tilting)
             {
                 var mousePos = input.MousePos();
@@ -259,8 +302,6 @@ function HandleMouseEvent(e)
         }
         break;
     case 4: //MouseReleased
-        moving = false;
-        tilting = false;
         StopMovement();
         break;
     default:
@@ -355,6 +396,9 @@ function HandleMove(deltaX, deltaY, deltaZ)
 
 function StopMovement()
 {
+    moving = false;
+    tilting = false;
+
     if (!me.camera.IsActive())
         return;
     cameraData.move.amount.z = 0;
