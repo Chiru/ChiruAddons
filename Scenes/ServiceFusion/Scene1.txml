@@ -202,7 +202,7 @@
   <component type="EC_RigidBody" sync="true">
    <attribute value="0" name="Mass"/>
    <attribute value="0" name="Shape type"/>
-   <attribute value="5.000000 9.000000 1.000000" name="Size"/>
+   <attribute value="16.000000 27.000000 1.000000" name="Size"/>
    <attribute value="" name="Collision mesh ref"/>
    <attribute value="0.5" name="Friction"/>
    <attribute value="0" name="Restitution"/>
@@ -270,7 +270,7 @@
   <component type="EC_RigidBody" sync="true">
    <attribute value="0" name="Mass"/>
    <attribute value="0" name="Shape type"/>
-   <attribute value="5.000000 9.000000 1.000000" name="Size"/>
+   <attribute value="16.000000 27.000000 1.000000" name="Size"/>
    <attribute value="" name="Collision mesh ref"/>
    <attribute value="0.5" name="Friction"/>
    <attribute value="0" name="Restitution"/>
@@ -338,7 +338,7 @@
   <component type="EC_RigidBody" sync="true">
    <attribute value="0" name="Mass"/>
    <attribute value="0" name="Shape type"/>
-   <attribute value="5.000000 9.000000 1.000000" name="Size"/>
+   <attribute value="16.000000 27.000000 1.000000" name="Size"/>
    <attribute value="" name="Collision mesh ref"/>
    <attribute value="0.5" name="Friction"/>
    <attribute value="0" name="Restitution"/>
@@ -406,7 +406,7 @@
   <component type="EC_RigidBody" sync="true">
    <attribute value="0" name="Mass"/>
    <attribute value="0" name="Shape type"/>
-   <attribute value="5.000000 9.000000 1.000000" name="Size"/>
+   <attribute value="16.000000 27.000000 1.000000" name="Size"/>
    <attribute value="" name="Collision mesh ref"/>
    <attribute value="0.5" name="Friction"/>
    <attribute value="0" name="Restitution"/>
