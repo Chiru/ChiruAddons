@@ -420,3 +420,50 @@ function StopMovement()
 */
 }
 
+var /*float*/ lastDistance = 0;
+
+const /*float*/ ZoomSpeed = 0.02;
+const /*float*/ TranslateSpeed = 0.012;
+
+function DepthCameraUpdate()
+{
+/*
+    if (!selectedObject)
+    {
+        if (Input.touchCount == 2)
+        {
+            if (lastDistance == 0)
+            {
+                Rect left = WallRemoval.LeftTop;
+                Rect right = WallRemoval.RightTop;
+                if (left.Contains(Input.touches[0].position) || right.Contains(Input.touches[0].position) ||
+                    left.Contains(Input.touches[1].position) || right.Contains(Input.touches[1].position))
+                {
+                    lastDistance = -1;
+                }
+                else
+                    lastDistance = Vector2.Distance(Input.touches[0].position, Input.touches[1].position);
+            }
+            else if (Input.touches[0].phase == TouchPhase.Moved && Input.touches[1].phase == TouchPhase.Moved && lastDistance > 0)
+            {
+                float distance = Vector2.Distance(Input.touches[0].position, Input.touches[1].position);
+                transform.Translate(Vector3.left * (lastDistance - distance) *
+                    (DepthSelect.ReferenceHeight / Screen.height) * ZoomSpeed, Space.World);
+                lastDistance = distance;
+            }
+        }
+        else
+            lastDistance = 0;
+
+        if (Input.touchCount == 3 && Input.touches[0].phase == TouchPhase.Moved && 
+            Input.touches[1].phase == TouchPhase.Moved && Input.touches[2].phase == TouchPhase.Moved)
+        {
+            Vector2 avgDelta = (Input.touches[0].deltaPosition + Input.touches[1].deltaPosition + Input.touches[2].deltaPosition) / 3;
+            transform.Translate(new Vector3(0, -avgDelta.y * (DepthSelect.ReferenceHeight / Screen.height) * TranslateSpeed,
+                avgDelta.x * (DepthSelect.ReferenceHeight / Screen.height) * TranslateSpeed), Space.World);
+
+            transform.LookAt(new Vector3(transform.position.x + 15, 2, transform.position.z * 0.2f));
+        }
+    }
+*/
+}
