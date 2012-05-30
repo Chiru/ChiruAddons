@@ -27,7 +27,6 @@ var cameraData =
     motion : new float3(0,0,0)
 };
 
-var lastTouchTimestamp = frame.WallClockTime();
 const cMoveZSpeed = 0.03;//0.005; // was 0.0007 in Unity
 const minTiltAngle = 110;
 const maxTiltAngle = 170;
@@ -90,6 +89,13 @@ function ClearScene()
     currentContent = [];
 }
 
+function ResetScene()
+{
+    Log("Reseting scene.");
+    SwitchScene();
+    ResetCamera();
+}
+
 function SwitchScene()
 {
     if (sceneIndex < 0 || sceneIndex >= scenes.length)
@@ -128,7 +134,6 @@ function OnTouchBegin(e)
 {
     useTouchInput = true;
 //    Log("UiCamera OnTouchBegin " + e.touchPoints().length);
-    lastTouchTimestamp = frame.WallClockTime();
     var touches = e.touchPoints();
     for(i in touches)
     {
@@ -138,29 +143,13 @@ function OnTouchBegin(e)
     }
 }
 
-var sceneResetTimer = 0;
 var touchDeltaX, touchDeltaY;
 
 function OnTouchUpdate(e)
 {
 //    Log("UiCamera OnTouchUpdate " + e.touchPoints().length);
-    lastTouchTimestamp = frame.WallClockTime();
     var touches = e.touchPoints();
-    var numFingers = touches.length;
-/*
-    if (numFingers == 5)
-    {
-        sceneResetTimer += (frame.WallClockTime() - lastTouchTimestamp);
-        Log(sceneResetTimer);
-        if (sceneResetTimer >= 5)
-        {
-            ResetScene();
-            sceneResetTimer = 0;
-        }
-    }
-    else
-        sceneResetTimer = 0;
-*/
+    var touchCount = touches.length;
     for(i in touches)
     {
         var x = Math.round(touches[i].pos().x());
@@ -174,7 +163,7 @@ function OnTouchUpdate(e)
         break; // for now, just use the pos from the first touch
     }
     
-    if (numFingers == 2 && tilting == false)
+    if (touchCount == 2 && tilting == false)
     {
         //Log("Tilting true");
         moving = false;
@@ -183,20 +172,19 @@ function OnTouchUpdate(e)
     else
         tilting = false;
 
+    TouchResetScene(e);
     TouchChangeScene(e);
 }
 
 function OnTouchEnd(e)
 {
 //    Log("UiCamera OnTouchEnd");
-    lastTouchTimestamp = frame.WallClockTime();
     StopMovement();
     prevFrameMouseX = prevFrameMouseY = -1;
 }
 
 function ResetCamera()
 {
-    lastTouchTimestamp = frame.WallClockTime();
     var resetTr = scene.EntityByName("UiCameraCameraSpawnPos").placeable.transform;
     me.placeable.transform = resetTr;
 }
@@ -518,4 +506,31 @@ function TouchChangeScene(e)
             //transform.position = startPos;
             changeSceneTouchStart = touches[i].pos();
         }
+}
+
+var sceneResetTouchStartTime = 0;
+
+function TouchResetScene(e)
+{
+    var touches = e.touchPoints();
+    var touchCount = touches.length;
+    if (touchCount == 2 /* TODO touchCount == 5 only */ && input.IsKeyDown(Qt.Key_Control) && input.IsKeyDown(Qt.Key_Shift))
+    {
+        for(i in touches)
+        {
+            if (touches[i].state() == Qt.TouchPointPressed)
+            {
+                sceneResetTouchStartTime = frame.WallClockTime();
+                break;
+            }
+            else if (touches[i].state() == Qt.TouchPointReleased)
+            {
+                if (frame.WallClockTime() - sceneResetTouchStartTime >= 5)
+                {
+                    ResetScene();
+                    break;
+                }
+            }
+        }
+    }
 }
