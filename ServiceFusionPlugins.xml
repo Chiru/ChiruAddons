@@ -3,20 +3,16 @@
   <plugin path="OgreRenderingModule" />
   <plugin path="EnvironmentModule" />
   <plugin path="PhysicsModule" />
-  <plugin path="TundraProtocolModule" />
-  <plugin path="ECEditorModule" />
+  <plugin path="TundraProtocolModule" /> <!-- TODO: in theory not needed -->
+  <plugin path="ECEditorModule" /> <!-- TODO: can be removed from the finalized version -->
   <plugin path="JavascriptModule" />
   <plugin path="AssetModule" />
-  <plugin path="SkyXHydrax" />
-  <plugin path="DebugStatsModule" />
+  <plugin path="DebugStatsModule" /> <!-- TODO: can be removed from the finalized version -->
   <plugin path="3dUiModule" />
   <plugin path="RdfModule" />
   <plugin path="CanvasPlugin" />
   
   <jsplugin path="cameraapplication.js" />
-  <jsplugin path="MenuBar.js" />
-  <jsplugin path="RendererSettings.js" />
-  <jsplugin path="SoundSettings.js" />
   <jsplugin path="LoadingScreen.js" />
 
   <option name="--trustserverstorages" />
