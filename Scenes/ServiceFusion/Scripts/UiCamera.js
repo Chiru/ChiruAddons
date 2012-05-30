@@ -467,3 +467,52 @@ function DepthCameraUpdate()
     }
 */
 }
+
+function TouchChangeScene()
+{
+    var /*Vector2*/ touchStart;
+    var /*Vector3*/ startPos;
+/*
+    if (Input.touchCount == 3)
+    {
+        foreach (Touch touch in Input.touches)
+        {
+            if (touch.phase == TouchPhase.Began)
+            {
+                touchStart = touch.position;
+                startPos = transform.position;
+                break;
+            }
+            else if (touch.phase == TouchPhase.Ended)
+            {
+                if (Mathf.Abs(touch.position.x - touchStart.x) > Screen.width * 0.12f)
+                {
+                    if (touch.position.x > touchStart.x)
+                        PrevLevel();
+                    else
+                        NextLevel();
+
+                    break;
+                }
+                else
+                {
+                    transform.position = startPos;
+                }
+            }
+            else if (touch.phase == TouchPhase.Moved)
+            {
+                transform.position -= transform.right * touch.deltaPosition.x * 0.001f;
+            }
+        }
+    }
+    
+    foreach (Touch touch in Input.touches)
+    {
+        if ((touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) && Input.touchCount == 3)
+        {
+            transform.position = startPos;
+            touchStart = touch.position;
+        }
+    }
+*/
+}
