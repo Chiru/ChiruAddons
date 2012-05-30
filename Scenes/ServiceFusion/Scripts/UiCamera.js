@@ -9,6 +9,8 @@ var sceneIndex = -1;
 const scenes = ["Scene1.txml", "Scene2.txml", "Scene3.txml"];
 var currentContent = [];
 
+const cReferenceHeight = 768;
+
 var cameraData =
 {
     connected : false,
@@ -180,6 +182,8 @@ function OnTouchUpdate(e)
     }
     else
         tilting = false;
+
+    TouchChangeScene(e);
 }
 
 function OnTouchEnd(e)
@@ -281,10 +285,10 @@ function HandleMouseEvent(e)
             var result = scene.ogre.Raycast(e.x, e.y);
             //if (result.entity && !result.entity.dynamiccomponent && result.entity.dynamiccomponent.name != "Icon" && !result.entity.graphicsviewcanvas)
             moving = !(result.entity && IsObjectMovable(result.entity));
-            Log("ghgfhgfhgfhgfhgfhgfhgfh " + moving);
         }
         else if (e.button == 2)
         {
+        Log("fajsdfdsja1241241");
             var result = scene.ogre.Raycast(e.x, e.y);
             //if (result.entity && result.entity.dynamiccomponent && result.entity.dynamiccomponent.name != "Icon" && !result.entity.graphicsviewcanvas)
             tilting = !(result.entity && IsObjectMovable(result.entity));
@@ -430,7 +434,7 @@ function DepthCameraUpdate()
 /*
     if (!selectedObject)
     {
-        if (Input.touchCount == 2)
+        if (touchCount == 2)
         {
             if (lastDistance == 0)
             {
@@ -444,23 +448,23 @@ function DepthCameraUpdate()
                 else
                     lastDistance = Vector2.Distance(Input.touches[0].position, Input.touches[1].position);
             }
-            else if (Input.touches[0].phase == TouchPhase.Moved && Input.touches[1].phase == TouchPhase.Moved && lastDistance > 0)
+            else if (Input.touches[0].state() == Qt.TouchPointMoved && Input.touches[1].state() == Qt.TouchPointMoved && lastDistance > 0)
             {
                 float distance = Vector2.Distance(Input.touches[0].position, Input.touches[1].position);
                 transform.Translate(Vector3.left * (lastDistance - distance) *
-                    (DepthSelect.ReferenceHeight / Screen.height) * ZoomSpeed, Space.World);
+                    (cReferenceHeight / Screen.height) * ZoomSpeed, Space.World);
                 lastDistance = distance;
             }
         }
         else
             lastDistance = 0;
 
-        if (Input.touchCount == 3 && Input.touches[0].phase == TouchPhase.Moved && 
-            Input.touches[1].phase == TouchPhase.Moved && Input.touches[2].phase == TouchPhase.Moved)
+        if (touchCount == 3 && Input.touches[0].state() == Qt.TouchPointMoved && 
+            Input.touches[1].state() == Qt.TouchPointMoved && Input.touches[2].state() == Qt.TouchPointMoved)
         {
             Vector2 avgDelta = (Input.touches[0].deltaPosition + Input.touches[1].deltaPosition + Input.touches[2].deltaPosition) / 3;
-            transform.Translate(new Vector3(0, -avgDelta.y * (DepthSelect.ReferenceHeight / Screen.height) * TranslateSpeed,
-                avgDelta.x * (DepthSelect.ReferenceHeight / Screen.height) * TranslateSpeed), Space.World);
+            transform.Translate(new Vector3(0, -avgDelta.y * (cReferenceHeight / Screen.height) * TranslateSpeed,
+                avgDelta.x * (cReferenceHeight / Screen.height) * TranslateSpeed), Space.World);
 
             transform.LookAt(new Vector3(transform.position.x + 15, 2, transform.position.z * 0.2f));
         }
@@ -468,51 +472,50 @@ function DepthCameraUpdate()
 */
 }
 
-function TouchChangeScene()
+var /*QPointF*/ changeSceneTouchStart;
+var /*Vector3*/ changeScenetartPos;
+
+function TouchChangeScene(e)
 {
-    var /*Vector2*/ touchStart;
-    var /*Vector3*/ startPos;
-/*
-    if (Input.touchCount == 3)
+    var touches = e.touchPoints();
+    var touchCount = touches.length;
+    if (touchCount == 2 /* TODO 3*/ && input.IsKeyDown(Qt.Key_Control))
     {
-        foreach (Touch touch in Input.touches)
+        for(i in touches)
         {
-            if (touch.phase == TouchPhase.Began)
+            if (touches[i].state() == Qt.TouchPointPressed)
             {
-                touchStart = touch.position;
-                startPos = transform.position;
+                changeSceneTouchStart = touches[i].pos();
+//                startPos = transform.position;
                 break;
             }
-            else if (touch.phase == TouchPhase.Ended)
+            else if (touches[i].state() == Qt.TouchPointReleased)
             {
-                if (Mathf.Abs(touch.position.x - touchStart.x) > Screen.width * 0.12f)
+                if (Math.abs(touches[i].pos().x() - changeSceneTouchStart.x()) > ui.GraphicsScene().width() * 0.12)
                 {
-                    if (touch.position.x > touchStart.x)
-                        PrevLevel();
+                    if (touches[i].pos().x > changeSceneTouchStart.x())
+                        MoveToPrevScene();
                     else
-                        NextLevel();
+                        MoveToNextScene();
 
                     break;
                 }
                 else
                 {
-                    transform.position = startPos;
+                    //transform.position = startPos;
                 }
             }
-            else if (touch.phase == TouchPhase.Moved)
+            else if (touches[i].state() == Qt.TouchPointMoved)
             {
-                transform.position -= transform.right * touch.deltaPosition.x * 0.001f;
+                //transform.position -= transform.right * touches[i].deltaPosition.x * 0.001f;
             }
         }
     }
-    
-    foreach (Touch touch in Input.touches)
-    {
-        if ((touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) && Input.touchCount == 3)
+
+    for(i in touches)
+        if (touches[i].state() == Qt.TouchPointReleased && touchCount == 2 /* TODO touchCount == 3*/ && input.IsKeyDown(Qt.Key_Control))
         {
-            transform.position = startPos;
-            touchStart = touch.position;
+            //transform.position = startPos;
+            changeSceneTouchStart = touches[i].pos();
         }
-    }
-*/
 }

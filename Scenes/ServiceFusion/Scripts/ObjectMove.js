@@ -286,7 +286,7 @@ function Update(frameTime)
 */
         if (selectedObject)
         {
-            var move = useTouchInput ? true : input.IsKeyDown(Qt.Key_1);
+            var move = /*useTouchInput ? true :*/ input.IsKeyDown(Qt.Key_1);
             var rotate = input.IsKeyDown(Qt.Key_2);
             if (move)
             {
