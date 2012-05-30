@@ -9,7 +9,7 @@ Usage Instructions
 ==================
 0) Clone Tundra from LudoCraft/Tundra, realXtend/naali or Chiru/naali
 1) Clone github/Chiru/ChiruAddons/ to <Tundra>/ChiruAddons/
-2) Append the contents of 3dUiCMakeBuildConfig.txt to Tundra's CMakeBuildConfig.txt
+2) Append the contents of ServiceFusionCMakeBuildConfig.txt to Tundra's CMakeBuildConfig.txt
 3) Windows: Copy *.dll from Cie/CieModule/redland to <Tundra>/bin
 3) Ubuntu: See Building Ubuntu 11.10
 4) Copy ServiceFusionPlugins.xml and ServiceFusion.xml to <Tundra>/bin/ and run Tundra either with

@@ -2,7 +2,7 @@
 set -e
 set -x
 
-# Copy this file in Tundra/tools folder and run.
+# This scripts assumes it's run from under src/ChiruAddons in the Tundra tree.
 
 # Note:
 # Remember to run build-ubuntu-deps.bash script before executing this script.
