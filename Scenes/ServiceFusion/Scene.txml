@@ -129,7 +129,7 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="-11.193558,-3.086172,-16.613007,0.000000,-0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="-11.193558,0.910000,-17.610001,0.000000,-0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
@@ -152,7 +152,7 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="5.569355,2.087685,-9.336764,0.000000,-0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="5.569355,2.087685,-9.340000,14.000000,-37.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
@@ -175,7 +175,7 @@
    <attribute value="" name="Script class name"/>
   </component>
   <component type="EC_GraphicsViewCanvas" sync="true">
-   <attribute value="Texture_Screen_1" name="Output texture"/>
+   <attribute value="Texture_Screen_2" name="Output texture"/>
    <attribute value="260" name="Texture width"/>
    <attribute value="260" name="Texture height"/>
    <attribute value="1" name="Submesh"/>
@@ -195,7 +195,7 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="-4.616852,4.682670,-14.466479,0.000000,-0.000000,0.000000,0.500000,0.500000,0.500000" name="Transform"/>
+   <attribute value="-6.620000,-3.080000,-11.700000,-12.000000,21.000000,0.000000,0.500000,0.500000,0.500000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
@@ -225,7 +225,7 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="-11.193558,-1.678815,-16.613007,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="-11.193558,1.320000,-16.613007,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
@@ -248,7 +248,7 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="-11.193558,-0.286307,-16.613007,0.000000,-0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="-11.190000,2.710000,-20.610001,0.000000,-0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
@@ -271,30 +271,7 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="-11.193558,1.113813,-16.613007,0.000000,-0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
-   <attribute value="false" name="Show bounding box"/>
-   <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
-   <attribute value="UiCamera" name="Parent entity ref"/>
-   <attribute value="" name="Parent bone name"/>
-  </component>
-  <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
- </entity>
- <entity id="12" sync="1">
-  <component type="EC_Mesh" sync="true">
-   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
-   <attribute value="local://sampo_card.mesh" name="Mesh ref"/>
-   <attribute value="" name="Skeleton ref"/>
-   <attribute value="local://sampo_card.material" name="Mesh materials"/>
-   <attribute value="0" name="Draw distance"/>
-   <attribute value="true" name="Cast shadows"/>
-  </component>
-  <component type="EC_Name" sync="true">
-   <attribute value="sampo_card" name="name"/>
-   <attribute value="" name="description"/>
-  </component>
-  <component type="EC_Placeable" sync="true">
-   <attribute value="-11.193558,2.496622,-16.613007,0.000000,-0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="-11.193558,3.110000,-18.610001,0.000000,-0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
@@ -341,6 +318,29 @@
   </component>
   <component type="EC_Placeable" sync="true">
    <attribute value="-10.923296,5.310283,-16.297094,0.000000,-0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
+ </entity>
+ <entity id="12" sync="1">
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="local://sampo_card.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="local://sampo_card.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="true" name="Cast shadows"/>
+  </component>
+  <component type="EC_Name" sync="true">
+   <attribute value="sampo_card" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-11.193558,3.500000,-17.610001,0.000000,-0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
