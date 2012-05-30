@@ -1,4 +1,3 @@
-// !ref: ScreenPrefab.txml
 // !ref: InfoBubblePrefab.txml
 
 /*
@@ -208,10 +207,10 @@ function HandleDropEvent(e)
         var pos = ray.GetPoint(preferredDistance)
 //        var worldOffsetVec = camEntity.placeable.transform.Orientation().Mul(new float3(0, 1.5, -preferredDistance));
 
-        var ents = scene.LoadSceneXML(asset.GetAsset("ScreenPrefab.txml").DiskSource(), false, false, 0);
+        var ents = scene.LoadSceneXML(asset.GetAsset("InfoBubblePrefab.txml").DiskSource(), false, false, 0);
         if (ents.length == 0)
         {
-            LogE("Could not instantiate ScreenPrefab.txml");
+            LogE("Could not instantiate InfoBubblePrefab.txml");
             return;
         }
 
