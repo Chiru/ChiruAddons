@@ -4,9 +4,10 @@
 // !ref: Scene2.txml
 // !ref: Scene3.txml
 
-var sceneIndex = -1;
 // Scene rotation
+var sceneIndex = -1;
 const scenes = ["Scene1.txml", "Scene2.txml", "Scene3.txml"];
+// Current content of the active scene
 var currentContent = [];
 
 const cReferenceHeight = 768;
@@ -38,6 +39,18 @@ var prevFrameMouseX = -1;
 var prevFrameMouseY = -1;
 var useTouchInput = false;
 
+// Returns distance between two QPoint(F)s.
+function DistanceQPointF(/*QPoint(F)*/ pos1, /*QPoint(F)*/ pos2)
+{
+    return new float2(pos1.x(), pos1.y()).Distance(new float2(pos2.x(), pos2.y()));
+}
+
+// Substracts two QPoint(F)s and returns the result as float2.
+function SubQPointF(/*QPoint(F)*/ pos1, /*QPoint(F)*/ pos2)
+{
+    return new float2(pos1.x() - pos2.x(), pos1.y() - pos2.y());
+}
+
 // Entry point for the script
 if (!framework.IsHeadless())
 {
@@ -49,7 +62,6 @@ if (!framework.IsHeadless())
     ic = input.RegisterInputContextRaw("UiCamera", 102);
     ic.KeyEventReceived.connect(HandleKeyEvent);
     ic.MouseEventReceived.connect(HandleMouseEvent);
-    ic.GestureEventReceived(HandleGestureEvent);
 
     frame.DelayedExecute(1).Triggered.connect(ApplyCamera);
     me.Action("ResetCamera").Triggered.connect(ResetCamera);
@@ -123,31 +135,19 @@ function ApplyCamera()
     ++sceneIndex;
     SwitchScene();
 
-    input.TouchBegin.connect(OnTouchBegin);
-    input.TouchUpdate.connect(OnTouchUpdate);
+    input.TouchBegin.connect(TouchUpdate);
+    input.TouchUpdate.connect(TouchUpdate);
     input.TouchEnd.connect(OnTouchEnd);
-//    Log("input.IsGesturesEnabled() " + input.IsGesturesEnabled());
-    frame.Updated.connect(Update);
-}
 
-function OnTouchBegin(e)
-{
-    useTouchInput = true;
-//    Log("UiCamera OnTouchBegin " + e.touchPoints().length);
-    var touches = e.touchPoints();
-    for(i in touches)
-    {
-        prevFrameMouseX = Math.round(touches[i].pos().x());
-        prevFrameMouseY = Math.round(touches[i].pos().y());
-        break; // for now, just use the pos from the first touch
-    }
+    frame.Updated.connect(Update);
 }
 
 var touchDeltaX, touchDeltaY;
 
-function OnTouchUpdate(e)
+function TouchUpdate(e)
 {
-//    Log("UiCamera OnTouchUpdate " + e.touchPoints().length);
+    useTouchInput = true;
+
     var touches = e.touchPoints();
     var touchCount = touches.length;
     for(i in touches)
@@ -172,8 +172,9 @@ function OnTouchUpdate(e)
     else
         tilting = false;
 
-    TouchResetScene(e);
-    TouchChangeScene(e);
+    TouchZoom(touchCount, touches, e);
+    TouchResetScene(touchCount, touches, e);
+    TouchChangeScene(touchCount, touches, e);
 }
 
 function OnTouchEnd(e)
@@ -215,11 +216,6 @@ function IsObjectMovable(e)
     return e.placeable && !e.terrain && e.dynamiccomponent && !(e.dynamiccomponent && e.dynamiccomponent.name == "Icon");
 }
 
-function HandleGestureEvent(e)
-{
-    Log("HandleGestureEvent :" + e.eventType);
-}
-
 function HandleMouseEvent(e)
 {
     if (!me.camera.IsActive())
@@ -258,13 +254,8 @@ function HandleMouseEvent(e)
         if (moving)
         {
 //            HandleMove(0, 0, e.relativeZ);
-            var d = Clamp(e.relativeZ/30, -5, 5);
-            var newPos = me.placeable.WorldPosition();
-            var dir = me.placeable.Orientation().Mul(scene.ForwardVector()).Normalized();
-            var r = scene.ogre.Raycast(new Ray(newPos, dir), -1);
-            newPos = newPos.Add(dir.Mul(d));
-            me.placeable.SetPosition(newPos);
-            // TODO Use minDistanceFromGround and maxDistanceFromGround 
+            var d = Clamp(e.relativeZ/30, -10, 10);
+            Zoom(d);
         }
         break;
     case 3: // MousePressed
@@ -299,6 +290,17 @@ function HandleMouseEvent(e)
     default:
         break;
     }
+}
+
+function Zoom(d)
+{
+    var newPos = me.placeable.WorldPosition();
+    var dir = me.placeable.Orientation().Mul(scene.ForwardVector()).Normalized();
+    var r = scene.ogre.Raycast(new Ray(newPos, dir), -1);
+    newPos = newPos.Add(dir.Mul(d));
+    me.placeable.SetPosition(newPos);
+    // TODO Use minDistanceFromGround and maxDistanceFromGround 
+
 }
 
 function ToggleCamera()
@@ -413,60 +415,44 @@ function StopMovement()
 }
 
 var /*float*/ lastDistance = 0;
+const /*float*/ cZoomSpeed = 0.2; // 0.02 in Unity;
+const /*float*/ cTranslateSpeed = 0.012;
 
-const /*float*/ ZoomSpeed = 0.02;
-const /*float*/ TranslateSpeed = 0.012;
-
-function DepthCameraUpdate()
+function TouchZoom(touchCount, touches, e)
 {
-/*
-    if (!selectedObject)
+//    if (!allowRotate && touchCount == 0)
+//        allowRotate = true;
+
+    if (touchCount == 2 /* && !iconMove.IsSelected*/)
     {
-        if (touchCount == 2)
+        if (lastDistance == 0)
         {
-            if (lastDistance == 0)
+            lastDistance = DistanceQPointF(touches[0].pos(), touches[1].pos());
+            //Log("lastDistance " + lastDistance);
+        }
+        else if (touches[0].state() == Qt.TouchPointMoved && touches[1].state() == Qt.TouchPointMoved && lastDistance > 0)
+        {
+            var distance = DistanceQPointF(touches[0].pos(), touches[1].pos());
+            var dotP = Math.abs(SubQPointF(touches[0].pos(), touches[1].pos()).Normalized().Dot(new float2(1,1).Normalized()));
+            //Log("dotP " + dotP);
+            //Log("Math.abs(1 - dotP) " + Math.abs(1 - dotP));
+            if (/*Math.abs(distance - lastDistance) > 3f &&*/ Math.abs(1 - dotP) < 0.8/*0.2*/)
             {
-                Rect left = WallRemoval.LeftTop;
-                Rect right = WallRemoval.RightTop;
-                if (left.Contains(Input.touches[0].position) || right.Contains(Input.touches[0].position) ||
-                    left.Contains(Input.touches[1].position) || right.Contains(Input.touches[1].position))
-                {
-                    lastDistance = -1;
-                }
-                else
-                    lastDistance = Vector2.Distance(Input.touches[0].position, Input.touches[1].position);
-            }
-            else if (Input.touches[0].state() == Qt.TouchPointMoved && Input.touches[1].state() == Qt.TouchPointMoved && lastDistance > 0)
-            {
-                float distance = Vector2.Distance(Input.touches[0].position, Input.touches[1].position);
-                transform.Translate(Vector3.left * (lastDistance - distance) *
-                    (cReferenceHeight / Screen.height) * ZoomSpeed, Space.World);
+            Log("fjsdjfdsjfsdj");
+                Zoom((lastDistance - distance) * (cReferenceHeight / ui.GraphicsScene().height()) * cZoomSpeed);
                 lastDistance = distance;
             }
         }
-        else
-            lastDistance = 0;
-
-        if (touchCount == 3 && Input.touches[0].state() == Qt.TouchPointMoved && 
-            Input.touches[1].state() == Qt.TouchPointMoved && Input.touches[2].state() == Qt.TouchPointMoved)
-        {
-            Vector2 avgDelta = (Input.touches[0].deltaPosition + Input.touches[1].deltaPosition + Input.touches[2].deltaPosition) / 3;
-            transform.Translate(new Vector3(0, -avgDelta.y * (cReferenceHeight / Screen.height) * TranslateSpeed,
-                avgDelta.x * (cReferenceHeight / Screen.height) * TranslateSpeed), Space.World);
-
-            transform.LookAt(new Vector3(transform.position.x + 15, 2, transform.position.z * 0.2f));
-        }
     }
-*/
+    else
+        lastDistance = 0;
 }
 
 var /*QPointF*/ changeSceneTouchStart;
 var /*Vector3*/ changeScenetartPos;
 
-function TouchChangeScene(e)
+function TouchChangeScene(touchCount, touches, e)
 {
-    var touches = e.touchPoints();
-    var touchCount = touches.length;
     if (touchCount == 2 /* TODO 3*/ && input.IsKeyDown(Qt.Key_Control))
     {
         for(i in touches)
@@ -510,10 +496,8 @@ function TouchChangeScene(e)
 
 var sceneResetTouchStartTime = 0;
 
-function TouchResetScene(e)
+function TouchResetScene(touchCount, touches, e)
 {
-    var touches = e.touchPoints();
-    var touchCount = touches.length;
     if (touchCount == 2 /* TODO touchCount == 5 only */ && input.IsKeyDown(Qt.Key_Control) && input.IsKeyDown(Qt.Key_Shift))
     {
         for(i in touches)
