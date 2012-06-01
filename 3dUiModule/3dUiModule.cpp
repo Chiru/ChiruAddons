@@ -13,7 +13,6 @@
 #include "IVisualContainer.h"
 #include "Layout.h"
 #include "Position3.h"
-#include "RdfVocabulary.h"
 #include "ScriptManager.h"
 #include "ScriptServices.h"
 #include "LoggingFunctions.h"

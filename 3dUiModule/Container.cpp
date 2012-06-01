@@ -4,24 +4,12 @@
 #include "EventManager.h"
 #include "Layout.h"
 #include "IVisualContainer.h"
-#include "RdfVocabulary.h"
 
 #include <cassert>
 #include <algorithm>
 
 namespace CieMap
 {
-
-/// @todo The following are temporarily here
-const QString RdfVocabulary::baseUri = "http://cie/";
-const QString RdfVocabulary::namespacePrefix = "cie";
-const QString RdfVocabulary::sourceApplication = baseUri + "source-application";
-const QString RdfVocabulary::geoLocation = baseUri + "geo";
-const QString RdfVocabulary::dateTime = baseUri + "datetime";
-const QString RdfVocabulary::data = baseUri + "data";
-const QString RdfVocabulary::metadata = baseUri + "metadata";
-const QString RdfVocabulary::dataSource = baseUri + "data-source";
-
 Container::Container(IVisualContainer *vc) :
     rdfMemoryStore(0),
     visualUnity(vc),

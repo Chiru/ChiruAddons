@@ -4,6 +4,7 @@
 
 #include "ScriptManager.h"
 #include "IScript.h"
+#include "LoggingFunctions.h"
 
 namespace CieMap
 {
@@ -28,12 +29,12 @@ int ScriptManager::RegisterScript(const Tag &tag, IScript *script)
 {
     if (!script)
     {
-        /// @todo print error throw new System.ArgumentNullException("Parameter cannot be null", "script");
+        LogError("ScriptManager::RegisterScript: null script.");
         return InvalidId;
     }
     if (tag.IsEmpty())
     {
-        /// @todo print error throw new System.ArgumentException("Parameter cannot be null or empty", "tag");
+        LogError("ScriptManager::RegisterScript: empty tag.");
         return InvalidId;
     }
 
@@ -61,14 +62,9 @@ std::vector<int> ScriptManager::ScriptIdsForTag(const Tag &tag) const
 void ScriptManager::RunScript(int id, const Tag &tag, IMemoryStore *rdfStore)
 {
     if (id != InvalidId && id >= 0 && id < (int)scripts.size())
-    {
         scripts[id]->Run(tag, rdfStore);
-    }
     else
-    {
-        /// @todo print error
-        //throw new System.ArgumentOutOfRangeException("Parameter out of range", "id");
-    }
+        LogError("ScriptManager::RunScript: invalid script ID " + QString::number(id));
 }
 
 }
