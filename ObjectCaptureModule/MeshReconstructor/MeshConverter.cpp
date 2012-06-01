@@ -28,7 +28,28 @@ MeshConverter::~MeshConverter()
 
 Ogre::ManualObject* MeshConverter::CreateMesh(pcl::PolygonMesh::Ptr inputMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr inputCloud)
 {
-    Ogre::ManualObject *manual_object = createManualObject(inputCloud, Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr input_cloud = inputCloud;
+
+    size_t vertexcount = input_cloud->points.size();
+    size_t indicescount = 0;
+
+    // estimation for the index count is triangle_size*3*2 and it is always larger than the real value
+    // Calculate real value for indices
+    for (size_t i = 0; i < inputMesh->polygons.size(); i++)
+                indicescount += inputMesh->polygons[i].vertices.size();
+
+    Ogre::ManualObject *ogreManual = createManualObject(vertexcount, indicescount, Ogre::RenderOperation::OT_TRIANGLE_LIST);
+
+    for (size_t i = 0; i < input_cloud->points.size(); i++)
+    {
+        Ogre::Real r = (Ogre::Real)input_cloud->points[i].r / (Ogre::Real)255;
+        Ogre::Real g = (Ogre::Real)input_cloud->points[i].g / (Ogre::Real)255;
+        Ogre::Real b = (Ogre::Real)input_cloud->points[i].b / (Ogre::Real)255;
+
+        ogreManual->colour(r, g, b);
+        ogreManual->position(input_cloud->points[i].x, input_cloud->points[i].y, input_cloud->points[i].z);
+        ogreManual->normal(input_cloud->points[i].data_c[0], input_cloud->points[i].data_c[1], input_cloud->points[i].data_c[2]);
+    }
 
     //Add indexing data to the manualobject
     for (size_t i = 0; i < inputMesh->polygons.size(); i++)
@@ -36,43 +57,37 @@ Ogre::ManualObject* MeshConverter::CreateMesh(pcl::PolygonMesh::Ptr inputMesh, p
         for (size_t j = 0; j < inputMesh->polygons[i].vertices.size(); j++)
         {
             int index = inputMesh->polygons[i].vertices[j];
-            manual_object->index(index);
+            ogreManual->index(index);
         }
     }
-    manual_object->end();
+    ogreManual->end();
 
-    return manual_object;
+    return ogreManual;
 }
 
 Ogre::ManualObject* MeshConverter::CreatePointMesh(PointCloud::Ptr inputCloud)
 {
-    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
-    input_cloud->points.resize(inputCloud->size());
-    //LogInfo("MeshReconstructor::processCloud poinst in cloud:" + ToString(inputCloud->size()));
+    size_t vertexcount = inputCloud->points.size();
 
-    //Convert PointXYZRGBA cloud to PointXYZRGBNormal cloud
-    for (size_t i = 0; i < input_cloud->points.size(); i++)
+    Ogre::ManualObject *ogreManual = createManualObject(vertexcount, vertexcount, Ogre::RenderOperation::OT_POINT_LIST);
+
+    for (size_t i = 0; i < inputCloud->points.size(); i++)
     {
-        input_cloud->points[i].x = inputCloud->points[i].x;
-        input_cloud->points[i].y = inputCloud->points[i].y;
-        input_cloud->points[i].z = inputCloud->points[i].z;
-        input_cloud->points[i].r = inputCloud->points[i].r;
-        input_cloud->points[i].g = inputCloud->points[i].g;
-        input_cloud->points[i].b = inputCloud->points[i].b;
+        Ogre::Real r = (Ogre::Real)inputCloud->points[i].r / (Ogre::Real)255;
+        Ogre::Real g = (Ogre::Real)inputCloud->points[i].g / (Ogre::Real)255;
+        Ogre::Real b = (Ogre::Real)inputCloud->points[i].b / (Ogre::Real)255;
 
-        //Normals
-        input_cloud->points[i].data_c[0] = 1;
-        input_cloud->points[i].data_c[1] = 1;
-        input_cloud->points[i].data_c[2] = 1;
+        ogreManual->colour(r, g, b);
+        ogreManual->position(inputCloud->points[i].x, inputCloud->points[i].y, inputCloud->points[i].z);
+        ogreManual->index(i);
     }
 
-    Ogre::ManualObject *object = createManualObject(input_cloud, Ogre::RenderOperation::OT_POINT_LIST);
-    object->end();
+    ogreManual->end();
 
-    return object;
+    return ogreManual;
 }
 
-Ogre::ManualObject* MeshConverter::createManualObject(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr input_cloud, Ogre::RenderOperation::OperationType operationType)
+Ogre::ManualObject* MeshConverter::createManualObject(size_t vertexCount, size_t indicesCount, Ogre::RenderOperation::OperationType operationType)
 {
     scene_ = framework_->Scene()->MainCameraScene();
     if (scene_)
@@ -85,36 +100,12 @@ Ogre::ManualObject* MeshConverter::createManualObject(pcl::PointCloud<pcl::Point
 
     //double startime = pcl::getTime();
 
-    // estimation for the index count is triangle_size*3*2 and it is always larger than the real value
-    size_t triangle_size = input_cloud->points.size();
-    size_t indices_count = triangle_size*3*2;
-
-    //LogInfo("MeshConverter: Vertex count: "+ ToString(triangle_size));
-    //LogInfo("MeshConverter: Index count: "+ ToString(indices_count));
-
     //LogInfo("MeshConverter: Begin of manual object creation");
     ogreManual->clear();
-    ogreManual->estimateVertexCount(triangle_size);
-    ogreManual->estimateIndexCount(indices_count);
+    ogreManual->estimateVertexCount(vertexCount);
+    ogreManual->estimateIndexCount(indicesCount);
     ogreManual->begin("CapturedObject", operationType);
     ogreManual->setDynamic(false);
-
-    //LogInfo("MeshConverter: Setting positions...");
-
-    for (size_t i = 0; i < input_cloud->points.size(); i++)
-    {
-        Ogre::Real r = (Ogre::Real)input_cloud->points[i].r / (Ogre::Real)255;
-        Ogre::Real g = (Ogre::Real)input_cloud->points[i].g / (Ogre::Real)255;
-        Ogre::Real b = (Ogre::Real)input_cloud->points[i].b / (Ogre::Real)255;
-
-        ogreManual->colour(r, g, b);
-        ogreManual->position(input_cloud->points[i].x, input_cloud->points[i].y, input_cloud->points[i].z);
-
-        if (operationType == Ogre::RenderOperation::OT_POINT_LIST)
-            ogreManual->index(i);
-        else
-            ogreManual->normal(input_cloud->points[i].data_c[0], input_cloud->points[i].data_c[1], input_cloud->points[i].data_c[2]);
-    }
 
     //LogInfo("MeshConverter: Object created!");
     //double objectCreateTime = pcl::getTime() - startime;

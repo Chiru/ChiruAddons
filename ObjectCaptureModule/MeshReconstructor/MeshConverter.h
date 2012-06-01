@@ -29,7 +29,7 @@ public slots:
 
 private slots:
     /// @return Pointer to unclosed Ogre ManualObject
-    Ogre::ManualObject* createManualObject(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr input_cloud, Ogre::RenderOperation::OperationType operationType);
+    Ogre::ManualObject* createManualObject(size_t vertexCount, size_t indicesCount, Ogre::RenderOperation::OperationType operationType);
 
 private:
     Framework *framework_;
