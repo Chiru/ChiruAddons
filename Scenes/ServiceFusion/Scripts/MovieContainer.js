@@ -31,18 +31,6 @@ function Container(parent)
     this.container = C3DUiModule.ContainerFactory().CreateContainer(this.visual, parent);
     this.container.rdfStore = new RdfMemoryStore(RdfModule.theWorld);
 }
-// TODO use RdfVocabulary from RdfVocabulary.js instead
-Container.RDFVocabulary =
-{
-    baseUri : "http://cie/",
-    namespacePrefix : "cie",
-    sourceApplication : "http://cie/source-application",
-    geoLocation : "http://cie/geo",
-    dateTime : "http://cie/datetime",
-    data : "http://cie/data",
-    metadata : "http://cie/metadata",
-    dataSource : "http://cie/data-source"
-};
 
 function MovieContainer(parent)
 {
@@ -74,7 +62,7 @@ function MovieContainer(parent)
         {
             // Query return RDF data as list of statements.
             var statements = store.Select(world.CreateStatement(world.CreateResource(new QUrl("http://cie/news#")),
-                                          world.CreateResource(new QUrl(Container.RDFVocabulary.data)),
+                                          world.CreateResource(new QUrl(RdfVocabulary.data)),
                                           null));
             // Parse each statment to movie object.
             var movie = null;

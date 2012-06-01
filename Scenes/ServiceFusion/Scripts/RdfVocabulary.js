@@ -1,7 +1,7 @@
 // RdfVocabulary.js - RDF vocabulary that is used both internally and when communicating with preprocessor. */
 
 // RDF vocabulary that is used both internally and when communicating with preprocessor.
-var RdfVocabulary
+var RdfVocabulary =
 {
     // Base uri
     baseUri : "http://cie/",
@@ -20,3 +20,8 @@ var RdfVocabulary
     // Source of the original data
     dataSource : "data-source",
 };
+RdfVocabulary.geoLocation = RdfVocabulary.baseUri + RdfVocabulary.geoLocation;
+RdfVocabulary.dateTime = RdfVocabulary.baseUri + RdfVocabulary.dateTime;
+RdfVocabulary.data = RdfVocabulary.baseUri + RdfVocabulary.data;
+RdfVocabulary.metadata = RdfVocabulary.baseUri + RdfVocabulary.metadata;
+RdfVocabulary.dataSource = RdfVocabulary.baseUri + RdfVocabulary.dataSource;
