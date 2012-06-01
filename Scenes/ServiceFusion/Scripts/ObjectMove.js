@@ -11,8 +11,8 @@
 
 const cMoveZSpeed = 0.005; // was 0.0007 in Unity
 const cRotateSpeed = 1;
-const cReferenceHeight = 768;
-const longTouchTime = 2;
+// Screen resolution of the target device will be 1200x800
+const cReferenceHeight = 800;
 var selectedObject = null;
 
 var touchOffset = new float3(0,0,0);
@@ -88,16 +88,13 @@ function EndMove()
 function OnTouchUpdate(e)
 {
     prevFrameTouches = e.touchPoints();
-//    Log("ObjectMove OnTouchUpdate " + e.touchPoints().length);
     touchInputActive = true;
 /*
     var touches = e.touchPoints();
     var touchCount = touches.length;
     for(i in touches)
     {
-        if (touches[i].state() == Qt.TouchPointStationary)
-            LogE("jajajajajajjaja");
-        
+//        Log(touches[i].state()); 
         var x = Math.round(touches[i].pos().x());
         var y = Math.round(touches[i].pos().y());
         
@@ -121,26 +118,13 @@ function OnTouchBegin(e)
     touchInputActive = true;
     // Must enforce calling of TouchUpdate here, otherwise we get no events with 'pressed' state.
     TouchUpdate();
-/*
-    var touches = e.touchPoints();
-    var numFingers = touches.length;
-    for(i in touches)
-    {
-        prevFrameMouseX = touches[i].pos().x();
-        prevFrameMouseY = touches[i].pos().y();
-        break;
-    }
-*/
-//    TouchUpdate();
 }
 
 function OnTouchEnd(e)
 {
-//    Log("ObjectMove OnTouchEnd");
     prevFrameTouches = e.touchPoints();
     frame.DelayedExecute(0.1).Triggered.connect(function(){prevFrameTouches=[];});
-    touchInputActive = false;
-    //TouchUpdate();
+    touchInputActive = false;;
 }
 
 function HandleDragEnterEvent(e)
@@ -248,15 +232,10 @@ var rotAngle = 0;
 function TouchUpdate()
 {
     if (!prevFrameTouches/* || prevFrameTouches.length == 0*/)
-    {
-        //Log("no touches " + frame.WallClockTime());
         return;
-    }
-//    Log("TouchUpdate " + prevFrameTouches.length + " " + frame.WallClockTime());
-//    touchInputActive = true;
+ 
     var touches = prevFrameTouches;
     var touchCount = touches.length;
-
     for(i in touches)
     {
         var x = Math.round(touches[i].pos().x());
@@ -270,7 +249,7 @@ function TouchUpdate()
 
     TouchSelectObject(touchCount, touches, null);
     //TouchMoveObject(touchCount, touches, null);
-    //TouchRotateObject(touchCount, touches, null);
+    TouchRotateObject(touchCount, touches, null);
 }
 
 // Handles mouse + keyboard
@@ -426,13 +405,13 @@ function TouchRotateObject(touchCount, touches, e)
 
     if (selectedObject && touchCount == 2)
     {
-        var stationaryTouch = null; // QTouchEvent::TouchPoint
-        var moveTouch = null; // QTouchEvent::TouchPoint
-        if (touches[0].state() == Qt.TouchPointStationary)
+        var stationaryTouch = null;
+        var moveTouch = null;
+        if (IsTouchStateStationary(touches[0]))
             stationaryTouch = touches[0];
         if (touches[0].state() == Qt.TouchPointMoved)
             moveTouch = touches[0];
-        if (touches[1].state() == Qt.TouchPointStationary)
+        if (IsTouchStateStationary(touches[1]))
             stationaryTouch = touches[1];
         if (touches[1].state() == Qt.TouchPointMoved)
             moveTouch = touches[1];
@@ -445,7 +424,7 @@ function TouchRotateObject(touchCount, touches, e)
                 stationaryTouch = touches[1];
         }
 
-        var /*float*/ touchesDistance = DistanceQPointF(touches[0].pos(), touches[1].pos());
+        var touchesDistance = DistanceQPointF(touches[0].pos(), touches[1].pos());
         if (stationaryTouch && moveTouch && stationaryTouch.id() == selectedObjectFingerId &&
             !ViewportAreas.LeftBottom.Contains(moveTouch.Value.position) &&
             touchesDistance < UISelect.MoveZMinTouchDistance * (UISelect.ReferenceHeight / Screen.height))

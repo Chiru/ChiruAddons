@@ -24,8 +24,7 @@ Controls
  * 2 + RMB drag object - Rotate object
  * Ctrl + R - Reset camera's transform
  * Ctrl + E - Reset selected object's transform
-- Touch input - TODO/IN PROGRESS
- * not implemented yet
+- Touch input - IN PROGRESS
  * Scene
   - Move to next/prev. scene - 3 finger x-axis sweep
   - Move in scene - 1 finger drag

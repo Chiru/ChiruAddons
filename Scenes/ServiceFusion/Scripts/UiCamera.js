@@ -9,8 +9,8 @@ var sceneIndex = -1;
 const scenes = ["Scene1.txml", "Scene2.txml", "Scene3.txml"];
 // Current content of the active scene
 var currentContent = [];
-
-const cReferenceHeight = 768;
+// Screen resolution of the target device will be 1200x800
+const cReferenceHeight = 800;
 
 var cameraData =
 {
@@ -420,7 +420,6 @@ function TouchZoom(touchCount, touches, e)
             //Log("Math.abs(1 - dotP) " + Math.abs(1 - dotP));
             if (/*Math.abs(distance - lastDistance) > 3f &&*/ Math.abs(1 - dotP) < 0.8/*0.2*/)
             {
-                Log("Zooming!");
                 Zoom((lastDistance - distance) * (cReferenceHeight / ui.GraphicsScene().height()) * cZoomSpeed);
                 lastDistance = distance;
             }
