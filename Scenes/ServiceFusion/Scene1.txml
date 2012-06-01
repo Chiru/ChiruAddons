@@ -20,7 +20,7 @@
   </component>
   <component type="EC_Sky" sync="true">
    <attribute value="RexSkyBox" name="Material"/>
-   <attribute value="SkyFront.png;SkyBack.png;SkyLeft.png;SkyRight.png;SkyTop.png;SkyBot.png" name="Texture"/>
+   <attribute value="local://rex_sky_front.dds;local://rex_sky_back.dds;local://rex_sky_left.dds;local://rex_sky_right.dds;local://rex_sky_top.dds;local://rex_sky_bot.dds" name="Texture"/>
    <attribute value="999" name="Distance"/>
    <attribute value="0.000000 0.000000 0.000000 1.000000" name="Orientation"/>
    <attribute value="true" name="Draw first"/>
