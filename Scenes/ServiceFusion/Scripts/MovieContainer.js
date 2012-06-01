@@ -1,6 +1,7 @@
 engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
 engine.ImportExtension("qt.network");
+engine.IncludeFile("RdfVocabulary.js");
 
 ui.MainWindow().mouseTracking = true;
 
@@ -30,15 +31,19 @@ function Container(parent)
     this.container = C3DUiModule.ContainerFactory().CreateContainer(this.visual, parent);
     this.container.rdfStore = new RdfMemoryStore(RdfModule.theWorld);
 }
-Container.RDFVocabulary = {baseUri : "http://cie/",
-                           namespacePrefix : "cie",
-                           sourceApplication : "http://cie/source-application",
-                           geoLocation : "http://cie/geo",
-                           dateTime : "http://cie/datetime",
-                           data : "http://cie/data",
-                           metadata : "http://cie/metadata",
-                           dataSource : "http://cie/data-source"};
-                                         
+// TODO use RdfVocabulary from RdfVocabulary.js instead
+Container.RDFVocabulary =
+{
+    baseUri : "http://cie/",
+    namespacePrefix : "cie",
+    sourceApplication : "http://cie/source-application",
+    geoLocation : "http://cie/geo",
+    dateTime : "http://cie/datetime",
+    data : "http://cie/data",
+    metadata : "http://cie/metadata",
+    dataSource : "http://cie/data-source"
+};
+
 function MovieContainer(parent)
 {
     Container.call(this, parent);
