@@ -1,19 +1,12 @@
 // !ref: InfoBubblePrefab.txml
 
 /*
-- Touch input - TODO/IN PROGRESS
- * Scene
-  - Move to next/prev. scene - 3 finger x-axis sweep
-  - Move in scene - 1 finger drag
-  - Tilt scene - 2 finger y-axis drag
-  - "Zoom" scene (depth movement) - 2 finger pinching
  * Object
   - Object selection - long press
   - moving object
    * object rotation (yaw, pitch) - select object, second finger y-axis drag
    * object roll - select object, rotate second finger around object
-   * "Zoom" object (depth movement) - select object, one finder bottom-right corner of the screen, second finger y-axis drag
- * Scene reset - 5 finger long touch
+   * "Zoom" object (depth movement) - select object, one finger bottom-right corner of the screen, second finger y-axis drag
 */
 
 const cMoveZSpeed = 0.005; // was 0.0007 in Unity
@@ -23,12 +16,12 @@ const longTouchTime = 2;
 var selectedObject = null;
 
 var touchOffset = new float3(0,0,0);
-var useTouchInput = false;
-var touchEventPrevFrame = null;
-var lastTouchTimestamp = frame.WallClockTime();
+var touchInputActive = false;
 var prevFrameMouseX = -1;
 var prevFrameMouseY = -1;
 var touchDeltaX, touchDeltaY;
+
+var prevFrameTouches;
 
 function OnScriptDestroyed()
 {
@@ -42,7 +35,7 @@ if (!framework.IsHeadless())
     engine.ImportExtension("qt.gui");
     engine.IncludeFile("Log.js");
     engine.IncludeFile("MathUtils.js");
-    engine.IncludeFile("TouchInputObject.js");
+    engine.IncludeFile("Utils.js");
 
     var ic = input.RegisterInputContextRaw("3dUiObjectMove", 90);
     ic.KeyEventReceived.connect(HandleKeyEvent);
@@ -58,34 +51,11 @@ if (!framework.IsHeadless())
     frame.Updated.connect(Update);
 }
 
-// QByteArray's toString not exposed in QtScript, must do it manually.
-QByteArray.prototype.toString = function()
-{
-    return new QTextStream(this, QIODevice.ReadOnly).readAll();
-}
-
-function OnTouchBegin(e)
-{
-    touchEventPrevFrame = e;
-    useTouchInput = true;
-//    Log("ObjectMove OnTouchBegin " + e.touchPoints().length);
-    lastTouchTimestamp = frame.WallClockTime();
-
-    var touches = e.touchPoints();
-    var numFingers = touches.length;
-    for(i in touches)
-    {
-        prevFrameMouseX = touches[i].pos().x();
-        prevFrameMouseY = touches[i].pos().y();
-        break;
-    }
-
-    BeginMove();
-}
-
 function BeginMove()
 {
-    var r = scene.ogre.Raycast(CurrentMouseRay(), -1);
+    var ray = CurrentMouseRay();
+//    scene.ogre.DebugDrawLine(ray.pos, ray.dir.Mul(200), 1,0,0);
+    var r = scene.ogre.Raycast(ray, -1);
     if (r.entity && IsObjectMovable(r.entity))
         selectedObject = r.entity;
     else
@@ -95,7 +65,7 @@ function BeginMove()
     {
         var cameraEntity = renderer.MainCamera();
 //        var cameraEntity = scene.EntityByName("UiCamera");
-        var ray = CurrentMouseRay();
+
         var camFwd = cameraEntity.placeable.WorldOrientation().Mul(scene.ForwardVector());
         var orientedPlane = new Plane(camFwd.Mul(-1), 0);
         var movePlane = new Plane(camFwd, orientedPlane.Distance(selectedObject.placeable.WorldPosition()));
@@ -105,19 +75,29 @@ function BeginMove()
             var moveTo = ray.GetPoint(r.distance);
             touchOffset = selectedObject.placeable.WorldPosition().Sub(moveTo);
         }
+
+        // TODO Highlighting of selected object
     }
+}
+
+function EndMove()
+{
+    selectedObject = null;
 }
 
 function OnTouchUpdate(e)
 {
+    prevFrameTouches = e.touchPoints();
 //    Log("ObjectMove OnTouchUpdate " + e.touchPoints().length);
-    touchEventPrevFrame = e;
-    lastTouchTimestamp = frame.WallClockTime();
-    touchActive = true;
+    touchInputActive = true;
+/*
     var touches = e.touchPoints();
-    var numFingers = touches.length;
+    var touchCount = touches.length;
     for(i in touches)
     {
+        if (touches[i].state() == Qt.TouchPointStationary)
+            LogE("jajajajajajjaja");
+        
         var x = Math.round(touches[i].pos().x());
         var y = Math.round(touches[i].pos().y());
         
@@ -130,16 +110,37 @@ function OnTouchUpdate(e)
 
         prevFrameMouseX = x;
         prevFrameMouseY = y;
+        //break;
+    }
+*/
+}
+
+function OnTouchBegin(e)
+{
+    prevFrameTouches = e.touchPoints();
+    touchInputActive = true;
+    // Must enforce calling of TouchUpdate here, otherwise we get no events with 'pressed' state.
+    TouchUpdate();
+/*
+    var touches = e.touchPoints();
+    var numFingers = touches.length;
+    for(i in touches)
+    {
+        prevFrameMouseX = touches[i].pos().x();
+        prevFrameMouseY = touches[i].pos().y();
         break;
     }
-
+*/
+//    TouchUpdate();
 }
 
 function OnTouchEnd(e)
 {
-    touchEventPrevFrame = e;
-    touchActive = false;
 //    Log("ObjectMove OnTouchEnd");
+    prevFrameTouches = e.touchPoints();
+    frame.DelayedExecute(0.1).Triggered.connect(function(){prevFrameTouches=[];});
+    touchInputActive = false;
+    //TouchUpdate();
 }
 
 function HandleDragEnterEvent(e)
@@ -159,7 +160,7 @@ function HandleDragMoveEvent(e)
 function CurrentMouseRay()
 {
     var x, y;
-    if (useTouchInput)
+    if (touchInputActive)
     {
         x = prevFrameMouseX, y = prevFrameMouseY;
     }
@@ -242,50 +243,49 @@ function HandleKeyEvent(e)
 
 var mousePosPrev = null;//input.MousePos();
 var rotAngle = 0;
-var selectionTimer = 0;
 
-function IsObjectMovable(e)
+// Handles touch input
+function TouchUpdate()
 {
-    return e.placeable && !e.terrain && e.dynamiccomponent && !(e.dynamiccomponent && e.dynamiccomponent.name == "Icon");
-}
-
-var touchActive = false;
-
-function Update(frameTime)
-{
-/*
-    if (useTouchInput && touchEventPrevFrame)
+    if (!prevFrameTouches/* || prevFrameTouches.length == 0*/)
     {
-        //TouchSelect(touchEventPrevFrame);
-        TouchMove(touchEventPrevFrame);
-        TouchRotate(touchEventPrevFrame);
+        //Log("no touches " + frame.WallClockTime());
         return;
     }
-*/
-    if (input.IsMouseButtonPressed(1))
-        BeginMove();
+//    Log("TouchUpdate " + prevFrameTouches.length + " " + frame.WallClockTime());
+//    touchInputActive = true;
+    var touches = prevFrameTouches;
+    var touchCount = touches.length;
 
-    if (touchActive || input.IsMouseButtonDown(1))
+    for(i in touches)
     {
-//        Log("MouseButtonDown " + frameTime);
-/*
-        selectionTimer += frameTime;
-        if (selectionTimer > 2)
-        {
-            var mousePos = input.MousePos();
-            var r = scene.ogre.Raycast(mousePos.x(), mousePos.y());
-            if (r.entity && r.entity.placeable)
-                selectedObject = r.entity;
-            else
-                selectedObject = null;
-                
+        var x = Math.round(touches[i].pos().x());
+        var y = Math.round(touches[i].pos().y());
+        touchDeltaX = x - prevFrameMouseX;
+        touchDeltaY = y - prevFrameMouseY;
+        prevFrameMouseX = x;
+        prevFrameMouseY = y;
+        break;
+    }
 
-            selectionTimer = 0;
-        }
-*/
+    TouchSelectObject(touchCount, touches, null);
+    //TouchMoveObject(touchCount, touches, null);
+    //TouchRotateObject(touchCount, touches, null);
+}
+
+// Handles mouse + keyboard
+function Update(/*frameTime*/)
+{
+    TouchUpdate();
+    //return;
+//    if (input.IsMouseButtonPressed(1))
+//        BeginMove();
+
+    if (touchInputActive || input.IsMouseButtonDown(1))
+    {
         if (selectedObject)
         {
-            var move = /*useTouchInput ? true :*/ input.IsKeyDown(Qt.Key_1);
+            var move = touchInputActive ? true : input.IsKeyDown(Qt.Key_1);
             var rotate = input.IsKeyDown(Qt.Key_2);
             if (move)
             {
@@ -345,10 +345,6 @@ function Update(frameTime)
             }
         }
     }
-    else
-    {
-        selectionTimer = 0;
-    }
 
     mousePosPrev = input.MousePos();
 }
@@ -373,6 +369,7 @@ function CanObjectBeMoved(obj, pos)
     return true;
 }
 
+// TODO/NOTE pos param unused
 function MoveSelected(/*QPoint*/pos)
 {
     if (selectedObject)
@@ -385,7 +382,6 @@ function MoveSelected(/*QPoint*/pos)
         //camFwd = camFwd.Mul(-1);
         var movePlane = new Plane(camFwd, orientedPlane.Distance(selectedObject.placeable.WorldPosition()));
 
-        // Uncomment the following lines to enable debug drawing.
 //        scene.ogre.DebugDrawLine(ray.pos, ray.dir.Mul(200), 1,0,0);
 //        scene.ogre.DebugDrawPlane(orientedPlane, 0,0,1);
 //        scene.ogre.DebugDrawPlane(movePlane, 0,1,0);
@@ -408,3 +404,242 @@ function MoveSelected(/*QPoint*/pos)
         }
     }
 }
+
+// TODO: set these variables in StartMove
+// Alternatively/preferably have selectedObject Object which stores all of the following information
+var selectedObjectRotationOrigin;
+var selectedObjectFingerId;
+var selectedObjectOriginalRotation;
+var selectedObjectObjectTransform;
+
+const cLongTouchDuration = 2.0;
+
+var startPositions = {}; //associative array <int (finger ID), QPointF (screen pos)>
+var rotAngle = 0; // float
+
+function TouchRotateObject(touchCount, touches, e)
+{
+    return; // TODO Implement TouchRotate
+    for(i in touches)
+        if (touches[i].state() == Qt.TouchPointPressed)
+            startPositions[t.id()] = touches[i].pos();
+
+    if (selectedObject && touchCount == 2)
+    {
+        var stationaryTouch = null; // QTouchEvent::TouchPoint
+        var moveTouch = null; // QTouchEvent::TouchPoint
+        if (touches[0].state() == Qt.TouchPointStationary)
+            stationaryTouch = touches[0];
+        if (touches[0].state() == Qt.TouchPointMoved)
+            moveTouch = touches[0];
+        if (touches[1].state() == Qt.TouchPointStationary)
+            stationaryTouch = touches[1];
+        if (touches[1].state() == Qt.TouchPointMoved)
+            moveTouch = touches[1];
+
+        if (!stationaryTouch)
+        {
+            if (DistanceQPointF(touches[0].pos(), startPositions[touches[0].id()]) < 20)
+                stationaryTouch = touches[0];
+            else if (DistanceQPointF(touches[1].pos(), startPositions[touches[1].id()]) < 20)
+                stationaryTouch = touches[1];
+        }
+
+        var /*float*/ touchesDistance = DistanceQPointF(touches[0].pos(), touches[1].pos());
+        if (stationaryTouch && moveTouch && stationaryTouch.id() == selectedObjectFingerId &&
+            !ViewportAreas.LeftBottom.Contains(moveTouch.Value.position) &&
+            touchesDistance < UISelect.MoveZMinTouchDistance * (UISelect.ReferenceHeight / Screen.height))
+        {
+            if (selectedObjectRotationOrigin == Vector2.zero)
+            {
+                selectedObjectRotationOrigin = SubQPointF(moveTouch.pos(), stationaryTouch.pos());
+                selectedObjectOriginalRotation = selectedObjectObjectTransform.rotation;
+            }
+            else
+            {
+                var /*float2*/ rotDir = SubQPointF(moveTouch.pos(), stationaryTouch.pos());
+                var /*float*/ angle = float2.Angle(selectedObjectRotationOrigin, rotDir);
+                var /*float3*/ cross = float3.Cross(selectedObjectRotationOrigin, rotDir);
+                if (cross.z < 0)
+                    angle = 360 - angle;
+
+                selectedObjectObjectTransform.rotation = selectedObjectOriginalRotation;
+                var /*float3*/ forward = selectedObject.placeable.WorldPosition().Sub(renderer.MainCamera().placeable.WorldPosition()).Normalized();
+                selectedObjectObjectTransform.Rotate(forward, angle, Space.World);
+
+                if (touches[0].id() == selectedObjectFingerId)
+                    print(touchOffset);
+                    // TODO selectedObject.TouchOffset = UISelect.CalculateMoveOffset(touches[0].pos(), selectedObjectObjectTransform, selectedObject.OnPlane);
+                else if (touches[1].id() == selectedObjectFingerId)
+                    // TODO selectedObject.TouchOffset = UISelect.CalculateMoveOffset(touches[1].pos(), selectedObjectObjectTransform, selectedObject.OnPlane);
+                    print(touchOffset);
+            }
+        }
+        else if (touches[0].state() == Qt.TouchPointMoved && touches[1].state() == Qt.TouchPointMoved)
+        {
+            var delta0 = SubQPointF(touches[0].pos(), touches[0].lastPos());
+            var delta1 = SubQPointF(touches[1].pos(), touches[1].lastPos());
+            var /*float2*/ d = delta0.Add(delta1).Div(2.0).Mul(cReferenceHeight/ui.GraphicsScene().height()).Mul(cRotateSpeed);
+
+            var /*float3*/ forward = (selectedObjectObjectTransform.position - Camera.main.transform.position).normalized;
+            var /*float3*/right = Vector3.Cross(forward, Camera.main.transform.up);
+            var /*float3*/ up = Camera.main.transform.up;
+
+            selectedObjectObjectTransform.Rotate(up, -d.x, Space.World);
+            selectedObjectObjectTransform.Rotate(right, -d.y, Space.World);
+
+            if (touches[0].id() == selectedObjectFingerId)
+                selectedObject.TouchOffset = UISelect.CalculateMoveOffset(touches[0].pos(), selectedObjectObjectTransform, selectedObject.OnPlane);
+            else if (touches[1].id() == selectedObjectFingerId)
+                selectedObject.TouchOffset = UISelect.CalculateMoveOffset(touches[1].pos(), selectedObjectObjectTransform, selectedObject.OnPlane);
+
+            selectedObjectRotationOrigin = new float2(0, 0);
+        }
+    }
+}
+
+function TouchMoveObject(touchCount, touches, e)
+{
+    for(i in touches)
+        if (touches[i].state() == Qt.TouchPointPressed)
+            startPositions[touches[i].id()] = touches[i].pos();
+
+    // TODO: is the following needed?
+//    if (touchCount > 1 && uiSelect.IsSelected)
+//        singleTouch = false;
+//    else if (touchCount == 0 && !singleTouch)
+//        singleTouch = true;
+
+    if (touchCount == 1)// && singleTouch)
+        if (selectedObject && touches[0].state() == Qt.TouchPointMoved) // TODO && !ViewportAreas.LeftBottom.Contains(touches[0].pos()))
+            MoveSelected(touches[0].pos());
+
+    return;
+
+    if (selectedObject && touchCount == 2)
+    {
+        var stationaryTouch = null; // QTouchEvent::TouchPoint
+        var moveTouch = null; // QTouchEvent::TouchPoint
+        if (touches[0].state() == Qt.TouchPointStationary)
+            stationaryTouch = touches[0];
+        if (touches[0].state() == Qt.TouchPointMoved)
+            moveTouch = touches[0];
+        if (touches[1].state() == Qt.TouchPointStationary)
+            stationaryTouch = touches[1];
+        if (touches[1].state() == Qt.TouchPointMoved)
+            moveTouch = touches[1];
+
+        if (!stationaryTouch)
+        {
+            if (DistanceQPointF(touches[0].pos(), startPositions[touches[0].id()]) < 20)
+                stationaryTouch = touches[0];
+            else if (DistanceQPointF(touches[1].pos(), startPositions[touches[1].id()]) < 20)
+                stationaryTouch = touches[1];
+        }
+
+        var touchesDistance = DistanceQPointF(touches[0].pos(), touches[1].pos());
+//        if (touchesDistance > UISelect.MoveZMinTouchDistance * (UISelect.ReferenceHeight / Screen.height))
+        /*
+        {
+        // TODO
+            if (stationaryTouch && moveTouch && ViewportAreas.LeftBottom.Contains(stationaryTouch.Value.position))
+            {
+                var d = moveTouch.Value.deltaPosition.y * (UISelect.ReferenceHeight / Screen.height) * moveZSpeed * transform.localScale.x;
+
+                var newPos = selectedObjectObjectTransform.localPosition;
+                var direction = (selectedObjectObjectTransform.position - Camera.main.transform.position).normalized;
+                if (selectedObjectObjectTransform.parent)
+                    direction = selectedObjectObjectTransform.parent.InverseTransformDirection(direction);
+
+                newPos += direction * d;
+
+                Plane farplane = new Plane(-direction, Camera.main.transform.position + direction * 0.1f * transform.localScale.x);
+                Plane nearplane = new Plane(direction, Camera.main.transform.position + direction * 0.012f);
+
+                var nearestPoint = selectedObjectObjectTransform.collider.ClosestPointOnBounds(Camera.main.transform.position);
+                var  distanceToCamera = Vector3.Distance(nearestPoint, Camera.main.transform.position);
+
+                if ((d > 0 && distanceToCamera < 0.9f * transform.localScale.x) || (d < 0 && distanceToCamera > 0.2122f))
+                    selectedObjectObjectTransform.localPosition = newPos;
+
+                if (DistanceQPointF(moveTouch.pos(), startPositions[moveTouch.Value.id()]) > 20)
+                    selectedObject.TouchOffset = UISelect.CalculateMoveOffset(moveTouch.pos(), selectedObjectObjectTransform, selectedObject.OnPlane);
+            }
+        }
+        */
+    }
+}
+
+var longTouchStartTime = 0;
+var longTouchStartTimePos = null;
+
+//var singleTouch = true;
+function TouchSelectObject(touchCount, touches, e)
+{
+//    if (touchCount > 1 && selectedObject == null)
+//        singleTouch = false;
+//    else if (touchCount == 0 && !singleTouch)
+//        singleTouch = true;
+
+    if (selectedObject)
+        for(i in touches)
+            if (touches[i].state() == Qt.TouchPointReleased ||  touches[i].state() == Qt.TouchPointPressed)
+            {
+                selectedObjectRotationOrigin = new float2(0, 0);
+                selectedObjectOriginalRotation = new Quat(0, 0, 0, 1);
+                break;
+            }
+
+    for(i in touches)
+    {
+        if (touches[i].state() == Qt.TouchPointPressed)
+            startPositions[touches[i].id()] = touches[i].pos();
+    }
+    if (touchCount == 1 /*&& singleTouch*/)
+    {
+        if (touches[0].state() == Qt.TouchPointPressed)
+        {
+            longTouchStartTime = frame.WallClockTime();
+            longTouchStartTimePos = touches[0].pos();
+        }
+        else if (IsTouchStateMoved(touches[0]))
+        {
+            longTouchStartTime = 0;
+        }
+        else if (longTouchStartTimePos && IsTouchStateStationary(touches[0]) &&
+            frame.WallClockTime() - longTouchStartTime > cLongTouchDuration && !selectedObject)
+        {
+            longTouchStartTime = 0;
+            if (DistanceQPointF(longTouchStartTimePos, touches[0].pos()) < 30)
+            {
+                BeginMove();
+                //TODO
+                //StartMove(0,0,0);
+                //Transform highlighted = FindNearestObject(touches[0].pos());
+                //if (highlighted)
+                //    StartMove(highlighted, touches[0].pos(), touches[0].id());
+            }
+        }
+    }
+    
+    if (touchCount == 2 && !selectedObject)
+    {
+        var t = touches[0];
+        var t1 = false;//ViewportAreas.LeftBottom.Contains(touches[0].pos());
+        var t2 = false;//ViewportAreas.LeftBottom.Contains(touches[1].pos());
+        if (t1)
+            t = touches[1];
+        
+        if (t1 || t2)
+        {
+            //Transform highlighted = FindNearestObject(t.pos());
+            //if (highlighted)
+            //    StartMove(highlighted, t.pos(), t.id());
+            StartMove();
+        }
+    }
+    
+    if (touchCount == 0 && selectedObject)
+        EndMove();
+}
+

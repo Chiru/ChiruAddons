@@ -38,3 +38,21 @@ function IntersectRayPlane(plane, ray)
 {
     return IntersectLinePlane(plane.PointOnPlane(), plane.normal, ray.pos, ray.dir);
 }
+
+// Returns distance between two QPoint(F)s.
+function DistanceQPointF(/*QPoint(F)*/ pos1, /*QPoint(F)*/ pos2)
+{
+    return new float2(pos1.x(), pos1.y()).Distance(new float2(pos2.x(), pos2.y()));
+}
+
+// Substracts two QPoint(F)s and returns the result as float2.
+function SubQPointF(/*QPoint(F)*/ pos1, /*QPoint(F)*/ pos2)
+{
+    return new float2(pos1.x() - pos2.x(), pos1.y() - pos2.y());
+}
+
+// Returns whether the values of two QPoint(F)s are equal.
+function EqualsQPointF(pos1, pos2)
+{
+    return pos1.x() == pos2.x() && pos1.y() == pos2.y();
+}

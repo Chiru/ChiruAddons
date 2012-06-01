@@ -37,19 +37,7 @@ var moving = false; // Is camera in moving state
 var tilting = false; // Is camera in tilting state
 var prevFrameMouseX = -1;
 var prevFrameMouseY = -1;
-var useTouchInput = false;
-
-// Returns distance between two QPoint(F)s.
-function DistanceQPointF(/*QPoint(F)*/ pos1, /*QPoint(F)*/ pos2)
-{
-    return new float2(pos1.x(), pos1.y()).Distance(new float2(pos2.x(), pos2.y()));
-}
-
-// Substracts two QPoint(F)s and returns the result as float2.
-function SubQPointF(/*QPoint(F)*/ pos1, /*QPoint(F)*/ pos2)
-{
-    return new float2(pos1.x() - pos2.x(), pos1.y() - pos2.y());
-}
+var touchInputActive = false;
 
 // Entry point for the script
 if (!framework.IsHeadless())
@@ -58,7 +46,8 @@ if (!framework.IsHeadless())
     engine.ImportExtension("qt.gui");
     engine.IncludeFile("Log.js");
     engine.IncludeFile("MathUtils.js");
-
+    engine.IncludeFile("Utils.js")
+    
     ic = input.RegisterInputContextRaw("UiCamera", 102);
     ic.KeyEventReceived.connect(HandleKeyEvent);
     ic.MouseEventReceived.connect(HandleMouseEvent);
@@ -146,7 +135,7 @@ var touchDeltaX, touchDeltaY;
 
 function TouchUpdate(e)
 {
-    useTouchInput = true;
+    touchInputActive = true;
 
     var touches = e.touchPoints();
     var touchCount = touches.length;
@@ -163,7 +152,7 @@ function TouchUpdate(e)
         break; // for now, just use the pos from the first touch
     }
     
-    if (touchCount == 2 && tilting == false)
+    if (touchCount == 2 && input.IsKeyDown(Qt.Key_Control) /* TODO touchCount == 3*/ && tilting == false)
     {
         //Log("Tilting true");
         moving = false;
@@ -181,6 +170,7 @@ function OnTouchEnd(e)
 {
 //    Log("UiCamera OnTouchEnd");
     StopMovement();
+    touchInputActive = false;
     prevFrameMouseX = prevFrameMouseY = -1;
 }
 
@@ -210,12 +200,6 @@ function HandleKeyEvent(e)
         SwitchScene(); // Resets the scene
 }
 
-// TODO: copy-paste from ObjectMove.js
-function IsObjectMovable(e)
-{
-    return e.placeable && !e.terrain && e.dynamiccomponent && !(e.dynamiccomponent && e.dynamiccomponent.name == "Icon");
-}
-
 function HandleMouseEvent(e)
 {
     if (!me.camera.IsActive())
@@ -233,7 +217,7 @@ function HandleMouseEvent(e)
         }
         else if (tilting)
         {
-            var relY = useTouchInput ? touchDeltaY : e.relativeY;//e.y - prevFrameMouseY; // e.relativeY;
+            var relY = touchInputActive ? touchDeltaY : e.relativeY;//e.y - prevFrameMouseY; // e.relativeY;
             //Log("tilting relY " + relY);
             var transform = me.placeable.transform;
             transform.rot.x -= cameraData.rotate.sensitivity * relY/*e.relativeY*/;
@@ -267,11 +251,9 @@ function HandleMouseEvent(e)
         }
         else if (e.button == 2)
         {
-        Log("fajsdfdsja1241241");
             var result = scene.ogre.Raycast(e.x, e.y);
             //if (result.entity && result.entity.dynamiccomponent && result.entity.dynamiccomponent.name != "Icon" && !result.entity.graphicsviewcanvas)
             tilting = !(result.entity && IsObjectMovable(result.entity));
-            Log("fdshjdsfhsfd");
             if (tilting)
             {
                 var mousePos = input.MousePos();
@@ -438,7 +420,7 @@ function TouchZoom(touchCount, touches, e)
             //Log("Math.abs(1 - dotP) " + Math.abs(1 - dotP));
             if (/*Math.abs(distance - lastDistance) > 3f &&*/ Math.abs(1 - dotP) < 0.8/*0.2*/)
             {
-            Log("fjsdjfdsjfsdj");
+                Log("Zooming!");
                 Zoom((lastDistance - distance) * (cReferenceHeight / ui.GraphicsScene().height()) * cZoomSpeed);
                 lastDistance = distance;
             }
@@ -449,7 +431,7 @@ function TouchZoom(touchCount, touches, e)
 }
 
 var /*QPointF*/ changeSceneTouchStart;
-var /*Vector3*/ changeScenetartPos;
+var /*float3*/ changeSceneStartPos;
 
 function TouchChangeScene(touchCount, touches, e)
 {
@@ -460,12 +442,12 @@ function TouchChangeScene(touchCount, touches, e)
             if (touches[i].state() == Qt.TouchPointPressed)
             {
                 changeSceneTouchStart = touches[i].pos();
-//                startPos = transform.position;
+//                changeSceneStartPos = transform.position;
                 break;
             }
             else if (touches[i].state() == Qt.TouchPointReleased)
             {
-                if (Math.abs(touches[i].pos().x() - changeSceneTouchStart.x()) > ui.GraphicsScene().width() * 0.12)
+                if (Math.abs(touches[i].pos().x() - changeSceneTouchStart.x()) > ui.GraphicsScene().width() * 0.2/*0.12*/)
                 {
                     if (touches[i].pos().x > changeSceneTouchStart.x())
                         MoveToPrevScene();
@@ -476,7 +458,7 @@ function TouchChangeScene(touchCount, touches, e)
                 }
                 else
                 {
-                    //transform.position = startPos;
+                    //transform.position = changeSceneStartPos;
                 }
             }
             else if (touches[i].state() == Qt.TouchPointMoved)
@@ -489,7 +471,7 @@ function TouchChangeScene(touchCount, touches, e)
     for(i in touches)
         if (touches[i].state() == Qt.TouchPointReleased && touchCount == 2 /* TODO touchCount == 3*/ && input.IsKeyDown(Qt.Key_Control))
         {
-            //transform.position = startPos;
+            //transform.position = changeSceneStartPos;
             changeSceneTouchStart = touches[i].pos();
         }
 }
