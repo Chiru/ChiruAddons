@@ -25,10 +25,7 @@ CloudProcessor::CloudProcessor() :
     kinect_capture_->setExtractObject(true);
 
     bool check;
-    check = connect(kinect_capture_, SIGNAL(RGBUpdated(QImage)), this, SIGNAL(liveFeedUpdated(QImage)));
-    Q_ASSERT(check);
-
-    check = connect(kinect_capture_, SIGNAL(currentClusterUpdated(PointCloud::Ptr)), this, SLOT(handleLiveCloudUpdated(PointCloud::Ptr)));
+    check = connect(kinect_capture_, SIGNAL(cloudUpdated(PointCloud::Ptr)), this, SLOT(handleLiveCloudUpdated(PointCloud::Ptr)));
     Q_ASSERT(check);
 
     check = connect(register_, SIGNAL(globalModelUpdated(PointCloud::Ptr)), this, SLOT(handleGlobalModelUpdated(PointCloud::Ptr)));

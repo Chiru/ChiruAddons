@@ -39,23 +39,16 @@ public:
 public slots:
     void startCapture();
     void stopCapture();
-    PointCloud::ConstPtr currentCloud();
+    PointCloud::Ptr currentCloud();
 
 signals:
-    void cloudUpdated(PointCloud::ConstPtr cloud);
-    void currentClusterUpdated(PointCloud::Ptr cloud);
-    void RGBUpdated(const QImage &frame);
+    void cloudUpdated(PointCloud::Ptr cloud);
 
 private slots:
-    void updateRGBImage();
 
 private:
     pcl::Grabber *kinect_interface_;
-    PointCloud::ConstPtr current_cloud_;
-    PointCloud::Ptr current_cluster_;
-    QImage rgb_frame_;
-    int rgb_update_frequency_; // Hz
-    QTimer rgb_update_timer_;
+    PointCloud::Ptr current_cloud_;
     QMutex cloud_mutex_;
     CloudFilter *cloud_filter_;
 
