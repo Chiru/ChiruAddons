@@ -8,6 +8,7 @@
 #include "KinectCapture.h"
 
 #include <pcl/io/openni_grabber.h>
+#include <pcl/io/pcl_io_exception.h>
 
 #include "MemoryLeakCheck.h"
 
@@ -18,10 +19,17 @@ KinectCapture::KinectCapture() :
     cloud_filter_(new CloudFilter()),
     extract_object_(false)
 {
-    kinect_interface_ = new pcl::OpenNIGrabber();
+    try
+    {
+        kinect_interface_ = new pcl::OpenNIGrabber();
 
-    boost::function<void (const PointCloud::ConstPtr&)> f = boost::bind(&KinectCapture::kinect_callback_, this, _1);
-    kinect_interface_->registerCallback(f);
+        boost::function<void (const PointCloud::ConstPtr&)> f = boost::bind(&KinectCapture::kinect_callback_, this, _1);
+        kinect_interface_->registerCallback(f);
+    }
+    catch(pcl::PCLException e)
+    {
+        LogInfo("ObjectCaptureModule: Caught PCL exception: " + QString::fromUtf8(e.what()));
+    }
 }
 
 KinectCapture::~KinectCapture()
