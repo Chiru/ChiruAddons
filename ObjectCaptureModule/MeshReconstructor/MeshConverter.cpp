@@ -40,29 +40,40 @@ Ogre::ManualObject* MeshConverter::CreateMesh(pcl::PolygonMesh::Ptr inputMesh, p
 
     Ogre::ManualObject *ogreManual = createManualObject(vertexcount, indicescount, Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-    for (size_t i = 0; i < input_cloud->points.size(); i++)
+    if (indicescount > 0)
     {
-        Ogre::Real r = (Ogre::Real)input_cloud->points[i].r / (Ogre::Real)255;
-        Ogre::Real g = (Ogre::Real)input_cloud->points[i].g / (Ogre::Real)255;
-        Ogre::Real b = (Ogre::Real)input_cloud->points[i].b / (Ogre::Real)255;
-
-        ogreManual->colour(r, g, b);
-        ogreManual->position(input_cloud->points[i].x, input_cloud->points[i].y, input_cloud->points[i].z);
-        ogreManual->normal(input_cloud->points[i].data_c[0], input_cloud->points[i].data_c[1], input_cloud->points[i].data_c[2]);
-    }
-
-    //Add indexing data to the manualobject
-    for (size_t i = 0; i < inputMesh->polygons.size(); i++)
-    {
-        for (size_t j = 0; j < inputMesh->polygons[i].vertices.size(); j++)
+        for (size_t i = 0; i < input_cloud->points.size(); i++)
         {
-            int index = inputMesh->polygons[i].vertices[j];
-            ogreManual->index(index);
-        }
-    }
-    ogreManual->end();
+            Ogre::Real r = (Ogre::Real)input_cloud->points[i].r / (Ogre::Real)255;
+            Ogre::Real g = (Ogre::Real)input_cloud->points[i].g / (Ogre::Real)255;
+            Ogre::Real b = (Ogre::Real)input_cloud->points[i].b / (Ogre::Real)255;
 
-    return ogreManual;
+            ogreManual->colour(r, g, b);
+            ogreManual->position(input_cloud->points[i].x, input_cloud->points[i].y, input_cloud->points[i].z);
+            ogreManual->normal(input_cloud->points[i].data_c[0], input_cloud->points[i].data_c[1], input_cloud->points[i].data_c[2]);
+        }
+
+        //Add indexing data to the manualobject
+        for (size_t i = 0; i < inputMesh->polygons.size(); i++)
+        {
+            for (size_t j = 0; j < inputMesh->polygons[i].vertices.size(); j++)
+            {
+                int index = inputMesh->polygons[i].vertices[j];
+                ogreManual->index(index);
+            }
+        }
+        ogreManual->end();
+
+        return ogreManual;
+    }
+
+    else
+    {
+        LogError("ObjectCaptureModule: 0 indices in reconstructed polygonmesh!");
+        ogreManual->end();
+
+        return ogreManual;
+    }
 }
 
 Ogre::ManualObject* MeshConverter::CreatePointMesh(PointCloud::Ptr inputCloud)

@@ -50,25 +50,31 @@ MeshReconstructor::~MeshReconstructor()
 
 void MeshReconstructor::processCloud(PointCloud::Ptr cloud)
 {
-    // Convert input cloud PointXYZRGBA to PointXYZRGB cloud
-    point_cloud_->points.resize(cloud->size());
-    LogInfo("MeshReconstructor::processCloud poinst in cloud:" + ToString(cloud->size()));
-    for (size_t i = 0; i < cloud->points.size(); i++)
+    if (cloud.get())
     {
-        point_cloud_->points[i].x = cloud->points[i].x;
-        point_cloud_->points[i].y = cloud->points[i].y;
-        point_cloud_->points[i].z = cloud->points[i].z;
-        point_cloud_->points[i].r = cloud->points[i].r;
-        point_cloud_->points[i].g = cloud->points[i].g;
-        point_cloud_->points[i].b = cloud->points[i].b;
+        // Convert input cloud PointXYZRGBA to PointXYZRGB cloud
+        point_cloud_->points.resize(cloud->points.size());
+        LogInfo("MeshReconstructor::processCloud poinst in cloud:" + ToString(cloud->points.size()));
+        for (size_t i = 0; i < cloud->points.size(); i++)
+        {
+            point_cloud_->points[i].x = cloud->points[i].x;
+            point_cloud_->points[i].y = cloud->points[i].y;
+            point_cloud_->points[i].z = cloud->points[i].z;
+            point_cloud_->points[i].r = cloud->points[i].r;
+            point_cloud_->points[i].g = cloud->points[i].g;
+            point_cloud_->points[i].b = cloud->points[i].b;
+        }
+
+        MovingLeastSquares();
+        //NormalEstimation();
+        GreedyProjection_Mesher();
+        //convertVtkToMesh();
+
+        //cloud_with_normals_->resize(cloud_with_normals_->points.size());
+        emit cloudProcessingFinished(polygonMesh_, cloud_with_normals_);
     }
-
-    MovingLeastSquares();
-    //NormalEstimation();
-    GreedyProjection_Mesher();
-    //convertVtkToMesh();
-
-    emit cloudProcessingFinished(polygonMesh_, cloud_with_normals_);
+    else
+        LogError("ObjectCaptureModule: Couldn't get input cloud for ObjectReconstruction!");
 }
 
 void MeshReconstructor::convertVtkToMesh()
@@ -115,16 +121,19 @@ void MeshReconstructor::MovingLeastSquares()
     // Optionally, a pointer to a cloud can be provided, to be set by MLS
     mls.setOutputNormals (normals_);
 
-    // Set parameters
-    mls.setInputCloud (point_cloud_);
-    mls.setPolynomialFit (true);
-    mls.setPolynomialOrder(2);
-    mls.setSearchMethod (tree);
-    mls.setSearchRadius (0.1); //0.03
-    mls.setSqrGaussParam(0.009); //0.0009
+    if (point_cloud_->points.size() > 0)
+    {
+        // Set parameters
+        mls.setInputCloud (point_cloud_);
+        mls.setPolynomialFit (true);
+        mls.setPolynomialOrder(2);
+        mls.setSearchMethod (tree);
+        mls.setSearchRadius (0.1); //0.03
+        mls.setSqrGaussParam(0.009); //0.0009
 
-    // Reconstruct
-    mls.reconstruct (*smoothed_cloud_);
+        // Reconstruct
+        mls.reconstruct (*smoothed_cloud_);
+    }
 }
 
 void MeshReconstructor::NormalEstimation()
@@ -154,7 +163,14 @@ void MeshReconstructor::GreedyProjection_Mesher()
 
     pcl::GreedyProjectionTriangulation<pcl::PointXYZRGBNormal> mesher;
 
-    pcl::concatenateFields(*smoothed_cloud_, *normals_, *cloud_with_normals_);
+    if (smoothed_cloud_.get() && normals_.get())
+        pcl::concatenateFields(*smoothed_cloud_, *normals_, *cloud_with_normals_);
+    else
+    {
+        LogError("ObjectCaptureModule: Couldn't get input cloud or point normals for reconstruction!");
+        return;
+    }
+
     mesher.setInputCloud(cloud_with_normals_);
 
     pcl::search::KdTree<pcl::PointXYZRGBNormal>::Ptr tree2 (new pcl::search::KdTree<pcl::PointXYZRGBNormal>());
