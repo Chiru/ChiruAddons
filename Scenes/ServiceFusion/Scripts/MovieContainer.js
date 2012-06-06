@@ -60,7 +60,6 @@ function MovieContainer(parent)
     this.visual.setLayout(new QVBoxLayout());
     this.visual.setContentsMargins(0, 0, 0, 0);
     this.visual.layout().setSpacing(0);
-    print(this.visual.size);
     
     //\todo Use HttpResponse object instead --Joosua.
     var world      = RdfModule.theWorld;
@@ -144,7 +143,7 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     var movieVisual = new VisualContainer(this.visual);
     movieVisual.setLayout(new QHBoxLayout());
     var movieContainer = C3DUiModule.ContainerFactory().CreateContainer(movieVisual);
-    movieContainer.SetParent(this.visual);
+    movieContainer.parent = this.visual;
     movieContainer.rdfStore = RdfModule.theWorld.CreateStore();
     this.visual.layout().addWidget(movieVisual, null, null);
     
