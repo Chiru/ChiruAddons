@@ -1,6 +1,6 @@
 // For conditions of distribution and use, see copyright notice in LICENSE
 
-#pragma once
+#include <stdlib.h>
 
 #include <QScriptValue>
 #include <QScriptContext>
@@ -8,7 +8,7 @@
 #include <QVariant>
 
 #include "ScriptManager.h"
-#include "qscript_tag.h"
+#include "qscript_tag.h" 
 
 Q_DECLARE_METATYPE(CieMap::Tag*)
 Q_DECLARE_METATYPE(CieMap::Tag)
