@@ -7,5 +7,5 @@
 
 void TestScript::Run(const CieMap::Tag &tag, IMemoryStore *rdfStore)
 {
-    printf("This is test script.");
+    LogInfo("This is test script.");
 }
