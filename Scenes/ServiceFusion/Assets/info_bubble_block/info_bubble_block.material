@@ -1,0 +1,12 @@
+material info_bubble_block
+{
+    technique
+    {
+        pass
+        {
+		diffuse 0 1 1 1
+            specular 0 0 0 1 10
+		emissive 1 1 1 1
+        }
+    }
+}
