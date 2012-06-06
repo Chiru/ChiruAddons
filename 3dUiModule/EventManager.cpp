@@ -10,6 +10,11 @@ EventManager::EventManager() : scriptManager(new ScriptManager())
 {
 }
 
+EventManager::~EventManager()
+{
+    if (scriptManager) delete scriptManager;
+}
+
 int EventManager::RegisterScript(const Tag &tag, IScript *script)
 {
     return scriptManager->RegisterScript(tag, script);

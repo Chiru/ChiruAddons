@@ -12,6 +12,7 @@
 #include "QScriptEngineHelpers.h"
 
 #include <QScriptEngine>
+//#include <vld.h> 
 
 Q_DECLARE_METATYPE(RdfMemoryStore *)
 Q_DECLARE_METATYPE(RdfNode *)
@@ -30,6 +31,7 @@ RdfModule::RdfModule() :
 
 RdfModule::~RdfModule()
 {
+    if (world) delete world;
 }
 
 void RdfModule::Load()
@@ -40,7 +42,6 @@ void RdfModule::Initialize()
 {
     framework_->RegisterDynamicObject("RdfModule", this);
     world = new RdfWorld();
-//    framework_->Console()->RegisterCommand("test", "test", this, SLOT(Test(const QString &)));
 }
 
 QScriptValue CreateRdfMemoryStore(QScriptContext *ctx, QScriptEngine *engine)

@@ -29,12 +29,14 @@ int ScriptManager::RegisterScript(const Tag &tag, IScript *script)
 {
     if (!script)
     {
-        LogError("ScriptManager::RegisterScript: null script.");
+        LogError("ScriptManager::RegisterScript: Parameter cannot be null");
+        /// @todo print error throw new System.ArgumentNullException("Parameter cannot be null", "script");
         return InvalidId;
     }
     if (tag.IsEmpty())
     {
-        LogError("ScriptManager::RegisterScript: empty tag.");
+        LogError("ScriptManager::RegisterScript: Parameter cannot be null");
+        /// @todo print error throw new System.ArgumentException("Parameter cannot be null or empty", "tag");
         return InvalidId;
     }
 
@@ -42,7 +44,6 @@ int ScriptManager::RegisterScript(const Tag &tag, IScript *script)
     scripts.push_back(script);
     tags[tag] = id;
     return id;
-
 }
 
 std::vector<int> ScriptManager::ScriptIdsForTag(const Tag &tag) const
@@ -64,7 +65,11 @@ void ScriptManager::RunScript(int id, const Tag &tag, IMemoryStore *rdfStore)
     if (id != InvalidId && id >= 0 && id < (int)scripts.size())
         scripts[id]->Run(tag, rdfStore);
     else
-        LogError("ScriptManager::RunScript: invalid script ID " + QString::number(id));
+    {
+        LogError("ScriptManager::RunScript: Parameter out of range");
+        /// @todo print error
+        //throw new System.ArgumentOutOfRangeException("Parameter out of range", "id");
+    }
 }
 
 }

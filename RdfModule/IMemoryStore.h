@@ -33,16 +33,30 @@ public:
 
     ModelType Type() const {return type;}
 
-    virtual bool FromUri(QUrl uri) = 0;
+    /// Read rdf data from string and push it to RdfMemoryStore.
+    /** @param Data rdf data
+        @return Return true if parse succeeded.*/
     virtual bool FromString(QString data) = 0;
 
+    /// Convert model data to string format.
     virtual QString toString() const = 0;
 
+    /// Do rdf query using a given statement.
     virtual QVariantList Select(IStatement* statement) = 0;
+
+    /// Get model statements as array. Note! Model changes wont show on returned statments.
     virtual QVariantList Statements() = 0;
 
+    /// Add new statement to MemoryStore.
     virtual bool AddStatement(IStatement* statement) = 0;
+
+    /// Remove given statement from the MemoryStore.
     virtual bool RemoveStatement(IStatement* statement) = 0;
+
+    IWorld* World() const
+    {
+        return world;
+    }
 
 protected:
     IWorld* world;

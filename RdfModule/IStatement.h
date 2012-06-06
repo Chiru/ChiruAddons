@@ -33,8 +33,6 @@ public:
     {
     }
 
-    virtual IStatement* Clone() = 0;
-
     /// Checks if the statement is complete and valid.
     virtual bool IsValid() = 0;
 

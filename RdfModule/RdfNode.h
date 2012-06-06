@@ -22,7 +22,7 @@ public:
     RdfNode(QString lit, IWorld* world);
     /// Construct a new blank node with a private identifier.
     RdfNode(IWorld* world);
-    /// Create copy of given node. Note! both nodes share the same pointer.
+    /// Create a copy of given node.
     RdfNode(INode* node, IWorld* world);
     RdfNode(librdf_node* node, IWorld* world);
 
@@ -33,4 +33,6 @@ public:
     void SetType(NodeType value);
 
     librdf_node* node;
+private:
+    void FromRawNode(librdf_node* node, IWorld* world);
 };

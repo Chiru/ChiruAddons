@@ -19,7 +19,7 @@ namespace CieMap
 
     VisualContainer::~VisualContainer()
     {
-
+        if (ownerContainer) delete ownerContainer;
     }
 
     void VisualContainer::SetOwner(IContainer *owner)
@@ -44,7 +44,8 @@ namespace CieMap
 
     void VisualContainer::ParentChanged(IContainer* parent)
     {
-        SetIgnoreDrop(true);
+        //SetIgnoreDrop(true);
+        //setAcceptDrops(false);
         setParent(parent->Visual());
     }
 
@@ -70,8 +71,11 @@ namespace CieMap
 
     void VisualContainer::dragMoveEvent(QDragMoveEvent *e)
     {
-        if (e->mimeData()->hasText())
+        if (!e->mimeData()->data("application/x-hotspot").isEmpty())
+        {
+            emit DragMove(e->pos(), e->mimeData()->data("application/x-hotspot"));
             e->accept();
+        }
         else
              e->ignore();
     }
@@ -82,9 +86,6 @@ namespace CieMap
         IContainer* parent = 0;
         while(vc)
         {
-            if (!vc->IgnoreDrop())
-                break;
-
             parent = vc->Owner()->Parent();
             if (!parent)
                 break;
@@ -92,11 +93,13 @@ namespace CieMap
             vc = dynamic_cast<VisualContainer*>(vc->Owner()->Parent()->Visual());
         }
 
-        if (vc && e->mimeData()->hasText())
+        if (vc && !e->mimeData()->data("application/x-hotspot").isEmpty())
         {
             const QMimeData *mime = e->mimeData();
             QPoint position = e->pos();
             QPoint hotSpot;
+
+            DragDrop(mime->data("application/x-hotspot"));
 
             QList<QByteArray> hotSpotPos = mime->data("application/x-hotspot").split(' ');
             if (hotSpotPos.size() == 2)
@@ -148,11 +151,25 @@ namespace CieMap
 
     void VisualContainer::mousePressEvent(QMouseEvent *e)
     {
-        QWidget* child2 = childAt(e->pos());
-        VisualContainer* vc = FindVisualContainer(child2);
+        QWidget* child = childAt(e->pos());
+        VisualContainer* vc = FindVisualContainer(child);
         if (!vc || vc->Owner()->ChildCount() > 0) return;
 
-        QLabel *child = static_cast<QLabel*>(childAt(e->pos()));
+        QPoint hotSpot = e->pos() - child->pos();
+
+        QMimeData *mimeData = new QMimeData;
+        mimeData->setText("Testi");
+        mimeData->setData("application/x-hotspot", QByteArray::number(hotSpot.x()) + " " + QByteArray::number(hotSpot.y()));
+
+        QDrag *drag = new QDrag(this);
+        drag->setMimeData(mimeData);
+        drag->setHotSpot(hotSpot);
+
+        emit DragStart(mimeData->data("application/x-hotspot"));
+
+        drag->exec(Qt::MoveAction, Qt::MoveAction);
+
+        /*QLabel *child = static_cast<QLabel*>(childAt(e->pos()));
         if (!child)
             return;
 
@@ -162,15 +179,18 @@ namespace CieMap
         mimeData->setText(child->text());
         mimeData->setData("application/x-hotspot", QByteArray::number(hotSpot.x()) + " " + QByteArray::number(hotSpot.y()));
 
-        QPixmap pixmap(child->size());
-        child->render(&pixmap);
-
         QDrag *drag = new QDrag(this);
         drag->setMimeData(mimeData);
-        drag->setPixmap(pixmap);
         drag->setHotSpot(hotSpot);
 
-        Qt::DropAction dropAction = drag->exec(Qt::MoveAction, Qt::MoveAction);
+        if (child->size().isValid())
+        {
+            QPixmap pixmap(child->size());
+            child->render(&pixmap);
+            drag->setPixmap(pixmap);
+        }
+
+        Qt::DropAction dropAction = drag->exec(Qt::MoveAction, Qt::MoveAction);*/
     }
 
     IVisualContainer* VisualContainer::Clone()

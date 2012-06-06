@@ -21,18 +21,32 @@ public:
     virtual ~RdfMemoryStore();
 
 public slots:
-    bool FromUri(QUrl uri);
+    /// Read rdf data from string and push it into RdfMemoryStore.
+    /** @param Raw rdf data
+        @return Return true if parse succeeded.*/
     bool FromString(QString data);
 
+    /// Convert model data to string format.
     QString toString() const;
 
+    /// Do rdf query using a given statement.
     QVariantList Select(IStatement* statement);
-    QVariantList Statements();
 
+    /// Get model statements as array. Note! Model changes wont update on returned statments.
+    QVariantList Statements();
+    
+    /// Add new statement to MemoryStore.
+    /** @param statment statement that we want to remove.
+        @return Return true if succeeded.*/
     bool AddStatement(IStatement* statement);
+
+    /// Remove given statement from the MemoryStore.
+    /** @param statment statement that we want to remove.
+        @return Return true if succeeded.*/
     bool RemoveStatement(IStatement* statement);
 
 private:
+    librdf_storage* storage;
     librdf_model *model;
     ModelType type;
 };

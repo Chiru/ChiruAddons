@@ -31,6 +31,11 @@ namespace CieMap
     private slots:
         void ParentChanged(IContainer* parent);
 
+    signals:
+        void DragMove(QPoint pos, QByteArray dragObject);
+        void DragStart(QByteArray dragObject);
+        void DragDrop(QByteArray dragObject); 
+
     protected:
         VisualContainer* FindVisualContainer(QWidget* widget);
 
@@ -39,6 +44,6 @@ namespace CieMap
         virtual void dropEvent(QDropEvent *event);
         virtual void mousePressEvent(QMouseEvent *event);
 
-       IContainer* ownerContainer;
+        IContainer* ownerContainer;
     };
 }

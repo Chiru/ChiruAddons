@@ -12,12 +12,10 @@ namespace CieMap
 class IVisualContainer : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(bool noDrop READ IgnoreDrop WRITE SetIgnoreDrop)
 
 public:
     explicit IVisualContainer(QWidget* parent = 0):
-        QWidget(parent),
-        ignoreDrop(false)
+        QWidget(parent)
     {
     }
 
@@ -29,9 +27,6 @@ public:
     virtual void SetOwner(IContainer *owner) = 0;
     virtual IContainer *Owner() const = 0;
 
-    void SetIgnoreDrop(bool value) { ignoreDrop = value; }
-    bool IgnoreDrop() const {return ignoreDrop;}
-
     /// Tests if the specified visual container is inside the active region of the visual container.
     /** @param other Position to test
         @return true if the other visual container is in the active region of the visual container, false otherwise. */
@@ -39,7 +34,6 @@ public:
 
 private:
     QVector3D position;
-    bool ignoreDrop;
 };
 
 }

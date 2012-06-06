@@ -14,6 +14,7 @@ class EventManager : public IEventManager
 
 public:
     EventManager();
+    ~EventManager();
 
     int RegisterScript(const Tag &tag, IScript *script);
 

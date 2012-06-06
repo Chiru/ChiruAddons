@@ -47,7 +47,7 @@ public:
     {
     }
 
-    /// 
+    /// Create a copy of given node. Note! both nodes share the same pointer.
     INode(INode* node, IWorld* world) : world(0)
     {
     }
@@ -56,9 +56,16 @@ public:
     {
     }
 
+    /// Return node's literal value or empty string.
     QString Lit() const {return lit;}
+
+    /// Return resource node uri as QUrl object.
     QUrl Uri() const {return uri;}
+
+    /// Return node type. Supported node types are Empty, Blank, Resource and Literal.
     NodeType Type() const {return type;}
+
+    /// Return world object that owns given nodes.
     IWorld* World() const {return world;}
 
 protected:
@@ -68,5 +75,3 @@ protected:
     NodeType type;
     IWorld* world;
 };
-
-//Q_DECLARE_INTERFACE(INode, "Tundra.RdfModule.INode")

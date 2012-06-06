@@ -9,13 +9,20 @@
 Q_DECLARE_METATYPE(RdfStatement *)
 
 RdfMemoryStore::RdfMemoryStore(IWorld* world) : IMemoryStore(world),
-    type(RdfXml)
+    type(RdfXml),
+    model(0),
+    storage(0)
 {
     RdfWorld* rdfWorld = dynamic_cast<RdfWorld*>(world);
     assert(rdfWorld && "Failed to dynamic cast IWorld to RdfWorld");
 
+    storage = librdf_new_storage(rdfWorld->world, "memory", NULL, NULL);
+
     if (rdfWorld)
-        model = librdf_new_model(rdfWorld->world, rdfWorld->storage, ""); 
+    {
+        model = librdf_new_model(rdfWorld->world, storage, "");
+        rdfWorld->RegisterStore(this);
+    }
     else
         LogError("Failed to cast IWorld to RdfWorld.");
    
@@ -25,11 +32,8 @@ RdfMemoryStore::~RdfMemoryStore()
 {
     if (model)
         librdf_free_model(model);
-}
-
-bool RdfMemoryStore::FromUri(QUrl uri)
-{
-    return true;
+    if (storage)
+        librdf_free_storage(storage);
 }
 
 bool RdfMemoryStore::FromString(QString data)
@@ -72,6 +76,7 @@ QVariantList RdfMemoryStore::Select(IStatement* statement)
                 statements << QVariant::fromValue<RdfStatement*>(new RdfStatement(world, s));
             librdf_stream_next(stream);
         }
+        librdf_free_stream(stream);
     }
     else
     {

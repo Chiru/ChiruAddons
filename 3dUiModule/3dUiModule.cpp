@@ -28,6 +28,8 @@
 #include "RdfModule.h"
 #include "IWorld.h"
 
+#include "qscript_tag.h"
+
 #include <QScriptEngine>
 
 Q_DECLARE_METATYPE(CieMap::IContainer *)
@@ -39,7 +41,7 @@ Q_DECLARE_METATYPE(CieMap::Container *)
 Q_DECLARE_METATYPE(CieMap::ScriptManager *)
 Q_DECLARE_METATYPE(CieMap::EventManager *)
 Q_DECLARE_METATYPE(CieMap::HttpRequestResponse *)
-Q_DECLARE_METATYPE(CieMap::Tag *)
+//Q_DECLARE_METATYPE(CieMap::Tag *)
 Q_DECLARE_METATYPE(CieMap::IScript *)
 Q_DECLARE_METATYPE(CieMap::IHttpRequestService *)
 Q_DECLARE_METATYPE(CieMap::HttpRequest *)
@@ -92,6 +94,36 @@ QScriptValue CreateVisualContainer(QScriptContext *ctx, QScriptEngine *engine)
     return engine->toScriptValue(c);
 }
 
+/*QScriptValue CreateTag(QScriptContext *ctx, QScriptEngine *engine)
+{
+    CieMap::Tag *t = 0;
+    if (ctx->argumentCount() == 1)
+    {
+        QScriptValue sv = ctx->argument(1);
+        if (sv.isString())
+        {
+            t = new CieMap::Tag();
+            t->SetType(ctx->argument(1).toString());
+        }
+        else
+            ctx->throwError(QScriptContext::TypeError, "Tag(type): Argument type not a string.");
+    }
+    else if (ctx->argumentCount() == 2)
+    {
+        QScriptValue type = ctx->argument(1);
+        QScriptValue data = ctx->argument(2);
+        if (type.isString() && data.isString())
+        {
+            t = new CieMap::Tag();
+            t->SetType(type.toString());
+            t->SetData(data.toString());
+        }
+        else
+            ctx->throwError(QScriptContext::TypeError, "Tag(type, data): Argument type not a string.");
+    }
+    return engine->toScriptValue(t);
+}*/
+
 void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
 {
     qScriptRegisterQObjectMetaType<CieMap::IContainer *>(engine);
@@ -104,7 +136,7 @@ void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
     qScriptRegisterQObjectMetaType<CieMap::ScriptManager *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::EventManager *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::HttpRequestResponse *>(engine);
-//    qScriptRegisterQObjectMetaType<CieMap::Tag *>(engine);
+    //qScriptRegisterQObjectMetaType<CieMap::Tag *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::IScript *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::IHttpRequestService *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::HttpRequest *>(engine);
@@ -117,6 +149,12 @@ void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
     qScriptRegisterQObjectMetaType<CieMap::VisualContainer *>(engine);
     QScriptValue ctorVisualContainer = engine->newFunction(CreateVisualContainer);
     engine->globalObject().setProperty("VisualContainer", ctorVisualContainer);
+
+    register_tag_prototype(engine);
+
+    /*qScriptRegisterQObjectMetaType<CieMap::Tag *>(engine);
+    QScriptValue ctorTag = engine->newFunction(CreateTag);
+    engine->globalObject().setProperty("Tag", ctorTag);*/
 }
 
 CieMap::ContainerFactory* C3DUiModule::ContainerFactory() const

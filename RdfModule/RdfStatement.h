@@ -21,10 +21,8 @@ public:
     RdfStatement(IWorld* world);
     RdfStatement(IWorld* world, INode *subject, INode *predicate, INode *object);
     RdfStatement(IWorld* world, librdf_statement* statement);
-    
-    virtual ~RdfStatement();
 
-    virtual RdfStatement* Clone();
+    virtual ~RdfStatement();
 
     /// Checks if the statement is complete and valid.
     virtual bool IsValid();

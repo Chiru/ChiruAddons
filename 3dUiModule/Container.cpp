@@ -4,6 +4,7 @@
 #include "EventManager.h"
 #include "Layout.h"
 #include "IVisualContainer.h"
+#include "LoggingFunctions.h"
 
 #include <cassert>
 #include <algorithm>
@@ -16,15 +17,18 @@ Container::Container(IVisualContainer *vc) :
     layout(new Layout()),
     parentContainer(0)
 {
-    eventMgr = new CieMap::EventManager();
+    eventMgr = new CieMap::EventManager(); 
 }
 
-CieMap::IContainer *ContainerFactory::CreateContainer(CieMap::IVisualContainer *visualContainer, CieMap::IVisualContainer* parent)
+Container::~Container()
+{
+    if (eventMgr) delete eventMgr;
+}
+
+CieMap::IContainer *ContainerFactory::CreateContainer(CieMap::IVisualContainer *visualContainer)
 {
     IContainer *container =  new Container(visualContainer);
     visualContainer->SetOwner(container);
-    if (parent)
-        container->SetParent(parent->Owner());
     return container;
 }
 
@@ -51,7 +55,7 @@ IContainer *Container::Child(uint childIdx) const
 {
     if (childIdx < 0 || childIdx >= childContainers.size())
     {
-        /// @todo Print error
+        LogError("index out of bound");
         return 0;
     }
     return childContainers[childIdx];
@@ -61,16 +65,19 @@ bool Container::IsInActiveRegion(IContainer *otherContainer) const
 {
     if (!Visual())
     {
+        LogError("Visual container cannot be null");
         /// @todo Print error throw new NullReferenceException("Visual container cannot be null");
         return false;
     }
     if (!otherContainer)
     {
+        LogError("Parameter cannot be null");
         /// @todo Print error throw new System.ArgumentException("Parameter cannot be null", "otherContainer");
         return false;
     }
     if (!otherContainer->Visual())
     {
+        LogError("otherContainer.Visual cannot be null");
         /// @todo Print error throw new NullReferenceException("otherContainer.Visual cannot be null");
         return false;
     }
@@ -88,6 +95,7 @@ void Container::AddChild(IContainer *c)
 {
     if (!c)
     {
+        LogError("Parameter cannot be null");
         /// @todo Print error throw new System.ArgumentNullException("Parameter cannot be null", "c");
         return;
     }
@@ -95,6 +103,7 @@ void Container::AddChild(IContainer *c)
     std::vector<IContainer *>::iterator it = std::find(childContainers.begin(), childContainers.end(), c);
     if (it != childContainers.end())
     {
+        LogError("Container already have parameter as child");
         /// @todo print error
         return;
     }
@@ -109,6 +118,7 @@ void Container::RemoveChild(IContainer *c)
     std::vector<IContainer *>::iterator it = std::find(childContainers.begin(), childContainers.end(), c);
     if (it == childContainers.end())
     {
+        LogError("Couldn't find a child in container");
         /// @todo Print error
         return;
     }
