@@ -1,6 +1,5 @@
 // For conditions of distribution and use, see copyright notice in LICENSE
 
-#include "FetchLocalNewsScript.h"
 #include "LoggingFunctions.h"
 #include "IMemoryStore.h"
 #include "IWorld.h"
