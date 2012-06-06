@@ -16,11 +16,12 @@ public:
     EventManager();
     ~EventManager();
 
-    int RegisterScript(const Tag &tag, IScript *script);
+public slots:
+    int RegisterScript(const CieMap::Tag &tag, CieMap::IScript *script); 
 
-    bool HasScript(const Tag &tag) const;
+    bool HasScript(const CieMap::Tag &tag) const;
 
-    void CallScript(const Tag &tag, IMemoryStore *refStore);
+    void CallScript(const CieMap::Tag &tag, IMemoryStore *refStore);
 
 private:
     ScriptManager *scriptManager;

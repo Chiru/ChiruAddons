@@ -29,13 +29,13 @@ int ScriptManager::RegisterScript(const Tag &tag, IScript *script)
 {
     if (!script)
     {
-        LogError("ScriptManager::RegisterScript: Parameter cannot be null");
+        LogError("ScriptManager::RegisterScript: Script parameter cannot be null");
         /// @todo print error throw new System.ArgumentNullException("Parameter cannot be null", "script");
         return InvalidId;
     }
     if (tag.IsEmpty())
     {
-        LogError("ScriptManager::RegisterScript: Parameter cannot be null");
+        LogError("ScriptManager::RegisterScript: Tag parameter cannot be null");
         /// @todo print error throw new System.ArgumentException("Parameter cannot be null or empty", "tag");
         return InvalidId;
     }

@@ -40,7 +40,7 @@ class Container : public IContainer
     IVisualContainer *visualUnity;
     CieMap::Layout *layout;
 
-public slots:
+public:
      // IContainer overrides
     void SetRdfStore(IMemoryStore *rdfStore) { rdfMemoryStore = rdfStore; }
     IMemoryStore *RdfStore() const { return rdfMemoryStore; }
@@ -49,6 +49,8 @@ public slots:
     void SetParent(CieMap::IContainer *parent);
     CieMap::IContainer *Parent() const { return parentContainer; }
     int ChildCount() const { return childContainers.size(); }
+
+public slots:
     CieMap::IContainer *Child(uint childIdx) const;
     bool IsInActiveRegion(CieMap::IContainer *otherContainer) const;
     void DropToActive(const CieMap::Tag &tag, CieMap::IContainer *container);

@@ -25,16 +25,16 @@ public:
         @param tag the tag associated with the script
         @param script the script to register
         @return script id */
-    virtual int RegisterScript(const Tag &tag, IScript *script) = 0;
+    virtual int RegisterScript(const CieMap::Tag &tag, CieMap::IScript *script) = 0;
 
     /// Returns true if there is a script associated with the specified tag
     /** @param name tag Tag to test */
-    virtual bool HasScript(const Tag &tag) const = 0;
+    virtual bool HasScript(const CieMap::Tag &tag) const = 0;
 
     /// Calls a script based on the specified tag
     /** @param tag Tag associated with the script
         @param rdfStore RDF data that is passed to the script. */
-    virtual void CallScript(const Tag &tag, IMemoryStore *rdfStore) = 0;
+    virtual void CallScript(const CieMap::Tag &tag, IMemoryStore *rdfStore) = 0;
 };
 
 }

@@ -12,19 +12,22 @@ uiWidget.size = new QSize(370, 200);
 uiWidget.setLayout(new QVBoxLayout());
 
 var labelVisual = new VisualContainer(uiWidget);
-var labelContainer = C3DUiModule.ContainerFactory().CreateContainer(labelVisual, uiWidget);
+var labelContainer = C3DUiModule.ContainerFactory().CreateContainer(labelVisual);
+labelContainer.parent = uiWidget;
 labelContainer.rdfStore = new RdfMemoryStore(world);
 var l1 = new QLabel("VLabel1", labelVisual);
 uiWidget.layout().addWidget(labelVisual, 0, 0);
 
 labelVisual = new VisualContainer(uiWidget);
-labelContainer = C3DUiModule.ContainerFactory().CreateContainer(labelVisual, uiWidget);
+labelContainer = C3DUiModule.ContainerFactory().CreateContainer(labelVisual);
+labelContainer.parent = uiWidget;
 labelContainer.rdfStore = new RdfMemoryStore(world);
 var l2 = new QLabel("VLabel2", labelVisual);
 uiWidget.layout().addWidget(labelVisual, 0, 0);
  
 labelVisual = new VisualContainer(uiWidget);
-labelContainer = C3DUiModule.ContainerFactory().CreateContainer(labelVisual, uiWidget);
+labelContainer = C3DUiModule.ContainerFactory().CreateContainer(labelVisual);
+labelContainer.parent = uiWidget;
 labelContainer.rdfStore = new RdfMemoryStore(world);
 var l3 = new QLabel("VLabel3", labelVisual);
 uiWidget.layout().addWidget(labelVisual, 0, 0);

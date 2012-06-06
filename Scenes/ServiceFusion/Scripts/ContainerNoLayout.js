@@ -12,11 +12,12 @@ var uiWidget = new VisualContainer(null);
 var rootContainer = C3DUiModule.ContainerFactory().CreateContainer(uiWidget);
 rootContainer.rdfStore = new RdfMemoryStore(world);
 var content = me.GetComponent("EC_GraphicsViewCanvas", "Content");
-uiWidget.size = new QSize(content.width, content.height);
+uiWidget.size = new QSize(content.width, content.height); 
 
 var labelVisual = new VisualContainer(uiWidget);
-labelVisual.move(100,100);
-var labelContainer = C3DUiModule.ContainerFactory().CreateContainer(labelVisual, uiWidget);
+//labelVisual.move(100,100);
+var labelContainer = C3DUiModule.ContainerFactory().CreateContainer(labelVisual);
+labelContainer.parent = uiWidget;
 labelContainer.rdfStore = new RdfMemoryStore(world);
 var label = new QLabel("FreeLabel", labelVisual);
 label.font = new QFont("Arial", 24);

@@ -25,6 +25,8 @@
 #include "IComponentFactory.h"
 #include "DragDropWidget.h"
 
+#include "TestScript.h"
+
 #include "RdfModule.h"
 #include "IWorld.h"
 
@@ -47,6 +49,8 @@ Q_DECLARE_METATYPE(CieMap::IHttpRequestService *)
 Q_DECLARE_METATYPE(CieMap::HttpRequest *)
 Q_DECLARE_METATYPE(DragDropWidget *)
 Q_DECLARE_METATYPE(CieMap::VisualContainer *)
+
+Q_DECLARE_METATYPE(TestScript *)
 
 C3DUiModule::C3DUiModule() :
     IModule("C3DUi")
@@ -94,35 +98,18 @@ QScriptValue CreateVisualContainer(QScriptContext *ctx, QScriptEngine *engine)
     return engine->toScriptValue(c);
 }
 
-/*QScriptValue CreateTag(QScriptContext *ctx, QScriptEngine *engine)
+QScriptValue CreateTestScript(QScriptContext *ctx, QScriptEngine *engine)
 {
-    CieMap::Tag *t = 0;
-    if (ctx->argumentCount() == 1)
+    CieMap::IScript *s = 0;
+    if (ctx->argumentCount() == 0)
     {
-        QScriptValue sv = ctx->argument(1);
-        if (sv.isString())
-        {
-            t = new CieMap::Tag();
-            t->SetType(ctx->argument(1).toString());
-        }
-        else
-            ctx->throwError(QScriptContext::TypeError, "Tag(type): Argument type not a string.");
+        s = new TestScript();
     }
-    else if (ctx->argumentCount() == 2)
-    {
-        QScriptValue type = ctx->argument(1);
-        QScriptValue data = ctx->argument(2);
-        if (type.isString() && data.isString())
-        {
-            t = new CieMap::Tag();
-            t->SetType(type.toString());
-            t->SetData(data.toString());
-        }
-        else
-            ctx->throwError(QScriptContext::TypeError, "Tag(type, data): Argument type not a string.");
-    }
-    return engine->toScriptValue(t);
-}*/
+    //else
+    //    return ctx->throwError(QScriptContext::TypeError, "VisualContainer(): invalid number of arguments provided.");
+
+    return engine->toScriptValue(s);
+}
 
 void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
 {
@@ -149,6 +136,10 @@ void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
     qScriptRegisterQObjectMetaType<CieMap::VisualContainer *>(engine);
     QScriptValue ctorVisualContainer = engine->newFunction(CreateVisualContainer);
     engine->globalObject().setProperty("VisualContainer", ctorVisualContainer);
+
+    qScriptRegisterQObjectMetaType<TestScript *>(engine);
+    QScriptValue ctorTestScript = engine->newFunction(CreateTestScript);
+    engine->globalObject().setProperty("TestScript", ctorTestScript);
 
     register_tag_prototype(engine);
 
