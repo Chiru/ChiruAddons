@@ -53,7 +53,6 @@ function MovieContainer(parent)
     Container.call(this, parent);
     
     this.movies = new Array();
-    //this.visual.size = new QSize(me.graphicsviewcanvas.width, me.graphicsviewcanvas.height);
     this.visual.size = new QSize(285, 400);
     me.graphicsviewcanvas.width = this.visual.width;
     me.graphicsviewcanvas.height = this.visual.height;
@@ -61,28 +60,15 @@ function MovieContainer(parent)
     this.visual.setContentsMargins(0, 0, 0, 0);
     this.visual.layout().setSpacing(0);
     
-    //\todo Use HttpResponse object instead --Joosua.
-    var world      = RdfModule.theWorld;
-    var store      = world.CreateStore();
-    var subject    = world.CreateResource(new QUrl("http://cie/news#"));
-    var predicate  = world.CreateResource(new QUrl("http://cie/data-source"));
-    var object     = world.CreateLiteral("http://www.finnkino.fi/xml/Schedule/?area=1018");
-    var statement  = world.CreateStatement(subject, predicate, object);
-    store.AddStatement(statement);
-    world.FreeNode(subject);
-    world.FreeNode(predicate);
-    world.FreeNode(object);
-    world.FreeStatement(statement);
+    var world    = RdfModule.theWorld;
+    var request  = new HttpRequest();
+    var response = ScriptServices.SendPreprocessorRequest("http://hq.ludocraft.com/ludowww/cie/movies2.php",
+                                                          "http://www.finnkino.fi/xml/Schedule/?area=1018",
+                                                          request); 
     
-    var url = new QUrl("http://hq.ludocraft.com/ludowww/cie/movies2.php");
-    var request = new QNetworkRequest(url);
-    request.setRawHeader("User-Agent", "realXtend Tundra");
-    var accessManager = new QNetworkAccessManager(); 
-    
-    accessManager.finished.connect(this, function(reply)
+    response.Ready.connect(this, function(response)
     {
-        var byteArray = reply.readAll();
-        if (this.visual.owner.rdfStore.FromString(byteArray))
+        if (this.visual.owner.rdfStore.FromString(response.data))
         {
             // Create query statement.
             var subject = world.CreateResource(new QUrl("http://cie/news#"));
@@ -114,11 +100,9 @@ function MovieContainer(parent)
                     break;
             }
         }
+        response.deleteLater();
+        response = null;
     });
-
-    var post_data = store.toString();
-    world.FreeStore(store);
-    accessManager.post(request, new QByteArray("data=" + post_data));
 }
 MovieContainer.prototype = new Container();
 
