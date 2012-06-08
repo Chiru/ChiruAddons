@@ -5,6 +5,8 @@
 #include "Layout.h"
 #include "IVisualContainer.h"
 #include "LoggingFunctions.h"
+#include "IMemoryStore.h"
+#include "IWorld.h"
 
 #include <cassert>
 #include <algorithm>
@@ -23,6 +25,7 @@ Container::Container(IVisualContainer *vc) :
 Container::~Container()
 {
     if (eventMgr) delete eventMgr;
+    if (rdfMemoryStore) rdfMemoryStore->World()->FreeStore(rdfMemoryStore);
 }
 
 CieMap::IContainer *ContainerFactory::CreateContainer(CieMap::IVisualContainer *visualContainer)

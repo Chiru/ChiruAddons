@@ -7,6 +7,7 @@
 
 #include <QObject>
 #include <redland.h>
+#include <set>
 
 class RdfWorld :  public IWorld
 {
@@ -33,11 +34,16 @@ public slots:
     virtual void FreeStatement(IStatement *statement);
 
 private slots:
-    void HandleNodeDestroy(QObject *obj);
+    void HandleNodeDestroy(QObject *obj); 
     void HandleStatementDestroy(QObject *obj);
     void HandleStoreDestroy(QObject *obj);
 public:
     librdf_world*  world;
     librdf_parser* parser;
     librdf_serializer* serializer;
+
+protected:
+    std::set<INode*> nodes;
+    std::set<IStatement*> statements;
+    std::set<IMemoryStore*> models;
 };

@@ -17,13 +17,17 @@ namespace CieMap
     a new instance of this class and set response and error messages appropriately once the request
     has completed.
 
-    Use IsReady to check the status of the request. */
+    Use IsReady to check the status of the request or connect to Ready signal. */
 class HttpRequestResponse : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(IMemoryStore* data READ Data)
+    Q_PROPERTY(bool ready READ IsReady)
+    Q_PROPERTY(QString error READ Error)
 
 public:
-    HttpRequestResponse() : ready(false), requestResponse(0) {}
+    HttpRequestResponse() : QObject(), ready(false), requestResponse(0) {}
+    virtual ~HttpRequestResponse();
 
     /// Maximum size of the response. If the response is larger, the remainder is cut from the response.
     enum { MaxSize = 262144 };
@@ -47,6 +51,12 @@ public:
     /** This is set to null if no error occurred.
         @note Setting the error also sets IsReady to true */
     QString Error();
+
+signals:
+    /// Trigger ready signal when http request response is received.
+    /** @param self signal sender.
+     */
+    void Ready(CieMap::HttpRequestResponse *self);
 
 private:
     QString errorDescription;

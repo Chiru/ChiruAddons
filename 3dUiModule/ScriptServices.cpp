@@ -8,6 +8,15 @@
 #include <QByteArray>
 #include <QStringList>
 
+#include "RdfModule.h"
+#include "IWorld.h"
+#include "IMemoryStore.h"
+#include "LoggingFunctions.h"
+#include "INode.h"
+#include "IStatement.h"
+#include "IHttpRequestService.h"
+#include "HttpRequestResponse.h"
+
 namespace CieMap
 {
 
@@ -16,7 +25,56 @@ HttpRequestResponse *ScriptServices::SendPreprocessorRequest(
     const QString &dataSourceUri,
     IHttpRequestService *requestService)
 {
-    return 0;
+    QString uri = dataPreprocessorUrl;
+    if (dataPreprocessorUrl.isEmpty())
+    {
+        /// @todo Print error throw new System.ArgumentException("Parameter cannot be null", "dataPreprocessorUri");
+        LogError("ScriptServices::SendPreprocessorRequest: Url parameter cannot be null");
+        return 0;
+    }
+
+    QString encodedSourceUri = dataSourceUri;
+    if (!encodedSourceUri.isEmpty())
+        encodedSourceUri = UrlEncode(dataSourceUri);
+
+    IWorld *world       = RdfModule::WorldInstance();
+    IMemoryStore *store = world->CreateStore();
+    INode* from         = world->CreateResource(QUrl("http://cie/news#"));//dataPreprocessorUrl + "?s=" + encodedSourceUri));
+    INode* dataSource   = world->CreateResource(QUrl("http://cie/data-source")); //todo RDFVocabulary.dataSource
+    INode* liter        = world->CreateLiteral(dataSourceUri);
+    IStatement* dataSourceStamement = world->CreateStatement(from, dataSource, liter);
+
+    store->AddStatement(dataSourceStamement);
+    QString postData = store->toString();
+
+    world->FreeNode(from);
+    world->FreeNode(dataSource);
+    world->FreeNode(liter);
+    world->FreeStatement(dataSourceStamement);
+    world->FreeStore(store);
+
+    HttpRequestResponse* response;
+    if (requestService != 0)
+    {
+        response = requestService->SendHttpRequest(uri, postData);
+    }
+    else
+    {
+        response = new HttpRequestResponse();
+
+        HttpRequest *searchRequest = new HttpRequest();// { Response = response, Uri = uri, PostData = postData};
+        searchRequest->SetResponse(response);
+        searchRequest->SetUri(uri);
+        searchRequest->SetPostData(postData);
+
+        searchRequest->SendRequest();
+        /*Thread thread = new Thread(new ThreadStart(searchRequest.SendRequest)) { IsBackground = true };
+        thread.Start();*/
+
+        return response;
+    }
+
+    return response;
     // TODO
 /*
     QString uri = dataPreprocessorUrl;
@@ -102,6 +160,9 @@ bool ScriptServices::IsGpsData(const QString &data)
 
 void HttpRequest::SendRequest()
 {
+    /*QNetworkRequest *request;
+    QNetworkAccessManager *manager;*/
+
     ///@todo Implement with Qt HTTP stuff
 /*
     networkAccessManager->put

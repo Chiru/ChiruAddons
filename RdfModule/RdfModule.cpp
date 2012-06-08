@@ -14,6 +14,8 @@
 #include <QScriptEngine>
 //#include <vld.h> 
 
+IWorld *RdfModule::worldInstance = 0;
+
 Q_DECLARE_METATYPE(RdfMemoryStore *)
 Q_DECLARE_METATYPE(RdfNode *)
 Q_DECLARE_METATYPE(RdfWorld *)
@@ -42,6 +44,7 @@ void RdfModule::Initialize()
 {
     framework_->RegisterDynamicObject("RdfModule", this);
     world = new RdfWorld();
+    worldInstance = world;
 }
 
 QScriptValue CreateRdfMemoryStore(QScriptContext *ctx, QScriptEngine *engine)

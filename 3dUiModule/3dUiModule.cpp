@@ -23,7 +23,8 @@
 #include "QScriptEngineHelpers.h"
 #include "SceneAPI.h"
 #include "IComponentFactory.h"
-#include "DragDropWidget.h"
+#include "DragDropWidget.h" 
+#include "HttpRequestService.h"
 
 #include "TestScript.h"
 
@@ -31,6 +32,7 @@
 #include "IWorld.h"
 
 #include "qscript_tag.h"
+#include "qscript_scriptservices.h"
 
 #include <QScriptEngine>
 
@@ -49,6 +51,8 @@ Q_DECLARE_METATYPE(CieMap::IHttpRequestService *)
 Q_DECLARE_METATYPE(CieMap::HttpRequest *)
 Q_DECLARE_METATYPE(DragDropWidget *)
 Q_DECLARE_METATYPE(CieMap::VisualContainer *)
+Q_DECLARE_METATYPE(CieMap::HttpRequestService *)
+
 
 Q_DECLARE_METATYPE(TestScript *)
 
@@ -111,6 +115,19 @@ QScriptValue CreateTestScript(QScriptContext *ctx, QScriptEngine *engine)
     return engine->toScriptValue(s);
 }
 
+QScriptValue CreateHttpRequest(QScriptContext *ctx, QScriptEngine *engine)
+{
+    CieMap::HttpRequestService *h = 0;
+    if (ctx->argumentCount() == 0)
+    {
+        h = new CieMap::HttpRequestService();
+    }
+    //else
+    //    return ctx->throwError(QScriptContext::TypeError, "VisualContainer(): invalid number of arguments provided.");
+
+    return engine->toScriptValue(h);
+}
+
 void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
 {
     qScriptRegisterQObjectMetaType<CieMap::IContainer *>(engine);
@@ -141,7 +158,12 @@ void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
     QScriptValue ctorTestScript = engine->newFunction(CreateTestScript);
     engine->globalObject().setProperty("TestScript", ctorTestScript);
 
+    qScriptRegisterQObjectMetaType<CieMap::HttpRequestService *>(engine);
+    QScriptValue ctorHttpRequest = engine->newFunction(CreateHttpRequest);
+    engine->globalObject().setProperty("HttpRequest", ctorHttpRequest);
+
     register_tag_prototype(engine);
+    register_scriptservice_prototype(engine);
 
     /*qScriptRegisterQObjectMetaType<CieMap::Tag *>(engine);
     QScriptValue ctorTag = engine->newFunction(CreateTag);

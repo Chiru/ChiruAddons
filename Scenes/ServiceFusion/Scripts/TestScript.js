@@ -79,6 +79,24 @@ function ScriptTest(root)
     root.DropToActive(new Tag("", "noscript"), root);
 }
 
+function ResponseReady(response)
+{
+    if (response.error == "")
+        print(response.data);
+    else
+        print(response.error);
+    response.deleteLater();
+}
+
+function HttpRequestTest()
+{
+    print("Testing HttpRequest ...");
+    var request = new HttpRequest();
+    var response = ScriptServices.SendPreprocessorRequest("http://hq.ludocraft.com/ludowww/cie/movies2.php", "http://www.finnkino.fi/xml/Schedule/?area=1018", request);
+    response.Ready.connect(this, ResponseReady);
+}
+
 var root = GenerateTestContainerHierarchy();
 TestHierarchy(root);
 ScriptTest(root);
+HttpRequestTest();

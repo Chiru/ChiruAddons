@@ -50,18 +50,17 @@ public:
     CieMap::IContainer *Parent() const { return parentContainer; }
     int ChildCount() const { return childContainers.size(); }
 
-public slots:
-    CieMap::IContainer *Child(uint childIdx) const;
-    bool IsInActiveRegion(CieMap::IContainer *otherContainer) const;
-    void DropToActive(const CieMap::Tag &tag, CieMap::IContainer *container);
+    Q_INVOKABLE CieMap::IContainer *Child(uint childIdx) const;
+    Q_INVOKABLE bool IsInActiveRegion(CieMap::IContainer *otherContainer) const;
+    Q_INVOKABLE void DropToActive(const CieMap::Tag &tag, CieMap::IContainer *container);
 
     /// Add a child container
     /** @param c New child container that has this container as the parent */
-    void AddChild(CieMap::IContainer *c);
+    Q_INVOKABLE void AddChild(CieMap::IContainer *c);
 
     /// Remove a child container
     /** @param c Child container */
-    void RemoveChild(CieMap::IContainer *c);
+    Q_INVOKABLE void RemoveChild(CieMap::IContainer *c);
 
 signals:
     void ParentChanged(IContainer* newParent);

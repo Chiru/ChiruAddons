@@ -6,6 +6,9 @@
 #include "3dUiModule.h"
 #include "LoggingFunctions.h"
 
+#include "HttpRequestService.h"
+#include "ScriptServices.h"
+
 #include <QtGui>
 
 namespace CieMap
@@ -15,6 +18,8 @@ namespace CieMap
         ownerContainer(0)
     {
         setAcceptDrops(true);
+        //HttpRequestService *request = new HttpRequestService();
+        //HttpRequestResponse *response = ScriptServices::SendPreprocessorRequest("http://hq.ludocraft.com/ludowww/cie/movies2.php", "http://www.finnkino.fi/xml/Schedule/?area=1018", request);
     }
 
     VisualContainer::~VisualContainer()

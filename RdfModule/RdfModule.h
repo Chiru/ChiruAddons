@@ -21,6 +21,7 @@ public:
     void Load();
     void Initialize();
     IWorld* GetWorld() const;
+    static IWorld* WorldInstance() {return worldInstance;}
 
 private slots:
     void OnScriptEngineCreated(QScriptEngine* engine);
@@ -29,4 +30,7 @@ private:
     /// World object that wraps Redland Rdf world object.
     /// Note! Redland will only allow single isntance of the world object.
     IWorld* world;
+
+    // \todo remove this signleton when possible.
+    static IWorld *worldInstance;
 };

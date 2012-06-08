@@ -25,6 +25,8 @@ public:
     /// Create a new instance of rdf Model/Store object.
     virtual IMemoryStore* CreateStore() = 0; 
 
+    virtual void FreeStore(IMemoryStore *store) = 0;
+
     /// Create new resource node for given uri value (statment's subject and predicate).
     virtual INode*  CreateResource(QUrl uri) = 0;
 
@@ -34,13 +36,12 @@ public:
     /// Create literal node (statment's object).
     virtual INode*  CreateLiteral(QString lit_v) = 0;
 
+    virtual void FreeNode(INode *node) = 0;
+
     /// Create new statment for given subject, predicate and object.
     /*  Note! Node pointers aren't stored to a statement, instead their values get copied and.
         inserted in new node objects, this way the memory management gets much simpler.*/
     virtual IStatement* CreateStatement(INode* subject, INode* predicate, INode* object) = 0;
 
-protected:
-    QSet<INode*> nodes;
-    QSet<IStatement*> statements;
-    QSet<IMemoryStore*> models;
+    virtual void FreeStatement(IStatement *statement) = 0;
 };

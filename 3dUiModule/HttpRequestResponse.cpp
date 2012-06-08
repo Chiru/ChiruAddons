@@ -1,9 +1,20 @@
 // For conditions of distribution and use, see copyright notice in LICENSE
 
 #include "HttpRequestResponse.h"
+#include "RdfModule.h"
+#include "IWorld.h"
+#include "IMemoryStore.h"
 
 namespace CieMap
 {
+HttpRequestResponse::~HttpRequestResponse()
+{
+    if(requestResponse)
+    {
+        IWorld *world = RdfModule::WorldInstance();
+        world->FreeStore(requestResponse);
+    }
+}
 
 bool HttpRequestResponse::IsReady()
 {
@@ -14,11 +25,33 @@ bool HttpRequestResponse::IsReady()
 IMemoryStore *HttpRequestResponse::Data()
 {
     // TODO lock (this)
-        return requestResponse;
+    return requestResponse;
 }
 
 void HttpRequestResponse::SetResponse(const QByteArray/*byte[]*/ &response)
 {
+    IMemoryStore *memoryStore = 0;
+    if (!requestResponse)
+    {
+        IWorld *world = RdfModule::WorldInstance();
+        memoryStore = world->CreateStore();
+    }
+    else
+        memoryStore = requestResponse;
+    QString error = "";
+
+    QString str(response);
+    if (!memoryStore->FromString(str))
+    {
+        error = "Failed to parse rdf data to memory store.";
+    }
+
+    requestResponse = memoryStore;
+    ready = true;
+    errorDescription = error;
+    emit Ready(this);
+    /*IWorld *world = IWorld::Instance();
+    IMemoryStore *memoryStore = world->CreateStore();*/
     //TODO
 /*
     IMemoryStore memoryStore = new IMemoryStore();
@@ -48,7 +81,7 @@ void HttpRequestResponse::SetResponse(const QByteArray/*byte[]*/ &response)
 
 QString HttpRequestResponse::Error()
 {
-    return "";
+    return errorDescription;
     // TODO
     /*
 
@@ -70,3 +103,4 @@ QString HttpRequestResponse::Error()
 }
 
 }
+
