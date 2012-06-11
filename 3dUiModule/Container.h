@@ -5,7 +5,6 @@
 #include "IContainer.h"
 #include "3dUiModuleFwd.h"
 
-#include <QObject>
 #include <vector>
 
 namespace CieMap

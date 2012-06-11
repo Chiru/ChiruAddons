@@ -5,12 +5,16 @@
 #include "Layout.h"
 #include "IVisualContainer.h"
 #include "LoggingFunctions.h"
+#include "CoreDefines.h"
+#include "IMemoryStore.h"
+#include "IWorld.h"
 
 #include <cassert>
 #include <algorithm>
 
 namespace CieMap
 {
+
 Container::Container(IVisualContainer *vc) :
     rdfMemoryStore(0),
     visualUnity(vc),
@@ -20,12 +24,17 @@ Container::Container(IVisualContainer *vc) :
     eventMgr = new CieMap::EventManager();
 }
 
-CieMap::IContainer *ContainerFactory::CreateContainer(CieMap::IVisualContainer *visualContainer, CieMap::IVisualContainer* parent)
+Container::~Container()
+{
+    SAFE_DELETE(eventMgr)
+    if (rdfMemoryStore && rdfMemoryStore->World())
+        rdfMemoryStore->World()->FreeStore(rdfMemoryStore);
+}
+
+CieMap::IContainer *ContainerFactory::CreateContainer(CieMap::IVisualContainer *visualContainer)
 {
     IContainer *container =  new Container(visualContainer);
     visualContainer->SetOwner(container);
-    if (parent)
-        container->SetParent(parent->Owner());
     return container;
 }
 
