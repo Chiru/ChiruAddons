@@ -4,11 +4,12 @@ Service Fusion Scripting
 - Create a new script file for your purposes and add it to the scene,
   an example script could look something like this:
 
-  var dummyContainer = C3DUiModule.ContainerFactory().CreateContainer(null);
+  var dummyVc = new VisualContainer(null);
+  var dummyContainer = C3DUiModule.ContainerFactory().CreateContainer(dummyVc);
 
   var script = new Script();
 
-  script.Invoked.connect(RunScript(tag, rdfStore)
+  script.Invoked.connect(RunScript);
 
   dummyContainer.eventManager.RegisterScript(new Tag("test", "test"), script);
 
@@ -21,3 +22,4 @@ Service Fusion Scripting
   }
 
 - When something invokes the Tag("test", "test"), a drag-and-drop event f.ex., the RunScript function is called.
+- See TestScript.js for more examples
