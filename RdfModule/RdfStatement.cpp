@@ -12,10 +12,7 @@ RdfStatement::RdfStatement(IWorld* world) : IStatement(world)
     assert(rdfWorld && "Failed to dynamic cast IWorld to RdfWorld");
 
     if (rdfWorld)
-    {
-        rdfWorld->RegisterStatement(this);
         statement = librdf_new_statement(rdfWorld->world);
-    }
     else
         LogError("Failed to cast IWorld to RdfWorld.");
 }
@@ -27,7 +24,6 @@ RdfStatement::RdfStatement(IWorld* world, INode *subject, INode *predicate, INod
 
     if (rdfWorld)
     {
-        rdfWorld->RegisterStatement(this);
         RdfNode *rdfSubject   = dynamic_cast<RdfNode*>(subject);
         RdfNode *rdfPredicate = dynamic_cast<RdfNode*>(predicate);
         RdfNode *rdfObject    = dynamic_cast<RdfNode*>(object);
@@ -63,10 +59,7 @@ RdfStatement::RdfStatement(IWorld* world, librdf_statement* statement) :
     assert(rdfWorld && "Failed to dynamic cast IWorld to RdfWorld");
 
     if (rdfWorld)
-    {
         this->statement = librdf_new_statement_from_nodes(rdfWorld->world, s->node, p->node, o->node);
-        rdfWorld->RegisterStatement(this);
-    }
     else
         LogError("Failed to cast IWorld to RdfWorld.");
 }

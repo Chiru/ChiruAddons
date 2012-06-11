@@ -39,7 +39,7 @@ HttpRequestResponse *ScriptServices::SendPreprocessorRequest(
 
     IWorld *world       = RdfModule::WorldInstance();
     IMemoryStore *store = world->CreateStore();
-    INode* from         = world->CreateResource(QUrl("http://cie/news#"));//dataPreprocessorUrl + "?s=" + encodedSourceUri));
+    INode* from         = world->CreateResource(QUrl("http://cie/news#"));//todo dataPreprocessorUrl + "?s=" + encodedSourceUri));
     INode* dataSource   = world->CreateResource(QUrl("http://cie/data-source")); //todo RDFVocabulary.dataSource
     INode* liter        = world->CreateLiteral(dataSourceUri);
     IStatement* dataSourceStamement = world->CreateStatement(from, dataSource, liter);
@@ -62,14 +62,12 @@ HttpRequestResponse *ScriptServices::SendPreprocessorRequest(
     {
         response = new HttpRequestResponse();
 
-        HttpRequest *searchRequest = new HttpRequest();// { Response = response, Uri = uri, PostData = postData};
+        HttpRequest *searchRequest = new HttpRequest();
         searchRequest->SetResponse(response);
         searchRequest->SetUri(uri);
         searchRequest->SetPostData(postData);
 
         searchRequest->SendRequest();
-        /*Thread thread = new Thread(new ThreadStart(searchRequest.SendRequest)) { IsBackground = true };
-        thread.Start();*/
 
         return response;
     }

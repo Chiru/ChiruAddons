@@ -24,4 +24,4 @@ signals:
     /** @param tag Tag that is associated with this script
         @param rdfStore RDF data that is passed to the script. */
     void Invoked(const CieMap::Tag &tag, IMemoryStore *rdfStore);
-}
+};

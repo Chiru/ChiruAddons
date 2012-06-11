@@ -42,6 +42,9 @@ public:
     virtual QString toString() const = 0;
 
     /// Do rdf query using a given statement.
+    /** \todo Replace QVariantList with StatementStream object --Joosua.
+     *  Note! It's up to user to release Statments found in QVariantList.
+     */
     virtual QVariantList Select(IStatement* statement) = 0;
 
     /// Get model statements as array. Note! Model changes wont show on returned statments.
@@ -52,6 +55,9 @@ public:
 
     /// Remove given statement from the MemoryStore.
     virtual bool RemoveStatement(IStatement* statement) = 0;
+
+    /// Create new clone of given IMemoryStore
+    virtual IMemoryStore *Clone() = 0;
 
     IWorld* World() const
     {

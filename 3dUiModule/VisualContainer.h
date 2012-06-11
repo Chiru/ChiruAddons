@@ -24,7 +24,7 @@ namespace CieMap
         void SetOwner(IContainer *owner);
         IContainer *Owner() const;
 
-        IVisualContainer* Clone();
+        IContainer* Clone();
 
         void AttachToVisualContainer(VisualContainer* vc);
 
@@ -43,6 +43,11 @@ namespace CieMap
         virtual void dragMoveEvent(QDragMoveEvent *event);
         virtual void dropEvent(QDropEvent *event);
         virtual void mousePressEvent(QMouseEvent *event);
+
+        /// HandleDrop event between two VisualContainers.
+        /** 
+         */
+        void HandleDrop(VisualContainer *target);
 
         IContainer* ownerContainer;
     };

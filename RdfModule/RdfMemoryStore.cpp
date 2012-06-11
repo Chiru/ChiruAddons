@@ -19,10 +19,7 @@ RdfMemoryStore::RdfMemoryStore(IWorld* world) : IMemoryStore(world),
     storage = librdf_new_storage(rdfWorld->world, "memory", NULL, NULL);
 
     if (rdfWorld)
-    {
         model = librdf_new_model(rdfWorld->world, storage, "");
-        rdfWorld->RegisterStore(this);
-    }
     else
         LogError("Failed to cast IWorld to RdfWorld.");
    
@@ -131,4 +128,11 @@ bool RdfMemoryStore::RemoveStatement(IStatement* statement)
             return true;
     LogWarning("Failed to remove a statement from the model.");
     return false;
+}
+
+IMemoryStore *RdfMemoryStore::Clone()
+{
+    IMemoryStore* newStore = world->CreateStore();
+    newStore->FromString(toString());
+    return newStore;
 }

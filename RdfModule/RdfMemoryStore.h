@@ -45,6 +45,9 @@ public slots:
         @return Return true if succeeded.*/
     bool RemoveStatement(IStatement* statement);
 
+    /// Create new clone of given IMemoryStore
+    IMemoryStore *Clone();
+
 private:
     librdf_storage* storage;
     librdf_model *model;

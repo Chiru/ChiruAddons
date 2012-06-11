@@ -5,6 +5,11 @@
 #include "3dUiModule.h"
 #include "HttpRequestService.h"
 #include "ScriptServices.h"
+#include "IMemoryStore.h"
+#include "IWorld.h"
+#include "IStatement.h"
+#include "INode.h"
+#include "ScriptManager.h"
 
 #include "LoggingFunctions.h"
 #include "CoreDefines.h"
@@ -18,8 +23,6 @@ namespace CieMap
         ownerContainer(0)
     {
         setAcceptDrops(true);
-        //HttpRequestService *request = new HttpRequestService();
-        //HttpRequestResponse *response = ScriptServices::SendPreprocessorRequest("http://hq.ludocraft.com/ludowww/cie/movies2.php", "http://www.finnkino.fi/xml/Schedule/?area=1018", request);
     }
 
     VisualContainer::~VisualContainer()
@@ -51,12 +54,13 @@ namespace CieMap
     {
         //SetIgnoreDrop(true);
         //setAcceptDrops(false);
+        // todo replace this with layout functionality.
         setParent(parent->Visual());
     }
 
     void VisualContainer::dragEnterEvent(QDragEnterEvent *e)
     {
-        if (e->mimeData()->hasText())
+        if (!e->mimeData()->data("application/x-hotspot").isEmpty())
         {
             if (children().contains(e->source()))
             {
@@ -122,6 +126,7 @@ namespace CieMap
                 source->setParent(vc);
                 source->move(position - hotSpot);
             }
+            HandleDrop(source);
             source->show();
 
             if (e->source() == this)
@@ -163,7 +168,7 @@ namespace CieMap
         QPoint hotSpot = e->pos() - child->pos();
 
         QMimeData *mimeData = new QMimeData;
-        mimeData->setText("Testi");
+        //if (Owner() && Owner()->RdfStore()) mimeData->setText(Owner()->RdfStore()->toString());
         mimeData->setData("application/x-hotspot", QByteArray::number(hotSpot.x()) + " " + QByteArray::number(hotSpot.y()));
 
         QDrag *drag = new QDrag(this);
@@ -173,33 +178,38 @@ namespace CieMap
         emit DragStart(mimeData->data("application/x-hotspot"));
 
         drag->exec(Qt::MoveAction, Qt::MoveAction);
-
-        /*QLabel *child = static_cast<QLabel*>(childAt(e->pos()));
-        if (!child)
-            return;
-
-        QPoint hotSpot = e->pos() - child->pos();
-
-        QMimeData *mimeData = new QMimeData;
-        mimeData->setText(child->text());
-        mimeData->setData("application/x-hotspot", QByteArray::number(hotSpot.x()) + " " + QByteArray::number(hotSpot.y()));
-
-        QDrag *drag = new QDrag(this);
-        drag->setMimeData(mimeData);
-        drag->setHotSpot(hotSpot);
-
-        if (child->size().isValid())
-        {
-            QPixmap pixmap(child->size());
-            child->render(&pixmap);
-            drag->setPixmap(pixmap);
-        }
-
-        Qt::DropAction dropAction = drag->exec(Qt::MoveAction, Qt::MoveAction);*/
     }
 
-    IVisualContainer* VisualContainer::Clone()
+    IContainer* VisualContainer::Clone()
     {
         return 0;
+    }
+
+    void VisualContainer::HandleDrop(VisualContainer *target)
+    {
+        if (!target)
+            return;
+
+        IMemoryStore *store = Owner()->RdfStore();
+        LogInfo(target->Owner()->RdfStore()->toString());
+
+        IWorld *world = store->World();
+        INode *source = world->CreateResource(QUrl("http://cie/source-application"));
+        IStatement *statement = world->CreateStatement(0, source, 0);
+
+        QVariantList result = store->Select(statement);
+
+        world->FreeNode(source);
+        world->FreeStatement(statement);
+
+        for (int i = 0; i < result.count(); ++i)
+        {
+            IStatement *s = dynamic_cast<IStatement *>(result[i].value<QObject*>());
+            Tag tag;
+            tag.SetType(s->Predicate()->Uri().toString());
+            tag.SetData(s->Object()->Lit());
+            target->Owner()->DropToActive(tag, target->Owner());
+            world->FreeStatement(s);
+        }
     }
 }

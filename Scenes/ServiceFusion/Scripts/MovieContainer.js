@@ -99,6 +99,7 @@ function MovieContainer(parent)
                 else
                     break;
             }
+            print(this.visual.sizeHint); 
         }
         response.deleteLater();
         response = null;
@@ -124,7 +125,52 @@ MovieContainer.prototype.ParseTextToMovie = function(data)
  
 MovieContainer.prototype.DisplayMovie = function(movie) 
 {
+    var minStr = movie.time.getMinutes();
+    if (minStr == 0)
+        minStr = "00";
+    var timeStr = movie.time.getHours() + ":" + minStr;
+
     var movieVisual = new VisualContainer(this.visual);
+    var container = C3DUiModule.ContainerFactory().CreateContainer(movieVisual);
+    container.parent = this.visual.owner;
+    container.rdfStore = RdfModule.theWorld.CreateStore();
+    
+    // Fill tag infomation to given MovieContainer.
+    var world    = RdfModule.theWorld;
+    var subject = world.CreateResource(new QUrl("http://cie/"));
+    var source = world.CreateResource(new QUrl("http://cie/source-application"));
+    var data = world.CreateResource(new QUrl("http://cie/data"));
+    var movieSource = world.CreateLiteral("Movie");
+    var title = world.CreateLiteral(movie.title);
+    var auditorium = world.CreateLiteral(movie.auditorium);
+    var time = world.CreateLiteral(timeStr);
+            
+    var statement = world.CreateStatement(subject, source, movieSource);
+    movieVisual.owner.rdfStore.AddStatement(statement);
+    world.FreeStatement(statement);
+    
+    statement = world.CreateStatement(subject, data, title);
+    movieVisual.owner.rdfStore.AddStatement(statement);
+    world.FreeStatement(statement);
+    
+    statement = world.CreateStatement(subject, data, auditorium);
+    movieVisual.owner.rdfStore.AddStatement(statement);
+    world.FreeStatement(statement);
+    
+    statement = world.CreateStatement(subject, data, time);
+    movieVisual.owner.rdfStore.AddStatement(statement);
+    world.FreeStatement(statement); 
+    
+    world.FreeNode(subject);
+    world.FreeNode(source);
+    world.FreeNode(data);
+    world.FreeNode(movieSource);
+    world.FreeNode(title);
+    world.FreeNode(auditorium);
+    world.FreeNode(time);
+    
+    print(movieVisual.owner.rdfStore);
+    
     movieVisual.setLayout(new QHBoxLayout());
     var movieContainer = C3DUiModule.ContainerFactory().CreateContainer(movieVisual);
     movieContainer.parent = this.visual;
@@ -135,11 +181,10 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     main.setLayout(new QHBoxLayout());
     main.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.setContentsMargins(0, 0, 0, 0);
+    main.objectName = "Movie";
+    main.styleSheet = "#Movie:hover { background-color: #FF00FF}";
     
-    var hourStr = movie.time.getMinutes();
-    if (hourStr == 0)
-        hourStr = "00";
-    var label = new QLabel(movie.time.getHours() + ":" + hourStr);
+    var label = new QLabel(timeStr);
     label.font = new QFont("FreeSans", 14);
     label.alignment = 0x0001 | 0x0020; // Qt::AlignLeft | Qt::AlignTop
     main.layout().addWidget(label, null, null);
@@ -239,8 +284,6 @@ function MoveSelected(pos)
         var ray = CurrentMouseRay();
         var cameraEntity = renderer.MainCamera();
         var camFwd = cameraEntity.placeable.WorldOrientation().Mul(scene.ForwardVector()).Normalized();
-        //var orientedPlane = new Plane(camFwd, 0);
-        //var movePlane = new Plane(camFwd, 1);
         var offset = camFwd.Mul(new float3(0,0,9));
         var movePlane = new Plane(cameraEntity.placeable.WorldPosition().Add(offset), camFwd);
 
@@ -251,15 +294,6 @@ function MoveSelected(pos)
 
             moveTo = moveTo.Add(touchOffset);
             moveEntity.placeable.SetPosition(moveTo);
-
-            /*var parent = selectedObject.placeable.ParentPlaceableComponent();
-            if (parent)
-                moveTo = parent.WorldToLocal().MulPos(moveTo);
-
-            if (!CanObjectBeMoved(selectedObject, moveTo.Add(selectedObject.mesh.nodeTransformation.pos)))
-                return;
-
-            selectedObject.placeable.SetPosition(moveTo);*/
         }
     }
 }
@@ -268,10 +302,7 @@ function InfoBoubleMovable(visual)
 {
     var ents = scene.LoadSceneXML(asset.GetAsset("InfoBubbleMovableBlock.txml").DiskSource(), false, false, 0);
     moveEntity = ents[0];
-    
-    /*var uiWidget = new QWidget();
-    uiWidget.size = new (ents[0].graphicsviewcanvas.width, ents[0].graphicsviewcanvas.height);
-    uiWidget.setLayout(new QVBoxLayout());*/
+    moveEntity.placeable.selectionLayer = 0;
     
     var renderLabel = new QLabel();
     var pixmap =  new QPixmap(visual.size);
@@ -280,9 +311,10 @@ function InfoBoubleMovable(visual)
     renderLabel.setPixmap(pixmap);
     moveEntity.graphicsviewcanvas.width = visual.width;
     moveEntity.graphicsviewcanvas.height = visual.height;
+    renderLabel.acceptDrops = false;
     
-    //uiWidget.layout().addWidget(renderLabel, 0, 0);
     ents[0].graphicsviewcanvas.GraphicsScene().addWidget(renderLabel);
+    ents[0].graphicsviewcanvas.GraphicsView().acceptDrops = false;
     renderLabel.show();
 }
 

@@ -12,10 +12,7 @@ RdfNode::RdfNode(QUrl uri, IWorld* world) : INode(uri, world)
     assert(rdfWorld && "Failed to dynamic cast IWorld to RdfWorld");
 
     if (rdfWorld)
-    {
         node = librdf_new_node_from_uri_string (rdfWorld->world, (const unsigned char*)uri.toString().toUtf8().constData());
-        rdfWorld->RegisterNode(this);
-    }
 }
 
 RdfNode::RdfNode(QString lit, IWorld* world) : INode(lit, world)
@@ -25,10 +22,7 @@ RdfNode::RdfNode(QString lit, IWorld* world) : INode(lit, world)
     assert(rdfWorld && "Failed to dynamic cast IWorld to RdfWorld");
 
     if (rdfWorld)
-    {
         node = librdf_new_node_from_literal(rdfWorld->world, (const unsigned char*)lit.toUtf8().constData(), 0, 0);
-        rdfWorld->RegisterNode(this);
-    }
     else
         LogError("Failed to cast IWorld to RdfWorld.");
 }
@@ -40,10 +34,7 @@ RdfNode::RdfNode(IWorld* world) : INode(world)
     assert(rdfWorld && "Failed to dynamic cast IWorld to RdfWorld");
 
     if (rdfWorld)
-    {
         node = librdf_new_node(rdfWorld->world);
-        rdfWorld->RegisterNode(this);
-    }
     else
         LogError("Failed to cast IWorld to RdfWorld.");
 }
@@ -74,7 +65,6 @@ void RdfNode::FromRawNode(librdf_node* node, IWorld* world)
     RdfWorld *w = dynamic_cast<RdfWorld *>(world);
     if (!w) LogError("RdfNode::FromRawNode: Failed to dynamic cast IWorld to RdfWorld.");
     assert(w && "RdfNode::FromRawNode: Failed to dynamic cast IWorld to RdfWorld.");
-    w->RegisterNode(this);
 
     this->world = world;
     switch (librdf_node_get_type(node))

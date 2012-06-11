@@ -17,10 +17,6 @@ public:
     RdfWorld();
     ~RdfWorld();
 
-    void RegisterNode(RdfNode* node);
-    void RegisterStatement(RdfStatement* statement);
-    void RegisterStore(RdfMemoryStore* store);
-
 public slots:
     virtual IMemoryStore* CreateStore(); 
     virtual void FreeStore(IMemoryStore *store);
@@ -41,9 +37,4 @@ public:
     librdf_world*  world;
     librdf_parser* parser;
     librdf_serializer* serializer;
-
-protected:
-    std::set<INode*> nodes;
-    std::set<IStatement*> statements;
-    std::set<IMemoryStore*> models;
 };
