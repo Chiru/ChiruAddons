@@ -13,8 +13,7 @@ void Layout::Manage(IContainer *container)
 {
     if (!container)
     {
-        /// @todo print error throw new System.ArgumentException("Parameter cannot be null", "container");
-        LogError("Layout::Manage: Parameter cannot be null");
+        LogError("Layout::Manage: Null container passed.");
         return;
     }
     managedContainers.push_back(container);
@@ -30,7 +29,7 @@ void Layout::Remove(IContainer *container)
     std::vector<IContainer *>::iterator it = std::find(managedContainers.begin(), managedContainers.end(), container);
     if (it == managedContainers.end())
     {
-        LogWarning("Layout::Remove: Container not found in layout");
+        LogError("Layout::Remove: Trying to remove container from layout that does not manage the container.");
         return;
     }
     managedContainers.erase(it);

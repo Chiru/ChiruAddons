@@ -5,8 +5,6 @@
 #include "Layout.h"
 #include "IVisualContainer.h"
 #include "LoggingFunctions.h"
-#include "IMemoryStore.h"
-#include "IWorld.h"
 
 #include <cassert>
 #include <algorithm>
@@ -19,19 +17,15 @@ Container::Container(IVisualContainer *vc) :
     layout(new Layout()),
     parentContainer(0)
 {
-    eventMgr = new CieMap::EventManager(); 
+    eventMgr = new CieMap::EventManager();
 }
 
-Container::~Container()
-{
-    if (eventMgr) delete eventMgr;
-    if (rdfMemoryStore) rdfMemoryStore->World()->FreeStore(rdfMemoryStore);
-}
-
-CieMap::IContainer *ContainerFactory::CreateContainer(CieMap::IVisualContainer *visualContainer)
+CieMap::IContainer *ContainerFactory::CreateContainer(CieMap::IVisualContainer *visualContainer, CieMap::IVisualContainer* parent)
 {
     IContainer *container =  new Container(visualContainer);
     visualContainer->SetOwner(container);
+    if (parent)
+        container->SetParent(parent->Owner());
     return container;
 }
 
@@ -58,7 +52,7 @@ IContainer *Container::Child(uint childIdx) const
 {
     if (childIdx < 0 || childIdx >= childContainers.size())
     {
-        LogError("index out of bound");
+        LogError("Container::Child: Out-of-range index given: " + QString::number(childIdx));
         return 0;
     }
     return childContainers[childIdx];
@@ -68,20 +62,17 @@ bool Container::IsInActiveRegion(IContainer *otherContainer) const
 {
     if (!Visual())
     {
-        LogError("Visual container cannot be null");
-        /// @todo Print error throw new NullReferenceException("Visual container cannot be null");
+        LogError("Container::IsInActiveRegion: This container doesn't have a visual container.");
         return false;
     }
     if (!otherContainer)
     {
-        LogError("Parameter cannot be null");
-        /// @todo Print error throw new System.ArgumentException("Parameter cannot be null", "otherContainer");
+        LogError("Container::IsInActiveRegion: Null container passed.");
         return false;
     }
     if (!otherContainer->Visual())
     {
-        LogError("otherContainer.Visual cannot be null");
-        /// @todo Print error throw new NullReferenceException("otherContainer.Visual cannot be null");
+        LogError("Container::IsInActiveRegion: Passed container doesn't have a visual container.");
         return false;
     }
     //return Visual()->IsInsideActiveRegion(otherContainer->Visual());
@@ -98,16 +89,14 @@ void Container::AddChild(IContainer *c)
 {
     if (!c)
     {
-        LogError("Parameter cannot be null");
-        /// @todo Print error throw new System.ArgumentNullException("Parameter cannot be null", "c");
+        LogError("Container::AddChild: Null container passed.");
         return;
     }
     
     std::vector<IContainer *>::iterator it = std::find(childContainers.begin(), childContainers.end(), c);
     if (it != childContainers.end())
     {
-        LogError("Container already have parameter as child");
-        /// @todo print error
+        LogError("Container::AddChild: Trying to add container as a child, but it's already a child of this container.");
         return;
     }
 
@@ -121,8 +110,7 @@ void Container::RemoveChild(IContainer *c)
     std::vector<IContainer *>::iterator it = std::find(childContainers.begin(), childContainers.end(), c);
     if (it == childContainers.end())
     {
-        LogError("Couldn't find a child in container");
-        /// @todo Print error
+        LogError("Container::RemoveChild: Trying to remove container that is not child of this container.");
         return;
     }
     emit ChildAboutToBeRemoved(c);
