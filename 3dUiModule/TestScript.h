@@ -5,12 +5,12 @@
 #include "IScript.h"
 #include "ScriptManager.h"
 
+/// Example Service Fusion test script implemented in C++.
 class TestScript : public CieMap::IScript
 {
     Q_OBJECT
-    public:
-    /// Run the script
-    /** @param tag Tag that is associated with this script
-        @param rdfStore RDF data that is passed to the script. */
+
+public:
+    /// CieMap::IScript override.
     void Run(const CieMap::Tag &tag, IMemoryStore *rdfStore);
 };

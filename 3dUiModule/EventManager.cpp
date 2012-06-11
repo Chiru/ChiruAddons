@@ -2,6 +2,7 @@
 
 #include "EventManager.h"
 #include "ScriptManager.h"
+#include "CoreDefines.h"
 
 namespace CieMap
 {
@@ -12,7 +13,7 @@ EventManager::EventManager() : scriptManager(new ScriptManager())
 
 EventManager::~EventManager()
 {
-    if (scriptManager) delete scriptManager;
+    SAFE_DELETE(scriptManager);
 }
 
 int EventManager::RegisterScript(const Tag &tag, IScript *script)

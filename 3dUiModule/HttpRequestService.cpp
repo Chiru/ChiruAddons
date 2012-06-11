@@ -1,16 +1,19 @@
 // For conditions of distribution and use, see copyright notice in LICENSE
 
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-
 #include "HttpRequestService.h"
 #include "HttpRequestResponse.h"
 
 #include "LoggingFunctions.h"
+#include "CoreDefines.h"
+
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+
 
 namespace CieMap
 {
+
 HttpRequestService::HttpRequestService():
     IHttpRequestService(),
     manager(0),
@@ -22,7 +25,7 @@ HttpRequestService::HttpRequestService():
 
 HttpRequestService::~HttpRequestService()
 {
-    delete manager;
+    SAFE_DELETE(manager);
 }
 
 HttpRequestResponse *HttpRequestService::SendHttpRequest(const QString &url, const QString &postData)
@@ -43,4 +46,5 @@ void HttpRequestService::RequestResponse(QNetworkReply *reply)
     // TODO check if response is valid.
     response->SetResponse(reply->readAll());
 }
+
 }

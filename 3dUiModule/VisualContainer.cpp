@@ -2,12 +2,12 @@
 
 #include "VisualContainer.h"
 #include "Container.h"
-#include "Framework.h"
 #include "3dUiModule.h"
-#include "LoggingFunctions.h"
-
 #include "HttpRequestService.h"
 #include "ScriptServices.h"
+
+#include "LoggingFunctions.h"
+#include "CoreDefines.h"
 
 #include <QtGui>
 
@@ -24,7 +24,7 @@ namespace CieMap
 
     VisualContainer::~VisualContainer()
     {
-        if (ownerContainer) delete ownerContainer;
+        SAFE_DELETE(ownerContainer)
     }
 
     void VisualContainer::SetOwner(IContainer *owner)

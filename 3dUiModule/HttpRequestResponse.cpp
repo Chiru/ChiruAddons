@@ -7,6 +7,7 @@
 
 namespace CieMap
 {
+
 HttpRequestResponse::~HttpRequestResponse()
 {
     if(requestResponse)
@@ -103,4 +104,3 @@ QString HttpRequestResponse::Error()
 }
 
 }
-

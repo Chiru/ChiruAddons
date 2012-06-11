@@ -63,7 +63,7 @@ C3DUiModule::C3DUiModule() :
 
 C3DUiModule::~C3DUiModule()
 {
-    if (containerFactory) delete containerFactory;
+    SAFE_DELETE(containerFactory);
 }
 
 void C3DUiModule::Load()
