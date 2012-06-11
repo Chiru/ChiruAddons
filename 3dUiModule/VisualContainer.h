@@ -5,6 +5,7 @@
 #include "CieMap/IVisualContainer.h"
 #include "CoreTypes.h"
 
+/// Acts as a bridge between Tundra and the application.
 class VisualContainer : public CieMap::IVisualContainer
 {
     Q_OBJECT

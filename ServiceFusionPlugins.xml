@@ -8,8 +8,8 @@
   <plugin path="JavascriptModule" />
   <plugin path="AssetModule" />
   <plugin path="DebugStatsModule" /> <!-- TODO: can be removed from the finalized version -->
-  <plugin path="3dUiModule" />
   <plugin path="RdfModule" />
+  <plugin path="3dUiModule" />
   <plugin path="CanvasPlugin" />
   
   <jsplugin path="cameraapplication.js" />
