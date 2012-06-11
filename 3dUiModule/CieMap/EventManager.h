@@ -3,7 +3,7 @@
 #pragma once
 
 #include "IEventManager.h"
-#include "3dUiModuleFwd.h"
+#include "CieMapFwd.h"
 
 namespace CieMap
 {

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "IContainer.h"
-#include "3dUiModuleFwd.h"
+#include "CieMapFwd.h"
 
 #include <vector>
 

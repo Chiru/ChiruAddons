@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "3dUiModuleFwd.h"
+#include "CieMapFwd.h"
 
 #include <QObject>
 #include <QString>
