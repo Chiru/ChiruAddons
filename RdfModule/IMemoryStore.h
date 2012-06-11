@@ -13,12 +13,12 @@ class IMemoryStore : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(ModelType type READ Type)
-    Q_ENUMS(IMemoryStore::ModelType)
+    Q_ENUMS(ModelType)
 
 public:
     enum ModelType
     {
-        None   = 0,
+        None = 0,
         RdfXml = 1
     };
 
@@ -31,7 +31,7 @@ public:
     {
     }
 
-    ModelType Type() const {return type;}
+    ModelType Type() const { return type; }
 
     /// Read rdf data from string and push it to RdfMemoryStore.
     /** @param Data rdf data
@@ -42,9 +42,8 @@ public:
     virtual QString toString() const = 0;
 
     /// Do rdf query using a given statement.
-    /** \todo Replace QVariantList with StatementStream object --Joosua.
-     *  Note! It's up to user to release Statments found in QVariantList.
-     */
+    /** @todo Replace QVariantList with StatementStream object --Joosua.
+        @note It's up to user to release Statements found in QVariantList. */
     virtual QVariantList Select(IStatement* statement) = 0;
 
     /// Get model statements as array. Note! Model changes wont show on returned statments.
@@ -59,10 +58,7 @@ public:
     /// Create new clone of given IMemoryStore
     virtual IMemoryStore *Clone() = 0;
 
-    IWorld* World() const
-    {
-        return world;
-    }
+    IWorld* World() const { return world; }
 
 protected:
     IWorld* world;

@@ -1,7 +1,5 @@
 // For conditions of distribution and use, see copyright notice in LICENSE
 
-//using SemWeb; TODO
-
 #include "ScriptManager.h"
 #include "IScript.h"
 #include "LoggingFunctions.h"
@@ -30,13 +28,11 @@ int ScriptManager::RegisterScript(const Tag &tag, IScript *script)
     if (!script)
     {
         LogError("ScriptManager::RegisterScript: Script parameter cannot be null");
-        /// @todo print error throw new System.ArgumentNullException("Parameter cannot be null", "script");
         return InvalidId;
     }
     if (tag.IsEmpty())
     {
         LogError("ScriptManager::RegisterScript: Tag parameter cannot be null");
-        /// @todo print error throw new System.ArgumentException("Parameter cannot be null or empty", "tag");
         return InvalidId;
     }
 
@@ -65,11 +61,7 @@ void ScriptManager::RunScript(int id, const Tag &tag, IMemoryStore *rdfStore)
     if (id != InvalidId && id >= 0 && id < (int)scripts.size())
         scripts[id]->Run(tag, rdfStore);
     else
-    {
-        LogError("ScriptManager::RunScript: Parameter out of range");
-        /// @todo print error
-        //throw new System.ArgumentOutOfRangeException("Parameter out of range", "id");
-    }
+        LogError(QString("ScriptManager::RunScript: out-of-range ID %1 given.").arg(id));
 }
 
 }

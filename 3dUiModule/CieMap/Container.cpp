@@ -17,11 +17,11 @@ namespace CieMap
 
 Container::Container(IVisualContainer *vc) :
     rdfMemoryStore(0),
-    visualUnity(vc),
+    visualContainer(vc),
     layout(new Layout()),
-    parentContainer(0)
+    parentContainer(0),
+    eventMgr(new CieMap::EventManager())
 {
-    eventMgr = new CieMap::EventManager();
 }
 
 Container::~Container()

@@ -36,7 +36,7 @@ class Container : public IContainer
     std::vector<IContainer *> childContainers; ///< List of child containers
     IContainer *parentContainer;
     IEventManager *eventMgr;
-    IVisualContainer *visualUnity;
+    IVisualContainer *visualContainer;
     CieMap::Layout *layout;
 
 public:
@@ -44,7 +44,7 @@ public:
     void SetRdfStore(IMemoryStore *rdfStore) { rdfMemoryStore = rdfStore; }
     IMemoryStore *RdfStore() const { return rdfMemoryStore; }
     CieMap::IEventManager *EventManager() const { return eventMgr; }
-    CieMap::IVisualContainer *Visual() const { return visualUnity; }
+    CieMap::IVisualContainer *Visual() const { return visualContainer; }
     void SetParent(CieMap::IContainer *parent);
     CieMap::IContainer *Parent() const { return parentContainer; }
     int ChildCount() const { return childContainers.size(); }

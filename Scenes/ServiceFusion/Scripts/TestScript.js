@@ -57,13 +57,29 @@ function TestHierarchy(root)
 function ScriptTest(root)
 {
     print("Testing active region and script...");
-    
-    var script = new TestScript();
-    var script2 = new TestScript();
-    
+
+    var script = new Script();
+    var script2 = new Script();
+
+    script.Invoked.connect(function(tag, rdfStore)
+    {
+        console.LogInfo("This is a test script1:");
+        console.LogInfo("Tag type: " + tag.type);
+        console.LogInfo("Tag data: " + tag.data);
+        console.LogInfo("RDF store: " + rdfStore);
+    });
+
+    script2.Invoked.connect(function(tag, rdfStore)
+    {
+        console.LogInfo("This is a test script2:");
+        console.LogInfo("Tag type: " + tag.type);
+        console.LogInfo("Tag data: " + tag.data);
+        console.LogInfo("RDF store: " + rdfStore);
+    });
+
     root.eventManager.RegisterScript(new Tag("test", "test"), script);
     root.eventManager.RegisterScript(new Tag("test", ""), script2);
-    
+
     if (!root.eventManager.HasScript(new Tag("test", "test")) || !root.eventManager.HasScript(new Tag("test", "")))
     {
         print("Non-existing script found.");
@@ -73,10 +89,13 @@ function ScriptTest(root)
     root.eventManager.RegisterScript(new Tag("", "noscript"), null);
     
     print("Dropping tag to active region to run test script...");
+    // The following values for tags are incorrect intentionally
     root.DropToActive(new Tag("", "test"), root);
     root.DropToActive(new Tag("test", "teddst"), root);
-    
     root.DropToActive(new Tag("", "noscript"), root);
+    // The following should work
+    root.DropToActive(new Tag("test", "test"), root);
+    root.DropToActive(new Tag("test", ""), root);
 }
 
 function ResponseReady(response)

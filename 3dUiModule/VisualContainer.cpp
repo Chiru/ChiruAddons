@@ -184,6 +184,7 @@ void VisualContainer::mousePressEvent(QMouseEvent *e)
 
 CieMap::IContainer * VisualContainer::Clone()
 {
+    /// @todo Implement
     return 0;
 }
 

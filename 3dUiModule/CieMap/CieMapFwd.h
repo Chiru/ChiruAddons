@@ -10,6 +10,8 @@
 // From RdfModule
 class IMemoryStore;
 
+/// The CieMap namespace contains the abstractions introduced in the Service Fusion paper.
+/** @todo Rename (ServiceFusion?) or remove this poorly named namespace. */
 namespace CieMap
 {
     class IContainer;

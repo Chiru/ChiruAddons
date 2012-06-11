@@ -28,7 +28,6 @@ HttpRequestResponse *ScriptServices::SendPreprocessorRequest(
     QString uri = dataPreprocessorUrl;
     if (dataPreprocessorUrl.isEmpty())
     {
-        /// @todo Print error throw new System.ArgumentException("Parameter cannot be null", "dataPreprocessorUri");
         LogError("ScriptServices::SendPreprocessorRequest: Url parameter cannot be null");
         return 0;
     }
