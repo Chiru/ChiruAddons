@@ -62,9 +62,9 @@ public:
     Q_INVOKABLE void RemoveChild(CieMap::IContainer *c);
 
 signals:
-    void ParentChanged(IContainer* newParent);
-    void ChildAdded(IContainer* child);
-    void ChildAboutToBeRemoved(IContainer* child);
+    void ParentChanged(CieMap::IContainer* newParent);
+    void ChildAdded(CieMap::IContainer* child);
+    void ChildAboutToBeRemoved(CieMap::IContainer* child);
 };
 
 }

@@ -102,8 +102,6 @@ QScriptValue CreateTestScript(QScriptContext *ctx, QScriptEngine *engine)
     CieMap::IScript *s = 0;
     if (ctx->argumentCount() == 0)
         s = new TestScript();
-    //else
-    //    return ctx->throwError(QScriptContext::TypeError, "VisualContainer(): invalid number of arguments provided.");
 
     return engine->toScriptValue(s);
 }
@@ -113,8 +111,8 @@ QScriptValue CreateHttpRequest(QScriptContext *ctx, QScriptEngine *engine)
     CieMap::HttpRequestService *h = 0;
     if (ctx->argumentCount() == 0)
         h = new CieMap::HttpRequestService();
-    //else
-    //    return ctx->throwError(QScriptContext::TypeError, "VisualContainer(): invalid number of arguments provided.");
+    else
+        return ctx->throwError(QScriptContext::TypeError, "HttpRequest(): invalid number of arguments provided.");
 
     return engine->toScriptValue(h);
 }
@@ -156,10 +154,6 @@ void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
 
     register_tag_prototype(engine);
     register_scriptservice_prototype(engine);
-
-    /*qScriptRegisterQObjectMetaType<CieMap::Tag *>(engine);
-    QScriptValue ctorTag = engine->newFunction(CreateTag);
-    engine->globalObject().setProperty("Tag", ctorTag);*/
 }
 
 CieMap::ContainerFactory* C3DUiModule::ContainerFactory() const
