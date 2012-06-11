@@ -52,7 +52,7 @@ Q_DECLARE_METATYPE(CieMap::HttpRequest *)
 Q_DECLARE_METATYPE(DragDropWidget *)
 Q_DECLARE_METATYPE(CieMap::VisualContainer *)
 Q_DECLARE_METATYPE(CieMap::HttpRequestService *)
-
+Q_DECLARE_METATYPE(Script *)
 
 Q_DECLARE_METATYPE(TestScript *)
 
@@ -144,6 +144,7 @@ void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
     qScriptRegisterQObjectMetaType<CieMap::IScript *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::IHttpRequestService *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::HttpRequest *>(engine);
+    qScriptRegisterQObjectMetaType<Script *>(engine);
     /// @todo CieMap::Position3
 
     qScriptRegisterQObjectMetaType<DragDropWidget *>(engine);
