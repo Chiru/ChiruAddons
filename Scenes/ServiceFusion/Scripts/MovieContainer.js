@@ -1,17 +1,10 @@
-// !ref: InfoBubbleMovableBlock.txml
-
 engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
 engine.ImportExtension("qt.network");
 engine.IncludeFile("RdfVocabulary.js");
+engine.IncludeFile("VisualContainerUtils.js");
 
-ui.MainWindow().mouseTracking = true;
-
-QByteArray.prototype.toString = function()
-{
-    ts = new QTextStream( this, QIODevice.ReadOnly );
-    return ts.readAll();
-}
+ui.MainWindow().mouseTracking = true;  
 
 function Movie()
 {
@@ -20,33 +13,29 @@ function Movie()
     this.time = null;
 }
 
-Movie.prototype.IsEmpty = function()
+Movie.IsEmpty = function()
 {
     if (this.title == "" && this.auditorium == "" && this.time == null) 
         return true;
     return false;
-}
+};
 
-function Container(parent)
+// Construct a movie struct from the string, if parse fails null object is returned.
+Movie.FromString = function(data)
 {
-    this.visual = new VisualContainer(parent);
-    this.container = C3DUiModule.ContainerFactory().CreateContainer(this.visual);
-    this.container.parent = parent;
-    this.container.rdfStore = RdfModule.theWorld.CreateStore();
-}
-Container.RDFVocabulary = {baseUri : "http://cie/", 
-                           namespacePrefix : "cie",
-                           sourceApplication : "http://cie/source-application",
-                           geoLocation : "http://cie/geo",
-                           dateTime : "http://cie/datetime",
-                           data : "http://cie/data",
-                           metadata : "http://cie/metadata",
-                           dataSource : "http://cie/data-source"};
-                           
-Container.prototype.Release = function() 
-{
-    this.visual.deleteLater();
-}
+    var movie = null;
+    var v = data.split(";");  
+    if (v.length >= 3)
+    {
+        movie = new Movie();
+        // Note! fromString should return QDateTime object, but javascript's Date object is returned instead.  
+        var date = QDateTime.fromString(v[2], "yyyy-MM-ddThh:mm:ss");
+        movie.title = v[0];
+        movie.auditorium = v[1]; 
+        movie.time = date;
+    }
+    return movie;
+};
                                          
 function MovieContainer(parent)
 {
@@ -86,7 +75,7 @@ function MovieContainer(parent)
             var currentTime = new Date();
             for(var i = 0; i < statements.length; ++i)
             {
-                movie = this.ParseTextToMovie(statements[i].object.literal.toString());
+                movie = Movie.FromString(statements[i].object.literal.toString());
                 if (movie && movie.time > currentTime.getTime())
                     this.movies.push(movie);
                 world.FreeStatement(statements[i]);
@@ -106,22 +95,6 @@ function MovieContainer(parent)
     });
 }
 MovieContainer.prototype = new Container();
-
-MovieContainer.prototype.ParseTextToMovie = function(data)
-{
-    var movie = null;
-    var v = data.split(";");  
-    if (v.length >= 3)
-    {
-        movie = new Movie();
-        // Note! fromString should return QDateTime object, but javascript's Date object is returned instead.  
-        var date = QDateTime.fromString(v[2], "yyyy-MM-ddThh:mm:ss");
-        movie.title = v[0];
-        movie.auditorium = v[1]; 
-        movie.time = date;
-    }
-    return movie;
-} 
  
 MovieContainer.prototype.DisplayMovie = function(movie) 
 {
@@ -130,17 +103,26 @@ MovieContainer.prototype.DisplayMovie = function(movie)
         minStr = "00";
     var timeStr = movie.time.getHours() + ":" + minStr;
 
-    var movieVisual = new VisualContainer(this.visual);
+    /*var movieVisual = new VisualContainer(this.visual);
     var container = C3DUiModule.ContainerFactory().CreateContainer(movieVisual);
     container.parent = this.visual.owner;
     container.rdfStore = RdfModule.theWorld.CreateStore();
+    movieVisual.setLayout(new QHBoxLayout());
+    this.visual.layout().addWidget(movieVisual, null, null);*/
+    
+    var main = new QWidget();
+    main.setLayout(new QHBoxLayout());
+    main.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
+    main.setContentsMargins(0, 0, 0, 0); 
+    main.objectName = "Movie";
+    var movieVisual = CreateVisualContainer(main, new QHBoxLayout(), this.visual);
     
     // Fill tag infomation to given MovieContainer.
-    var world    = RdfModule.theWorld;
+    var world = RdfModule.theWorld;
     var subject = world.CreateResource(new QUrl("http://cie/"));
     var source = world.CreateResource(new QUrl("http://cie/source-application"));
     var data = world.CreateResource(new QUrl("http://cie/data"));
-    var movieSource = world.CreateLiteral("Movie");
+    var movieSource = world.CreateLiteral("Movie"); 
     var title = world.CreateLiteral(movie.title);
     var auditorium = world.CreateLiteral(movie.auditorium);
     var time = world.CreateLiteral(timeStr);
@@ -166,22 +148,10 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     world.FreeNode(data);
     world.FreeNode(movieSource);
     world.FreeNode(title);
-    world.FreeNode(auditorium);
+    world.FreeNode(auditorium); 
     world.FreeNode(time);
     
-    movieVisual.setLayout(new QHBoxLayout());
-    var movieContainer = C3DUiModule.ContainerFactory().CreateContainer(movieVisual);
-    movieContainer.parent = this.visual;
-    movieContainer.rdfStore = RdfModule.theWorld.CreateStore();
-    this.visual.layout().addWidget(movieVisual, null, null);
-    
-    var main = new QWidget(movieVisual);
-    main.setLayout(new QHBoxLayout());
-    main.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
-    main.setContentsMargins(0, 0, 0, 0);
-    main.objectName = "Movie";
-    
-    var label = new QLabel(timeStr);
+    var label = new QLabel(timeStr); 
     label.font = new QFont("FreeSans", 14);
     label.alignment = 0x0001 | 0x0020; // Qt::AlignLeft | Qt::AlignTop
     main.layout().addWidget(label, null, null);
@@ -191,39 +161,13 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     label2.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.layout().addWidget(label2, null, null);
     
-    var line = CreateHorizontalLine();
+    var line = CreateHLine();
     this.visual.layout().addWidget(line, null, null);
     
     main.setAttribute(Qt.WA_DeleteOnClose);
     movieVisual.layout().addWidget(main, null, null);
     movieVisual.layout().spacing = 0;
     movieVisual.setContentsMargins(0, 0, 0, 0);
-
-    //me.graphicsviewcanvas.width = this.visual.size.width;
-    //me.graphicsviewcanvas.height = this.visual.size.height;
-    
-    movieVisual.DragStart.connect(main, function(drag) {
-        InfoBoubleMovable(this);
-    });
-    
-    movieVisual.DragDrop.connect(function(drag) {
-        if (moveEntity)
-        {
-            scene.RemoveEntity(moveEntity.id);
-            moveEntity = null;
-        }
-    });
-}
-
-var moveEntity = null;
-
-function CreateHorizontalLine()
-{
-    var line = new QFrame();
-    line.objectName = "line";
-    line.frameShape = QFrame.HLine;
-    line.frameShadow = QFrame.solid;
-    return line;
 }
 
 function CreateContainer(entity)
@@ -234,88 +178,10 @@ function CreateContainer(entity)
     return container;
 }
 
-if (!framework.IsHeadless())
-{
-    var touchOffset = new float3(0,0,0);
-    engine.IncludeFile("MathUtils.js");
-    //var ic = input.RegisterInputContextRaw("3dUiObjectMove", 90);
-    ui.GraphicsView().DragMoveEvent.connect(HandleDragMoveEvent);
-    ui.GraphicsView().DropEvent.connect(HandleDropEvent);
-}
-
-function HandleDragMoveEvent(e)
-{
-    var data = e.mimeData().data("application/x-hotspot").toString();
-    if (data.length > 0 && moveEntity)
-    {
-        MoveSelected(e.pos());
-    }
-}
- 
-function HandleDropEvent(e)
-{
-    var data = e.mimeData().data("application/x-hotspot").toString();
-    if (data.length > 0 && moveEntity)
-    {
-        scene.RemoveEntity(moveEntity.id);
-        moveEntity = null;
-    }
-}
-
-function CurrentMouseRay()
-{
-    var x, y;
-    var mousePos = input.MousePos();
-    x = mousePos.x(), y = mousePos.y();
-    return renderer.MainCameraComponent().GetMouseRay(x/ui.GraphicsScene().width(), y/ui.GraphicsScene().height());
-}
-
-function MoveSelected(pos)
-{
-    if (moveEntity)
-    {
-        var ray = CurrentMouseRay();
-        var cameraEntity = renderer.MainCamera();
-        var camFwd = cameraEntity.placeable.WorldOrientation().Mul(scene.ForwardVector()).Normalized();
-        var offset = camFwd.Mul(new float3(0,0,9));
-        var movePlane = new Plane(cameraEntity.placeable.WorldPosition().Add(offset), camFwd);
-
-        var r = IntersectRayPlane(movePlane, ray);
-        if (r.intersects)
-        {
-            var moveTo = ray.GetPoint(r.distance);
-
-            moveTo = moveTo.Add(touchOffset);
-            moveEntity.placeable.SetPosition(moveTo);
-        }
-    }
-}
-
-function InfoBoubleMovable(visual) 
-{
-    var ents = scene.LoadSceneXML(asset.GetAsset("InfoBubbleMovableBlock.txml").DiskSource(), false, false, 0);
-    moveEntity = ents[0];
-    moveEntity.placeable.selectionLayer = 0;
-    
-    var renderLabel = new QLabel();
-    var pixmap =  new QPixmap(visual.size);
-    visual.render(pixmap);
-    renderLabel.size = visual.size;
-    renderLabel.setPixmap(pixmap);
-    moveEntity.graphicsviewcanvas.width = visual.width;
-    moveEntity.graphicsviewcanvas.height = visual.height;
-    renderLabel.acceptDrops = false;
-    
-    ents[0].graphicsviewcanvas.GraphicsScene().addWidget(renderLabel);
-    ents[0].graphicsviewcanvas.GraphicsView().acceptDrops = false;
-    renderLabel.show();
-}
-
 var container = CreateContainer(me);
 
 function OnScriptDestroyed()
 {
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
-    if (container) container.Release();
 }

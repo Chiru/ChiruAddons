@@ -150,10 +150,11 @@ void VisualContainer::dropEvent(QDropEvent *e)
 VisualContainer* VisualContainer::FindVisualContainer(QWidget* widget)
 {
     QWidget* w = widget;
+    QString className = metaObject()->className();
     while (w)
     {
         QString s = w->metaObject()->className();
-        if(s == "CieMap::VisualContainer")
+        if(s == className)
             return dynamic_cast<VisualContainer*>(w);
         w = w->parentWidget();
     }
