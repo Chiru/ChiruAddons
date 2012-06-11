@@ -1,15 +1,15 @@
 // For conditions of distribution and use, see copyright notice in LICENSE
 
-#include <stdio.h>
+#include "CieMap/HttpRequestService.h"
+#include "CieMap/HttpRequestResponse.h"
+#include "CieMap/ScriptServices.h"
 
 #include <QScriptValue>
 #include <QScriptContext>
 #include <QScriptEngine>
 #include <QVariant>
 
-#include "HttpRequestService.h"
-#include "HttpRequestResponse.h"
-#include "ScriptServices.h"
+#include <stdio.h>
 
 Q_DECLARE_METATYPE(CieMap::HttpRequestResponse*)
 Q_DECLARE_METATYPE(CieMap::HttpRequestService*)

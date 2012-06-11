@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "IScript.h"
-#include "ScriptManager.h"
+#include "CieMap/IScript.h"
+#include "CieMap/ScriptManager.h"
 
 /// Example Service Fusion test script implemented in C++.
 class TestScript : public CieMap::IScript

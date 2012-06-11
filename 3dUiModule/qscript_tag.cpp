@@ -7,7 +7,7 @@
 #include <QScriptEngine>
 #include <QVariant>
 
-#include "ScriptManager.h"
+#include "CieMap/ScriptManager.h"
 #include "qscript_tag.h" 
 
 Q_DECLARE_METATYPE(CieMap::Tag*)

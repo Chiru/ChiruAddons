@@ -2,53 +2,44 @@
 
 #pragma once
 
-#include "IVisualContainer.h"
+#include "CieMap/IVisualContainer.h"
 #include "CoreTypes.h"
 
-class Framework;
-
-namespace CieMap
+class VisualContainer : public CieMap::IVisualContainer
 {
-    class IContainer;
+    Q_OBJECT
+    Q_PROPERTY(CieMap::IContainer* owner READ Owner WRITE SetOwner)
 
-    class VisualContainer : public IVisualContainer
-    {
-        Q_OBJECT
-        Q_PROPERTY(CieMap::IContainer* owner READ Owner WRITE SetOwner)
+public:
+    explicit VisualContainer(QWidget* parent = 0);
+    virtual ~VisualContainer();
 
-    public:
-        explicit VisualContainer(QWidget* parent = 0);
-        virtual ~VisualContainer();
+    /// The container that owns this visual representation
+    void SetOwner(CieMap::IContainer *owner);
+    CieMap::IContainer *Owner() const;
 
-        /// The container that owns this visual representation
-        void SetOwner(IContainer *owner);
-        IContainer *Owner() const;
+    CieMap::IContainer* Clone();
 
-        IContainer* Clone();
+    void AttachToVisualContainer(VisualContainer* vc);
 
-        void AttachToVisualContainer(VisualContainer* vc);
+private slots:
+    void ParentChanged(CieMap::IContainer* parent);
 
-    private slots:
-        void ParentChanged(IContainer* parent);
+signals:
+    void DragMove(QPoint pos, QByteArray dragObject);
+    void DragStart(QByteArray dragObject);
+    void DragDrop(QByteArray dragObject); 
 
-    signals:
-        void DragMove(QPoint pos, QByteArray dragObject);
-        void DragStart(QByteArray dragObject);
-        void DragDrop(QByteArray dragObject); 
+protected:
+    VisualContainer* FindVisualContainer(QWidget* widget);
 
-    protected:
-        VisualContainer* FindVisualContainer(QWidget* widget);
+    virtual void dragEnterEvent(QDragEnterEvent *event);
+    virtual void dragMoveEvent(QDragMoveEvent *event);
+    virtual void dropEvent(QDropEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
 
-        virtual void dragEnterEvent(QDragEnterEvent *event);
-        virtual void dragMoveEvent(QDragMoveEvent *event);
-        virtual void dropEvent(QDropEvent *event);
-        virtual void mousePressEvent(QMouseEvent *event);
+    /// Handles drop event between two VisualContainers.
+    void HandleDrop(VisualContainer *target);
 
-        /// HandleDrop event between two VisualContainers.
-        /** 
-         */
-        void HandleDrop(VisualContainer *target);
-
-        IContainer* ownerContainer;
-    };
-}
+    CieMap::IContainer* ownerContainer;
+};

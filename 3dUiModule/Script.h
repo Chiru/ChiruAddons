@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "IScript.h"
-#include "ScriptManager.h"
+#include "CieMap/IScript.h"
+#include "CieMap/ScriptManager.h"
 
 /// Script interface to be used in QtScript.
 /** To use this object in QtScript, simply allocate new object and connect to its Invoked signal. */

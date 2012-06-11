@@ -2,4 +2,7 @@
 
 #pragma once
 
+class QScriptValue;
+class QScriptEngine;
+
 QScriptValue register_scriptservice_prototype(QScriptEngine *engine);

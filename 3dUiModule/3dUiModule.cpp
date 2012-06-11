@@ -1,38 +1,37 @@
 // For conditions of distribution and use, see copyright notice in LICENSE
 
+// 3dUiModule includes
 #include "3dUiModule.h"
-// CieMap types
-#include "Container.h"
-#include "EventManager.h"
-#include "HttpRequestResponse.h"
-#include "IContainer.h"
-#include "IEventManager.h"
-#include "IHttpRequestService.h"
-#include "IScript.h"
-#include "IScriptManager.h"
-#include "IVisualContainer.h"
-#include "Layout.h"
-#include "Position3.h"
-#include "ScriptManager.h"
-#include "ScriptServices.h"
-#include "LoggingFunctions.h"
+#include "DragDropWidget.h" 
+#include "Script.h"
+#include "TestScript.h"
+#include "qscript_tag.h"
+#include "qscript_scriptservices.h"
 #include "VisualContainer.h"
-
-#include "CoreDefines.h"
+// CieMap types
+#include "CieMap/Container.h"
+#include "CieMap/EventManager.h"
+#include "CieMap/HttpRequestResponse.h"
+#include "CieMap/IContainer.h"
+#include "CieMap/IEventManager.h"
+#include "CieMap/IHttpRequestService.h"
+#include "CieMap/IScript.h"
+#include "CieMap/IScriptManager.h"
+#include "CieMap/IVisualContainer.h"
+#include "CieMap/Layout.h"
+#include "CieMap/Position3.h"
+#include "CieMap/ScriptManager.h"
+#include "CieMap/ScriptServices.h"
+#include "CieMap/HttpRequestService.h"
+// Core includes
 #include "Framework.h"
 #include "QScriptEngineHelpers.h"
 #include "SceneAPI.h"
 #include "IComponentFactory.h"
-#include "DragDropWidget.h" 
-#include "HttpRequestService.h"
-
-#include "TestScript.h"
-
+#include "LoggingFunctions.h"
+// RdfModule includes
 #include "RdfModule.h"
 #include "IWorld.h"
-
-#include "qscript_tag.h"
-#include "qscript_scriptservices.h"
 
 #include <QScriptEngine>
 
@@ -45,15 +44,13 @@ Q_DECLARE_METATYPE(CieMap::Container *)
 Q_DECLARE_METATYPE(CieMap::ScriptManager *)
 Q_DECLARE_METATYPE(CieMap::EventManager *)
 Q_DECLARE_METATYPE(CieMap::HttpRequestResponse *)
-//Q_DECLARE_METATYPE(CieMap::Tag *)
 Q_DECLARE_METATYPE(CieMap::IScript *)
 Q_DECLARE_METATYPE(CieMap::IHttpRequestService *)
 Q_DECLARE_METATYPE(CieMap::HttpRequest *)
-Q_DECLARE_METATYPE(DragDropWidget *)
-Q_DECLARE_METATYPE(CieMap::VisualContainer *)
 Q_DECLARE_METATYPE(CieMap::HttpRequestService *)
+Q_DECLARE_METATYPE(DragDropWidget *)
+Q_DECLARE_METATYPE(VisualContainer *)
 Q_DECLARE_METATYPE(Script *)
-
 Q_DECLARE_METATYPE(TestScript *)
 
 C3DUiModule::C3DUiModule() :
@@ -91,11 +88,9 @@ QScriptValue CreateDragDropWidget(QScriptContext *ctx, QScriptEngine *engine)
 
 QScriptValue CreateVisualContainer(QScriptContext *ctx, QScriptEngine *engine)
 {
-    CieMap::VisualContainer *c = 0;
+    VisualContainer *c = 0;
     if (ctx->argumentCount() == 1)
-    {
-        c = new CieMap::VisualContainer(dynamic_cast<QWidget *>(ctx->argument(1).toQObject()));
-    }
+        c = new VisualContainer(dynamic_cast<QWidget *>(ctx->argument(1).toQObject()));
     else
         return ctx->throwError(QScriptContext::TypeError, "VisualContainer(): invalid number of arguments provided.");
 
@@ -106,9 +101,7 @@ QScriptValue CreateTestScript(QScriptContext *ctx, QScriptEngine *engine)
 {
     CieMap::IScript *s = 0;
     if (ctx->argumentCount() == 0)
-    {
         s = new TestScript();
-    }
     //else
     //    return ctx->throwError(QScriptContext::TypeError, "VisualContainer(): invalid number of arguments provided.");
 
@@ -119,9 +112,7 @@ QScriptValue CreateHttpRequest(QScriptContext *ctx, QScriptEngine *engine)
 {
     CieMap::HttpRequestService *h = 0;
     if (ctx->argumentCount() == 0)
-    {
         h = new CieMap::HttpRequestService();
-    }
     //else
     //    return ctx->throwError(QScriptContext::TypeError, "VisualContainer(): invalid number of arguments provided.");
 
@@ -140,7 +131,7 @@ void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
     qScriptRegisterQObjectMetaType<CieMap::ScriptManager *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::EventManager *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::HttpRequestResponse *>(engine);
-    //qScriptRegisterQObjectMetaType<CieMap::Tag *>(engine);
+    // CieMap::Tag exposed manually
     qScriptRegisterQObjectMetaType<CieMap::IScript *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::IHttpRequestService *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::HttpRequest *>(engine);
@@ -151,7 +142,7 @@ void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
     QScriptValue ctorDragDropWidget = engine->newFunction(CreateDragDropWidget);
     engine->globalObject().setProperty("DragDropWidget", ctorDragDropWidget);
 
-    qScriptRegisterQObjectMetaType<CieMap::VisualContainer *>(engine);
+    qScriptRegisterQObjectMetaType<VisualContainer *>(engine);
     QScriptValue ctorVisualContainer = engine->newFunction(CreateVisualContainer);
     engine->globalObject().setProperty("VisualContainer", ctorVisualContainer);
 
