@@ -17,6 +17,7 @@
 #include "ScriptServices.h"
 #include "LoggingFunctions.h"
 #include "VisualContainer.h"
+#include "Script.h"
 
 #include "CoreDefines.h"
 #include "Framework.h"
