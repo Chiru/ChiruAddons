@@ -89,6 +89,7 @@ function MovieContainer(parent)
                 movie = this.ParseTextToMovie(statements[i].object.literal.toString());
                 if (movie && movie.time > currentTime.getTime())
                     this.movies.push(movie);
+                world.FreeStatement(statements[i]);
             }
             
             var displayCount = 5;
@@ -99,7 +100,6 @@ function MovieContainer(parent)
                 else
                     break;
             }
-            print(this.visual.sizeHint); 
         }
         response.deleteLater();
         response = null;
@@ -169,8 +169,6 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     world.FreeNode(auditorium);
     world.FreeNode(time);
     
-    print(movieVisual.owner.rdfStore);
-    
     movieVisual.setLayout(new QHBoxLayout());
     var movieContainer = C3DUiModule.ContainerFactory().CreateContainer(movieVisual);
     movieContainer.parent = this.visual;
@@ -182,7 +180,6 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     main.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.setContentsMargins(0, 0, 0, 0);
     main.objectName = "Movie";
-    main.styleSheet = "#Movie:hover { background-color: #FF00FF}";
     
     var label = new QLabel(timeStr);
     label.font = new QFont("FreeSans", 14);
@@ -216,10 +213,6 @@ MovieContainer.prototype.DisplayMovie = function(movie)
             moveEntity = null;
         }
     });
-    
-    /*movieVisual.DragMove.connect(function(pos, drag) {
-        print(pos, drag);
-    });*/
 }
 
 var moveEntity = null;

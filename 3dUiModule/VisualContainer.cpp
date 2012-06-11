@@ -191,7 +191,6 @@ namespace CieMap
             return;
 
         IMemoryStore *store = Owner()->RdfStore();
-        LogInfo(target->Owner()->RdfStore()->toString());
 
         IWorld *world = store->World();
         INode *source = world->CreateResource(QUrl("http://cie/source-application"));
