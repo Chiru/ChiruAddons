@@ -21,14 +21,6 @@ function Container(parent)
     this.container.parent = parent;
     this.container.rdfStore = RdfModule.theWorld.CreateStore();
 }
-Container.RDFVocabulary = {baseUri : "http://cie/", 
-                           namespacePrefix : "cie",
-                           sourceApplication : "http://cie/source-application",
-                           geoLocation : "http://cie/geo",
-                           dateTime : "http://cie/datetime",
-                           data : "http://cie/data",
-                           metadata : "http://cie/metadata",
-                           dataSource : "http://cie/data-source"};
 
 function CreateVisualContainer(widget, layout, parent)
 {   

@@ -18,6 +18,8 @@
 
 #include <QtGui>
 
+Q_DECLARE_METATYPE(IStatement *)
+
 VisualContainer::VisualContainer(QWidget* parent):
     IVisualContainer(parent),
     ownerContainer(0)
@@ -41,6 +43,16 @@ void VisualContainer::SetOwner(CieMap::IContainer *owner)
 CieMap::IContainer * VisualContainer::Owner() const
 {
     return ownerContainer;
+}
+
+void VisualContainer::SetOwnerEntityId(entity_id_t id)
+{
+    entityId = id;
+}
+
+entity_id_t VisualContainer::OwnerEntityId() const
+{
+    return entityId;
 }
 
 void VisualContainer::AttachToVisualContainer(VisualContainer* vc)
@@ -119,7 +131,8 @@ void VisualContainer::dropEvent(QDropEvent *e)
         }
 
         VisualContainer* source = FindVisualContainer(e->source());
-        vc->AttachToVisualContainer(source);
+        // \todo Clone on drop check --Joosua.
+        /*vc->AttachToVisualContainer(source);
         if (vc->layout())
             vc->layout()->addWidget(source);
         else
@@ -127,9 +140,9 @@ void VisualContainer::dropEvent(QDropEvent *e)
             source->setParent(vc);
             source->move(position - hotSpot);
         }
+        source->show();*/
         HandleDrop(source);
-        source->show();
-
+        
         if (e->source() == this)
         {
             e->setDropAction(Qt::MoveAction);
@@ -193,24 +206,27 @@ void VisualContainer::HandleDrop(VisualContainer *target)
     if (!target)
         return;
 
-    IMemoryStore *store = Owner()->RdfStore();
+    IMemoryStore *store = target->Owner()->RdfStore();
 
     IWorld *world = store->World();
-    INode *source = world->CreateResource(QUrl("http://cie/source-application"));
-    IStatement *statement = world->CreateStatement(0, source, 0);
+    //INode *source = world->CreateResource(QUrl("http://cie/source-application"));
+    //IStatement *statement = world->CreateStatement(0, source, 0);
 
+    IStatement *statement = world->CreateStatement(0, 0, 0);
     QVariantList result = store->Select(statement);
 
-    world->FreeNode(source);
+    //world->FreeNode(source);
     world->FreeStatement(statement);
 
     for (int i = 0; i < result.count(); ++i)
     {
-        IStatement *s = dynamic_cast<IStatement *>(result[i].value<QObject*>());
-        CieMap::Tag tag;
-        tag.SetType(s->Predicate()->Uri().toString());
-        tag.SetData(s->Object()->Lit());
-        target->Owner()->DropToActive(tag, target->Owner());
-        world->FreeStatement(s);
+        IStatement *s = result[i].value<IStatement *>();
+        if (s) {
+            CieMap::Tag tag;
+            tag.SetType(s->Predicate()->Uri().toString());
+            tag.SetData(s->Object()->Lit());
+            target->Owner()->DropToActive(tag, target->Owner());
+            world->FreeStatement(s); 
+        }
     }
 }

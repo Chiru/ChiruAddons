@@ -25,3 +25,4 @@ RdfVocabulary.dateTime = RdfVocabulary.baseUri + RdfVocabulary.dateTime;
 RdfVocabulary.data = RdfVocabulary.baseUri + RdfVocabulary.data;
 RdfVocabulary.metadata = RdfVocabulary.baseUri + RdfVocabulary.metadata;
 RdfVocabulary.dataSource = RdfVocabulary.baseUri + RdfVocabulary.dataSource;
+RdfVocabulary.sourceApplication = RdfVocabulary.baseUri + RdfVocabulary.sourceApplication;

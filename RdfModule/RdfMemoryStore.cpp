@@ -6,6 +6,7 @@
 
 #include "LoggingFunctions.h"
 
+Q_DECLARE_METATYPE(IStatement *)
 Q_DECLARE_METATYPE(RdfStatement *)
 
 RdfMemoryStore::RdfMemoryStore(IWorld* world) : IMemoryStore(world),
@@ -70,7 +71,7 @@ QVariantList RdfMemoryStore::Select(IStatement* statement)
         {
             librdf_statement *s = librdf_stream_get_object(stream);
             if (s) 
-                statements << QVariant::fromValue<RdfStatement*>(new RdfStatement(world, s));
+                statements << QVariant::fromValue<IStatement*>(new RdfStatement(world, s));
             librdf_stream_next(stream);
         }
         librdf_free_stream(stream);

@@ -61,7 +61,7 @@ function MovieContainer(parent)
         {
             // Create query statement.
             var subject = world.CreateResource(new QUrl("http://cie/news#"));
-            var predicate = world.CreateResource(new QUrl(Container.RDFVocabulary.data));
+            var predicate = world.CreateResource(new QUrl(RdfVocabulary.data));
             var statement = world.CreateStatement(subject, predicate, null);
             
             var statements = this.visual.owner.rdfStore.Select(statement); 
@@ -102,26 +102,20 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     if (minStr == 0)
         minStr = "00";
     var timeStr = movie.time.getHours() + ":" + minStr;
-
-    /*var movieVisual = new VisualContainer(this.visual);
-    var container = C3DUiModule.ContainerFactory().CreateContainer(movieVisual);
-    container.parent = this.visual.owner;
-    container.rdfStore = RdfModule.theWorld.CreateStore();
-    movieVisual.setLayout(new QHBoxLayout());
-    this.visual.layout().addWidget(movieVisual, null, null);*/
     
     var main = new QWidget();
     main.setLayout(new QHBoxLayout());
     main.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.setContentsMargins(0, 0, 0, 0); 
     main.objectName = "Movie";
+    
     var movieVisual = CreateVisualContainer(main, new QHBoxLayout(), this.visual);
     
     // Fill tag infomation to given MovieContainer.
     var world = RdfModule.theWorld;
-    var subject = world.CreateResource(new QUrl("http://cie/"));
-    var source = world.CreateResource(new QUrl("http://cie/source-application"));
-    var data = world.CreateResource(new QUrl("http://cie/data"));
+    var subject = world.CreateResource(new QUrl(RdfVocabulary.baseUri));
+    var source = world.CreateResource(new QUrl(RdfVocabulary.sourceApplication));
+    var data = world.CreateResource(new QUrl(RdfVocabulary.data));
     var movieSource = world.CreateLiteral("Movie"); 
     var title = world.CreateLiteral(movie.title);
     var auditorium = world.CreateLiteral(movie.auditorium);

@@ -46,7 +46,7 @@ if (!framework.IsHeadless())
 
     ui.GraphicsView().DragEnterEvent.connect(HandleDragEnterEvent);
     ui.GraphicsView().DragMoveEvent.connect(HandleDragMoveEvent);
-    ui.GraphicsView().DropEvent.connect(HandleDropEvent);
+    //ui.GraphicsView().DropEvent.connect(HandleDropEvent);
     
     frame.Updated.connect(Update);
 }
@@ -161,7 +161,7 @@ function ScreenPointToRay(x, y)
     return renderer.MainCameraComponent().GetMouseRay(x/ui.GraphicsScene().width(), y/ui.GraphicsScene().height());
 }
 
-function HandleDropEvent(e)
+/*function HandleDropEvent(e)
 {
     var data = e.mimeData().data("application/x-hotspot").toString();
     if (data.length > 0)
@@ -213,7 +213,7 @@ function HandleDropEvent(e)
         ents[0].graphicsviewcanvas.GraphicsScene().addWidget(uiWidget);
         uiWidget.show();
     }
-}
+}*/
 
 function HandleKeyEvent(e)
 {
