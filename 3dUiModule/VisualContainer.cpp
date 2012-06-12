@@ -45,22 +45,17 @@ CieMap::IContainer * VisualContainer::Owner() const
     return ownerContainer;
 }
 
-void VisualContainer::SetOwnerEntityId(entity_id_t id)
-{
-    entityId = id;
-}
-
-entity_id_t VisualContainer::OwnerEntityId() const
-{
-    return entityId;
-}
-
 void VisualContainer::AttachToVisualContainer(VisualContainer* vc)
 {
     CieMap::Container * cont = dynamic_cast<CieMap::Container *>(vc->Owner());
     assert(cont && "Failed to dynamic cast IContainer to Container.");
     if (cont)
         cont->SetParent(Owner());
+}
+
+void VisualContainer::HandleMeshDrop(VisualContainer *target)
+{
+    HandleDrop(target);
 }
 
 void VisualContainer::ParentChanged(CieMap::IContainer * parent)
@@ -203,7 +198,7 @@ CieMap::IContainer * VisualContainer::Clone()
 
 void VisualContainer::HandleDrop(VisualContainer *target)
 {
-    if (!target)
+    if (!target && target == this)
         return;
 
     IMemoryStore *store = target->Owner()->RdfStore();
@@ -225,7 +220,7 @@ void VisualContainer::HandleDrop(VisualContainer *target)
             CieMap::Tag tag;
             tag.SetType(s->Predicate()->Uri().toString());
             tag.SetData(s->Object()->Lit());
-            target->Owner()->DropToActive(tag, target->Owner());
+            Owner()->DropToActive(tag, target->Owner());
             world->FreeStatement(s); 
         }
     }
