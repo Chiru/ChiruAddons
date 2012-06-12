@@ -6,6 +6,7 @@
 // !ref: InfoBubblePrefab.txml
 
 engine.IncludeFile("Log.js");
+engine.IncludeFile("MathUtils.js");
 
 // TODO
 //const showInfoTreshold = 20;
@@ -31,8 +32,8 @@ function ShowInfoBubble(entity)
         }
         // TODO: crashes to EC_GraphicsViewCanvas::OnMaterialChanged. Fow now, only hiding the entity.
         //scene.RemoveEntity(infoBubbleId);
-        infoBubble.placeable.visible = false;
-        entity.dynamiccomponent.SetAttribute("infoBubbleVisible", infoBubble.placeable.visible);
+        //infoBubble.placeable.visible = false;
+        entity.dynamiccomponent.SetAttribute("infoBubbleVisible", false/*infoBubble.placeable.visible*/);
     }
     else
     {
@@ -57,7 +58,7 @@ function ShowInfoBubble(entity)
             infoBubble.placeable.transform = t;
             */
             entity.dynamiccomponent.CreateAttribute("bool", "infoBubbleVisible");
-            entity.dynamiccomponent.SetAttribute("infoBubbleVisible", infoBubble.placeable.visible);
+            entity.dynamiccomponent.SetAttribute("infoBubbleVisible", true/*infoBubble.placeable.visible*/);
             entity.dynamiccomponent.CreateAttribute("uint", "infoBubbleId");
             entity.dynamiccomponent.SetAttribute("infoBubbleId", infoBubble.id);
         }
@@ -69,8 +70,8 @@ function ShowInfoBubble(entity)
                 LogE("Trying to set visibility of a non-existing info bubble with entity ID "+ infoBubbleId);
                 return;
             }
-            infoBubble.placeable.visible = true;
-            entity.dynamiccomponent.SetAttribute("infoBubbleVisible", infoBubble.placeable.visible);
+            //infoBubble.placeable.visible = true;
+            entity.dynamiccomponent.SetAttribute("infoBubbleVisible", true/*infoBubble.placeable.visible*/);
         }
     }
 }
@@ -78,10 +79,15 @@ function ShowInfoBubble(entity)
 function OnEntityClicked(entity)
 {
     if (IsEntityAnIcon(entity))
+    {
         ShowInfoBubble(entity);
+        infoBubbles.push(new InfoBubbleVisibilityInterpolation(entity, 0));
+    }
 }
 
-frame.Updated.connect(Update)
+//frame.Updated.connect(Update)
+frame.Updated.connect(UpdateInfoBubbleScale);
+
 var cam = null;
 
 function DesiredObjectScale(mesh)
@@ -98,8 +104,60 @@ function DesiredObjectScale(mesh)
     return Math.max(multiplier, multiplier*distance);
 }
 
-function Update()
+const cDefaultScale = 1;
+const cVisibleScale = 8;
+const cHiddenScale = 0; 
+const cScaleTime = 1;
+
+function InfoBubbleVisibilityInterpolation(icon, t)
 {
+    this.icon = icon;
+    this.t = t;
+}
+
+var infoBubbles = [];
+
+function UpdateInfoBubbleScale(dt)
+{
+    for(i = 0; i < infoBubbles.length; ++i)
+    {
+        var e = infoBubbles[i].icon;
+        var infoBubbleVisible = e.dynamiccomponent.GetAttribute("infoBubbleVisible");
+        var infoBubbleId = e.dynamiccomponent.GetAttribute("infoBubbleId");
+        var infoBubble = scene.EntityById(infoBubbleId);
+        var scale = infoBubble.mesh.nodeTransformation.scale.x;
+        if (infoBubbleVisible)
+        {
+            if (!EqualAbs(scale, cVisibleScale, 0.001))
+                infoBubbles[i].t += dt;
+            else
+                infoBubbles.splice(i, 1);
+
+            if (!EqualAbs(scale, cVisibleScale, 0.001) && infoBubbles[i].t < cScaleTime)
+            {
+                scale = Lerp(cHiddenScale, cVisibleScale, infoBubbles[i].t/cScaleTime);
+                infoBubble.mesh.SetAdjustScale(float3.FromScalar(scale));
+            }
+        }
+        else
+        {
+            if (!EqualAbs(scale, cHiddenScale, 0.001))
+                infoBubbles[i].t += dt;
+            else
+                infoBubbles.splice(i, 1);
+
+            if (!EqualAbs(scale, cHiddenScale, 0.001) && infoBubbles[i].t < cScaleTime)
+            {
+                scale = Lerp(cVisibleScale, cHiddenScale, infoBubbles[i].t/cScaleTime);
+                infoBubble.mesh.SetAdjustScale(float3.FromScalar(scale));
+            }
+        }
+    }
+}
+
+function Update(dt)
+{
+    return;
     if (!cam)
         cam = renderer.MainCamera();
     if (!cam)
