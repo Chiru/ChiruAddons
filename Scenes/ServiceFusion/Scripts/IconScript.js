@@ -111,12 +111,15 @@ function Update()
         var e = entities[i];
         if (IsEntityAnIcon(e))
         {
+        // Auto-rotate and -scale disabled for now.
+/*
             var dir = e.placeable.WorldPosition().Sub(cam.placeable.WorldPosition()).Normalized();
             var q = Quat.LookAt(scene.ForwardVector(), dir, scene.UpVector(), scene.UpVector());
             e.placeable.SetOrientation(q);
 
             // Auto-scale
             e.mesh.SetAdjustScale(float3.FromScalar(DesiredObjectScale(e.mesh)));
+*/
 
             // TODO
 //            if (e.placeable.WorldPosition().Distance(cam.placeable.WorldPosition()) < showInfoTreshold)
