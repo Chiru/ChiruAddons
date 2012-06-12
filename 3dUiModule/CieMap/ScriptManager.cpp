@@ -46,11 +46,17 @@ std::vector<int> ScriptManager::ScriptIdsForTag(const Tag &tag) const
 {
     std::vector<int> ids;
 
+    if (tag.IsEmpty())
+    {
+        LogError("ScriptIdsForTag(const Tag&): Empty tag as parameter.");
+        return ids;
+    }
+
     QMapIterator<Tag, int> it(tags);
     while(it.hasNext())
     {
         it.next();
-        if ((it.key() == tag) || (it.key().Type() == tag.Type() && (it.key().Data() == tag.Data() || tag.Data().isEmpty())))
+        if (!it.key().IsEmpty() && (it.key().Type() == tag.Type() || it.key().Data() == tag.Data()))
             ids.push_back(it.value());
     }
     return ids;
