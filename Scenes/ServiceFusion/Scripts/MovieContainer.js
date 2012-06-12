@@ -95,14 +95,10 @@ function MovieContainer(parent)
     });
 }
 MovieContainer.prototype = new Container();
- 
+
+// Create VisualContainer object for single movie and add it as child to MovieContainer object.
 MovieContainer.prototype.DisplayMovie = function(movie) 
 {
-    var minStr = movie.time.getMinutes();
-    if (minStr == 0)
-        minStr = "00";
-    var timeStr = movie.time.getHours() + ":" + minStr;
-    
     var main = new QWidget();
     main.setLayout(new QHBoxLayout());
     main.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
@@ -111,54 +107,29 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     
     var movieVisual = CreateVisualContainer(main, new QHBoxLayout(), this.visual);
     
-    // Fill tag infomation to given MovieContainer.
-    var world = RdfModule.theWorld;
-    var subject = world.CreateResource(new QUrl(RdfVocabulary.baseUri));
-    var source = world.CreateResource(new QUrl(RdfVocabulary.sourceApplication));
-    var data = world.CreateResource(new QUrl(RdfVocabulary.data));
-    var movieSource = world.CreateLiteral("Movie"); 
-    var title = world.CreateLiteral(movie.title);
-    var auditorium = world.CreateLiteral(movie.auditorium);
-    var time = world.CreateLiteral(timeStr);
-            
-    var statement = world.CreateStatement(subject, source, movieSource);
-    movieVisual.owner.rdfStore.AddStatement(statement);
-    world.FreeStatement(statement);
+    // Fill tag infomation to given movie container.
+    // Note! AddStatement function is defined in VisualContainerUtils.js file.
+    AddStatement(movieVisual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "Movie");
+    AddStatement(movieVisual, RdfVocabulary.baseUri, RdfVocabulary.data, movie.title);
+    AddStatement(movieVisual, RdfVocabulary.baseUri, RdfVocabulary.data, movie.auditorium);
+    AddStatement(movieVisual, RdfVocabulary.baseUri, RdfVocabulary.data, movie.time.toString());
     
-    statement = world.CreateStatement(subject, data, title);
-    movieVisual.owner.rdfStore.AddStatement(statement);
-    world.FreeStatement(statement);
-    
-    statement = world.CreateStatement(subject, data, auditorium);
-    movieVisual.owner.rdfStore.AddStatement(statement);
-    world.FreeStatement(statement);
-    
-    statement = world.CreateStatement(subject, data, time);
-    movieVisual.owner.rdfStore.AddStatement(statement);
-    world.FreeStatement(statement); 
-    
-    world.FreeNode(subject);
-    world.FreeNode(source);
-    world.FreeNode(data);
-    world.FreeNode(movieSource);
-    world.FreeNode(title);
-    world.FreeNode(auditorium); 
-    world.FreeNode(time);
-    
+    // Initialize time Label 
+    var minStr = movie.time.getMinutes();
+    if (minStr == 0)
+        minStr = "00";
+    var timeStr = movie.time.getHours() + ":" + minStr;
     var label = new QLabel(timeStr); 
     label.font = new QFont("FreeSans", 14);
     label.alignment = 0x0001 | 0x0020; // Qt::AlignLeft | Qt::AlignTop
     main.layout().addWidget(label, null, null);
     
+    // Initialize title/auditorium Label 
     var label2 = new QLabel(movie.title + "\n" + movie.auditorium);
     label2.font = new QFont("FreeSans", 12);
     label2.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.layout().addWidget(label2, null, null);
     
-    var line = CreateHLine();
-    this.visual.layout().addWidget(line, null, null);
-    
-    main.setAttribute(Qt.WA_DeleteOnClose);
     movieVisual.layout().addWidget(main, null, null);
     movieVisual.layout().spacing = 0;
     movieVisual.setContentsMargins(0, 0, 0, 0);
@@ -166,7 +137,6 @@ MovieContainer.prototype.DisplayMovie = function(movie)
 
 function CreateContainer(entity)
 {
-    entity.graphicsviewcanvas.GraphicsView().mouseTracking = true;
     var container = new MovieContainer(null)
     entity.graphicsviewcanvas.GraphicsScene().addWidget(container.visual);
     return container;

@@ -1,5 +1,3 @@
-// !ref: InfoBubbleMovableBlock.txml
-
 engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
 
@@ -49,12 +47,12 @@ function CreateVisualContainer(widget, layout, parent)
                 
             visual.DragStart.connect(widget, function(drag) {
                 movableInfoBubble = InfoBoubleMovable(this);
+                //SetInfoBoubleHightlight(true);
             });
         
             visual.DragDrop.connect(function(drag) {
                 if (movableInfoBubble) {
-                    scene.RemoveEntity(movableInfoBubble.id);
-                    movableInfoBubble = null;
+                    movableInfoBubble.placeable.visible = false;
                 }
             });
             
@@ -64,6 +62,22 @@ function CreateVisualContainer(widget, layout, parent)
         }
     }
     return visual;
+}
+
+function AddStatement(visual, subject, predicate, object)
+{
+    var world = RdfModule.theWorld;
+    var s = world.CreateResource(new QUrl(subject));
+    var p = world.CreateResource(new QUrl(predicate));
+    var o = world.CreateLiteral(object);
+    var statement = world.CreateStatement(s, p, o);
+    
+    visual.owner.rdfStore.AddStatement(statement);
+    
+    world.FreeStatement(statement); 
+    world.FreeNode(s);
+    world.FreeNode(p);
+    world.FreeNode(o);
 }
 
 function CreateMovableInfoBouble(widget)
@@ -108,8 +122,7 @@ function HandleDropEvent(e)
     var data = e.mimeData().data("application/x-hotspot").toString();
     if (data.length > 0 && movableInfoBubble)
     {
-        scene.RemoveEntity(movableInfoBubble.id);
-        movableInfoBubble = null;
+        movableInfoBubble.placeable.visible = false;
     }
 }
 
@@ -141,12 +154,34 @@ function MoveSelected(pos)
     }
 }
 
+function GetMovableInfoBouble()
+{
+    if (!movableInfoBubble)
+        movableInfoBubble = scene.EntityByName("info_bubble_movable_block");
+    return movableInfoBubble;
+}
+
+/*function SetInfoBoubleHightlight(active)
+{
+    var entity = GetMovableInfoBouble();
+    if (!entity)
+        return;
+        
+    var material = entity.mesh.MaterialAsset(0);
+    if (material)
+    {
+        if (active)
+            material.SetEmissiveColor(0, 0, new Color(1.0, 0.0, 0.0, 1.0));
+        else
+            material.SetEmissiveColor(0, 0, new Color(1.0, 1.0, 1.0, 1.0));
+        print(material.EmissiveColor(0, 0));
+        entity.mesh.meshMaterial = [material];
+    }
+}*/
+
 function InfoBoubleMovable(visual) 
 {
-    var ents = scene.LoadSceneXML(asset.GetAsset("InfoBubbleMovableBlock.txml").DiskSource(), false, false, 0);
-    var moveEntity = ents[0];
-    moveEntity.placeable.selectionLayer = 0;
-    
+    var moveEntity = GetMovableInfoBouble();
     var renderLabel = new QLabel();
     var pixmap =  new QPixmap(visual.size);
     visual.render(pixmap);
@@ -156,9 +191,10 @@ function InfoBoubleMovable(visual)
     moveEntity.graphicsviewcanvas.height = visual.height;
     renderLabel.acceptDrops = false;
     
-    ents[0].graphicsviewcanvas.GraphicsScene().addWidget(renderLabel);
-    ents[0].graphicsviewcanvas.GraphicsView().acceptDrops = false;
+    moveEntity.graphicsviewcanvas.GraphicsScene().addWidget(renderLabel);
+    moveEntity.graphicsviewcanvas.GraphicsView().acceptDrops = false;
     renderLabel.show();
+    moveEntity.placeable.visible = true;
     return moveEntity;
 }
 
