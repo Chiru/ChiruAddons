@@ -166,8 +166,8 @@ function Update(dt)
         var e = entities[i];
         if (IsEntityAnIcon(e))
         {
-             var entityId = parseInt(e.id); // WTF NOTE: typeof(e.id) is object, not number, so must convert it explicitly here
-             var idx = autoShownInfoBubbles.indexOf(entityId);
+            var entityId = parseInt(e.id); // WTF NOTE: typeof(e.id) is object, not number, so must convert it explicitly here
+            var idx = autoShownInfoBubbles.indexOf(entityId);
             if (e.placeable.WorldPosition().DistanceSq(cam.placeable.WorldPosition()) < cShowInfoBubbleTreshold)
             {
                 if (idx == -1)
