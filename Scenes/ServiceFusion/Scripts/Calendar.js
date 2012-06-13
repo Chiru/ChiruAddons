@@ -21,14 +21,13 @@ var months = {0 :"Tammikuu", 1 :"Helmikuu",  2 :"Maaliskuu",
 var month = months[date.getMonth()];
 var year = date.getFullYear();
 
-function Cell(widget, row, column, style)
+function Cell(w, row, column, style)
 {
-    this.widget = findChild(widget, "cell_" + row + "_" + column);
-    if (style)
+    this.widget = findChild(w, "cell_" + row + "_" + column);
+    if (this.widget && style)
         this.widget.styleSheet = style;
 }
-Cell.DayNormalStyle = 
-'QLabel \
+Cell.DayNormalStyle = 'QLabel \
 { \
  color:black; \
  font: bold "FreeSans"; \
@@ -42,8 +41,7 @@ QLabel:hover \
  color:white; \
 }';
 
-Cell.DayActiveStyle = 
-'QLabel \
+Cell.DayActiveStyle = 'QLabel \
 { \
  color:white; \
  font: bold "FreeSans"; \
@@ -56,6 +54,8 @@ QLabel:hover \
  background-color:#404040; \
  color:white; \
 }';
+
+print (Cell.DayActiveStyle);
 
 var calendarWidget = asset.GetAsset("CalenderWidget.ui").Instantiate(false, 0);//new QCalendarWidget();
 me.graphicsviewcanvas.width = calendarWidget.width;

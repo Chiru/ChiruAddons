@@ -42,7 +42,8 @@ function MovieContainer(parent)
     Container.call(this, parent);
     
     this.movies = new Array();
-    this.visual.size = new QSize(285, 400);
+    this.visual.size = new QSize(320, 400);
+    //this.visual.maximumSize = new QSize(320, 400);
     me.graphicsviewcanvas.width = this.visual.width;
     me.graphicsviewcanvas.height = this.visual.height;
     this.visual.setLayout(new QVBoxLayout());
@@ -50,7 +51,7 @@ function MovieContainer(parent)
     this.visual.layout().setSpacing(0);
     
     var world    = RdfModule.theWorld;
-    var request  = new HttpRequest();
+    var request  = new HttpRequest(); 
     var response = ScriptServices.SendPreprocessorRequest("http://hq.ludocraft.com/ludowww/cie/movies2.php",
                                                           "http://www.finnkino.fi/xml/Schedule/?area=1018",
                                                           request); 
@@ -130,7 +131,7 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     label2.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.layout().addWidget(label2, null, null);
     
-    movieVisual.layout().addWidget(main, null, null);
+    movieVisual.layout().addWidget(main, null, null); 
     movieVisual.layout().spacing = 0;
     movieVisual.setContentsMargins(0, 0, 0, 0);
 }
@@ -139,6 +140,7 @@ function CreateContainer(entity)
 {
     var container = new MovieContainer(null)
     entity.graphicsviewcanvas.GraphicsScene().addWidget(container.visual);
+    //print(entity.graphicsviewcanvas.GraphicsView().childrenRegion.boundingRect());
     return container;
 }
 

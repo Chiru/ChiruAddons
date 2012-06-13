@@ -87,6 +87,9 @@
       </item>
       <item>
        <widget class="QWidget" name="cell_0_1" native="true">
+        <property name="contextMenuPolicy">
+         <enum>Qt::PreventContextMenu</enum>
+        </property>
         <property name="styleSheet">
          <string notr="true">QLabel
 {
@@ -123,7 +126,13 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">QWidget
+{
+	border-style: solid; 
+ border-left-width: 1px; 
+ border-top-width: 1px; 
+ border-color: black;
+}</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <property name="spacing">
@@ -456,6 +465,15 @@ QLabel:hover
        <height>50</height>
       </size>
      </property>
+     <property name="styleSheet">
+      <string notr="true">QWidget
+{
+	border-style: solid; 
+ border-left-width: 1px; 
+ border-top-width: 1px; 
+ border-color: black;
+}</string>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout_6">
       <property name="spacing">
        <number>0</number>
@@ -464,7 +482,7 @@ QLabel:hover
        <number>0</number>
       </property>
       <item>
-       <widget class="QWidget" name="cell_1_8" native="true">
+       <widget class="QWidget" name="cell_2_0" native="true">
         <property name="minimumSize">
          <size>
           <width>35</width>
@@ -787,6 +805,15 @@ QLabel:hover
        <height>50</height>
       </size>
      </property>
+     <property name="styleSheet">
+      <string notr="true">QWidget
+{
+	border-style: solid; 
+ border-left-width: 1px; 
+ border-top-width: 1px; 
+ border-color: black;
+}</string>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout_7">
       <property name="spacing">
        <number>0</number>
@@ -795,7 +822,7 @@ QLabel:hover
        <number>0</number>
       </property>
       <item>
-       <widget class="QWidget" name="cell_1_16" native="true">
+       <widget class="QWidget" name="cell_3_0" native="true">
         <property name="minimumSize">
          <size>
           <width>35</width>
@@ -1117,6 +1144,15 @@ QLabel:hover
        <width>16777215</width>
        <height>50</height>
       </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QWidget
+{
+	border-style: solid; 
+ border-left-width: 1px; 
+ border-top-width: 1px; 
+ border-color: black;
+}</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_8">
       <property name="spacing">
@@ -1449,6 +1485,15 @@ QLabel:hover
        <height>50</height>
       </size>
      </property>
+     <property name="styleSheet">
+      <string notr="true">QWidget
+{
+	border-style: solid; 
+ border-left-width: 1px; 
+ border-top-width: 1px; 
+ border-color: black;
+}</string>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout_9">
       <property name="spacing">
        <number>0</number>
@@ -1779,6 +1824,15 @@ QLabel:hover
        <width>16777215</width>
        <height>50</height>
       </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QWidget
+{
+	border-style: solid; 
+ border-left-width: 1px; 
+ border-top-width: 1px; 
+ border-color: black;
+}</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_10">
       <property name="spacing">
