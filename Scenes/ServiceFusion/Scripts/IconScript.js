@@ -8,8 +8,7 @@
 engine.IncludeFile("Log.js");
 engine.IncludeFile("MathUtils.js");
 
-// TODO
-//const showInfoTreshold = 20;
+const cShowInfoBubbleTreshold = 300 * 300; // Squared distance treshold
 
 sceneinteract.EntityClicked.connect(OnEntityClicked);
 
@@ -20,6 +19,8 @@ function IsEntityAnIcon(e)
 
 function ShowInfoBubble(entity)
 {
+    infoBubbles.push(new InfoBubbleVisibilityInterpolation(entity, 0));
+
     var infoBubbleVisible = entity.dynamiccomponent.GetAttribute("infoBubbleVisible");
     if (infoBubbleVisible != undefined && infoBubbleVisible) // Info bubble visible, remove it.
     {
@@ -79,14 +80,10 @@ function ShowInfoBubble(entity)
 function OnEntityClicked(entity)
 {
     if (IsEntityAnIcon(entity))
-    {
         ShowInfoBubble(entity);
-        infoBubbles.push(new InfoBubbleVisibilityInterpolation(entity, 0));
-    }
 }
 
-//frame.Updated.connect(Update)
-frame.Updated.connect(UpdateInfoBubbleScale);
+frame.Updated.connect(Update)
 
 var cam = null;
 
@@ -116,8 +113,9 @@ function InfoBubbleVisibilityInterpolation(icon, t)
 }
 
 var infoBubbles = [];
+var autoShownInfoBubbles = [];
 
-function UpdateInfoBubbleScale(dt)
+function AnimateInfoBubbleScale(dt)
 {
     for(i = 0; i < infoBubbles.length; ++i)
     {
@@ -157,7 +155,6 @@ function UpdateInfoBubbleScale(dt)
 
 function Update(dt)
 {
-    return;
     if (!cam)
         cam = renderer.MainCamera();
     if (!cam)
@@ -169,7 +166,26 @@ function Update(dt)
         var e = entities[i];
         if (IsEntityAnIcon(e))
         {
-        // Auto-rotate and -scale disabled for now.
+             var entityId = parseInt(e.id); // WTF NOTE: typeof(e.id) is object, not number, so must convert it explicitly here
+             var idx = autoShownInfoBubbles.indexOf(entityId);
+            if (e.placeable.WorldPosition().DistanceSq(cam.placeable.WorldPosition()) < cShowInfoBubbleTreshold)
+            {
+                if (idx == -1)
+                {
+                    autoShownInfoBubbles.push(entityId);
+                    ShowInfoBubble(e);
+                }
+            }
+            else
+            {
+                if (idx != -1)
+                {
+                    ShowInfoBubble(e);
+                    autoShownInfoBubbles.splice(idx, 1);
+                }
+            }
+
+            // Uncomment to enable auto-rotation and -scaling
 /*
             var dir = e.placeable.WorldPosition().Sub(cam.placeable.WorldPosition()).Normalized();
             var q = Quat.LookAt(scene.ForwardVector(), dir, scene.UpVector(), scene.UpVector());
@@ -178,10 +194,8 @@ function Update(dt)
             // Auto-scale
             e.mesh.SetAdjustScale(float3.FromScalar(DesiredObjectScale(e.mesh)));
 */
-
-            // TODO
-//            if (e.placeable.WorldPosition().Distance(cam.placeable.WorldPosition()) < showInfoTreshold)
-//                ShowInfoBubble(e);
         }
     }
+
+    AnimateInfoBubbleScale(dt);
 }
