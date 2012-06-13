@@ -82,7 +82,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="416">
+ <entity id="4" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://Assets/SkyDome/Skydome.mesh" name="Mesh ref"/>
@@ -104,7 +104,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="9" sync="1">
+ <entity id="5" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://violin_icon_h.mesh" name="Mesh ref"/>
@@ -127,7 +127,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="10" sync="1">
+ <entity id="6" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://guitar_icon_h.mesh" name="Mesh ref"/>
@@ -150,7 +150,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="11" sync="1">
+ <entity id="7" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://theater_icon_h.mesh" name="Mesh ref"/>
@@ -173,7 +173,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="12" sync="1">
+ <entity id="8" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://bike_park_icon_h.mesh" name="Mesh ref"/>
@@ -196,7 +196,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="13" sync="1">
+ <entity id="9" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pub_icon_h.mesh" name="Mesh ref"/>
@@ -219,7 +219,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="14" sync="1">
+ <entity id="10" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://bar_icon_h.mesh" name="Mesh ref"/>
@@ -242,7 +242,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="15" sync="1">
+ <entity id="11" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://art_icon_h.mesh" name="Mesh ref"/>
@@ -265,7 +265,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="16" sync="1">
+ <entity id="12" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -287,7 +287,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="17" sync="1">
+ <entity id="13" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://bike_park_icon_h.mesh" name="Mesh ref"/>
@@ -310,7 +310,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="18" sync="1">
+ <entity id="14" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -332,7 +332,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="19" sync="1">
+ <entity id="15" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -354,7 +354,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="20" sync="1">
+ <entity id="16" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pub_icon_h.mesh" name="Mesh ref"/>
@@ -377,7 +377,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="21" sync="1">
+ <entity id="17" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://bar_icon_h.mesh" name="Mesh ref"/>
@@ -400,7 +400,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="22" sync="1">
+ <entity id="18" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pub_icon_h.mesh" name="Mesh ref"/>
@@ -423,7 +423,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="23" sync="1">
+ <entity id="19" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pub_icon_h.mesh" name="Mesh ref"/>
@@ -446,7 +446,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="24" sync="1">
+ <entity id="20" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pub_icon_h.mesh" name="Mesh ref"/>
@@ -469,7 +469,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="25" sync="1">
+ <entity id="21" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -491,7 +491,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="26" sync="1">
+ <entity id="22" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -513,7 +513,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="27" sync="1">
+ <entity id="23" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="icon_light_cone.mesh" name="Mesh ref"/>
@@ -535,7 +535,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="28" sync="1">
+ <entity id="24" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -557,7 +557,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="29" sync="1">
+ <entity id="25" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -579,7 +579,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="30" sync="1">
+ <entity id="26" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -601,7 +601,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="31" sync="1">
+ <entity id="27" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -623,7 +623,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="32" sync="1">
+ <entity id="28" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -645,7 +645,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="33" sync="1">
+ <entity id="29" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -667,7 +667,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="34" sync="1">
+ <entity id="30" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -689,7 +689,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="35" sync="1">
+ <entity id="31" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -711,7 +711,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="36" sync="1">
+ <entity id="32" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -733,7 +733,7 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
- <entity id="37" sync="1">
+ <entity id="33" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pub_icon_h.mesh" name="Mesh ref"/>
@@ -756,7 +756,7 @@
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="38" sync="1">
+ <entity id="34" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://movie_icon_h.mesh" name="Mesh ref"/>
@@ -778,5 +778,135 @@
    <attribute value="" name="Parent bone name"/>
   </component>
   <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+ </entity>
+ <entity id="35" sync="1">
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="news_tablet.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="news_tablet.material;screen.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="34.552597,64.390198,0.556503,0.000000,180.000000,0.000000,5.000000,5.000000,5.000000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Name" sync="true">
+   <attribute value="news_tablet" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" sync="true">
+   <attribute value="Texture_Screen_1" name="Output texture"/>
+   <attribute value="512" name="Texture width"/>
+   <attribute value="512" name="Texture height"/>
+   <attribute value="1" name="Submesh"/>
+  </component>
+  <component type="EC_Script" sync="true" name="Screen">
+   <attribute value="Screen.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_Script" sync="true" name="WebView">
+   <attribute value="WebView.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Screen"/>
+  <component type="EC_RigidBody" sync="true">
+   <attribute value="0" name="Mass"/>
+   <attribute value="0" name="Shape type"/>
+   <attribute value="4.000000 6.000000 1.000000" name="Size"/>
+   <attribute value="" name="Collision mesh ref"/>
+   <attribute value="0.5" name="Friction"/>
+   <attribute value="0" name="Restitution"/>
+   <attribute value="0" name="Linear damping"/>
+   <attribute value="0" name="Angular damping"/>
+   <attribute value="1.000000 1.000000 1.000000" name="Linear factor"/>
+   <attribute value="1.000000 1.000000 1.000000" name="Angular factor"/>
+   <attribute value="false" name="Kinematic"/>
+   <attribute value="false" name="Phantom"/>
+   <attribute value="false" name="Draw Debug"/>
+   <attribute value="0.000000 0.000000 0.000000" name="Linear velocity"/>
+   <attribute value="0.000000 0.000000 0.000000" name="Angular velocity"/>
+   <attribute value="-1" name="Collision Layer"/>
+   <attribute value="-1" name="Collision Mask"/>
+  </component>
+ </entity>
+ <entity id="36" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="MovieContainer" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,3.000000,3.000000,3.000000" name="Transform"/>
+   <attribute value="local://info_bubble.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="local://info_bubble.material;local://lower_text.material;local://upper_text.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-86.438278,39.827782,20.788528,0.000000,180.000000,0.000000,2.000000,2.000000,2.000000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Script" sync="true" name="Screen">
+   <attribute value="Screen.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_Script" sync="true">
+   <attribute value="MovieContainer.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" sync="true" name="Content">
+   <attribute value="Texture_ScreenContent_2" name="Output texture"/>
+   <attribute value="370" name="Texture width"/>
+   <attribute value="200" name="Texture height"/>
+   <attribute value="1" name="Submesh"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" sync="true" name="Title">
+   <attribute value="Texture_ScreenTitle_3" name="Output texture"/>
+   <attribute value="150" name="Texture width"/>
+   <attribute value="50" name="Texture height"/>
+   <attribute value="2" name="Submesh"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Screen"/>
+  <component type="EC_RigidBody" sync="true">
+   <attribute value="0" name="Mass"/>
+   <attribute value="0" name="Shape type"/>
+   <attribute value="16.000000 27.000000 1.000000" name="Size"/>
+   <attribute value="" name="Collision mesh ref"/>
+   <attribute value="0.5" name="Friction"/>
+   <attribute value="0" name="Restitution"/>
+   <attribute value="0" name="Linear damping"/>
+   <attribute value="0" name="Angular damping"/>
+   <attribute value="1.000000 1.000000 1.000000" name="Linear factor"/>
+   <attribute value="1.000000 1.000000 1.000000" name="Angular factor"/>
+   <attribute value="false" name="Kinematic"/>
+   <attribute value="false" name="Phantom"/>
+   <attribute value="false" name="Draw Debug"/>
+   <attribute value="0.000000 0.000000 0.000000" name="Linear velocity"/>
+   <attribute value="0.000000 0.000000 0.000000" name="Angular velocity"/>
+   <attribute value="-1" name="Collision Layer"/>
+   <attribute value="-1" name="Collision Mask"/>
+  </component>
  </entity>
 </scene>
