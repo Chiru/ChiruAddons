@@ -1,30 +1,60 @@
-// IconScript.js - handles behavior of in-world 3D icons
-// - automatic scaling,
-// - rotating towards camera,
-// - and showing of info bubbles
+// IconScript.js - handles animation of 3D icons and info bubbles
 
 // !ref: InfoBubblePrefab.txml
 
 engine.IncludeFile("Log.js");
 engine.IncludeFile("MathUtils.js");
 
-const cShowInfoBubbleTreshold = 300 * 300; // Squared distance treshold
+function MovingIcon(icon, start, dest)
+{
+    this.icon = icon;
+    this.start = start;
+    this.dest = dest;
+    this.t = 0;
+}
 
-sceneinteract.EntityClicked.connect(OnEntityClicked);
+function InfoBubbleVisibilityInterpolation(icon)
+{
+    this.icon = icon;
+    this.t = 0;
+}
+
+var infoBubbles = [];
+var autoShownInfoBubbles = [];
+var movingIcons = [];
+var cam = null;
+const cDefaultScale = 1;
+const cVisibleScale = 8;
+const cHiddenScale = 0.01; 
+const cScaleTime = 1;
+const cToggleInfoBubbleVisibilityTreshold = 250 * 250; // Squared distance treshold
+
+// Entry point
+if (!framework.IsHeadless())
+{
+    sceneinteract.EntityClicked.connect(OnEntityClicked);
+    frame.Updated.connect(Update)
+}
+
+function OnEntityClicked(entity)
+{
+    if (IsEntityAnIcon(entity))
+        ToggleInfoBubbleVisibility(entity);
+}
 
 function IsEntityAnIcon(e)
 {
     return e.placeable != null && e.mesh != null && e.dynamiccomponent != null && e.dynamiccomponent.name == "Icon";
 }
 
-function ShowInfoBubble(entity)
+function ToggleInfoBubbleVisibility(icon)
 {
-    infoBubbles.push(new InfoBubbleVisibilityInterpolation(entity, 0));
+    infoBubbles.push(new InfoBubbleVisibilityInterpolation(icon));
 
-    var infoBubbleVisible = entity.dynamiccomponent.GetAttribute("infoBubbleVisible");
+    var infoBubbleVisible = icon.dynamiccomponent.GetAttribute("infoBubbleVisible");
+    var infoBubbleId = icon.dynamiccomponent.GetAttribute("infoBubbleId");
     if (infoBubbleVisible != undefined && infoBubbleVisible) // Info bubble visible, remove it.
     {
-        var infoBubbleId = entity.dynamiccomponent.GetAttribute("infoBubbleId");
         var infoBubble = scene.EntityById(infoBubbleId);
         if (!infoBubble)
         {
@@ -34,11 +64,14 @@ function ShowInfoBubble(entity)
         // TODO: crashes to EC_GraphicsViewCanvas::OnMaterialChanged. Fow now, only hiding the entity.
         //scene.RemoveEntity(infoBubbleId);
         //infoBubble.placeable.visible = false;
-        entity.dynamiccomponent.SetAttribute("infoBubbleVisible", false/*infoBubble.placeable.visible*/);
+        icon.dynamiccomponent.SetAttribute("infoBubbleVisible", !infoBubbleVisible);
+
+        // Moving of icons disabled for now
+//        var currentPos = icon.placeable.WorldPosition();
+//        movingIcons.push(new MovingIcon(icon, currentPos, currentPos.Add(new float3(0,-70,0))));
     }
     else
     {
-        var infoBubbleId = entity.dynamiccomponent.GetAttribute("infoBubbleId");
         if (infoBubbleId == undefined) // Info bubble not created, create it now.
         {
             var ents = scene.LoadSceneXML(asset.GetAsset("InfoBubblePrefab.txml").DiskSource(), false, false, 0);
@@ -50,42 +83,31 @@ function ShowInfoBubble(entity)
 
             var infoBubble = ents[0];
             infoBubble.temporary = true;
-            infoBubble.placeable.SetPosition(entity.placeable.WorldPosition());
-            infoBubble.placeable.SetScale(2,2,2);
-            /*
-            var t = infoBubble.placeable.transform;
-            t.rot = new float3(0, 180, 0);
-            t.pos = entity.placeable.WorldPosition();
-            infoBubble.placeable.transform = t;
-            */
-            entity.dynamiccomponent.CreateAttribute("bool", "infoBubbleVisible");
-            entity.dynamiccomponent.SetAttribute("infoBubbleVisible", true/*infoBubble.placeable.visible*/);
-            entity.dynamiccomponent.CreateAttribute("uint", "infoBubbleId");
-            entity.dynamiccomponent.SetAttribute("infoBubbleId", infoBubble.id);
+            infoBubble.placeable.SetPosition(icon.placeable.WorldPosition());
+
+            icon.dynamiccomponent.CreateAttribute("bool", "infoBubbleVisible");
+            icon.dynamiccomponent.SetAttribute("infoBubbleVisible", !infoBubbleVisible);
+            icon.dynamiccomponent.CreateAttribute("uint", "infoBubbleId");
+            icon.dynamiccomponent.SetAttribute("infoBubbleId", infoBubble.id);
+
+            infoBubbleId = infoBubble.id;
         }
-        else
+
+        var infoBubble = scene.EntityById(infoBubbleId);
+        if (!infoBubble)
         {
-            var infoBubble = scene.EntityById(infoBubbleId);
-            if (!infoBubble)
-            {
-                LogE("Trying to set visibility of a non-existing info bubble with entity ID "+ infoBubbleId);
-                return;
-            }
-            //infoBubble.placeable.visible = true;
-            entity.dynamiccomponent.SetAttribute("infoBubbleVisible", true/*infoBubble.placeable.visible*/);
+            LogE("Trying to set visibility of a non-existing info bubble with entity ID "+ infoBubbleId);
+            return;
         }
+
+        //infoBubble.placeable.visible = true;
+        icon.dynamiccomponent.SetAttribute("infoBubbleVisible", true/*infoBubble.placeable.visible*/);
+
+        // Moving of icons disabled for now
+//        var currentPos = icon.placeable.WorldPosition();
+//        movingIcons.push(new MovingIcon(icon, currentPos, currentPos.Add(new float3(0,70,0))));
     }
 }
-
-function OnEntityClicked(entity)
-{
-    if (IsEntityAnIcon(entity))
-        ShowInfoBubble(entity);
-}
-
-frame.Updated.connect(Update)
-
-var cam = null;
 
 function DesiredObjectScale(mesh)
 {
@@ -101,20 +123,6 @@ function DesiredObjectScale(mesh)
     return Math.max(multiplier, multiplier*distance);
 }
 
-const cDefaultScale = 1;
-const cVisibleScale = 8;
-const cHiddenScale = 0; 
-const cScaleTime = 1;
-
-function InfoBubbleVisibilityInterpolation(icon, t)
-{
-    this.icon = icon;
-    this.t = t;
-}
-
-var infoBubbles = [];
-var autoShownInfoBubbles = [];
-
 function AnimateInfoBubbleScale(dt)
 {
     for(i = 0; i < infoBubbles.length; ++i)
@@ -129,7 +137,10 @@ function AnimateInfoBubbleScale(dt)
             if (!EqualAbs(scale, cVisibleScale, 0.001))
                 infoBubbles[i].t += dt;
             else
+            {
                 infoBubbles.splice(i, 1);
+                infoBubble.placeable.visible = infoBubbleVisible;
+            }
 
             if (!EqualAbs(scale, cVisibleScale, 0.001) && infoBubbles[i].t < cScaleTime)
             {
@@ -142,7 +153,10 @@ function AnimateInfoBubbleScale(dt)
             if (!EqualAbs(scale, cHiddenScale, 0.001))
                 infoBubbles[i].t += dt;
             else
+            {
                 infoBubbles.splice(i, 1);
+                infoBubble.placeable.visible = infoBubbleVisible;
+            }
 
             if (!EqualAbs(scale, cHiddenScale, 0.001) && infoBubbles[i].t < cScaleTime)
             {
@@ -151,6 +165,31 @@ function AnimateInfoBubbleScale(dt)
             }
         }
     }
+
+    // Interpolate moving icons
+    // Disabled for now
+/*
+    for(i = 0; i < movingIcons.length; ++i)
+    {
+        var currentPos = movingIcons[i].icon.placeable.WorldPosition();
+        var distance = currentPos.Distance(movingIcons[i].dest);
+        if (distance > 1)
+        {
+            movingIcons[i].t += dt;
+        }
+        else
+        {
+            movingIcons[i].icon.placeable.SetPosition(movingIcons[i].dest);
+            movingIcons.splice(i, 1);
+        }
+
+        if (movingIcons[i] && distance > 0.1 && movingIcons[i].t < cScaleTime)
+        {
+            currentPos = float3.Lerp(movingIcons[i].start, movingIcons[i].dest, movingIcons[i].t/cScaleTime);
+            movingIcons[i].icon.placeable.SetPosition(currentPos);
+        }
+    }
+*/
 }
 
 function Update(dt)
@@ -168,19 +207,19 @@ function Update(dt)
         {
             var entityId = parseInt(e.id); // WTF NOTE: typeof(e.id) is object, not number, so must convert it explicitly here
             var idx = autoShownInfoBubbles.indexOf(entityId);
-            if (e.placeable.WorldPosition().DistanceSq(cam.placeable.WorldPosition()) < cShowInfoBubbleTreshold)
+            if (e.placeable.WorldPosition().DistanceSq(cam.placeable.WorldPosition()) < cToggleInfoBubbleVisibilityTreshold)
             {
                 if (idx == -1)
                 {
                     autoShownInfoBubbles.push(entityId);
-                    ShowInfoBubble(e);
+                    ToggleInfoBubbleVisibility(e);
                 }
             }
             else
             {
                 if (idx != -1)
                 {
-                    ShowInfoBubble(e);
+                    ToggleInfoBubbleVisibility(e);
                     autoShownInfoBubbles.splice(idx, 1);
                 }
             }
