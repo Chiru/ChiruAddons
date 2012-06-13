@@ -1,6 +1,6 @@
 <!DOCTYPE Scene>
 <scene>
- <entity id="2" sync="1">
+ <entity id="1" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://violin_icon_h.mesh" name="Mesh ref"/>
@@ -21,13 +21,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="3" sync="1">
+ <entity id="2" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://guitar_icon_h.mesh" name="Mesh ref"/>
@@ -48,13 +44,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="4" sync="1">
+ <entity id="3" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://theater_icon_h.mesh" name="Mesh ref"/>
@@ -75,13 +67,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="5" sync="1">
+ <entity id="4" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://bike_park_icon_h.mesh" name="Mesh ref"/>
@@ -102,13 +90,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="6" sync="1">
+ <entity id="5" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pub_icon_h.mesh" name="Mesh ref"/>
@@ -129,13 +113,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="7" sync="1">
+ <entity id="6" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://bar_icon_h.mesh" name="Mesh ref"/>
@@ -156,13 +136,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="8" sync="1">
+ <entity id="7" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://art_icon_h.mesh" name="Mesh ref"/>
@@ -183,13 +159,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="9" sync="1">
+ <entity id="8" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -210,13 +182,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="10" sync="1">
+ <entity id="9" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://bike_park_icon_h.mesh" name="Mesh ref"/>
@@ -237,13 +204,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="11" sync="1">
+ <entity id="10" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -264,13 +227,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="12" sync="1">
+ <entity id="11" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -291,13 +249,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="13" sync="1">
+ <entity id="12" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pub_icon_h.mesh" name="Mesh ref"/>
@@ -318,13 +271,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="14" sync="1">
+ <entity id="13" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://bar_icon_h.mesh" name="Mesh ref"/>
@@ -345,13 +294,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="15" sync="1">
+ <entity id="14" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pub_icon_h.mesh" name="Mesh ref"/>
@@ -372,13 +317,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="16" sync="1">
+ <entity id="15" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pub_icon_h.mesh" name="Mesh ref"/>
@@ -399,13 +340,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="17" sync="1">
+ <entity id="16" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pub_icon_h.mesh" name="Mesh ref"/>
@@ -426,13 +363,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="18" sync="1">
+ <entity id="17" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -453,13 +386,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="19" sync="1">
+ <entity id="18" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -480,13 +408,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="20" sync="1">
+ <entity id="19" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="icon_light_cone.mesh" name="Mesh ref"/>
@@ -507,13 +430,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="21" sync="1">
+ <entity id="20" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -534,13 +452,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="22" sync="1">
+ <entity id="21" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -561,13 +474,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="23" sync="1">
+ <entity id="22" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -588,13 +496,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="24" sync="1">
+ <entity id="23" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -615,13 +518,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="25" sync="1">
+ <entity id="24" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -642,13 +540,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="26" sync="1">
+ <entity id="25" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -669,13 +562,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="27" sync="1">
+ <entity id="26" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -696,13 +584,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="28" sync="1">
+ <entity id="27" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -723,13 +606,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="29" sync="1">
+ <entity id="28" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://icon_light_cone.mesh" name="Mesh ref"/>
@@ -750,13 +628,8 @@
    <attribute value="icon_light_cone" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
  </entity>
- <entity id="30" sync="1">
+ <entity id="29" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://pub_icon_h.mesh" name="Mesh ref"/>
@@ -777,13 +650,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
- <entity id="31" sync="1">
+ <entity id="30" sync="1">
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://movie_icon_h.mesh" name="Mesh ref"/>
@@ -804,10 +673,6 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_Highlight" sync="false" name="EcEditorHighlight">
-   <attribute value="true" name="Is visible"/>
-   <attribute value="0.300000 0.500000 0.100000 0.500000" name="Solid color"/>
-   <attribute value="1.000000 1.000000 1.000000 0.500000" name="Outline color"/>
-  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
  </entity>
 </scene>
