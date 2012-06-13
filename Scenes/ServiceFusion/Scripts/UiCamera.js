@@ -227,7 +227,7 @@ function HandleMouseEvent(e)
             transform.rot.x = Clamp(transform.rot.x, minTiltAngle, maxTiltAngle);
             me.placeable.transform = transform;
 
-            //if (oldRotX > minTiltAngle && oldRotX < maxTiltAngle)
+            if (oldRotX > minTiltAngle && oldRotX < maxTiltAngle)
             {
                 var d = relY/*e.relativeY*/ * cMoveZSpeed * 30;
                 var newPos = me.placeable.WorldPosition();
