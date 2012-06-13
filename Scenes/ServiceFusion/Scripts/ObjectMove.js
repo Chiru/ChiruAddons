@@ -257,14 +257,15 @@ function Update(/*frameTime*/)
 {
     TouchUpdate();
     //return;
-//    if (input.IsMouseButtonPressed(1))
-//        BeginMove();
 
-    if (touchInputActive || input.IsMouseButtonDown(1))
+    if (input.IsMouseButtonPressed(1))
+        BeginMove();
+
+    if (/*touchInputActive ||*/ input.IsMouseButtonDown(1))
     {
         if (selectedObject)
         {
-            var move = touchInputActive ? true : input.IsKeyDown(Qt.Key_1);
+            var move = /*touchInputActive ? true :*/ input.IsKeyDown(Qt.Key_1);
             var rotate = input.IsKeyDown(Qt.Key_2);
             if (move)
             {
