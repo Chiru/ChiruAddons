@@ -93,7 +93,7 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="146.914017,85.491188,-104.832855,163.000000,0.000000,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="-52.322861,259.498627,-572.276794,150.200043,0.000000,180.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="0" name="Selection layer"/>

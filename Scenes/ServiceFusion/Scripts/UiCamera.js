@@ -3,10 +3,11 @@
 // !ref: Scene1.txml
 // !ref: Scene2.txml
 // !ref: Scene3.txml
+// !ref: IconsPlacedInScene.txml
 
 // Scene rotation
 var sceneIndex = -1;
-const scenes = ["Scene1.txml", "Scene2.txml", "Scene3.txml"];
+const scenes = ["Scene1New.txml", "Scene1.txml", "Scene2.txml", "Scene3.txml"];
 // Current content of the active scene
 var currentContent = [];
 // Screen resolution of the target device will be 1200x800
@@ -109,6 +110,7 @@ function SwitchScene()
 
     Log("Loading scene " + sceneIndex + " " + scenes[sceneIndex]);
     currentContent = scene.LoadSceneXML(asset.GetAsset(scenes[sceneIndex]).DiskSource(), false, false, 0);
+
     // TODO Reset camera etc?
 }
 
@@ -225,7 +227,7 @@ function HandleMouseEvent(e)
             transform.rot.x = Clamp(transform.rot.x, minTiltAngle, maxTiltAngle);
             me.placeable.transform = transform;
 
-            if (oldRotX > minTiltAngle && oldRotX < maxTiltAngle)
+            //if (oldRotX > minTiltAngle && oldRotX < maxTiltAngle)
             {
                 var d = relY/*e.relativeY*/ * cMoveZSpeed * 30;
                 var newPos = me.placeable.WorldPosition();
