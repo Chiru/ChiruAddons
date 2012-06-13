@@ -174,7 +174,7 @@
    <attribute value="-44.337677,7.127077,69.158737,165.299408,30.310396,152.530594,3.959908,25.481953,3.959907" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -219,7 +219,7 @@
    <attribute value="-56.381908,5.838013,41.492016,-166.389450,30.734829,-154.652328,6.792856,25.481922,6.792873" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -241,7 +241,7 @@
    <attribute value="-107.731827,6.861928,-22.460575,-174.050262,32.371647,-168.985107,5.481966,25.481953,5.481967" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -378,7 +378,7 @@
    <attribute value="130.681595,6.861938,16.245741,-179.999084,0.529652,179.999359,6.081964,25.481947,6.081964" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -400,7 +400,7 @@
    <attribute value="57.308762,6.861938,-51.194195,-179.999084,0.529652,179.999359,5.481965,25.481947,5.481965" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -422,7 +422,7 @@
    <attribute value="61.464561,7.744705,-23.521584,-179.999084,0.529860,179.999359,6.791963,25.481947,6.788753" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -444,7 +444,7 @@
    <attribute value="93.291725,8.764351,-74.985176,-179.999084,0.529652,179.999359,5.481965,25.481947,5.481965" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -466,7 +466,7 @@
    <attribute value="84.382668,7.782080,-62.434780,-179.999084,0.529832,179.999359,5.481955,25.481947,5.481955" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -488,7 +488,7 @@
    <attribute value="110.635681,6.856484,-98.882843,-179.999084,0.529652,179.999359,5.481965,25.481947,5.481965" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -510,7 +510,7 @@
    <attribute value="198.543884,5.630177,-77.862679,-179.999084,0.529783,179.999359,6.791971,25.481947,6.792873" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -532,7 +532,7 @@
    <attribute value="21.785294,6.861938,-175.087357,-179.999084,0.529652,179.999359,5.481965,25.481947,5.481965" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -554,7 +554,7 @@
    <attribute value="-107.256279,6.895961,-22.397388,174.599655,31.478973,169.735733,5.481967,25.481945,5.481969" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -576,7 +576,7 @@
    <attribute value="-56.363712,5.839348,42.425129,-179.999084,0.529652,179.999359,6.792873,25.481947,6.792873" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -598,7 +598,7 @@
    <attribute value="-44.116318,6.861938,69.346458,-179.999084,0.529652,179.999359,6.481968,25.481947,6.481968" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
@@ -620,7 +620,7 @@
    <attribute value="-98.981194,6.861938,-145.680893,-179.999084,0.529652,179.999359,5.481965,25.481947,5.481965" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="0" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
