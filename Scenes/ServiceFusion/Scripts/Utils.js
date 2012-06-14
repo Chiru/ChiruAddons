@@ -3,6 +3,12 @@
 // engine.ImportExtension("qt.core");
 // engine.IncludeFile("MathUtils.js");
 
+// Returns mouse ray from the active camera at screen point coordinates.
+function MouseRay(x, y)
+{
+    return renderer.MainCameraComponent().GetMouseRay(x/ui.GraphicsScene().width(), y/ui.GraphicsScene().height());
+}
+
 // TODO: Is this needed?
 function IsTouchStateMoved(touch)
 {

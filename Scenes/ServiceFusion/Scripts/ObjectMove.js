@@ -16,7 +16,6 @@ const cReferenceHeight = 800;
 var selectedObject = null;
 
 var touchOffset = new float3(0,0,0);
-var touchInputActive = false;
 var prevFrameMouseX = -1;
 var prevFrameMouseY = -1;
 var touchDeltaX, touchDeltaY;
@@ -49,6 +48,12 @@ if (!framework.IsHeadless())
     //ui.GraphicsView().DropEvent.connect(HandleDropEvent);
     
     frame.Updated.connect(Update);
+}
+
+// Returns mouse ray from the active camera at last frame screen point coordinates.
+function CurrentMouseRay()
+{
+    return MouseRay(prevFrameMouseX, prevFrameMouseY);
 }
 
 function BeginMove()
@@ -88,7 +93,6 @@ function EndMove()
 function OnTouchUpdate(e)
 {
     prevFrameTouches = e.touchPoints();
-    touchInputActive = true;
 /*
     var touches = e.touchPoints();
     var touchCount = touches.length;
@@ -115,7 +119,6 @@ function OnTouchUpdate(e)
 function OnTouchBegin(e)
 {
     prevFrameTouches = e.touchPoints();
-    touchInputActive = true;
     // Must enforce calling of TouchUpdate here, otherwise we get no events with 'pressed' state.
     TouchUpdate();
 }
@@ -123,8 +126,8 @@ function OnTouchBegin(e)
 function OnTouchEnd(e)
 {
     prevFrameTouches = e.touchPoints();
+    // TODO IS the line below needed?
     frame.DelayedExecute(0.1).Triggered.connect(function(){prevFrameTouches=[];});
-    touchInputActive = false;;
 }
 
 function HandleDragEnterEvent(e)
@@ -139,26 +142,6 @@ function HandleDragMoveEvent(e)
     var data = e.mimeData().data("application/x-hotspot").toString();
     if (data.length > 0)
         e.acceptProposedAction();
-}
-
-function CurrentMouseRay()
-{
-    var x, y;
-    if (touchInputActive)
-    {
-        x = prevFrameMouseX, y = prevFrameMouseY;
-    }
-    else
-    {
-        var mousePos = input.MousePos();
-        x = mousePos.x(), y = mousePos.y();
-    }
-    return renderer.MainCameraComponent().GetMouseRay(x/ui.GraphicsScene().width(), y/ui.GraphicsScene().height());
-}
-
-function ScreenPointToRay(x, y)
-{
-    return renderer.MainCameraComponent().GetMouseRay(x/ui.GraphicsScene().width(), y/ui.GraphicsScene().height());
 }
 
 /*function HandleDropEvent(e)
@@ -225,9 +208,6 @@ function HandleKeyEvent(e)
     }
 }
 
-var mousePosPrev = null;//input.MousePos();
-var rotAngle = 0;
-
 // Handles touch input
 function TouchUpdate()
 {
@@ -248,7 +228,7 @@ function TouchUpdate()
     }
 
     TouchSelectObject(touchCount, touches, null);
-    //TouchMoveObject(touchCount, touches, null);
+    TouchMoveObject(touchCount, touches, null);
     TouchRotateObject(touchCount, touches, null);
 }
 
@@ -256,16 +236,16 @@ function TouchUpdate()
 function Update(/*frameTime*/)
 {
     TouchUpdate();
-    //return;
 
+    // Rest of the function is the keyboard + mouse input code 
     if (input.IsMouseButtonPressed(1))
         BeginMove();
 
-    if (/*touchInputActive ||*/ input.IsMouseButtonDown(1))
+    if (input.IsMouseButtonDown(1))
     {
         if (selectedObject)
         {
-            var move = /*touchInputActive ? true :*/ input.IsKeyDown(Qt.Key_1);
+            var move = input.IsKeyDown(Qt.Key_1);
             var rotate = input.IsKeyDown(Qt.Key_2);
             if (move)
             {
@@ -274,7 +254,7 @@ function Update(/*frameTime*/)
                     if (selectedObject.dynamiccomponent && selectedObject.dynamiccomponent.name == "UserItem")
                         return; // Zooming/depth movement of user items not allowed
 
-                    var mouseYDelta = mousePosPrev.y() - input.MousePos().y();
+                    var mouseYDelta = prevFrameMouseY - input.MousePos().y();
                     var d = mouseYDelta * cMoveZSpeed * 30;
 
                     var cameraEntity = renderer.MainCamera();
@@ -309,7 +289,7 @@ function Update(/*frameTime*/)
                 {
                     if (selectedObject.dynamiccomponent && selectedObject.dynamiccomponent.name == "UserItem")
                         return; // Zooming/depth movement of user items not allowed
-                    var d = new float2(mousePosPrev.x()-input.MousePos().x(), mousePosPrev.y()-input.MousePos().y());
+                    var d = new float2(prevFrameMouseX-input.MousePos().x(), prevFrameMouseY-input.MousePos().y());
                     d = d.Mul(cReferenceHeight / ui.GraphicsScene().height() * cRotateSpeed /* *50 */); // *50 in Unity commented out
 
                     var rotVectorFor = selectedObject.placeable.Position().Sub(renderer.MainCamera().placeable.Position()).Normalized();
@@ -326,7 +306,8 @@ function Update(/*frameTime*/)
         }
     }
 
-    mousePosPrev = input.MousePos();
+    prevFrameMouseX = input.MousePos().x();
+    prevFrameMouseY = input.MousePos().y();
 }
 
 function CanObjectBeMoved(obj, pos)
@@ -349,12 +330,11 @@ function CanObjectBeMoved(obj, pos)
     return true;
 }
 
-// TODO/NOTE pos param unused
-function MoveSelected(/*QPoint*/pos)
+function MoveSelected(/*QPoint(F)*/pos)
 {
     if (selectedObject)
     {
-        var ray = CurrentMouseRay();
+        var ray = MouseRay(pos.x(), pos.y());
         var cameraEntity = renderer.MainCamera();
 //        var cameraEntity = scene.EntityByName("UiCamera");
         var camFwd = cameraEntity.placeable.WorldOrientation().Mul(scene.ForwardVector()).Normalized();
@@ -392,7 +372,8 @@ var selectedObjectFingerId;
 var selectedObjectOriginalRotation;
 var selectedObjectObjectTransform;
 
-const cLongTouchDuration = 2.0;
+const cLongTouchDuration = 1.0;
+const cMoveZMinTouchDistance = 350;
 
 var startPositions = {}; //associative array <int (finger ID), QPointF (screen pos)>
 var rotAngle = 0; // float
