@@ -1,9 +1,13 @@
 // !ref: CalenderWidget.ui
+// !ref: CalendarEvents.ui
 
 me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
 
 engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
+
+var eventsEntityName = "calendar_events";
+var eventsEntity = null;
 
 Date.prototype.getWeek = function()
 {
@@ -24,8 +28,11 @@ var year = date.getFullYear();
 function Cell(w, row, column, style)
 {
     this.widget = findChild(w, "cell_" + row + "_" + column);
-    if (this.widget && style)
-        this.widget.styleSheet = style;
+    if (this.widget)
+    {
+        if (style)
+            this.widget.styleSheet = style;
+    }
 }
 Cell.DayNormalStyle = 'QLabel \
 { \
@@ -55,16 +62,19 @@ QLabel:hover \
  color:white; \
 }';
 
-print (Cell.DayActiveStyle);
+Cell.prototype.OnPress = function()
+{
+    
+}
 
-var calendarWidget = asset.GetAsset("CalenderWidget.ui").Instantiate(false, 0);//new QCalendarWidget();
+var calendarWidget = asset.GetAsset("CalenderWidget.ui").Instantiate(false, 0);
 me.graphicsviewcanvas.width = calendarWidget.width;
 me.graphicsviewcanvas.height = calendarWidget.height;
 me.graphicsviewcanvas.GraphicsScene().addWidget(calendarWidget);
 calendarWidget.show();
 
 calendarWidget.cells = new Array();
-// Get every child cell widgets from the calendar widget and store them into a double array.
+// Get every child cell widget from the calendar widget and store them into a double array.
 // Note! cells range should be betweeen row[0-6] and column [0-7] only exeption is row[0] where column range is [0-1].
 calendarWidget.cells[0] = [new Cell(), new Cell(), new Cell(), new Cell(), new Cell(), new Cell(), new Cell()];
 calendarWidget.cells[0] = [new Cell(calendarWidget, 0, 0), new Cell(calendarWidget, 0, 1)];
@@ -117,6 +127,21 @@ calendarWidget.cells[5][7].widget.layout().addWidget(new QLabel("29"), 0, 0);
 
 calendarWidget.cells[6][1].widget.layout().addWidget(new QLabel("30"), 0, 0);
 calendarWidget.cells[6][2].widget.layout().addWidget(new QLabel("31"), 0, 0);
+
+eventsEntity = scene.GetEntityByName(eventsEntityName);
+var eventsWidget = asset.GetAsset("CalendarEvents.ui").Instantiate(false, 0);
+eventsEntity.graphicsviewcanvas.width = eventsWidget.width;
+eventsEntity.graphicsviewcanvas.height = eventsWidget.height;
+eventsEntity.graphicsviewcanvas.GraphicsScene().addWidget(eventsWidget);
+eventsWidget.show();
+
+eventsWidget.cells = new Array();
+for (var i = 0; i < 4; ++i)
+{
+    eventsWidget.cells[i] = [new Cell(eventsWidget, i, 0), new Cell(eventsWidget, i, 1)];
+}
+eventsWidget.cells[1][0].widget.layout().addWidget(new QLabel("Test"), 0, 0);
+eventsWidget.cells[1][1].widget.layout().addWidget(new QLabel("Mc koppa koppakuoriainen!"), 0, 0); 
 
 function OnScriptDestroyed()
 {
