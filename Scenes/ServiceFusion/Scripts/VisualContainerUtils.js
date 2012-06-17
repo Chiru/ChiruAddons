@@ -5,6 +5,7 @@ engine.ImportExtension("qt.gui");
 var movableInfoBubble = null;
 // Moveable drag&drop mesh distance from the camera.
 var distanceFromCamera = 9;
+var dragObjectName = "info_bubble_movable_block";
 
 QByteArray.prototype.toString = function()
 {
@@ -44,24 +45,28 @@ function CreateVisualContainer(widget, layout, parent)
             }
             else
                 widget.setParent(visual);
-                
-            visual.DragStart.connect(widget, function(drag) {
-                movableInfoBubble = InfoBoubleMovable(this);
-                //SetInfoBoubleHightlight(true);
-            });
-        
-            visual.DragDrop.connect(function(drag) {
-                if (movableInfoBubble) {
-                    movableInfoBubble.placeable.visible = false;
-                }
-            });
-            
-            visual.DragMove.connect(function(drag) {
-                // todo add implementation --Joosua.
-            });
+            MakeDragable(visual, widget);
         }
     }
     return visual;
+}
+
+function MakeDragable(visual, widget)
+{
+    visual.DragStart.connect(widget, function(drag) {
+        movableInfoBubble = InfoBoubleMovable(this);
+        //SetInfoBoubleHighlight(true);
+    });
+
+    visual.DragDrop.connect(function(drag) {
+        if (movableInfoBubble) {
+            movableInfoBubble.placeable.visible = false;
+        }
+    });
+    
+    visual.DragMove.connect(function(drag) {
+        // todo add implementation --Joosua.
+    });
 }
 
 function AddStatement(visual, subject, predicate, object)
@@ -75,9 +80,32 @@ function AddStatement(visual, subject, predicate, object)
     visual.owner.rdfStore.AddStatement(statement);
     
     world.FreeStatement(statement); 
-    world.FreeNode(s);
-    world.FreeNode(p);
-    world.FreeNode(o);
+    if (s) world.FreeNode(s);
+    if (p) world.FreeNode(p);
+    if (o) world.FreeNode(o);
+}
+
+function Select(store, subject, predicate, object)
+{
+    var world = RdfModule.theWorld;
+    var s = subject ? world.CreateResource(new QUrl(subject)) : null;
+    var p = predicate ? world.CreateResource(new QUrl(predicate)) : null;
+    var o = object ? world.CreateLiteral(object) : null;
+    var statement = world.CreateStatement(s, p, o);
+    
+    var statements = store.Select(statement);
+    
+    world.FreeStatement(statement); 
+    if (s) world.FreeNode(s);
+    if (p) world.FreeNode(p);
+    if (o) world.FreeNode(o);
+    return statements;
+}
+
+function ReleaseStatements(statements)
+{
+    for (var i = 0; i < statements.length; ++i)
+        statements[i].deleteLater();
 }
 
 function CreateMovableInfoBouble(widget)
@@ -98,7 +126,7 @@ function CreateMovableInfoBouble(widget)
     return entity;
 }
 
-function CreateHLine(linetype)
+function CreateHLine()
 {
     var line = new QFrame();
     line.objectName = "line";
@@ -106,7 +134,6 @@ function CreateHLine(linetype)
     line.frameShadow = QFrame.solid;
     return line;
 }
-CreateHLine.LineType = {Horizontal:0, Vertical:1};
 
 function HandleDragMoveEvent(e)
 {
@@ -157,11 +184,11 @@ function MoveSelected(pos)
 function GetMovableInfoBouble()
 {
     if (!movableInfoBubble)
-        movableInfoBubble = scene.EntityByName("info_bubble_movable_block");
+        movableInfoBubble = scene.EntityByName(dragObjectName);
     return movableInfoBubble;
 }
 
-/*function SetInfoBoubleHightlight(active)
+/*function SetInfoBoubleHighlight(active)
 {
     var entity = GetMovableInfoBouble();
     if (!entity)

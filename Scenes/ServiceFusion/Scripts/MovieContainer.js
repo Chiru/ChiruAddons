@@ -43,11 +43,10 @@ function MovieContainer(parent)
     
     this.movies = new Array();
     this.visual.size = new QSize(320, 400);
-    //this.visual.maximumSize = new QSize(320, 400);
     me.graphicsviewcanvas.width = this.visual.width;
     me.graphicsviewcanvas.height = this.visual.height;
     this.visual.setLayout(new QVBoxLayout());
-    this.visual.setContentsMargins(0, 0, 0, 0);
+    this.visual.layout().setContentsMargins(0, 0, 0, 0);
     this.visual.layout().setSpacing(0);
     
     var world    = RdfModule.theWorld;
@@ -103,7 +102,7 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     var main = new QWidget();
     main.setLayout(new QHBoxLayout());
     main.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
-    main.setContentsMargins(0, 0, 0, 0); 
+    main.layout().setContentsMargins(10, 0, 0, 0); 
     main.objectName = "Movie";
     
     var movieVisual = CreateVisualContainer(main, new QHBoxLayout(), this.visual);
@@ -130,6 +129,9 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     label2.font = new QFont("FreeSans", 12);
     label2.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.layout().addWidget(label2, null, null);
+    
+    var line = CreateHLine();
+    movieVisual.layout().addWidget(line, 0, 0);
     
     movieVisual.layout().addWidget(main, null, null); 
     movieVisual.layout().spacing = 0;

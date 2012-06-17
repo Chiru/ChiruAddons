@@ -101,17 +101,18 @@ void VisualContainer::dropEvent(QDropEvent *e)
 {
     VisualContainer* vc = FindVisualContainer(this);
     CieMap::IContainer * parent = 0;
-    while(vc)
+    /*while(vc)
     {
         parent = vc->Owner()->Parent();
         if (!parent)
             break;
 
         vc = dynamic_cast<VisualContainer*>(vc->Owner()->Parent()->Visual());
-    }
+    }*/
 
-    if (vc && !e->mimeData()->data("application/x-hotspot").isEmpty())
+    if (this != vc && vc && !e->mimeData()->data("application/x-hotspot").isEmpty())
     {
+        LogInfo(vc->objectName());
         const QMimeData *mime = e->mimeData();
         QPoint position = e->pos();
         QPoint hotSpot;

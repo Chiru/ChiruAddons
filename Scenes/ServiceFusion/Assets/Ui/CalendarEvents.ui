@@ -87,13 +87,6 @@
          <property name="margin">
           <number>0</number>
          </property>
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>25</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </item>
@@ -128,13 +121,6 @@
          <property name="margin">
           <number>0</number>
          </property>
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>TAPAHTUMAT</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </item>
@@ -190,7 +176,7 @@
 {
  color:black;
  font: bold &quot;FreeSans&quot;;
- font-size: 21px;
+ font-size: 12px;
  background-color:white;
  qproperty-alignment: AlignCenter;
 }
@@ -230,7 +216,7 @@ QLabel:hover
 {
  color:black;
  font: bold &quot;FreeSans&quot;;
- font-size: 21px;
+ font-size: 9px;
  background-color:white;
  qproperty-alignment: AlignCenter;
 }
@@ -303,7 +289,7 @@ QLabel:hover
 {
  color:black;
  font: bold &quot;FreeSans&quot;;
- font-size: 21px;
+ font-size: 12px;
  background-color:white;
  qproperty-alignment: AlignCenter;
 }
@@ -343,7 +329,7 @@ QLabel:hover
 {
  color:black;
  font: bold &quot;FreeSans&quot;;
- font-size: 21px;
+ font-size: 9px;
  background-color:white;
  qproperty-alignment: AlignCenter;
 }
@@ -416,7 +402,7 @@ QLabel:hover
 {
  color:black;
  font: bold &quot;FreeSans&quot;;
- font-size: 21px;
+ font-size: 12px;
  background-color:white;
  qproperty-alignment: AlignCenter;
 }
@@ -438,7 +424,7 @@ QLabel:hover
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="cell_3_2" native="true">
+       <widget class="QWidget" name="cell_3_1" native="true">
         <property name="minimumSize">
          <size>
           <width>150</width>
@@ -456,7 +442,7 @@ QLabel:hover
 {
  color:black;
  font: bold &quot;FreeSans&quot;;
- font-size: 21px;
+ font-size: 9px;
  background-color:white;
  qproperty-alignment: AlignCenter;
 }
