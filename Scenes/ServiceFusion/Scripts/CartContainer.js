@@ -19,9 +19,11 @@ function SourceScript(tag, rdfStore)
     {
         childContainer = new BaseContainer(cartContainer.visual);
         childContainer.container.rdfStore.FromString(rdfStore.toString());
-        print(childContainer.container.rdfStore);
+        me.Exec(1, "CartItemAdded", tag.data, rdfStore.toString());
     }
 }
+
+me.Action("CartItemAdded").Triggered.connect(function(type, rdfStoreData) { print(rdfStoreData); });
 
 function CartContainer(parent)
 {
