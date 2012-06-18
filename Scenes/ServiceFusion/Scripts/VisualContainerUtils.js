@@ -1,5 +1,6 @@
 engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
+engine.IncludeFile("Utils.js");
 
 // Only allow single drag&drop mesh instance.
 var movableInfoBubble = null;
@@ -7,11 +8,7 @@ var movableInfoBubble = null;
 var distanceFromCamera = 9;
 var dragObjectName = "info_bubble_movable_block";
 
-QByteArray.prototype.toString = function()
-{
-    ts = new QTextStream( this, QIODevice.ReadOnly );
-    return ts.readAll();
-}
+var uiCamera = null;
 
 function BaseContainer(parent)
 {
@@ -56,6 +53,10 @@ function MakeDragable(visual, widget)
     visual.DragStart.connect(widget, function(drag) {
         movableInfoBubble = InfoBoubleMovable(this);
         //SetInfoBoubleHighlight(true);
+        // Signal object selection to the UI camera
+        if (!uiCamera)
+            uiCamera = scene.EntityByName("UiCamera");
+        uiCamera.Exec(1, "ObjectSelected", movableInfoBubble != null ? movableInfoBubble.id.toString() : "0");
     });
 
     visual.DragDrop.connect(function(drag) {
@@ -150,15 +151,17 @@ function HandleDropEvent(e)
     if (data.length > 0 && movableInfoBubble)
     {
         movableInfoBubble.placeable.visible = false;
+        // Signal object selection to the UI camera
+        if (!uiCamera)
+            uiCamera = scene.EntityByName("UiCamera");
+        uiCamera.Exec(1, "ObjectSelected", movableInfoBubble != null ? movableInfoBubble.id.toString() : "0");
     }
 }
 
 function CurrentMouseRay()
 {
-    var x, y;
-    var mousePos = input.MousePos();
-    x = mousePos.x(), y = mousePos.y();
-    return renderer.MainCameraComponent().GetMouseRay(x/ui.GraphicsScene().width(), y/ui.GraphicsScene().height());
+    var p = input.MousePos();
+    return MouseRay(p.x(), p.y());
 }
 
 function MoveSelected(pos)
