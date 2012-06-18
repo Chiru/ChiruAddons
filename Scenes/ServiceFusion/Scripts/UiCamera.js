@@ -462,7 +462,7 @@ function TouchZoom(touchCount, touches, e)
             //Log("Math.abs(1 - dotP) " + Math.abs(1 - dotP));
             if (/*Math.abs(distance - lastDistance) > 3f &&*/ Math.abs(1 - dotP) < 0.8/*0.2*/)
             {
-                Zoom((lastDistance - distance) * (cReferenceHeight / ui.GraphicsScene().height()) * cZoomSpeed);
+                Zoom((distance - lastDistance) * (cReferenceHeight / ui.GraphicsScene().height()) * cZoomSpeed);
                 lastDistance = distance;
             }
         }
