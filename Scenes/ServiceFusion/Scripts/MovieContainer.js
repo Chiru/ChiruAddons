@@ -36,7 +36,7 @@ Movie.FromString = function(data)
     }
     return movie;
 };
-                                         
+
 function MovieContainer(parent)
 {
     BaseContainer.call(this, parent);
@@ -147,9 +147,12 @@ function CreateContainer(entity)
 }
 
 var container = CreateContainer(me);
+// Register ourselves to the Movie icon
+scene.EntityByName("IconScript").Exec(1, "RegisterInfoBubble", "movie_icon_h", me.id.toString());
 
 function OnScriptDestroyed()
 {
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
 }
+

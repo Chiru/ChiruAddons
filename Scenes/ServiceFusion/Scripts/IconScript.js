@@ -10,6 +10,31 @@ function OnScriptDestroyed()
     // TODO proper cleanup
 }
 
+me.Action("RegisterInfoBubble").Triggered.connect(function(iconEntityName, infoBubbleId)
+{
+    var icon = scene.EntityByName(iconEntityName);
+    if (!icon)
+    {
+        LogE("RegisterInfoBubble: icon null.");
+        return;
+    }
+    var dc = icon.GetComponent("EC_DynamicComponent", "Icon");
+    if (!dc)
+    {
+        LogE("RegisterInfoBubble: dc null.");
+        return;
+    }
+
+    var infoBubble = scene.EntityById(parseInt(infoBubbleId));
+    infoBubble.placeable.SetPosition(icon.placeable.WorldPosition());
+    dc.CreateAttribute("uint", "infoBubbleId");
+    dc.CreateAttribute("bool", "infoBubbleVisible");
+    dc.SetAttribute("infoBubbleId", parseInt(infoBubbleId));
+    dc.SetAttribute("infoBubbleVisible", true);
+    // Enforce hide for newly registered info bubbles.
+    SetInfoBubbleVisibility(icon, false);
+});
+
 function AnimatedIcon(icon, start, dest)
 {
     this.icon = icon;
