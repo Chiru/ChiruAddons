@@ -14,11 +14,11 @@ class ContainerFactory : public QObject
 {
     Q_OBJECT
 
-public slots:
+public:
     /// Creates a new instance of the container class and associates it with the specified visual container.
     /** @note sets the owner of the visual container to the new container
         @param visualContainer Visual container that should be associated with the new container */
-    CieMap::IContainer *CreateContainer(CieMap::IVisualContainer *visualContainer);
+    static CieMap::IContainer *CreateContainer(CieMap::IVisualContainer *visualContainer);
 };
 
 /// Generic container and a base class for other types of containers.

@@ -13,10 +13,10 @@ QByteArray.prototype.toString = function()
     return ts.readAll();
 }
 
-function Container(parent)
+function BaseContainer(parent)
 {
     this.visual = new VisualContainer(parent);
-    this.container = C3DUiModule.ContainerFactory().CreateContainer(this.visual);
+    this.container = new Container(this.visual);
     this.container.parent = parent;
     this.container.rdfStore = RdfModule.theWorld.CreateStore();
 }
@@ -24,7 +24,7 @@ function Container(parent)
 function CreateVisualContainer(widget, layout, parent)
 {   
     var visual = new VisualContainer(parent);
-    var container = C3DUiModule.ContainerFactory().CreateContainer(visual);
+    var container = new Container(visual);
     container.parent = parent.owner;
     container.rdfStore = RdfModule.theWorld.CreateStore();
     

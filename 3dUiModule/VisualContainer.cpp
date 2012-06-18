@@ -22,7 +22,8 @@ Q_DECLARE_METATYPE(IStatement *)
 
 VisualContainer::VisualContainer(QWidget* parent):
     IVisualContainer(parent),
-    ownerContainer(0)
+    ownerContainer(0),
+    cloneOnDrag(false)
 {
     setAcceptDrops(true);
 }
@@ -43,6 +44,16 @@ void VisualContainer::SetOwner(CieMap::IContainer *owner)
 CieMap::IContainer * VisualContainer::Owner() const
 {
     return ownerContainer;
+}
+
+bool VisualContainer::UseCloneOnDrag() const
+{
+    return cloneOnDrag;
+}
+
+void VisualContainer::SetUseCloneOnDrag(bool use)
+{
+    cloneOnDrag = use;
 }
 
 void VisualContainer::AttachToVisualContainer(VisualContainer* vc)
@@ -100,8 +111,8 @@ void VisualContainer::dragMoveEvent(QDragMoveEvent *e)
 void VisualContainer::dropEvent(QDropEvent *e)
 {
     VisualContainer* vc = FindVisualContainer(this);
-    CieMap::IContainer * parent = 0;
-    /*while(vc)
+    /*CieMap::IContainer * parent = 0;
+    while(vc)
     {
         parent = vc->Owner()->Parent();
         if (!parent)
@@ -193,8 +204,11 @@ void VisualContainer::mousePressEvent(QMouseEvent *e)
 
 CieMap::IContainer * VisualContainer::Clone()
 {
-    /// @todo Implement
-    return 0;
+    VisualContainer *visualClone = new VisualContainer();
+    CieMap::IContainer *clone = CieMap::ContainerFactory::CreateContainer(visualClone);
+    clone->SetRdfStore(Owner()->RdfStore()->Clone());
+    // Todo add children cloning aswell.
+    return clone;
 }
 
 void VisualContainer::HandleDrop(VisualContainer *target)
@@ -202,16 +216,22 @@ void VisualContainer::HandleDrop(VisualContainer *target)
     if (!target && target == this)
         return;
 
+    if (cloneOnDrag)
+    {
+        CieMap::IContainer *clone = target->Clone();
+        assert(clone && "HandleDrop(VisualContainer*): Failed to create a clone of VisualContainer.");
+        if (clone)
+            clone->SetParent(Owner());
+        else
+            LogError("HandleDrop(VisualContainer*): Failed to create a clone of VisualContainer.");
+    }
+
     IMemoryStore *store = target->Owner()->RdfStore();
 
     IWorld *world = store->World();
-    //INode *source = world->CreateResource(QUrl("http://cie/source-application"));
-    //IStatement *statement = world->CreateStatement(0, source, 0);
 
     IStatement *statement = world->CreateStatement(0, 0, 0);
     QVariantList result = store->Select(statement);
-
-    //world->FreeNode(source);
     world->FreeStatement(statement);
 
     for (int i = 0; i < result.count(); ++i)

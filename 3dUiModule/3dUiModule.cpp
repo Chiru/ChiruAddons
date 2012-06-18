@@ -78,6 +78,20 @@ QScriptValue CreateVisualContainer(QScriptContext *ctx, QScriptEngine *engine)
     return engine->toScriptValue(c);
 }
 
+QScriptValue CreateContainer(QScriptContext *ctx, QScriptEngine *engine)
+{
+    if (ctx->argumentCount() == 1)
+    {
+        QScriptValue value = ctx->argument(0);
+        bool isObject = value.isQObject();
+        CieMap::IVisualContainer *vc = qscriptvalue_cast<CieMap::IVisualContainer *>(value);
+        CieMap::IVisualContainer *vc2 = dynamic_cast<CieMap::IVisualContainer *>(value.toQObject());
+        return engine->toScriptValue(CieMap::ContainerFactory::CreateContainer(vc));
+    }
+    else
+        return ctx->throwError(QScriptContext::TypeError, "CreateContainer(): invalid number of arguments provided, zero expected.");
+}
+
 QScriptValue CreateScript(QScriptContext *ctx, QScriptEngine *engine)
 {
     if (ctx->argumentCount() == 0)
@@ -121,7 +135,7 @@ void C3DUiModule::Initialize()
 
 void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
 {
-    qScriptRegisterQObjectMetaType<CieMap::IContainer *>(engine);
+    //qScriptRegisterQObjectMetaType<CieMap::IContainer *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::IEventManager *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::IVisualContainer *>(engine);
     qScriptRegisterQObjectMetaType<CieMap::Layout *>(engine);
@@ -145,6 +159,10 @@ void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
     QScriptValue ctorVisualContainer = engine->newFunction(CreateVisualContainer);
     engine->globalObject().setProperty("VisualContainer", ctorVisualContainer);
 
+    qScriptRegisterQObjectMetaType<CieMap::IContainer *>(engine);
+    QScriptValue ctorContainer = engine->newFunction(CreateContainer);
+    engine->globalObject().setProperty("Container", ctorContainer);
+
     qScriptRegisterQObjectMetaType<Script *>(engine);
     QScriptValue ctorScript = engine->newFunction(CreateScript);
     engine->globalObject().setProperty("Script", ctorScript);
@@ -152,6 +170,8 @@ void C3DUiModule::OnScriptEngineCreated(QScriptEngine* engine)
     qScriptRegisterQObjectMetaType<CieMap::HttpRequestService *>(engine);
     QScriptValue ctorHttpRequest = engine->newFunction(CreateHttpRequest);
     engine->globalObject().setProperty("HttpRequest", ctorHttpRequest);
+
+    
 
     register_tag_prototype(engine);
     register_scriptservice_prototype(engine);

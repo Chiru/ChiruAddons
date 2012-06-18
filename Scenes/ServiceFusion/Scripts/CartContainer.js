@@ -19,7 +19,7 @@ function DataScript(tag, rdfStore)
 
 function CartContainer(parent)
 {
-    Container.call(this, parent);
+    BaseContainer.call(this, parent);
     var sourceScript = new Script();
     var dataScript = new Script();
     dataScript.Invoked.connect(DataScript);
@@ -29,7 +29,7 @@ function CartContainer(parent)
     //this.visual.owner.DropToActive(new Tag(RdfVocabulary.sourceApplication, "Movie"), this.visual.owner);
     
 }
-CartContainer.prototype = new Container();
+CartContainer.prototype = new BaseContainer();
 
 if (!framework.IsHeadless())
 {

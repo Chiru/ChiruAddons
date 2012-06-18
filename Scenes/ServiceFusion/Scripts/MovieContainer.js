@@ -39,7 +39,7 @@ Movie.FromString = function(data)
                                          
 function MovieContainer(parent)
 {
-    Container.call(this, parent);
+    BaseContainer.call(this, parent);
     
     this.movies = new Array();
     this.visual.size = new QSize(320, 400);
@@ -94,7 +94,7 @@ function MovieContainer(parent)
         response = null;
     });
 }
-MovieContainer.prototype = new Container();
+MovieContainer.prototype = new BaseContainer();
 
 // Create VisualContainer object for single movie and add it as child to MovieContainer object.
 MovieContainer.prototype.DisplayMovie = function(movie) 

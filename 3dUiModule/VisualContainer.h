@@ -10,6 +10,7 @@ class VisualContainer : public CieMap::IVisualContainer
 {
     Q_OBJECT
     Q_PROPERTY(CieMap::IContainer* owner READ Owner WRITE SetOwner)
+    Q_PROPERTY(bool useCloneOnDrag READ UseCloneOnDrag WRITE SetUseCloneOnDrag);
 
 public:
     explicit VisualContainer(QWidget* parent = 0);
@@ -18,6 +19,9 @@ public:
     /// The container that owns this visual representation
     void SetOwner(CieMap::IContainer *owner);
     CieMap::IContainer *Owner() const;
+
+    bool UseCloneOnDrag() const;
+    void SetUseCloneOnDrag(bool use);
 
     CieMap::IContainer* Clone();
 
@@ -45,5 +49,5 @@ protected:
     void HandleDrop(VisualContainer *target);
 
     CieMap::IContainer* ownerContainer;
-    entity_id_t entityId;
+    bool cloneOnDrag;
 };

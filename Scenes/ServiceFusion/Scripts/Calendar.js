@@ -68,7 +68,7 @@ EventCellEvents = {"MousePress":OnEventPress};
 function CellObject(w, row, column, events)
 {
     var visual = new VisualContainer(calendarContainer.visual);
-    this.container = C3DUiModule.ContainerFactory().CreateContainer(visual);
+    this.container = new Container(visual);
     this.container.parent = calendarContainer.visual.owner;
     this.container.rdfStore = RdfModule.theWorld.CreateStore();
     visual.setLayout(new QHBoxLayout());
@@ -91,7 +91,7 @@ function CellObject(w, row, column, events)
     MakeDragable(visual, this.widget);
 }
 
-calendarContainer = new Container(null)
+calendarContainer = new BaseContainer(null)
 var calLayout = new QHBoxLayout();
 calLayout.setSpacing(0);
 calLayout.setContentsMargins(0, 0, 0, 0);
@@ -191,7 +191,7 @@ calendarContainer.visual.show();
 
 // Todo Move code below to a separete file.
 
-calEventsContainer = new Container(null)
+calEventsContainer = new BaseContainer(null)
 var eventLayout = new QHBoxLayout();
 eventLayout.setSpacing(0);
 eventLayout.setContentsMargins(0, 0, 0, 0);
