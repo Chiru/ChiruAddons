@@ -5,6 +5,11 @@
 engine.IncludeFile("Log.js");
 engine.IncludeFile("MathUtils.js");
 
+function OnScriptDestroyed()
+{
+    // TODO proper cleanup
+}
+
 function AnimatedIcon(icon, start, dest)
 {
     this.icon = icon;
@@ -208,7 +213,7 @@ function Update(dt)
         cam = renderer.MainCamera();
     if (!cam)
         return;
-
+/*
     var entities = scene.Entities();
     for(i in entities)
     {
@@ -239,16 +244,14 @@ function Update(dt)
             }
 
             // Uncomment to enable auto-rotation and -scaling
-/*
-            var dir = e.placeable.WorldPosition().Sub(cam.placeable.WorldPosition()).Normalized();
-            var q = Quat.LookAt(scene.ForwardVector(), dir, scene.UpVector(), scene.UpVector());
-            e.placeable.SetOrientation(q);
+            // var dir = e.placeable.WorldPosition().Sub(cam.placeable.WorldPosition()).Normalized();
+            // var q = Quat.LookAt(scene.ForwardVector(), dir, scene.UpVector(), scene.UpVector());
+            // e.placeable.SetOrientation(q);
 
-            // Auto-scale
-            e.mesh.SetAdjustScale(float3.FromScalar(DesiredObjectScale(e.mesh)));
-*/
+            // // Auto-scale
+            // e.mesh.SetAdjustScale(float3.FromScalar(DesiredObjectScale(e.mesh)));
         }
     }
-
+*/
     AnimateInfoBubbleScale(dt);
 }
