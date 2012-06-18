@@ -909,4 +909,17 @@
    <attribute value="-1" name="Collision Mask"/>
   </component>
  </entity>
+ <entity id="37" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="IconScript" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Script" sync="true">
+   <attribute value="IconScript.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+ </entity>
 </scene>

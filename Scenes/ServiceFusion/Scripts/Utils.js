@@ -34,5 +34,5 @@ QByteArray.prototype.toString = function()
 // Checks whether or not we're allowed to move an object in the scene.
 function IsObjectMovable(e)
 {
-    return e.placeable && !e.terrain && e.dynamiccomponent && !(e.dynamiccomponent && e.dynamiccomponent.name == "Icon");
+    return e.placeable && !e.terrain && e.dynamiccomponent && !(e.dynamiccomponent && (e.dynamiccomponent.name == "Icon") /*|| e.dynamiccomponent.name == "Screen"*/);
 }

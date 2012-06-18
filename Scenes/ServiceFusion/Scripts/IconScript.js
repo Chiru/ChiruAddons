@@ -5,7 +5,7 @@
 engine.IncludeFile("Log.js");
 engine.IncludeFile("MathUtils.js");
 
-function MovingIcon(icon, start, dest)
+function AnimatedIcon(icon, start, dest)
 {
     this.icon = icon;
     this.start = start;
@@ -13,15 +13,15 @@ function MovingIcon(icon, start, dest)
     this.t = 0;
 }
 
-function InfoBubbleVisibilityInterpolation(icon)
+function AnimatedInfoBubble(icon)
 {
     this.icon = icon;
     this.t = 0;
 }
 
-var infoBubbles = [];
+var animatedInfoBubbles = [];
 var autoShownInfoBubbles = [];
-var movingIcons = [];
+var animatedIcons = [];
 var cam = null;
 const cDefaultScale = 1;
 const cVisibleScale = 8;
@@ -47,30 +47,17 @@ function IsEntityAnIcon(e)
     return e.placeable != null && e.mesh != null && e.dynamiccomponent != null && e.dynamiccomponent.name == "Icon";
 }
 
-function ToggleInfoBubbleVisibility(icon)
+// Returns whether or not the visibility was actually changed.
+function SetInfoBubbleVisibility(icon, visible)
 {
-    infoBubbles.push(new InfoBubbleVisibilityInterpolation(icon));
-
-    var infoBubbleVisible = icon.dynamiccomponent.GetAttribute("infoBubbleVisible");
     var infoBubbleId = icon.dynamiccomponent.GetAttribute("infoBubbleId");
-    if (infoBubbleVisible != undefined && infoBubbleVisible) // Info bubble visible, remove it.
-    {
-        var infoBubble = scene.EntityById(infoBubbleId);
-        if (!infoBubble)
-        {
-            LogE("Trying to remove non-existing info bubble with entity ID " + infoBubbleId);
-            return;
-        }
-        // TODO: crashes to EC_GraphicsViewCanvas::OnMaterialChanged. Fow now, only hiding the entity.
-        //scene.RemoveEntity(infoBubbleId);
-        //infoBubble.placeable.visible = false;
-        icon.dynamiccomponent.SetAttribute("infoBubbleVisible", !infoBubbleVisible);
+    var infoBubbleVisible = icon.dynamiccomponent.GetAttribute("infoBubbleVisible");
+    //if (visible == infoBubbleVisible)
+      //  return false;
 
-        // Moving of icons disabled for now
-//        var currentPos = icon.placeable.WorldPosition();
-//        movingIcons.push(new MovingIcon(icon, currentPos, currentPos.Add(new float3(0,-70,0))));
-    }
-    else
+    var currentPos = icon.placeable.WorldPosition(), destPos;
+
+    if (visible)
     {
         if (infoBubbleId == undefined) // Info bubble not created, create it now.
         {
@@ -78,7 +65,7 @@ function ToggleInfoBubbleVisibility(icon)
             if (ents.length == 0)
             {
                 LogE("Could not instantiate InfoBubblePrefab.txml");
-                return;
+                return false;
             }
 
             var infoBubble = ents[0];
@@ -86,7 +73,6 @@ function ToggleInfoBubbleVisibility(icon)
             infoBubble.placeable.SetPosition(icon.placeable.WorldPosition());
 
             icon.dynamiccomponent.CreateAttribute("bool", "infoBubbleVisible");
-            icon.dynamiccomponent.SetAttribute("infoBubbleVisible", !infoBubbleVisible);
             icon.dynamiccomponent.CreateAttribute("uint", "infoBubbleId");
             icon.dynamiccomponent.SetAttribute("infoBubbleId", infoBubble.id);
 
@@ -97,16 +83,43 @@ function ToggleInfoBubbleVisibility(icon)
         if (!infoBubble)
         {
             LogE("Trying to set visibility of a non-existing info bubble with entity ID "+ infoBubbleId);
-            return;
+            return false;
         }
 
-        //infoBubble.placeable.visible = true;
-        icon.dynamiccomponent.SetAttribute("infoBubbleVisible", true/*infoBubble.placeable.visible*/);
+        icon.dynamiccomponent.SetAttribute("infoBubbleVisible", true);
 
-        // Moving of icons disabled for now
-//        var currentPos = icon.placeable.WorldPosition();
-//        movingIcons.push(new MovingIcon(icon, currentPos, currentPos.Add(new float3(0,70,0))));
+        destPos = currentPos.Add(new float3(0,70,0));
     }
+    else
+    {
+        var infoBubble = scene.EntityById(infoBubbleId);
+        if (!infoBubble)
+        {
+            LogE("Trying to remove non-existing info bubble with entity ID " + infoBubbleId);
+            return false;
+        }
+        // TODO: crashes to EC_GraphicsViewCanvas::OnMaterialChanged. Fow now, only hiding the entity.
+        //scene.RemoveEntity(infoBubbleId);
+        //infoBubble.placeable.visible = false;
+        icon.dynamiccomponent.SetAttribute("infoBubbleVisible", false);
+
+         destPos = currentPos.Add(new float3(0,-70,0));
+    }
+
+    // Moving of icons disabled for now
+//    animatedIcons.push(new AnimatedIcon(icon, currentPos, destPos));
+
+    animatedInfoBubbles.push(new AnimatedInfoBubble(icon));
+
+    return true;
+}
+
+function ToggleInfoBubbleVisibility(icon)
+{
+    var infoBubbleVisible = icon.dynamiccomponent.GetAttribute("infoBubbleVisible");
+    SetInfoBubbleVisibility(icon, !(infoBubbleVisible != undefined && infoBubbleVisible));
+    //if (SetInfoBubbleVisibility(icon, !(infoBubbleVisible != undefined && infoBubbleVisible)))
+        //animatedInfoBubbles.push(new AnimatedInfoBubble(icon));
 }
 
 function DesiredObjectScale(mesh)
@@ -125,9 +138,9 @@ function DesiredObjectScale(mesh)
 
 function AnimateInfoBubbleScale(dt)
 {
-    for(i = 0; i < infoBubbles.length; ++i)
+    for(i = 0; i < animatedInfoBubbles.length; ++i)
     {
-        var e = infoBubbles[i].icon;
+        var e = animatedInfoBubbles[i].icon;
         var infoBubbleVisible = e.dynamiccomponent.GetAttribute("infoBubbleVisible");
         var infoBubbleId = e.dynamiccomponent.GetAttribute("infoBubbleId");
         var infoBubble = scene.EntityById(infoBubbleId);
@@ -135,61 +148,58 @@ function AnimateInfoBubbleScale(dt)
         if (infoBubbleVisible)
         {
             if (!EqualAbs(scale, cVisibleScale, 0.001))
-                infoBubbles[i].t += dt;
+                animatedInfoBubbles[i].t += dt;
             else
             {
-                infoBubbles.splice(i, 1);
-                infoBubble.placeable.visible = infoBubbleVisible;
+                animatedInfoBubbles.splice(i, 1);
+                //infoBubble.placeable.visible = infoBubbleVisible;
             }
 
-            if (!EqualAbs(scale, cVisibleScale, 0.001) && infoBubbles[i].t < cScaleTime)
+            if (!EqualAbs(scale, cVisibleScale, 0.001) && animatedInfoBubbles[i].t < cScaleTime)
             {
-                scale = Lerp(cHiddenScale, cVisibleScale, infoBubbles[i].t/cScaleTime);
+                scale = Lerp(cHiddenScale, cVisibleScale, animatedInfoBubbles[i].t/cScaleTime);
                 infoBubble.mesh.SetAdjustScale(float3.FromScalar(scale));
             }
         }
         else
         {
             if (!EqualAbs(scale, cHiddenScale, 0.001))
-                infoBubbles[i].t += dt;
+                animatedInfoBubbles[i].t += dt;
             else
             {
-                infoBubbles.splice(i, 1);
-                infoBubble.placeable.visible = infoBubbleVisible;
+                animatedInfoBubbles.splice(i, 1);
+                //infoBubble.placeable.visible = infoBubbleVisible;
             }
 
-            if (!EqualAbs(scale, cHiddenScale, 0.001) && infoBubbles[i].t < cScaleTime)
+            if (!EqualAbs(scale, cHiddenScale, 0.001) && animatedInfoBubbles[i].t < cScaleTime)
             {
-                scale = Lerp(cVisibleScale, cHiddenScale, infoBubbles[i].t/cScaleTime);
+                scale = Lerp(cVisibleScale, cHiddenScale, animatedInfoBubbles[i].t/cScaleTime);
                 infoBubble.mesh.SetAdjustScale(float3.FromScalar(scale));
             }
         }
     }
 
     // Interpolate moving icons
-    // Disabled for now
-/*
-    for(i = 0; i < movingIcons.length; ++i)
+    for(i = 0; i < animatedIcons.length; ++i)
     {
-        var currentPos = movingIcons[i].icon.placeable.WorldPosition();
-        var distance = currentPos.Distance(movingIcons[i].dest);
+        var currentPos = animatedIcons[i].icon.placeable.WorldPosition();
+        var distance = currentPos.Distance(animatedIcons[i].dest);
         if (distance > 1)
         {
-            movingIcons[i].t += dt;
+            animatedIcons[i].t += dt;
         }
         else
         {
-            movingIcons[i].icon.placeable.SetPosition(movingIcons[i].dest);
-            movingIcons.splice(i, 1);
+            animatedIcons[i].icon.placeable.SetPosition(animatedIcons[i].dest);
+            animatedIcons.splice(i, 1);
         }
 
-        if (movingIcons[i] && distance > 0.1 && movingIcons[i].t < cScaleTime)
+        if (animatedIcons[i] && distance > 0.1 && animatedIcons[i].t < cScaleTime)
         {
-            currentPos = float3.Lerp(movingIcons[i].start, movingIcons[i].dest, movingIcons[i].t/cScaleTime);
-            movingIcons[i].icon.placeable.SetPosition(currentPos);
+            currentPos = float3.Lerp(animatedIcons[i].start, animatedIcons[i].dest, animatedIcons[i].t/cScaleTime);
+            animatedIcons[i].icon.placeable.SetPosition(currentPos);
         }
     }
-*/
 }
 
 function Update(dt)
@@ -205,22 +215,26 @@ function Update(dt)
         var e = entities[i];
         if (IsEntityAnIcon(e))
         {
-             var entityId = parseInt(e.id); // WTF NOTE: typeof(e.id) is object, not number, so must convert it explicitly here
-             var idx = autoShownInfoBubbles.indexOf(entityId);
+            var entityId = parseInt(e.id); // WTF NOTE: typeof(e.id) is object, not number, so must convert it explicitly here
+            var idx = autoShownInfoBubbles.indexOf(entityId);
             if (e.placeable.WorldPosition().DistanceSq(cam.placeable.WorldPosition()) < cToggleInfoBubbleVisibilityTreshold)
             {
                 if (idx == -1)
                 {
-                    autoShownInfoBubbles.push(entityId);
-                    ToggleInfoBubbleVisibility(e);
+                    if (SetInfoBubbleVisibility(e, true))
+                    {
+                        autoShownInfoBubbles.push(entityId);
+                    }
                 }
             }
             else
             {
                 if (idx != -1)
                 {
-                    ToggleInfoBubbleVisibility(e);
-                    autoShownInfoBubbles.splice(idx, 1);
+                    SetInfoBubbleVisibility(e, false);
+                    {
+                        autoShownInfoBubbles.splice(idx, 1);
+                    }
                 }
             }
 
