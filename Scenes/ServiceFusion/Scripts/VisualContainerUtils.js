@@ -50,8 +50,10 @@ function CreateVisualContainer(widget, layout, parent)
 
 function MakeDragable(visual, widget)
 {
-    visual.DragStart.connect(widget, function(drag) {
+    visual.DragStartEvent.connect(widget, function(e) {
         movableInfoBubble = InfoBoubleMovable(this);
+//        movableInfoBubble.placeable.visible = false;
+//        MoveSelected(e.pos());
         //SetInfoBoubleHighlight(true);
         // Signal object selection to the UI camera
         if (!uiCamera)
@@ -59,13 +61,13 @@ function MakeDragable(visual, widget)
         uiCamera.Exec(1, "ObjectSelected", movableInfoBubble != null ? movableInfoBubble.id.toString() : "0");
     });
 
-    visual.DragDrop.connect(function(drag) {
+    visual.DropEvent.connect(function(e) {
         if (movableInfoBubble) {
             movableInfoBubble.placeable.visible = false;
         }
     });
     
-    visual.DragMove.connect(function(drag) {
+    visual.DragMoveEvent.connect(function(e) {
         // todo add implementation --Joosua.
     });
 }
@@ -151,11 +153,12 @@ function HandleDropEvent(e)
     if (data.length > 0 && movableInfoBubble)
     {
         movableInfoBubble.placeable.visible = false;
-        // Signal object selection to the UI camera
-        if (!uiCamera)
-            uiCamera = scene.EntityByName("UiCamera");
-        uiCamera.Exec(1, "ObjectSelected", movableInfoBubble != null ? movableInfoBubble.id.toString() : "0");
     }
+
+    // Signal object deselection to the UI camera
+    if (!uiCamera)
+        uiCamera = scene.EntityByName("UiCamera");
+    uiCamera.Exec(1, "ObjectSelected", "0");
 }
 
 function CurrentMouseRay()
