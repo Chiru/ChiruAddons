@@ -12,6 +12,10 @@ const scenes = ["Scene1New.txml", "Scene1.txml", "Scene2.txml", "Scene3.txml"];
 var currentContent = [];
 // Screen resolution of the target device will be 1200x800
 const cReferenceHeight = 800;
+// Currently selected object, if any, as signaled by ObjectMove script
+var selectedObject = null;
+var touchCountPrevFrame = 0;
+const cTouchInputOnly = false;
 
 var cameraData =
 {
@@ -38,7 +42,6 @@ var moving = false; // Is camera in moving state
 var tilting = false; // Is camera in tilting state
 var prevFrameMouseX = -1;
 var prevFrameMouseY = -1;
-var touchInputActive = false;
 
 // Entry point for the script
 if (!framework.IsHeadless())
@@ -55,6 +58,9 @@ if (!framework.IsHeadless())
 
     frame.DelayedExecute(1).Triggered.connect(ApplyCamera);
     me.Action("ResetCamera").Triggered.connect(ResetCamera);
+    me.Action("ObjectSelected").Triggered.connect(function(id) {
+        selectedObject = scene.EntityById(parseInt(id));
+    });
 }
 
 function OnScriptDestroyed()
@@ -137,10 +143,10 @@ var touchDeltaX, touchDeltaY;
 
 function TouchUpdate(e)
 {
-    touchInputActive = true;
-
     var touches = e.touchPoints();
     var touchCount = touches.length;
+    touchCountPrevFrame = touchCount;
+
     for(i in touches)
     {
         var x = Math.round(touches[i].pos().x());
@@ -153,8 +159,9 @@ function TouchUpdate(e)
         prevFrameMouseY = y;
         break; // for now, just use the pos from the first touch
     }
-    
-    if (touchCount == 2 && input.IsKeyDown(Qt.Key_Control) /* TODO touchCount == 3*/ && tilting == false)
+
+/*
+    if (touchCount == 2 && input.IsKeyDown(Qt.Key_Control) && tilting == false) // TODO touchCount == 3
     {
         //Log("Tilting true");
         moving = false;
@@ -162,17 +169,19 @@ function TouchUpdate(e)
     }
     else
         tilting = false;
-
-    TouchZoom(touchCount, touches, e);
-    TouchResetScene(touchCount, touches, e);
-    TouchChangeScene(touchCount, touches, e);
+*/
+    if (!selectedObject)
+    {
+        TouchMove(touchCount, touches, e);
+        TouchZoom(touchCount, touches, e);
+        TouchResetScene(touchCount, touches, e);
+        TouchChangeScene(touchCount, touches, e);
+    }
 }
 
 function OnTouchEnd(e)
 {
-//    Log("UiCamera OnTouchEnd");
     StopMovement();
-    touchInputActive = false;
     prevFrameMouseX = prevFrameMouseY = -1;
 }
 
@@ -204,9 +213,12 @@ function HandleKeyEvent(e)
 
 function HandleMouseEvent(e)
 {
+    if (cTouchInputOnly)
+        return;
     if (!me.camera.IsActive())
         return;
-
+    if (selectedObject)
+        return;
     switch(e.eventType)
     {
     case 1: // MouseMove
@@ -219,17 +231,15 @@ function HandleMouseEvent(e)
         }
         else if (tilting)
         {
-            var relY = touchInputActive ? touchDeltaY : e.relativeY;//e.y - prevFrameMouseY; // e.relativeY;
-            //Log("tilting relY " + relY);
             var transform = me.placeable.transform;
-            transform.rot.x -= cameraData.rotate.sensitivity * relY/*e.relativeY*/;
+            transform.rot.x -= cameraData.rotate.sensitivity * e.relativeY;
             var oldRotX = transform.rot.x;
             transform.rot.x = Clamp(transform.rot.x, minTiltAngle, maxTiltAngle);
             me.placeable.transform = transform;
 
             if (oldRotX > minTiltAngle && oldRotX < maxTiltAngle)
             {
-                var d = relY/*e.relativeY*/ * cMoveZSpeed * 30;
+                var d = e.relativeY * cMoveZSpeed * 30;
                 var newPos = me.placeable.WorldPosition();
                 newPos = newPos.Add(scene.UpVector().Mul(d));
                 me.placeable.SetPosition(newPos);
@@ -399,15 +409,45 @@ function StopMovement()
 }
 
 var /*float*/ lastDistance = 0;
-const /*float*/ cZoomSpeed = 0.2; // 0.02 in Unity;
+const /*float*/ cZoomSpeed = 0.9; // 0.02 in Unity;
 const /*float*/ cTranslateSpeed = 0.012;
+
+function TouchMove(touchCount, touches, e)
+{
+    if (touchCount == 1 && touches[0].state() == Qt.TouchPointMoved)
+    {
+        //if (input.ItemAtCoords(e.x, e.y))
+        //    StopMovement(); // Mouse went on top of drop-down console or some other widget, abort movement.
+        //else
+        var delta = SubQPointF(touches[0].pos(), touches[0].lastPos());
+        HandleMove(delta.x, delta.y, 0);
+    }
+    else if (touchCount == 2 && touches[0].state() == Qt.TouchPointMoved && 
+        touches[1].state() == Qt.TouchPointMoved && input.IsKeyDown(Qt.Key_Control)) // TODO touchCount == 3
+    {
+        var delta = SubQPointF(touches[0].pos(), touches[0].lastPos());
+        var t = me.placeable.transform;
+        t.rot.x -= cameraData.rotate.sensitivity * delta.y;
+        var oldRotX = t.rot.x;
+        t.rot.x = Clamp(t.rot.x, minTiltAngle, maxTiltAngle);
+        me.placeable.transform = t;
+
+        if (oldRotX > minTiltAngle && oldRotX < maxTiltAngle)
+        {
+            var d = delta.y * cMoveZSpeed * 30;
+            var newPos = me.placeable.WorldPosition();
+            newPos = newPos.Add(scene.UpVector().Mul(d));
+            me.placeable.SetPosition(newPos);
+        }
+    }
+}
 
 function TouchZoom(touchCount, touches, e)
 {
 //    if (!allowRotate && touchCount == 0)
 //        allowRotate = true;
 
-    if (touchCount == 2 /* && !iconMove.IsSelected*/)
+    if (touchCount == 2 && !input.IsKeyDown(Qt.Key_Control)/* && !iconMove.IsSelected*/)
     {
         if (lastDistance == 0)
         {
@@ -448,7 +488,7 @@ function TouchChangeScene(touchCount, touches, e)
             }
             else if (touches[i].state() == Qt.TouchPointReleased)
             {
-                if (Math.abs(touches[i].pos().x() - changeSceneTouchStart.x()) > ui.GraphicsScene().width() * 0.2/*0.12*/)
+                if (changeSceneTouchStart && Math.abs(touches[i].pos().x() - changeSceneTouchStart.x()) > ui.GraphicsScene().width() * 0.2/*0.12*/)
                 {
                     if (touches[i].pos().x > changeSceneTouchStart.x())
                         MoveToPrevScene();
@@ -478,6 +518,7 @@ function TouchChangeScene(touchCount, touches, e)
 }
 
 var sceneResetTouchStartTime = 0;
+const cSceneResetTime = 3;
 
 function TouchResetScene(touchCount, touches, e)
 {
@@ -492,7 +533,7 @@ function TouchResetScene(touchCount, touches, e)
             }
             else if (touches[i].state() == Qt.TouchPointReleased)
             {
-                if (frame.WallClockTime() - sceneResetTouchStartTime >= 5)
+                if (frame.WallClockTime() - sceneResetTouchStartTime >= cSceneResetTime)
                 {
                     ResetScene();
                     break;
