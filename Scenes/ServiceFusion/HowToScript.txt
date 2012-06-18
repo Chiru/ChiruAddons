@@ -22,4 +22,20 @@ Service Fusion Scripting
   }
 
 - When something invokes the Tag("test", "test"), a drag-and-drop event f.ex., the RunScript function is called.
+- Note: if the VisualContainer is not added to your entity's GraphicsViewCanvas component, you must handle the drop
+  event by yourself:
+
+    ui.GraphicsView().DropEvent.connect(function (e)
+    {
+        var data = e.mimeData().data("application/x-hotspot").toString();
+        if (data.length > 0)
+        {
+            // Include Utils.js for MouseRay function
+            var ray = MouseRay(input.MousePos().x(), input.MousePos().y());
+            var r = scene.ogre.Raycast(ray, -1);
+            if (r.entity && r.entity.id == me.id)
+                dummyContainer.visual.HandleMeshDrop(e.source());
+        }
+    });
+
 - See TestScript.js for more examples
