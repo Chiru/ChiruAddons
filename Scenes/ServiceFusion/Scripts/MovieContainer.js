@@ -132,7 +132,7 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     main.layout().addWidget(label2, null, null);
     
     var line = CreateHLine();
-    movieVisual.layout().addWidget(line, 0, 0);
+    this.visual.layout().addWidget(line, 0, 0);
     
     movieVisual.layout().addWidget(main, null, null); 
     movieVisual.layout().spacing = 0;

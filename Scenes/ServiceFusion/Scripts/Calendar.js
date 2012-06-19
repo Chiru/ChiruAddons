@@ -36,11 +36,13 @@ var year = date.getFullYear();
 function OnEventPress(e)
 {
     dragObjectName = "calendar_event_block";
-    eventsEntity.placeable.visible = false;
     if (eventsEntity)
     {
         if (this.row == 0 && this.column == 0)
-            eventsEntity.placeable.visible = false;
+        {
+            // To prevent double press event when two EC_GraphicsViewCanvases a top eachother. When have time, replace this with better solution.
+            frame.DelayedExecute(0.2).Triggered.connect( function() { eventsEntity.placeable.visible = false; });
+        }
     }
 }
 
@@ -51,9 +53,9 @@ function OnDayPress(e)
     if (eventsEntity)
     {
         if (this.row == 5 && this.column == 3 && !eventsEntity.placeable.visible)
-            eventsEntity.placeable.visible = true;
+            frame.DelayedExecute(0.2).Triggered.connect( function() { eventsEntity.placeable.visible = true; });
         else
-            eventsEntity.placeable.visible = false;
+            frame.DelayedExecute(0.2).Triggered.connect( function() { eventsEntity.placeable.visible = false; });
     }
 }
 
