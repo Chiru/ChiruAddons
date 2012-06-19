@@ -26,6 +26,7 @@ VisualContainer::VisualContainer(QWidget* parent):
     cloneOnDrag(false)
 {
     setAcceptDrops(true);
+    setMouseTracking(true);
 }
 
 VisualContainer::~VisualContainer()
@@ -73,7 +74,7 @@ void VisualContainer::ParentChanged(CieMap::IContainer * parent)
 {
     //SetIgnoreDrop(true);
     //setAcceptDrops(false);
-    // todo replace this with layout functionality.
+    /// @todo replace this with layout functionality.
     setParent(parent->Visual());
 }
 
@@ -101,7 +102,7 @@ void VisualContainer::dragMoveEvent(QDragMoveEvent *e)
 {
     if (!e->mimeData()->data("application/x-hotspot").isEmpty())
     {
-        emit DragMove(e->pos(), e->mimeData()->data("application/x-hotspot"));
+        emit DragMoveEvent(e);
         e->accept();
     }
     else
@@ -128,7 +129,7 @@ void VisualContainer::dropEvent(QDropEvent *e)
         QPoint position = e->pos();
         QPoint hotSpot;
 
-        DragDrop(mime->data("application/x-hotspot"));
+        emit DropEvent(e);
 
         QList<QByteArray> hotSpotPos = mime->data("application/x-hotspot").split(' ');
         if (hotSpotPos.size() == 2)
@@ -138,7 +139,7 @@ void VisualContainer::dropEvent(QDropEvent *e)
         }
 
         VisualContainer* source = FindVisualContainer(e->source());
-        // \todo Clone on drop check --Joosua.
+        /// @todo Clone on drop check --Joosua.
         /*vc->AttachToVisualContainer(source);
         if (vc->layout())
             vc->layout()->addWidget(source);
@@ -185,7 +186,8 @@ void VisualContainer::mousePressEvent(QMouseEvent *e)
 {
     QWidget* child = childAt(e->pos());
     VisualContainer* vc = FindVisualContainer(child);
-    if (!vc || vc->Owner()->ChildCount() > 0) return;
+    if (!vc || vc->Owner()->ChildCount() > 0)
+        return;
 
     QPoint hotSpot = e->pos() - child->pos();
 
@@ -197,7 +199,7 @@ void VisualContainer::mousePressEvent(QMouseEvent *e)
     drag->setMimeData(mimeData);
     drag->setHotSpot(hotSpot);
 
-    emit DragStart(mimeData->data("application/x-hotspot"));
+    emit DragStartEvent(e);
 
     drag->exec(Qt::MoveAction, Qt::MoveAction);
 }
@@ -207,7 +209,7 @@ CieMap::IContainer * VisualContainer::Clone()
     VisualContainer *visualClone = new VisualContainer();
     CieMap::IContainer *clone = CieMap::ContainerFactory::CreateContainer(visualClone);
     clone->SetRdfStore(Owner()->RdfStore()->Clone());
-    // Todo add children cloning aswell.
+    /// @todo add children cloning aswell.
     return clone;
 }
 
@@ -237,7 +239,8 @@ void VisualContainer::HandleDrop(VisualContainer *target)
     for (int i = 0; i < result.count(); ++i)
     {
         IStatement *s = result[i].value<IStatement *>();
-        if (s) {
+        if (s)
+        {
             CieMap::Tag tag;
             tag.SetType(s->Predicate()->Uri().toString());
             tag.SetData(s->Object()->Lit());

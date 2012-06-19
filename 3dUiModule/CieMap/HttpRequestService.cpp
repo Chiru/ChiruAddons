@@ -10,14 +10,14 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-
 namespace CieMap
 {
 
 HttpRequestService::HttpRequestService():
     IHttpRequestService(),
     manager(0),
-    response(0)
+    response(0),
+    operation(QNetworkAccessManager::PostOperation)
 {
     manager = new QNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(RequestResponse(QNetworkReply *)), Qt::UniqueConnection);
@@ -28,17 +28,42 @@ HttpRequestService::~HttpRequestService()
     SAFE_DELETE(manager);
 }
 
-HttpRequestResponse *HttpRequestService::SendHttpRequest(const QString &url, const QString &postData)
+HttpRequestResponse *HttpRequestService::SendHttpRequest(const QString &url, const QString &data)
 {
     if (!response)
         response = new HttpRequestResponse();
 
     QNetworkRequest request;
     request.setRawHeader("User-Agent", "realXtend Tundra");
-    request.setUrl(QUrl(url));
-    manager->post(request, "data=" + postData.toAscii());
+    if (operation == QNetworkAccessManager::PostOperation)
+    {
+        request.setUrl(QUrl(url));
+        manager->post(request, "data=" + data.toAscii());
+    }
+    else if (operation == QNetworkAccessManager::GetOperation)
+    {
+        QUrl urlObj(url);
+        urlObj.addQueryItem("data", data);
+        request.setUrl(urlObj);
+        manager->get(request);
+    }
+    else
+        LogWarning("HttpRequestService(const QString &, const QString &): Only GET & POST operations are supported.");
 
     return response;
+}
+
+QNetworkAccessManager::Operation HttpRequestService::Oreration() const
+{
+    return operation;
+}
+
+void HttpRequestService::SetOperation(QNetworkAccessManager::Operation o)
+{
+    if (operation == QNetworkAccessManager::PostOperation || operation == QNetworkAccessManager::GetOperation)
+        operation = o;
+    else
+        LogWarning("SetOperation(QNetworkAccessManager::Operation): Ignore change, only GET & POST operations are supported.");
 }
 
 void HttpRequestService::RequestResponse(QNetworkReply *reply)

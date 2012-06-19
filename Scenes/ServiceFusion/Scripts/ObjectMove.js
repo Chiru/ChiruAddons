@@ -135,8 +135,12 @@ function OnTouchUpdate(e)
 */
 }
 
+var useTouchInput = false;
+
 function OnTouchBegin(e)
 {
+    useTouchInput = true;
+
     prevFrameTouches = e.touchPoints();
     // Must enforce calling of TouchUpdate here, otherwise we get no events with 'pressed' state.
     TouchUpdate();
@@ -251,86 +255,87 @@ function TouchUpdate()
 //    TouchRotateObject(touchCount, touches, null);
 }
 
-// Handles mouse + keyboard
 function Update(/*frameTime*/)
 {
-    TouchUpdate();
-    return;
-
-    // Rest of the function is the keyboard + mouse input code 
-    if (input.IsMouseButtonPressed(1))
-        BeginMove(-1);
-    if (input.IsMouseButtonReleased(1))
-        EndMove();
-    
-    if (input.IsMouseButtonDown(1))
+    if (useTouchInput)
     {
-        if (selectedObject)
+        TouchUpdate();
+    }
+    else // Rest of the function is the keyboard + mouse input code 
+    {
+        if (input.IsMouseButtonPressed(1))
+            BeginMove(-1);
+        if (input.IsMouseButtonReleased(1))
+            EndMove();
+        
+        if (input.IsMouseButtonDown(1))
         {
-            var move = input.IsKeyDown(Qt.Key_1);
-            var rotate = input.IsKeyDown(Qt.Key_2);
-            if (move)
+            if (selectedObject)
             {
-                Log("jou");
-                if (input.IsKeyDown(Qt.Key_Control)) // Z movement
+                var move = input.IsKeyDown(Qt.Key_1);
+                var rotate = input.IsKeyDown(Qt.Key_2);
+                if (move)
                 {
-                    if (selectedObject.dynamiccomponent && selectedObject.dynamiccomponent.name == "UserItem")
-                        return; // Zooming/depth movement of user items not allowed
+                    if (input.IsKeyDown(Qt.Key_Control)) // Z movement
+                    {
+                        if (selectedObject.dynamiccomponent && selectedObject.dynamiccomponent.name == "UserItem")
+                            return; // Zooming/depth movement of user items not allowed
 
-                    var mouseYDelta = prevFrameMouseY - input.MousePos().y();
-                    var d = mouseYDelta * cMoveZSpeed * 30;
+                        var mouseYDelta = prevFrameMouseY - input.MousePos().y();
+                        var d = mouseYDelta * cMoveZSpeed * 30;
 
-                    var cameraEntity = renderer.MainCamera();
+                        var cameraEntity = renderer.MainCamera();
 
-                    var newPos = selectedObject.placeable.Position();
-                    var direction = selectedObject.placeable.WorldPosition().Sub(cameraEntity.placeable.WorldPosition()).Normalized();
-                    // TODO mesh.OBB()
-                    //var nearestPoint = selectedObject.placeable.collider.ClosestPointOnBounds(cameraEntity.placeable.Position());
-                    //nearestPoint.Add(direction.Mul(d));
+                        var newPos = selectedObject.placeable.Position();
+                        var direction = selectedObject.placeable.WorldPosition().Sub(cameraEntity.placeable.WorldPosition()).Normalized();
+                        // TODO mesh.OBB()
+                        //var nearestPoint = selectedObject.placeable.collider.ClosestPointOnBounds(cameraEntity.placeable.Position());
+                        //nearestPoint.Add(direction.Mul(d));
 
-                    // TODO: parented objects
-                    //if (selectedObject.ObjectTransform.parent)
-                        //direction = selectedObject.ObjectTransform.parent.InverseTransformDirection(direction);
+                        // TODO: parented objects
+                        //if (selectedObject.ObjectTransform.parent)
+                            //direction = selectedObject.ObjectTransform.parent.InverseTransformDirection(direction);
 
-                    newPos = newPos.Add(direction.Mul(d));
+                        newPos = newPos.Add(direction.Mul(d));
 
-                    if (!CanObjectBeMoved(selectedObject, newPos))
-                        return;
+                        if (!CanObjectBeMoved(selectedObject, newPos))
+                            return;
 
-                    //var globalNewPos = selectedObject.ObjectTransform.TransformPoint(newPos);
+                        //var globalNewPos = selectedObject.ObjectTransform.TransformPoint(newPos);
 
-                    //var distanceToCamera = float3.Distance(nearestPoint, cameraEntity.Position());
-                    //if ((d > 0 && distanceToCamera < 0.9 * transform.localScale.x) || (d < 0 && distanceToCamera > 0.01 * transform.localScale.x))
-                        selectedObject.placeable.SetPosition(newPos);
+                        //var distanceToCamera = float3.Distance(nearestPoint, cameraEntity.Position());
+                        //if ((d > 0 && distanceToCamera < 0.9 * transform.localScale.x) || (d < 0 && distanceToCamera > 0.01 * transform.localScale.x))
+                            selectedObject.placeable.SetPosition(newPos);
+                    }
+                    else // X & Y movement
+                        MoveSelected(input.MousePos());
                 }
-                else // X & Y movement
-                    MoveSelected(input.MousePos());
-            }
-            if (rotate)
-            {
-                if (input.IsMouseButtonDown(1))
+                if (rotate)
                 {
-                    if (selectedObject.dynamiccomponent && selectedObject.dynamiccomponent.name == "UserItem")
-                        return; // Zooming/depth movement of user items not allowed
-                    var d = new float2(prevFrameMouseX-input.MousePos().x(), prevFrameMouseY-input.MousePos().y());
-                    d = d.Mul(cReferenceHeight / ui.GraphicsScene().height() * cRotateSpeed /* *50 */); // *50 in Unity commented out
+                    if (input.IsMouseButtonDown(1))
+                    {
+                        if (selectedObject.dynamiccomponent && selectedObject.dynamiccomponent.name == "UserItem")
+                            return; // Zooming/depth movement of user items not allowed
+                        var d = new float2(prevFrameMouseX-input.MousePos().x(), prevFrameMouseY-input.MousePos().y());
+                        d = d.Mul(cReferenceHeight / ui.GraphicsScene().height() * cRotateSpeed /* *50 */); // *50 in Unity commented out
 
-                    var rotVectorFor = selectedObject.placeable.Position().Sub(renderer.MainCamera().placeable.Position()).Normalized();
-                    rotVectorFor = rotVectorFor.Cross(scene.UpVector());
-                    var rotVectorRig = scene.UpVector();
+                        var rotVectorFor = selectedObject.placeable.Position().Sub(renderer.MainCamera().placeable.Position()).Normalized();
+                        rotVectorFor = rotVectorFor.Cross(scene.UpVector());
+                        var rotVectorRig = scene.UpVector();
 
-                    var q = selectedObject.placeable.transform.Orientation();
-                    var a = Quat.RotateAxisAngle(rotVectorRig.Normalized(), DegToRad(-1 * d.x));
-                    var b = Quat.RotateAxisAngle(rotVectorFor.Normalized(), DegToRad(-1 * d.y));
-                    q = q.Mul(a).Mul(b);
-                    selectedObject.placeable.SetOrientation(q.Normalized());
+                        var q = selectedObject.placeable.transform.Orientation();
+                        var a = Quat.RotateAxisAngle(rotVectorRig.Normalized(), DegToRad(-1 * d.x));
+                        var b = Quat.RotateAxisAngle(rotVectorFor.Normalized(), DegToRad(-1 * d.y));
+                        q = q.Mul(a).Mul(b);
+                        selectedObject.placeable.SetOrientation(q.Normalized());
+                    }
                 }
             }
         }
-    }
 
-    prevFrameMouseX = input.MousePos().x();
-    prevFrameMouseY = input.MousePos().y();
+        prevFrameMouseX = input.MousePos().x();
+        prevFrameMouseY = input.MousePos().y();
+    }
 }
 
 function CanObjectBeMoved(obj, pos)

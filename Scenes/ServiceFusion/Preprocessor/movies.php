@@ -13,9 +13,15 @@ $last_entity = "";
 $root_element = "SHOW";
 $child_enities = array("ORIGINALTITLE", "THEATREAUDITORIUM", "DTTMSHOWSTART");
 
+$inRDFData = null;
 if (isset($_POST['data']))
-{
     $inRDFData = $_POST['data'];
+else if (isset($_GET['data']))
+    $inRDFData = $_GET['data'];
+    
+if (!is_null($inRDFData))
+{
+    //$inRDFData = $_POST['data'];
 
     $postDataModel = ModelFactory::getDefaultModel();
     $postDataModel->loadFromString($inRDFData, 'xml');

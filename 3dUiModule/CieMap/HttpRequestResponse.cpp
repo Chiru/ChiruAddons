@@ -51,56 +51,11 @@ void HttpRequestResponse::SetResponse(const QByteArray/*byte[]*/ &response)
     ready = true;
     errorDescription = error;
     emit Ready(this);
-    /*IWorld *world = IWorld::Instance();
-    IMemoryStore *memoryStore = world->CreateStore();*/
-    //TODO
-/*
-    IMemoryStore memoryStore = new IMemoryStore();
-    string error = null;
-
-    using (StreamReader xmlStream = new StreamReader(new MemoryStream(response)))
-    {
-        try
-        {
-            //Console.Out.WriteLine(System.Text.Encoding.UTF8.GetString(response));
-            IMemoryStore.Import(new RdfXmlReader(xmlStream));
-        }
-        catch (System.Xml.XmlException e)
-        {
-            error = e.Message;
-        }
-    }
-
-    lock (this)
-    {
-        requestResponse = RdfMemoryStore;
-        ready = true;
-        Error = error;
-    }
-*/
 }
 
 QString HttpRequestResponse::Error()
 {
     return errorDescription;
-    // TODO
-    /*
-
-    get
-    {
-        lock (this)
-            return errorDescription;
-    }
-
-    set
-    {
-        lock (this)
-        {
-            errorDescription = value;
-            ready = true;
-        }
-    }
-    */
 }
 
 }

@@ -33,9 +33,9 @@ private slots:
     void ParentChanged(CieMap::IContainer* parent);
 
 signals:
-    void DragMove(QPoint pos, QByteArray dragObject);
-    void DragStart(QByteArray dragObject);
-    void DragDrop(QByteArray dragObject); 
+    void DragStartEvent(QMouseEvent *e);
+    void DragMoveEvent(QDragMoveEvent *e);
+    void DropEvent(QDropEvent *e);
 
 protected:
     VisualContainer* FindVisualContainer(QWidget* widget);

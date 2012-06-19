@@ -44,7 +44,7 @@ HttpRequestResponse *ScriptServices::SendPreprocessorRequest(
     IStatement* dataSourceStamement = world->CreateStatement(from, dataSource, liter);
 
     store->AddStatement(dataSourceStamement);
-    QString postData = store->toString();
+    QString data = store->toString();
 
     world->FreeNode(from);
     world->FreeNode(dataSource);
@@ -55,7 +55,7 @@ HttpRequestResponse *ScriptServices::SendPreprocessorRequest(
     HttpRequestResponse* response;
     if (requestService != 0)
     {
-        response = requestService->SendHttpRequest(uri, postData);
+        response = requestService->SendHttpRequest(uri, data);
     }
     else
     {
@@ -64,7 +64,7 @@ HttpRequestResponse *ScriptServices::SendPreprocessorRequest(
         HttpRequest *searchRequest = new HttpRequest();
         searchRequest->SetResponse(response);
         searchRequest->SetUri(uri);
-        searchRequest->SetPostData(postData);
+        searchRequest->SetPostData(data);
 
         searchRequest->SendRequest();
 
@@ -72,55 +72,6 @@ HttpRequestResponse *ScriptServices::SendPreprocessorRequest(
     }
 
     return response;
-    // TODO
-/*
-    QString uri = dataPreprocessorUrl;
-
-    if (dataPreprocessorUrl.isEmpty())
-    {
-        /// @todo Print error throw new System.ArgumentException("Parameter cannot be null", "dataPreprocessorUri");
-        return;
-    }
-
-    QString encodedSourceUri = dataSourceUri;
-    if (!encodedSourceUri.isEmpty())
-        encodedSourceUri = UrlEncode(dataSourceUri);
-
-    MemoryStore store = new MemoryStore();
-
-    // 'news' is the identifier for the preprocessor
-    Entity from = new Entity(dataPreprocessorUrl + "?s=" + encodedSourceUri);
-    Entity dataSource = new Entity(RDFVocabulary.dataSource);
-    Statement dataSourceStamement = new Statement(from, dataSource, new Literal(dataSourceUri));
-    store.Add(dataSourceStamement);
-
-    StringBuilder sb = new StringBuilder();
-    using (RdfWriter writer = new RdfXmlWriter(new StringWriter(sb)))
-    {
-        writer.Namespaces.AddNamespace(RDFVocabulary.baseUri, RDFVocabulary.namespacePrefix);
-        writer.Write(store);
-    }
-    string postData = sb.ToString();
-
-    HttpRequestResponse response;
-    if (requestService != null)
-    {
-        response = requestService.SendHttpRequest(uri, postData);
-    }
-    else
-    {
-        response = new HttpRequestResponse();
-
-        HttpRequest searchRequest = new HttpRequest() { Response = response, Uri = uri, PostData = postData};
-
-        Thread thread = new Thread(new ThreadStart(searchRequest.SendRequest)) { IsBackground = true };
-        thread.Start();
-
-        return response;
-    }
-
-    return response;
-*/
 }
 
 QString ScriptServices::UrlEncode(QString url)
