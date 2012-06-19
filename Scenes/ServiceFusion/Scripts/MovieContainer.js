@@ -50,7 +50,8 @@ function MovieContainer(parent)
     this.visual.layout().setSpacing(0);
     
     var world    = RdfModule.theWorld;
-    var request  = new HttpRequest(); 
+    var request  = new HttpRequest();
+    request.operation = QNetworkAccessManager.GetOperation;
     var response = ScriptServices.SendPreprocessorRequest("http://hq.ludocraft.com/ludowww/cie/movies2.php",
                                                           "http://www.finnkino.fi/xml/Schedule/?area=1018",
                                                           request); 

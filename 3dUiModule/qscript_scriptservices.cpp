@@ -25,25 +25,18 @@ bool QSVIsOfType(const QScriptValue &value)
 
 static QScriptValue scriptservices_httprequestresponse_qsting_qstring_httprequest(QScriptContext *context, QScriptEngine *engine)
 {
-    //if (context->argumentCount() != 1) { printf("Error! Invalid number of arguments passed to function float2_At_int in file %s, line %d!\nExpected 1, but got %d!\n", __FILE__, __LINE__, context->argumentCount()); PrintCallStack(context->backtrace()); return QScriptValue(); }
-    QString str = context->argument(0).toString();
-    QString str2 = context->argument(1).toString();
+    if (context->argumentCount() != 3) { printf("Error! Invalid number of arguments passed to function scriptservices_httprequestresponse_qsting_qstring_httprequest in file %s, line %d!\nExpected 3, but got %d!\n", __FILE__, __LINE__, context->argumentCount()); return QScriptValue(); }
+    QString url = context->argument(0).toString();
+    QString data = context->argument(1).toString();
     CieMap::HttpRequestService *request = qscriptvalue_cast<CieMap::HttpRequestService *>(context->argument(2));
-    /*float2 This = qscriptvalue_cast<float2>(context->thisObject());
-    int index = qscriptvalue_cast<int>(context->argument(0));
-    float & ret = This.At(index);
-    ToExistingScriptValue_float2(engine, This, context->thisObject());*/
-    CieMap::HttpRequestResponse *response = CieMap::ScriptServices::SendPreprocessorRequest(str, str2, request);
+    CieMap::HttpRequestResponse *response = CieMap::ScriptServices::SendPreprocessorRequest(url, data, request);
     return qScriptValueFromValue(engine, response);
 }
 
 static QScriptValue scriptservices_sendpreprocessorrequest(QScriptContext *context, QScriptEngine *engine)
 {
-    if (context->argumentCount() == 3 && context->argument(0).isString() && context->argument(1).isString() && context->argument(2).isQObject()/*QSVIsOfType<CieMap::HttpRequestService*>(context->argument(2))*/)
+    if (context->argumentCount() == 3 && context->argument(0).isString() && context->argument(1).isString() && context->argument(2).isQObject())
         return scriptservices_httprequestresponse_qsting_qstring_httprequest(context, engine);
-    /*if (context->argumentCount() == 1 && QSVIsOfType<int>(context->argument(0)))
-        return float2_At_int_const(context, engine);
-    printf("float2_At_selector failed to choose the right function to call in file %s, line %d!\n", __FILE__, __LINE__); PrintCallStack(context->backtrace()); return QScriptValue();*/
     return QScriptValue();
 }
 

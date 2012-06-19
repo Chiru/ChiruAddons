@@ -16,11 +16,11 @@ class IHttpRequestService : public QObject
     Q_OBJECT
 
 public:
-    /// Sends and http get request with the specified uri and post data. Should use 'POST' method.
+    /// Sends and http get request with the specified uri and post data. Should use 'POST' or 'GET' method.
     /** @param url Url of the web service that receives the request
-        @param postData POST data
+        @param data POST or GET data
         @return The response can be used to query the status and response of the request */
-    virtual HttpRequestResponse *SendHttpRequest(const QString &url, const QString &postData) = 0;
+    virtual HttpRequestResponse *SendHttpRequest(const QString &url, const QString &data) = 0;
 };
 
 }
