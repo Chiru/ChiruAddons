@@ -1,14 +1,20 @@
-engine.ImportExtension("qt.core");
-engine.ImportExtension("qt.gui");
-engine.IncludeFile("Utils.js");
-
 // Only allow single drag&drop mesh instance.
-var movableInfoBubble = null;
+var containerDragObject = null;
 // Moveable drag&drop mesh distance from the camera.
 var distanceFromCamera = 9;
 var dragObjectName = "info_bubble_movable_block";
 
 var uiCamera = null;
+
+if (!framework.IsHeadless())
+{
+    engine.ImportExtension("qt.core");
+    engine.ImportExtension("qt.gui");
+    engine.IncludeFile("MathUtils.js");
+    engine.IncludeFile("Utils.js");
+    ui.GraphicsView().DragMoveEvent.connect(HandleDragMoveEvent);
+    ui.GraphicsView().DropEvent.connect(HandleDropEvent);
+}
 
 function BaseContainer(parent)
 {
@@ -42,28 +48,28 @@ function CreateVisualContainer(widget, layout, parent)
             }
             else
                 widget.setParent(visual);
-            MakeDragable(visual, widget);
+            MakeDraggable(visual, widget);
         }
     }
     return visual;
 }
 
-function MakeDragable(visual, widget)
+function MakeDraggable(visual, widget)
 {
     visual.DragStartEvent.connect(widget, function(e) {
-        movableInfoBubble = InfoBoubleMovable(this);
-//        movableInfoBubble.placeable.visible = false;
+        containerDragObject = ContainerDragObject(this);
+//        containerDragObject.placeable.visible = false;
 //        MoveSelected(e.pos());
         //SetInfoBoubleHighlight(true);
         // Signal object selection to the UI camera
         if (!uiCamera)
             uiCamera = scene.EntityByName("UiCamera");
-        uiCamera.Exec(1, "ObjectSelected", movableInfoBubble != null ? movableInfoBubble.id.toString() : "0");
+        uiCamera.Exec(1, "ObjectSelected", containerDragObject != null ? containerDragObject.id.toString() : "0");
     });
 
     visual.DropEvent.connect(function(e) {
-        if (movableInfoBubble) {
-            movableInfoBubble.placeable.visible = false;
+        if (containerDragObject) {
+            containerDragObject.placeable.visible = false;
         }
     });
     
@@ -111,7 +117,7 @@ function ReleaseStatements(statements)
         statements[i].deleteLater();
 }
 
-function CreateMovableInfoBouble(widget)
+function CreateContainerDragObject(widget)
 {
     var ents = scene.LoadSceneXML(asset.GetAsset("InfoBubbleMovableBlock.txml").DiskSource(), false, false, 0);
     var entity = ents[0];
@@ -141,7 +147,7 @@ function CreateHLine()
 function HandleDragMoveEvent(e)
 {
     var data = e.mimeData().data("application/x-hotspot").toString();
-    if (data.length > 0 && movableInfoBubble)
+    if (data.length > 0 && containerDragObject)
     {
         MoveSelected(e.pos());
     }
@@ -150,9 +156,9 @@ function HandleDragMoveEvent(e)
 function HandleDropEvent(e)
 {
     var data = e.mimeData().data("application/x-hotspot").toString();
-    if (data.length > 0 && movableInfoBubble)
+    if (data.length > 0 && containerDragObject)
     {
-        movableInfoBubble.placeable.visible = false;
+        containerDragObject.placeable.visible = false;
     }
 
     // Signal object deselection to the UI camera
@@ -169,7 +175,7 @@ function CurrentMouseRay()
 
 function MoveSelected(pos)
 {
-    if (movableInfoBubble)
+    if (containerDragObject)
     {
         var ray = CurrentMouseRay();
         var cameraEntity = renderer.MainCamera();
@@ -182,21 +188,21 @@ function MoveSelected(pos)
         if (r.intersects)
         {
             var moveTo = ray.GetPoint(r.distance);
-            movableInfoBubble.placeable.SetPosition(moveTo);
+            containerDragObject.placeable.SetPosition(moveTo);
         }
     }
 }
 
-function GetMovableInfoBouble()
+function GetContainerDragObject()
 {
-    if (!movableInfoBubble)
-        movableInfoBubble = scene.EntityByName(dragObjectName);
-    return movableInfoBubble;
+    if (!containerDragObject)
+        containerDragObject = scene.EntityByName(dragObjectName);
+    return containerDragObject;
 }
 
 /*function SetInfoBoubleHighlight(active)
 {
-    var entity = GetMovableInfoBouble();
+    var entity = GetContainerDragObject();
     if (!entity)
         return;
         
@@ -212,9 +218,9 @@ function GetMovableInfoBouble()
     }
 }*/
 
-function InfoBoubleMovable(visual) 
+function ContainerDragObject(visual) 
 {
-    var moveEntity = GetMovableInfoBouble();
+    var moveEntity = GetContainerDragObject();
     var renderLabel = new QLabel();
     var pixmap =  new QPixmap(visual.size);
     visual.render(pixmap);
@@ -229,11 +235,4 @@ function InfoBoubleMovable(visual)
     renderLabel.show();
     moveEntity.placeable.visible = true;
     return moveEntity;
-}
-
-if (!framework.IsHeadless())
-{
-    engine.IncludeFile("MathUtils.js");
-    ui.GraphicsView().DragMoveEvent.connect(HandleDragMoveEvent);
-    ui.GraphicsView().DropEvent.connect(HandleDropEvent);
 }

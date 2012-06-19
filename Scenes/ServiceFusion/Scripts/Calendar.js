@@ -88,7 +88,7 @@ function CellObject(w, row, column, events)
         if (events)
             this.widget.EventRegister = events;
     }
-    MakeDragable(visual, this.widget);
+    MakeDraggable(visual, this.widget);
 }
 
 calendarContainer = new BaseContainer(null)
