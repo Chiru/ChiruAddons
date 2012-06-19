@@ -7,10 +7,14 @@ require('C:/Program Files/Apache Software Foundation/Apache2.2/htdocs/magpierss/
 require('cordinate.php');
 include(RDFAPI_INCLUDE_DIR . "RdfAPI.php");
 
+$inRDFData = null;
 if (isset($_POST['data']))
+    $inRDFData = $_POST['data'];
+else if (isset($_GET['data']))
+    $inRDFData = $_GET['data'];
+    
+if (!is_null($inRDFData))
 {
-	$inRDFData = $_POST['data'];
-
 	$postDataModel = ModelFactory::getDefaultModel();
 	$postDataModel->loadFromString($inRDFData, 'xml');
 	$inDataSrc = new Resource("http://cie/data-source");
