@@ -6,6 +6,8 @@ engine.IncludeFile("VisualContainerUtils.js");
 
 ui.MainWindow().mouseTracking = true;  
 
+var titleLabel = null;
+
 function Movie()
 {
     this.title = "";
@@ -40,6 +42,12 @@ Movie.FromString = function(data)
 function MovieContainer(parent)
 {
     BaseContainer.call(this, parent);
+
+    titleLabel = new QLabel("FINNKINO PLAZA\n\nAVOINNA 11-23");
+    var title = me.GetComponent("EC_GraphicsViewCanvas", "Title");
+    titleLabel.size = new QPoint(title.width, title.height);
+    title.GraphicsScene().addWidget(titleLabel);
+    titleLabel.show();
     
     this.movies = new Array();
     this.visual.size = new QSize(320, 400);
@@ -49,12 +57,13 @@ function MovieContainer(parent)
     this.visual.layout().setContentsMargins(0, 0, 0, 0);
     this.visual.layout().setSpacing(0);
     
-    var world    = RdfModule.theWorld;
-    var request  = new HttpRequest();
+    var world = RdfModule.theWorld;
+    var request = new HttpRequest();
     request.operation = QNetworkAccessManager.GetOperation;
-    var response = ScriptServices.SendPreprocessorRequest("http://hq.ludocraft.com/ludowww/cie/movies2.php",
-                                                          "http://www.finnkino.fi/xml/Schedule/?area=1018",
-                                                          request); 
+    var response = ScriptServices.SendPreprocessorRequest(
+        "http://hq.ludocraft.com/ludowww/cie/movies2.php",
+        "http://www.finnkino.fi/xml/Schedule/?area=1018",
+        request); 
     
     response.Ready.connect(this, function(response)
     {
@@ -155,6 +164,11 @@ function OnScriptDestroyed()
 {
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
+    if (titleLabel)
+    {
+        titleLabel.deleteLater();
+        titleLabel = 0;
+    }
     if (container)
     {
         container.visual.deleteLater();
