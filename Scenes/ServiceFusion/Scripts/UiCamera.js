@@ -136,8 +136,6 @@ function ApplyCamera()
 
     // Save default content
     defaultContent = scene.Entities();
-    for(i in defaultContent)
-        Log(defaultContent[i]);
     // Load the first scene.
     ++sceneIndex;
     SwitchScene();
