@@ -111,9 +111,9 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     // Fill tag infomation to given movie container.
     // Note! AddStatement function is defined in VisualContainerUtils.js file.
     AddStatement(movieVisual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "Movie");
+    AddStatement(movieVisual, RdfVocabulary.baseUri, RdfVocabulary.data, movie.time.toString());
     AddStatement(movieVisual, RdfVocabulary.baseUri, RdfVocabulary.data, movie.title);
     AddStatement(movieVisual, RdfVocabulary.baseUri, RdfVocabulary.data, movie.auditorium);
-    AddStatement(movieVisual, RdfVocabulary.baseUri, RdfVocabulary.data, movie.time.toString());
     
     // Initialize time Label 
     var minStr = movie.time.getMinutes();

@@ -23,6 +23,32 @@ var eventsEntity = null;
 var calendarContainer = null;
 var calEventsContainer = null;
 
+function DragAddEvent(tag, rdfStore)
+{
+    print(tag);
+    if (tag.data == "Movie")
+    {
+        var statements = Select(rdfStore, null, RdfVocabulary.data, null);
+        if (statements.length >= 2)
+        {
+            var date = new Date(statements[0].object.literal);
+            var movieTitle = statements[1].object.literal;
+            var audit = statements[2].object.literal; 
+            
+            /*var vc = new VisualContainer(this.visual);
+            var eventContainer = new Container(vc);
+            eventContainer.rdfStore = RdfModule.theWorld.CreateStore();*/
+            
+            //AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "datetime");
+
+            AddStatement(this.container.visual, RdfVocabulary.baseUri, RdfVocabulary.data, date.toString());
+            AddStatement(this.container.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Movie");
+            AddStatement(this.container.visual, RdfVocabulary.baseUri, RdfVocabulary.data, movieTitle + "\n" + audit.toUpperCase());
+        }
+        ReleaseStatements(statements);
+    }
+}
+
 Date.prototype.getWeek = function()
 {
     var janFirst = new Date(this.getFullYear(), 0, 1);
@@ -46,7 +72,7 @@ function OnEventPress(e)
     {
         if (this.row == 0 && this.column == 0)
         {
-            // To prevent double press event when two EC_GraphicsViewCanvases a top eachother. When have time, replace this with better solution.
+            // To prevent double press event when two EC_GraphicsViewCanvases a top each other. When have time, replace this with better solution.
             frame.DelayedExecute(0.2).Triggered.connect( function() { eventsEntity.placeable.visible = false; });
         }
     }
@@ -76,9 +102,15 @@ EventCellEvents = {"MousePress":OnEventPress};
 function CellObject(w, row, column, events)
 {
     var visual = new VisualContainer(calendarContainer.visual);
+    visual.objectName = "cell_" + row + "_" + column;
     this.container = new Container(visual);
     this.container.parent = calendarContainer.visual.owner;
     this.container.rdfStore = RdfModule.theWorld.CreateStore();
+    this.script = new Script();
+    this.RdfVocabulary = RdfVocabulary;
+    this.script.Invoked.connect(this, DragAddEvent);
+    visual.owner.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "Movie"), this.script);
+    
     visual.setLayout(new QHBoxLayout());
     visual.layout().setContentsMargins(0,0,0,0);
     visual.layout().spacing = 0;
@@ -163,7 +195,7 @@ calendarWidget.cells[5][3].widget.styleSheet = Cell.DayActiveStyle;
 var visual = calendarWidget.cells[5][3].container.visual;
 AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "datetime");
 
-AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, Date().toString());
+/*AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, Date().toString());
 AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Consert");
 AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, "KUNTOSALI RAATTI");
 
@@ -179,7 +211,7 @@ d2 = new Date ( d1 );
 d2.setMinutes ( d1.getMinutes() + 60 );
 AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, d2); 
 AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Custom");
-AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, "ELOKUVA MEN IN BLACK III PLAZA 1");
+AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, "ELOKUVA MEN IN BLACK III PLAZA 1");*/
 
 calendarWidget.cells[5][4].widget.layout().addWidget(new QLabel("26"), 0, 0);
 calendarWidget.cells[5][5].widget.layout().addWidget(new QLabel("27"), 0, 0);

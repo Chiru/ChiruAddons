@@ -5,17 +5,17 @@ function GenerateTestContainerHierarchy()
 {
     print("Generating container test hierarcy...");
     var vc = new VisualContainer(null);
-    var mapContainer = C3DUiModule.ContainerFactory().CreateContainer(vc);
+    var mapContainer = new Container(vc);
     
     for (var i = 0; i < NumChildren; ++i)
     {
         vc = new VisualContainer(null);
-        var c = C3DUiModule.ContainerFactory().CreateContainer(vc);
+        var c = new Container(vc);
         c.parent = mapContainer;
         for (var j = 0; j < NumGrandChildren; ++j)
         {
             vc = new VisualContainer(null);
-            var child = C3DUiModule.ContainerFactory().CreateContainer(vc);
+            var child = new Container(vc);
             child.Parent = c;
         }
     }

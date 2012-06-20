@@ -34,7 +34,8 @@ Container::~Container()
 CieMap::IContainer *ContainerFactory::CreateContainer(CieMap::IVisualContainer *visualContainer)
 {
     IContainer *container =  new Container(visualContainer);
-    visualContainer->SetOwner(container);
+    if (visualContainer)
+        visualContainer->SetOwner(container);
     return container;
 }
 
