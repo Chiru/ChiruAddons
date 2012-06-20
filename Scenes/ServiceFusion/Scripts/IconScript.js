@@ -5,6 +5,27 @@
 engine.IncludeFile("Log.js");
 engine.IncludeFile("MathUtils.js");
 
+var animatedInfoBubbles = [];
+var autoShownInfoBubbles = [];
+var animatedIcons = [];
+var originalTransforms = {};
+var cam = null;
+
+const cInfoBubbleVisibleScale = 14;
+const cInfoBubbleHiddenScale = 0.005;
+const cIconMoveFactor = 8.75;
+const cIconScaleFactor = 2.5;
+const cIconMove = cInfoBubbleVisibleScale * cIconMoveFactor;
+const cAnimationTime = 1;
+const cToggleInfoBubbleVisibilityTreshold = 250 * 250; // Squared distance treshold
+
+// Entry point
+if (!framework.IsHeadless())
+{
+    sceneinteract.EntityClicked.connect(OnEntityClicked);
+    frame.Updated.connect(Update)
+}
+
 function OnScriptDestroyed()
 {
     // TODO
@@ -13,8 +34,6 @@ function OnScriptDestroyed()
         
     animatedInfoBubbles = [];
     autoShownInfoBubbles = [];
-    animatedIcons = [];
-    originalRots = {};
     cam = null;
 */
 }
@@ -44,18 +63,11 @@ me.Action("RegisterInfoBubble").Triggered.connect(function(iconEntityName, infoB
     SetInfoBubbleVisibility(icon, false, false);
 });
 
-function AnimatedIcon(icon, start, dest, startRot, destRot, startScale, destScale)
+function AnimatedIcon(/*Entity*/ icon, /*Transform*/ start, /*Transform*/ dest)
 {
-    // TODO Use Transform instead of storing pos, rot and scale separately.
-//   this.startTransform = start;
-//   this.destTransform = dest;
     this.icon = icon;
     this.start = start;
     this.dest = dest;
-    this.startRot = startRot;
-    this.destRot = destRot;
-    this.startScale = startScale;
-    this.destScale = destScale;
     this.t = 0;
 }
 
@@ -63,28 +75,6 @@ function AnimatedInfoBubble(icon)
 {
     this.icon = icon;
     this.t = 0;
-}
-
-var animatedInfoBubbles = [];
-var autoShownInfoBubbles = [];
-var animatedIcons = [];
-var originalRots = {};
-var originalScales = {};
-var cam = null;
-
-const cInfoBubbleVisibleScale = 16;
-const cInfoBubbleHiddenScale = 0.01;
-const cIconMoveFactor = 8.75;
-const cIconScaleFactor = 2.5;
-const cIconMove = cInfoBubbleVisibleScale * cIconMoveFactor;
-const cAnimationTime = 1;
-const cToggleInfoBubbleVisibilityTreshold = 250 * 250; // Squared distance treshold
-
-// Entry point
-if (!framework.IsHeadless())
-{
-    sceneinteract.EntityClicked.connect(OnEntityClicked);
-    frame.Updated.connect(Update)
 }
 
 function OnEntityClicked(entity)
@@ -107,11 +97,7 @@ function SetInfoBubbleVisibility(icon, visible, animate)
       //  return false;
 
     if (animate)
-    {
-        var currentPos = icon.placeable.WorldPosition(), destPos;
-        var currentRot = icon.placeable.transform.rot, destRot;
-        var currentScale = icon.placeable.transform.scale, destScale;
-    }
+        var currentTr = icon.placeable.transform, destTr = icon.placeable.transform;
 
     if (visible) // show
     {
@@ -146,12 +132,10 @@ function SetInfoBubbleVisibility(icon, visible, animate)
         
         if (animate)
         {
-            originalRots[icon.id] = new float3(currentRot);
-            originalScales[icon.id] = new float3(currentScale);
-            destPos = currentPos.Add(new float3(0, cIconMove, 0));
-            destRot = new float3(currentRot);
-            destRot.y = 0;
-            destScale = currentScale.Mul(cIconScaleFactor);
+            originalTransforms[icon.id] = currentTr;
+            destTr.pos = destTr.pos.Add(new float3(0, cIconMove, 0));
+            destTr.rot.y = 0;
+            destTr.scale = destTr.scale.Mul(cIconScaleFactor);
         }
     }
     else // hide
@@ -169,14 +153,14 @@ function SetInfoBubbleVisibility(icon, visible, animate)
         
         if (animate)
         {
-            destPos = currentPos.Add(new float3(0, -cIconMove, 0));
-            destRot = originalRots[icon.id];
-            destScale = originalScales[icon.id];
+            destTr.pos = destTr.pos.Add(new float3(0, -cIconMove, 0));
+            destTr.rot = originalTransforms[icon.id].rot;
+            destTr.scale = originalTransforms[icon.id].scale;
         }
     }
 
     if (animate)
-        animatedIcons.push(new AnimatedIcon(icon, currentPos, destPos, currentRot, destRot, currentScale, destScale));
+        animatedIcons.push(new AnimatedIcon(icon, currentTr, destTr));//icon, currentPos, destPos, currentRot, destRot, currentScale, destScale));
 
     animatedInfoBubbles.push(new AnimatedInfoBubble(icon));
 
@@ -252,23 +236,23 @@ function AnimateInfoBubbleScale(dt)
     for(i = 0; i < animatedIcons.length; ++i)
     {
         var currentPos = animatedIcons[i].icon.placeable.WorldPosition();
-        var distance = currentPos.Distance(animatedIcons[i].dest);
-        if (distance > 1)
+        var distance = currentPos.Distance(animatedIcons[i].dest.pos);
+        if (distance > 0.1)
         {
             animatedIcons[i].t += dt;
         }
         else
         {
-            animatedIcons[i].icon.placeable.SetPosition(animatedIcons[i].dest);
+            //animatedIcons[i].icon.placeable.SetPosition(animatedIcons[i].dest.pos);
             animatedIcons.splice(i, 1);
         }
 
         if (animatedIcons[i] && distance > 0.1 && animatedIcons[i].t < cAnimationTime)
         {
             var t = animatedIcons[i].icon.placeable.transform;
-            t.pos = float3.Lerp(animatedIcons[i].start, animatedIcons[i].dest, animatedIcons[i].t/cAnimationTime);
-            t.rot = float3.Lerp(animatedIcons[i].startRot, animatedIcons[i].destRot, animatedIcons[i].t/cAnimationTime);
-            t.scale = float3.Lerp(animatedIcons[i].startScale, animatedIcons[i].destScale, animatedIcons[i].t/cAnimationTime);
+            t.pos = float3.Lerp(animatedIcons[i].start.pos, animatedIcons[i].dest.pos, animatedIcons[i].t/cAnimationTime);
+            t.rot = float3.Lerp(animatedIcons[i].start.rot, animatedIcons[i].dest.rot, animatedIcons[i].t/cAnimationTime);
+            t.scale = float3.Lerp(animatedIcons[i].start.scale, animatedIcons[i].dest.scale, animatedIcons[i].t/cAnimationTime);
             animatedIcons[i].icon.placeable.transform = t;
         }
     }
