@@ -31,8 +31,8 @@ me.Action("RegisterInfoBubble").Triggered.connect(function(iconEntityName, infoB
     dc.CreateAttribute("bool", "infoBubbleVisible");
     dc.SetAttribute("infoBubbleId", parseInt(infoBubbleId));
     dc.SetAttribute("infoBubbleVisible", true);
-    // Enforce hide for newly registered info bubbles.
-    SetInfoBubbleVisibility(icon, false);
+    // Enforce hide for newly registered info bubbles, do not move icon yet.
+    SetInfoBubbleVisibility(icon, false, false);
 });
 
 function AnimatedIcon(icon, start, dest)
@@ -80,7 +80,7 @@ function IsEntityAnIcon(e)
 }
 
 // Returns whether or not the visibility was actually changed.
-function SetInfoBubbleVisibility(icon, visible)
+function SetInfoBubbleVisibility(icon, visible, animate)
 {
     var infoBubbleId = icon.dynamiccomponent.GetAttribute("infoBubbleId");
     var infoBubbleVisible = icon.dynamiccomponent.GetAttribute("infoBubbleVisible");
@@ -138,8 +138,8 @@ function SetInfoBubbleVisibility(icon, visible)
          destPos = currentPos.Add(new float3(0, -cIconMove, 0));
     }
 
-    // Moving of icons disabled for now
-    animatedIcons.push(new AnimatedIcon(icon, currentPos, destPos));
+    if (animate)
+        animatedIcons.push(new AnimatedIcon(icon, currentPos, destPos));
 
     animatedInfoBubbles.push(new AnimatedInfoBubble(icon));
 
@@ -149,7 +149,7 @@ function SetInfoBubbleVisibility(icon, visible)
 function ToggleInfoBubbleVisibility(icon)
 {
     var infoBubbleVisible = icon.dynamiccomponent.GetAttribute("infoBubbleVisible");
-    SetInfoBubbleVisibility(icon, !(infoBubbleVisible != undefined && infoBubbleVisible));
+    SetInfoBubbleVisibility(icon, !(infoBubbleVisible != undefined && infoBubbleVisible), true);
     //if (SetInfoBubbleVisibility(icon, !(infoBubbleVisible != undefined && infoBubbleVisible)))
         //animatedInfoBubbles.push(new AnimatedInfoBubble(icon));
 }
