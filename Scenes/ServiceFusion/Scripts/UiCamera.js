@@ -4,6 +4,7 @@
 // !ref: Scene1.txml
 // !ref: Scene2.txml
 // !ref: Scene3.txml
+// ref ADD_SCENE_FILENAME_HERE
 
 // Scene rotation
 var sceneIndex = -1;
@@ -122,7 +123,15 @@ function SwitchScene()
 
     Log("Loading scene " + sceneIndex + " " + scenes[sceneIndex]);
     currentContent = scene.LoadSceneXML(asset.GetAsset(scenes[sceneIndex]).DiskSource(), false, false, 0);
-
+    
+/*
+    currentContent = currentContent.concat(scene.LoadSceneXML(asset.GetAsset(ADD_SCENE_FILENAME_HERE).DiskSource(), false, false, 0));
+    scene.RemoveEntity(scene.EntityByName("oulu").id);
+    var terrain = scene.EntityByName("Terrain");
+    var p = terrain.placeable.WorldPosition();
+    p.y = 3,86;
+    terrain.placelable.SetPosition(p);
+*/
     // TODO Reset camera etc?
 }
 
