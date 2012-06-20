@@ -4,6 +4,13 @@ engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
 engine.ImportExtension("qt.webkit");
 
+me.Action("MousePress").Triggered.connect(function()
+{
+    var dir = me.placeable.WorldPosition().Sub(renderer.MainCamera().placeable.WorldPosition()).Normalized();
+    var q = Quat.LookAt(scene.ForwardVector(), dir, scene.UpVector(), scene.UpVector());
+    me.placeable.SetOrientation(q);
+});
+
 var webView = new QGraphicsWebView();
 webView.url = new QUrl("http://m.kaleva.fi");
 webView.pos = new QPoint(20, 20);
