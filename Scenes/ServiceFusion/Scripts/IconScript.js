@@ -54,7 +54,9 @@ var autoShownInfoBubbles = [];
 var animatedIcons = [];
 var cam = null;
 const cDefaultScale = 1;
-const cVisibleScale = 8;
+const cVisibleScale = 16;
+const cIconMoveFactor = 8.75;
+const cIconMove = cVisibleScale * cIconMoveFactor;
 const cHiddenScale = 0.01; 
 const cScaleTime = 1;
 const cToggleInfoBubbleVisibilityTreshold = 250 * 250; // Squared distance treshold
@@ -118,7 +120,7 @@ function SetInfoBubbleVisibility(icon, visible)
 
         icon.dynamiccomponent.SetAttribute("infoBubbleVisible", true);
 
-        destPos = currentPos.Add(new float3(0,70,0));
+        destPos = currentPos.Add(new float3(0, cIconMove, 0));
     }
     else
     {
@@ -133,11 +135,11 @@ function SetInfoBubbleVisibility(icon, visible)
         //infoBubble.placeable.visible = false;
         icon.dynamiccomponent.SetAttribute("infoBubbleVisible", false);
 
-         destPos = currentPos.Add(new float3(0,-70,0));
+         destPos = currentPos.Add(new float3(0, -cIconMove, 0));
     }
 
     // Moving of icons disabled for now
-//    animatedIcons.push(new AnimatedIcon(icon, currentPos, destPos));
+    animatedIcons.push(new AnimatedIcon(icon, currentPos, destPos));
 
     animatedInfoBubbles.push(new AnimatedInfoBubble(icon));
 

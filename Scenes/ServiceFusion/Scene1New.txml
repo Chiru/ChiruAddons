@@ -820,7 +820,7 @@
    <attribute value="" name="Script application name"/>
    <attribute value="" name="Script class name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Screen"/>
+  <component type="EC_DynamicComponent" sync="true" name="NewsStand"/>
   <component type="EC_RigidBody" sync="true">
    <attribute value="0" name="Mass"/>
    <attribute value="0" name="Shape type"/>
@@ -847,7 +847,7 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Mesh" sync="true">
-   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,3.000000,3.000000,3.000000" name="Transform"/>
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://info_bubble.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
    <attribute value="local://info_bubble.material;local://lower_text.material;local://upper_text.material" name="Mesh materials"/>
@@ -855,7 +855,7 @@
    <attribute value="false" name="Cast shadows"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="-86.438278,39.827782,20.788528,0.000000,180.000000,0.000000,2.000000,2.000000,2.000000" name="Transform"/>
+   <attribute value="-86.438278,39.827782,20.788528,0.000000,180.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
