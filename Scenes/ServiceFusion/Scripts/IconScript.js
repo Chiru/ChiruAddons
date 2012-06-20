@@ -12,7 +12,7 @@ var originalTransforms = {};
 var cam = null;
 
 const cInfoBubbleVisibleScale = 14;
-const cInfoBubbleHiddenScale = 0.005;
+const cInfoBubbleHiddenScale = 0.01;
 const cIconMoveFactor = 8.75;
 const cIconScaleFactor = 2.5;
 const cIconMove = cInfoBubbleVisibleScale * cIconMoveFactor;
@@ -160,7 +160,7 @@ function SetInfoBubbleVisibility(icon, visible, animate)
     }
 
     if (animate)
-        animatedIcons.push(new AnimatedIcon(icon, currentTr, destTr));//icon, currentPos, destPos, currentRot, destRot, currentScale, destScale));
+        animatedIcons.push(new AnimatedIcon(icon, currentTr, destTr));
 
     animatedInfoBubbles.push(new AnimatedInfoBubble(icon));
 
@@ -189,7 +189,7 @@ function DesiredObjectScale(mesh)
     return Math.max(multiplier, multiplier*distance);
 }
 
-function AnimateInfoBubbleScale(dt)
+function AnimateInfoBubbles(dt)
 {
     for(i = 0; i < animatedInfoBubbles.length; ++i)
     {
@@ -231,8 +231,10 @@ function AnimateInfoBubbleScale(dt)
             }
         }
     }
+}
 
-    // Interpolate moving icons
+function AnimateIcons(dt)
+{
     for(i = 0; i < animatedIcons.length; ++i)
     {
         var currentPos = animatedIcons[i].icon.placeable.WorldPosition();
@@ -264,6 +266,8 @@ function Update(dt)
         cam = renderer.MainCamera();
     if (!cam)
         return;
+    AnimateInfoBubbles(dt);
+    AnimateIcons(dt);
 /*
     var entities = scene.Entities();
     for(i in entities)
@@ -304,5 +308,4 @@ function Update(dt)
         }
     }
 */
-    AnimateInfoBubbleScale(dt);
 }
