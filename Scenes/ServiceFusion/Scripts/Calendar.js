@@ -35,15 +35,16 @@ function DragAddEvent(tag, rdfStore)
             var movieTitle = statements[1].object.literal;
             var audit = statements[2].object.literal; 
             
-            /*var vc = new VisualContainer(this.visual);
+            var vc = new VisualContainer(this.container.visual);
             var eventContainer = new Container(vc);
-            eventContainer.rdfStore = RdfModule.theWorld.CreateStore();*/
+            eventContainer.parent = this.container;
+            eventContainer.rdfStore = RdfModule.theWorld.CreateStore();
             
-            //AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "datetime");
+            AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "datetime");
 
-            AddStatement(this.container.visual, RdfVocabulary.baseUri, RdfVocabulary.data, date.toString());
-            AddStatement(this.container.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Movie");
-            AddStatement(this.container.visual, RdfVocabulary.baseUri, RdfVocabulary.data, movieTitle + "\n" + audit.toUpperCase());
+            AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.data, date.toString());
+            AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.data, "Movie");
+            AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.data, movieTitle + "\n" + audit.toUpperCase());
         }
         ReleaseStatements(statements);
     }
@@ -192,7 +193,7 @@ calendarWidget.cells[5][2].widget.layout().addWidget(new QLabel("24"), 0, 0);
 calendarWidget.cells[5][3].widget.layout().addWidget(new QLabel("25"), 0, 0);
 
 calendarWidget.cells[5][3].widget.styleSheet = Cell.DayActiveStyle;
-var visual = calendarWidget.cells[5][3].container.visual;
+/*var visual = calendarWidget.cells[5][3].container.visual;
 AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "datetime");
 
 /*AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, Date().toString());
@@ -267,7 +268,16 @@ function ParseDayEvents(container)
 {
     var events = new Array();
     // todo remember to relaese statments.
-    var statements = Select(container.rdfStore, null, RdfVocabulary.sourceApplication, "datetime");
+    for(var i = 0; i < container.childCount; ++i)
+    {
+        statements = Select(container.Child(i).rdfStore, null, RdfVocabulary.data, null);
+        if (statements.length == 3)
+        {
+            events.push(new CalendarEvent(new Date(statements[0].object.literal), statements[1].object.literal, statements[2].object.literal)); 
+        }
+        ReleaseStatements(statements);
+    }
+    /*var statements = Select(container.rdfStore, null, RdfVocabulary.sourceApplication, "datetime"); 
     if (statements.length > 0)
     {
         ReleaseStatements(statements);
@@ -280,7 +290,7 @@ function ParseDayEvents(container)
             }
         }
         ReleaseStatements(statements);
-    }
+    }*/
     
     for (var i = 0; i < oldEventWidgets.length; ++i)
         oldEventWidgets[i].deleteLater();
