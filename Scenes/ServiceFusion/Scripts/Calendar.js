@@ -1,13 +1,19 @@
 // !ref: CalenderWidget.ui
 // !ref: CalendarEvents.ui
 
-me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
-
 engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
 engine.IncludeFile("CalendarCellWidget.js");
 engine.IncludeFile("VisualContainerUtils.js");
 engine.IncludeFile("RdfVocabulary.js");
+
+var defaultTransform = me.placeable.transform;
+
+me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
+me.Action("Reset").Triggered.connect(function()
+{
+    me.placeable.transform = defaultTransform;
+});
 
 // Override dragObjectName from VisualContainerUtils.js.
 //dragObjectName = "calendar_day_block";

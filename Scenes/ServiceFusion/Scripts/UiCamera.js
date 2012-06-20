@@ -1,21 +1,22 @@
 // UiCamera.js - 3D UI Camera
 
+// !ref: Scene1New.txml
 // !ref: Scene1.txml
 // !ref: Scene2.txml
 // !ref: Scene3.txml
-// !ref: IconsPlacedInScene.txml
 
 // Scene rotation
 var sceneIndex = -1;
 const scenes = ["Scene1New.txml", "Scene1.txml", "Scene2.txml", "Scene3.txml"];
+// Default content (Scene.txml) always present in the scene
+var /*EntityMap*/ defaultContent = {};
 // Current content of the active scene
-var currentContent = [];
+var /*EntityList*/ currentContent = [];
 // Screen resolution of the target device will be 1200x800
 const cReferenceHeight = 800;
 // Currently selected object, if any, as signaled by ObjectMove script
 var selectedObject = null;
-var touchCountPrevFrame = 0;
-const cTouchInputOnly = false;
+const cTouchInputOnly = true;
 
 var cameraData =
 {
@@ -33,7 +34,7 @@ var cameraData =
     motion : new float3(0,0,0)
 };
 
-const cMoveZSpeed = 0.03;//0.005; // was 0.0007 in Unity
+const cMoveZSpeed = 0.0007 // in Unity
 const minTiltAngle = 110;
 const maxTiltAngle = 170;
 const minDistanceFromGround = 50;
@@ -99,7 +100,12 @@ function ClearScene()
 
 function ResetScene()
 {
-    Log("Reseting scene.");
+    Log("Resetting scene.");
+    for(i in defaultContent)
+    {
+        defaultContent[i]
+        defaultContent[i].Exec(1, "Reset");
+    }
     SwitchScene();
     ResetCamera();
 }
@@ -128,6 +134,10 @@ function ApplyCamera()
     me.soundlistener.active = true;
     ResetCamera();
 
+    // Save default content
+    defaultContent = scene.Entities();
+    for(i in defaultContent)
+        Log(defaultContent[i]);
     // Load the first scene.
     ++sceneIndex;
     SwitchScene();
@@ -139,37 +149,17 @@ function ApplyCamera()
     frame.Updated.connect(Update);
 }
 
-var touchDeltaX, touchDeltaY;
-
 function TouchUpdate(e)
 {
     var touches = e.touchPoints();
     var touchCount = touches.length;
-    touchCountPrevFrame = touchCount;
-
     for(i in touches)
     {
-        var x = Math.round(touches[i].pos().x());
-        var y = Math.round(touches[i].pos().y());
-        
-        touchDeltaX = x - prevFrameMouseX;
-        touchDeltaY = y - prevFrameMouseY;
-
-        prevFrameMouseX = x;
-        prevFrameMouseY = y;
+        prevFrameMouseX = Math.round(touches[i].pos().x());
+        prevFrameMouseY = Math.round(touches[i].pos().y());
         break; // for now, just use the pos from the first touch
     }
 
-/*
-    if (touchCount == 2 && input.IsKeyDown(Qt.Key_Control) && tilting == false) // TODO touchCount == 3
-    {
-        //Log("Tilting true");
-        moving = false;
-        tilting = true;
-    }
-    else
-        tilting = false;
-*/
     if (!selectedObject)
     {
         TouchMove(touchCount, touches, e);
@@ -208,7 +198,7 @@ function HandleKeyEvent(e)
     if (e.HasCtrlModifier() && e.keyCode == Qt.Key_R)
         ResetCamera();
     if (e.HasCtrlModifier() && e.HasAltModifier() && e.keyCode == Qt.Key_R)
-        SwitchScene(); // Resets the scene
+        ResetScene();
 }
 
 function HandleMouseEvent(e)
@@ -290,11 +280,10 @@ function Zoom(d)
 {
     var newPos = me.placeable.WorldPosition();
     var dir = me.placeable.Orientation().Mul(scene.ForwardVector()).Normalized();
-    var r = scene.ogre.Raycast(new Ray(newPos, dir), -1);
+    //var r = scene.ogre.Raycast(new Ray(newPos, dir), -1);
     newPos = newPos.Add(dir.Mul(d));
     me.placeable.SetPosition(newPos);
     // TODO Use minDistanceFromGround and maxDistanceFromGround 
-
 }
 
 function ToggleCamera()
@@ -434,7 +423,7 @@ function TouchMove(touchCount, touches, e)
 
         if (oldRotX > minTiltAngle && oldRotX < maxTiltAngle)
         {
-            var d = delta.y * cMoveZSpeed * 30;
+            var d = delta.y * cMoveZSpeed;
             var newPos = me.placeable.WorldPosition();
             newPos = newPos.Add(scene.UpVector().Mul(d));
             me.placeable.SetPosition(newPos);

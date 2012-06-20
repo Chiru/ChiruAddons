@@ -1,3 +1,11 @@
+
+var defaultTransform = me.placeable.transform;
+
+me.Action("Reset").Triggered.connect(function()
+{
+    me.placeable.transform = defaultTransform;
+});
+
 /*
 engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");

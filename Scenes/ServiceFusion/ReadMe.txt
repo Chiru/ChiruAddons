@@ -24,7 +24,8 @@ Controls
  * 2 + RMB drag object - Rotate object
  * Ctrl + R - Reset camera's transform
  * Ctrl + E - Reset selected object's transform
-- Touch input - IN PROGRESS
+ * Ctrl + Alt + R - Reset scene
+- Touch input
  * Scene
   - Move to next/prev. scene - 3 finger x-axis sweep
   - Move in scene - 1 finger drag
@@ -35,5 +36,5 @@ Controls
   - moving object
    * object rotation (yaw, pitch) - select object, second finger y-axis drag
    * object roll - select object, rotate second finger around object
-   * "Zoom" object (depth movement) - select object, one finder bottom-right corner of the screen, second finger y-axis drag
+   * "Zoom" object (depth movement) - select object, hold one finger at bottom-left corner of the screen, second finger y-axis drag
  * Scene reset - 5 finger long touch
