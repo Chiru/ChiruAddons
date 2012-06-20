@@ -11,6 +11,7 @@ Getting Started
 - Use "--config ServiceFusionPlugins.xml" when running the application, f.ex.
   cd <Tundra>/bin
   Tundra --config ../src/ChiruAddons/ServiceFusionPlugins.xml --file ../src/ChiruAddons/Scenes/ServiceFusion/Scene.txml
+- Note that the application is designed (user item positions etc.) for 1200x800 screen resoltion, full screen
 
 Controls
 ========
