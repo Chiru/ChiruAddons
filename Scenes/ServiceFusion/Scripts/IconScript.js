@@ -7,7 +7,16 @@ engine.IncludeFile("MathUtils.js");
 
 function OnScriptDestroyed()
 {
-    // TODO proper cleanup
+    // TODO
+/*
+    for(i in animatedInfoBubbles)
+        
+    animatedInfoBubbles = [];
+    autoShownInfoBubbles = [];
+    animatedIcons = [];
+    originalRots = {};
+    cam = null;
+*/
 }
 
 me.Action("RegisterInfoBubble").Triggered.connect(function(iconEntityName, infoBubbleId)
@@ -35,9 +44,11 @@ me.Action("RegisterInfoBubble").Triggered.connect(function(iconEntityName, infoB
     SetInfoBubbleVisibility(icon, false, false);
 });
 
-function AnimatedIcon(icon, start, dest)
+function AnimatedIcon(icon, start, dest, startRot, destRot)
 {
     this.icon = icon;
+    this.startRot = startRot;
+    this.destRot = destRot;
     this.start = start;
     this.dest = dest;
     this.t = 0;
@@ -52,7 +63,9 @@ function AnimatedInfoBubble(icon)
 var animatedInfoBubbles = [];
 var autoShownInfoBubbles = [];
 var animatedIcons = [];
+var originalRots = {};
 var cam = null;
+
 const cDefaultScale = 1;
 const cVisibleScale = 16;
 const cIconMoveFactor = 8.75;
@@ -87,9 +100,13 @@ function SetInfoBubbleVisibility(icon, visible, animate)
     //if (visible == infoBubbleVisible)
       //  return false;
 
-    var currentPos = icon.placeable.WorldPosition(), destPos;
+    if (animate)
+    {
+        var currentPos = icon.placeable.WorldPosition(), destPos;
+        var currentRot = icon.placeable.transform.rot, destRot;
+    }
 
-    if (visible)
+    if (visible) // show
     {
         if (infoBubbleId == undefined) // Info bubble not created, create it now.
         {
@@ -119,10 +136,16 @@ function SetInfoBubbleVisibility(icon, visible, animate)
         }
 
         icon.dynamiccomponent.SetAttribute("infoBubbleVisible", true);
-
-        destPos = currentPos.Add(new float3(0, cIconMove, 0));
+        
+        if (animate)
+        {
+            destPos = currentPos.Add(new float3(0, cIconMove, 0));
+            originalRots[icon.id] = new float3(currentRot);
+            destRot = new float3(currentRot);
+            destRot.y = 0;
+        }
     }
-    else
+    else // hide
     {
         var infoBubble = scene.EntityById(infoBubbleId);
         if (!infoBubble)
@@ -134,12 +157,16 @@ function SetInfoBubbleVisibility(icon, visible, animate)
         //scene.RemoveEntity(infoBubbleId);
         //infoBubble.placeable.visible = false;
         icon.dynamiccomponent.SetAttribute("infoBubbleVisible", false);
-
-         destPos = currentPos.Add(new float3(0, -cIconMove, 0));
+        
+        if (animate)
+        {
+            destPos = currentPos.Add(new float3(0, -cIconMove, 0));
+            destRot = originalRots[icon.id];
+        }
     }
 
     if (animate)
-        animatedIcons.push(new AnimatedIcon(icon, currentPos, destPos));
+        animatedIcons.push(new AnimatedIcon(icon, currentPos, destPos, currentRot, destRot));
 
     animatedInfoBubbles.push(new AnimatedInfoBubble(icon));
 
@@ -228,8 +255,10 @@ function AnimateInfoBubbleScale(dt)
 
         if (animatedIcons[i] && distance > 0.1 && animatedIcons[i].t < cScaleTime)
         {
-            currentPos = float3.Lerp(animatedIcons[i].start, animatedIcons[i].dest, animatedIcons[i].t/cScaleTime);
-            animatedIcons[i].icon.placeable.SetPosition(currentPos);
+            var t = animatedIcons[i].icon.placeable.transform;
+            t.pos = float3.Lerp(animatedIcons[i].start, animatedIcons[i].dest, animatedIcons[i].t/cScaleTime);
+            t.rot = float3.Lerp(animatedIcons[i].startRot, animatedIcons[i].destRot, animatedIcons[i].t/cScaleTime);
+            animatedIcons[i].icon.placeable.transform = t;
         }
     }
 }
