@@ -35,8 +35,7 @@ function Animate(dt)
 
 var webView = new QGraphicsWebView();
 webView.url = new QUrl("http://m.kaleva.fi");
-webView.pos = new QPoint(20, 20);
-webView.size = new QSize(me.graphicsviewcanvas.width - 30, me.graphicsviewcanvas.height - 20);
+webView.size = new QSize(me.graphicsviewcanvas.width, me.graphicsviewcanvas.height);
 me.graphicsviewcanvas.GraphicsScene().addItem(webView);
 
 function OnScriptDestroyed()
