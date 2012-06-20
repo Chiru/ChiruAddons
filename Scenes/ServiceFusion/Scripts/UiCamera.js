@@ -16,7 +16,7 @@ var /*EntityList*/ currentContent = [];
 const cReferenceHeight = 800;
 // Currently selected object, if any, as signaled by ObjectMove script
 var selectedObject = null;
-const cTouchInputOnly = true;
+const cTouchInputOnly = false;
 
 var cameraData =
 {
