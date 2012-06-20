@@ -789,7 +789,7 @@
    <attribute value="false" name="Cast shadows"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="34.552597,64.390198,0.556503,0.000000,180.000000,0.000000,5.000000,5.000000,5.000000" name="Transform"/>
+   <attribute value="34.552597,64.390198,0.556503,0.000000,180.000000,0.000000,15.000000,15.000000,15.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
