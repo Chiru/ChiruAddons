@@ -38,7 +38,7 @@ Ogre::ManualObject* MeshConverter::CreateMesh(pcl::PolygonMesh::Ptr inputMesh, p
     for (size_t i = 0; i < inputMesh->polygons.size(); i++)
                 indicescount += inputMesh->polygons[i].vertices.size();
 
-    Ogre::ManualObject *ogreManual = createManualObject(vertexcount, indicescount, Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    Ogre::ManualObject *ogreManual = createManualObject(vertexcount, indicescount, "CapturedObject", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
     if (indicescount > 0)
     {
@@ -76,11 +76,11 @@ Ogre::ManualObject* MeshConverter::CreateMesh(pcl::PolygonMesh::Ptr inputMesh, p
     }
 }
 
-Ogre::ManualObject* MeshConverter::CreatePointMesh(PointCloud::Ptr inputCloud)
+Ogre::ManualObject* MeshConverter::CreatePointMesh(PointCloud::Ptr inputCloud, std::string materialName)
 {
     size_t vertexcount = inputCloud->points.size();
 
-    Ogre::ManualObject *ogreManual = createManualObject(vertexcount, vertexcount, Ogre::RenderOperation::OT_POINT_LIST);
+    Ogre::ManualObject *ogreManual = createManualObject(vertexcount, vertexcount, materialName, Ogre::RenderOperation::OT_POINT_LIST);
 
     for (size_t i = 0; i < inputCloud->points.size(); i++)
     {
@@ -98,7 +98,7 @@ Ogre::ManualObject* MeshConverter::CreatePointMesh(PointCloud::Ptr inputCloud)
     return ogreManual;
 }
 
-Ogre::ManualObject* MeshConverter::createManualObject(size_t vertexCount, size_t indicesCount, Ogre::RenderOperation::OperationType operationType)
+Ogre::ManualObject* MeshConverter::createManualObject(size_t vertexCount, size_t indicesCount, std::string materialName, Ogre::RenderOperation::OperationType operationType)
 {
     scene_ = framework_->Scene()->MainCameraScene();
     if (scene_)
@@ -115,7 +115,7 @@ Ogre::ManualObject* MeshConverter::createManualObject(size_t vertexCount, size_t
     ogreManual->clear();
     ogreManual->estimateVertexCount(vertexCount);
     ogreManual->estimateIndexCount(indicesCount);
-    ogreManual->begin("CapturedObject", operationType);
+    ogreManual->begin(materialName, operationType);
     ogreManual->setDynamic(false);
 
     //LogInfo("MeshConverter: Object created!");

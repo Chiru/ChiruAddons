@@ -16,8 +16,14 @@
 #include "Scene.h"
 #include "IComponent.h"
 #include "AssetReference.h"
-#include "OgreManualObject.h"
 #include "EC_OgreCustomObject.h"
+
+#include "OgreManualObject.h"
+#include "OgreMaterialManager.h"
+#include "OgreMaterial.h"
+#include "OgreRenderingModule.h"
+#include "OgreTechnique.h"
+#include "Renderer.h"
 
 #include "EC_Mesh.h"
 #include "EC_Placeable.h"
@@ -147,19 +153,44 @@ void ObjectCaptureModule::setFinalMeshPosition(Quat orientation, float3 position
     final_mesh_position_.scale = scale;
 }
 
+Ogre::MaterialPtr ObjectCaptureModule::createMaterial(QString materialName)
+{
+    // add the true as the last parameter to make it a manual material
+    Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create(materialName.toStdString(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    material->setReceiveShadows(false);
+
+    Ogre::Pass *pass = material->getTechnique(0)->getPass(0);
+
+    pass->setLightingEnabled( false );
+    pass->setEmissive(0.1, 0.1, 0.1);
+
+    pass->setCullingMode(Ogre::CULL_NONE);
+    pass->setVertexColourTracking(Ogre::TVC_AMBIENT);
+    pass->setVertexColourTracking(Ogre::TVC_DIFFUSE);
+    pass->setVertexColourTracking(Ogre::TVC_SPECULAR);
+
+    material->load();
+
+    return material;
+}
+
 void ObjectCaptureModule::visualizeLiveCloud(PointCloud::Ptr cloud)
 {
-    static EntityPtr entity;
+    //static EntityPtr entity;
     static Ogre::ManualObject *previous_mesh = NULL;
+    static Ogre::MaterialPtr material;
+
+    if (!material.get())
+        material = createMaterial("LiveCloud");
 
     Scene *scene = framework_->Scene()->MainCameraScene();
 
-    if(!entity.get())
-        entity = scene->CreateEntity(scene->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
+    if(!live_cloud_entity.get())
+        live_cloud_entity = scene->CreateEntity(scene->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
 
-    Ogre::ManualObject *mesh = mesh_converter_->CreatePointMesh(cloud);
+    Ogre::ManualObject *mesh = mesh_converter_->CreatePointMesh(cloud, material->getName());
 
-    addObjectToScene(entity, mesh, live_cloud_position_.orientation, live_cloud_position_.position, live_cloud_position_.scale);
+    addObjectToScene(live_cloud_entity, mesh, live_cloud_position_.orientation, live_cloud_position_.position, live_cloud_position_.scale);
 
     delete previous_mesh; // Might crash depenting on EC_OgreCustomObject implementation
     previous_mesh = mesh;
@@ -167,17 +198,22 @@ void ObjectCaptureModule::visualizeLiveCloud(PointCloud::Ptr cloud)
 
 void ObjectCaptureModule::visualizeGlobalModel(PointCloud::Ptr cloud)
 {
-    static EntityPtr entity;
+    //static EntityPtr entity;
     static Ogre::ManualObject *previous_mesh = NULL;
+    static Ogre::MaterialPtr material;
+
+    // add the true as the last parameter to make it a manual material
+    if (!material.get())
+        material = createMaterial("GlobalModel");
 
     Scene *scene = framework_->Scene()->MainCameraScene();
 
-    if(!entity.get())
-        entity = scene->CreateEntity(scene->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
+    if(!global_model_entity.get())
+        global_model_entity = scene->CreateEntity(scene->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
 
-    Ogre::ManualObject *mesh = mesh_converter_->CreatePointMesh(cloud);
+    Ogre::ManualObject *mesh = mesh_converter_->CreatePointMesh(cloud, material->getName());
 
-    addObjectToScene(entity, mesh, global_model_position_.orientation, global_model_position_.position, global_model_position_.scale);
+    addObjectToScene(global_model_entity, mesh, global_model_position_.orientation, global_model_position_.position, global_model_position_.scale);
 
     delete previous_mesh; // Might crash depenting on EC_OgreCustomObject implementation
     previous_mesh = mesh;
@@ -188,16 +224,45 @@ void ObjectCaptureModule::visualizeFinalMesh(pcl::PolygonMesh::Ptr polygonMesh, 
     // Special case which requires script interaction.
     // Application needs to be aware of the final entity id, and in control of it's placement etc.
 
-    static EntityPtr entity;
+    //static EntityPtr entity;
     Scene *scene = framework_->Scene()->MainCameraScene();
 
-    if(!entity.get())
-        entity = scene->CreateEntity(scene->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
+    if(!final_mesh_entity.get())
+        final_mesh_entity = scene->CreateEntity(scene->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
 
     Ogre::ManualObject *mesh = mesh_converter_->CreateMesh(polygonMesh, cloud);
-    addObjectToScene(entity, mesh, final_mesh_position_.orientation, final_mesh_position_.position, final_mesh_position_.scale);
+    addObjectToScene(final_mesh_entity, mesh, final_mesh_position_.orientation, final_mesh_position_.position, final_mesh_position_.scale);
 
-    emit objectCaptured(entity->Id());
+    emit objectCaptured(final_mesh_entity->Id());
+}
+
+void ObjectCaptureModule::updatePointSize()
+{
+    OgreRenderer::RendererPtr renderer = framework_->GetModule<OgreRenderer::OgreRenderingModule>()->GetRenderer();
+    Entity *parentEntity = renderer->MainCamera();
+    EC_Placeable *camera_placeable = parentEntity->GetComponent<EC_Placeable>().get();
+
+    float3 location = camera_placeable->WorldPosition();
+
+    if (global_model_entity.get())
+    {
+        float global_model_distance = location.Distance(global_model_position_.position);
+        float point_size = 80.0 / global_model_distance;
+
+        Ogre::MaterialPtr m_pMtrl = Ogre::MaterialManager::getSingleton().load("GlobalModel", "General");
+        m_pMtrl->getTechnique(0)->getPass(0)->setPointSize(point_size);
+    }
+
+    if (live_cloud_entity.get())
+    {
+        float live_cloud_distance = location.Distance(live_cloud_position_.position);
+        float point_size = 80.0 / live_cloud_distance;
+
+        Ogre::MaterialPtr m_pMtrl = Ogre::MaterialManager::getSingleton().load("LiveCloud", "General");
+        m_pMtrl->getTechnique(0)->getPass(0)->setPointSize(point_size);
+    }
+
+
 }
 
 void ObjectCaptureModule::addObjectToScene(EntityPtr entity, Ogre::ManualObject *mesh, Quat orientation, float3 position, float3 scale)
@@ -214,7 +279,7 @@ void ObjectCaptureModule::addObjectToScene(EntityPtr entity, Ogre::ManualObject 
     customObject->SetName("ImportedMesh");
     customObject->CommitChanges(mesh);
 
-    // Get EC_Placeable for custom ombject
+    // Get EC_Placeable for custom object
     componentPtr = entity->GetOrCreateComponent("EC_Placeable", AttributeChange::LocalOnly, false);
     EC_Placeable *placeable = dynamic_cast<EC_Placeable*>(componentPtr.get());
     placeable->SetTransform(orientation, position, scale);

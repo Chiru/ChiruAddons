@@ -25,11 +25,11 @@ public:
 
 public slots:
     Ogre::ManualObject* CreateMesh(pcl::PolygonMesh::Ptr inputMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr inputCloud);
-    Ogre::ManualObject* CreatePointMesh(PointCloud::Ptr inputCloud);
+    Ogre::ManualObject* CreatePointMesh(PointCloud::Ptr inputCloud, std::string materialName);
 
 private slots:
     /// @return Pointer to unclosed Ogre ManualObject
-    Ogre::ManualObject* createManualObject(size_t vertexCount, size_t indicesCount, Ogre::RenderOperation::OperationType operationType);
+    Ogre::ManualObject* createManualObject(size_t vertexCount, size_t indicesCount, std::string materialName, Ogre::RenderOperation::OperationType operationType);
 
 private:
     Framework *framework_;

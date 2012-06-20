@@ -14,6 +14,7 @@
 #include "Math/MathFwd.h"
 #include "Entity.h"
 #include "OgreModuleFwd.h"
+#include "OgreMaterial.h"
 
 #include "ObjectCaptureModuleDefines.h"
 #include "pcl/PolygonMesh.h"
@@ -90,6 +91,8 @@ public slots:
 
     void setFinalMeshPosition(Quat orientation, float3 position, float3 scale);
 
+    void updatePointSize();
+
 signals:
     void previewFrameUpdated(const QImage &frame);
     void objectCaptured(unsigned int entityId);
@@ -100,12 +103,17 @@ private slots:
     void visualizeLiveCloud(PointCloud::Ptr cloud);
     void visualizeGlobalModel(PointCloud::Ptr cloud);
     void visualizeFinalMesh(pcl::PolygonMesh::Ptr polygonMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud);
+    Ogre::MaterialPtr createMaterial(QString materialName);
 
 private:
     CloudProcessor *cloud_processor_;
     MeshReconstructor *mesh_reconstructor_;
     MeshConverter *mesh_converter_;
     QThread *worker_thread_;
+
+    EntityPtr live_cloud_entity;
+    EntityPtr global_model_entity;
+    EntityPtr final_mesh_entity;
 
     struct CloudPosition live_cloud_position_;
     struct CloudPosition global_model_position_;
