@@ -3,6 +3,8 @@ engine.ImportExtension("qt.gui");
 engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
 
+me.Action("MousePress").Triggered.connect(MousePressed);
+
 var cartContainer = null;
 
 function ValidateData(rdfData)
@@ -53,7 +55,24 @@ function OnDropEvent(e)
     }
 }
 
-cartContainer = new CartContainer(null)
+function MousePressed()
+{
+    var movieLoginEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
+    movieLoginEntity.SetName("MovieLoginDialog");
+    var script = movieLoginEntity.GetOrCreateComponent("EC_Script");
+    
+    script.scriptRef = new AssetReference("MovieLogin.js");
+    script.runOnLoad = true;
+
+    var movieSeatEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
+    movieSeatEntity.SetName("MovieSeatDialog");
+    script = movieSeatEntity.GetOrCreateComponent("EC_Script");
+    
+    script.scriptRef = new AssetReference("MovieSeatSelection.js");
+    script.runOnLoad = true;
+}
+
+cartContainer = new CartContainer(null);
 
 function OnScriptDestroyed()
 {
