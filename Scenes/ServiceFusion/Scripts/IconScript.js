@@ -44,13 +44,18 @@ me.Action("RegisterInfoBubble").Triggered.connect(function(iconEntityName, infoB
     SetInfoBubbleVisibility(icon, false, false);
 });
 
-function AnimatedIcon(icon, start, dest, startRot, destRot)
+function AnimatedIcon(icon, start, dest, startRot, destRot, startScale, destScale)
 {
+    // TODO Use Transform instead of storing pos, rot and scale separately.
+//   this.startTransform = start;
+//   this.destTransform = dest;
     this.icon = icon;
-    this.startRot = startRot;
-    this.destRot = destRot;
     this.start = start;
     this.dest = dest;
+    this.startRot = startRot;
+    this.destRot = destRot;
+    this.startScale = startScale;
+    this.destScale = destScale;
     this.t = 0;
 }
 
@@ -64,14 +69,15 @@ var animatedInfoBubbles = [];
 var autoShownInfoBubbles = [];
 var animatedIcons = [];
 var originalRots = {};
+var originalScales = {};
 var cam = null;
 
-const cDefaultScale = 1;
-const cVisibleScale = 16;
+const cInfoBubbleVisibleScale = 16;
+const cInfoBubbleHiddenScale = 0.01;
 const cIconMoveFactor = 8.75;
-const cIconMove = cVisibleScale * cIconMoveFactor;
-const cHiddenScale = 0.01; 
-const cScaleTime = 1;
+const cIconScaleFactor = 2.5;
+const cIconMove = cInfoBubbleVisibleScale * cIconMoveFactor;
+const cAnimationTime = 1;
 const cToggleInfoBubbleVisibilityTreshold = 250 * 250; // Squared distance treshold
 
 // Entry point
@@ -104,6 +110,7 @@ function SetInfoBubbleVisibility(icon, visible, animate)
     {
         var currentPos = icon.placeable.WorldPosition(), destPos;
         var currentRot = icon.placeable.transform.rot, destRot;
+        var currentScale = icon.placeable.transform.scale, destScale;
     }
 
     if (visible) // show
@@ -139,10 +146,12 @@ function SetInfoBubbleVisibility(icon, visible, animate)
         
         if (animate)
         {
-            destPos = currentPos.Add(new float3(0, cIconMove, 0));
             originalRots[icon.id] = new float3(currentRot);
+            originalScales[icon.id] = new float3(currentScale);
+            destPos = currentPos.Add(new float3(0, cIconMove, 0));
             destRot = new float3(currentRot);
             destRot.y = 0;
+            destScale = currentScale.Mul(cIconScaleFactor);
         }
     }
     else // hide
@@ -162,11 +171,12 @@ function SetInfoBubbleVisibility(icon, visible, animate)
         {
             destPos = currentPos.Add(new float3(0, -cIconMove, 0));
             destRot = originalRots[icon.id];
+            destScale = originalScales[icon.id];
         }
     }
 
     if (animate)
-        animatedIcons.push(new AnimatedIcon(icon, currentPos, destPos, currentRot, destRot));
+        animatedIcons.push(new AnimatedIcon(icon, currentPos, destPos, currentRot, destRot, currentScale, destScale));
 
     animatedInfoBubbles.push(new AnimatedInfoBubble(icon));
 
@@ -206,7 +216,7 @@ function AnimateInfoBubbleScale(dt)
         var scale = infoBubble.mesh.nodeTransformation.scale.x;
         if (infoBubbleVisible)
         {
-            if (!EqualAbs(scale, cVisibleScale, 0.001))
+            if (!EqualAbs(scale, cInfoBubbleVisibleScale, 0.001))
                 animatedInfoBubbles[i].t += dt;
             else
             {
@@ -214,15 +224,15 @@ function AnimateInfoBubbleScale(dt)
                 //infoBubble.placeable.visible = infoBubbleVisible;
             }
 
-            if (!EqualAbs(scale, cVisibleScale, 0.001) && animatedInfoBubbles[i].t < cScaleTime)
+            if (!EqualAbs(scale, cInfoBubbleVisibleScale, 0.001) && animatedInfoBubbles[i].t < cAnimationTime)
             {
-                scale = Lerp(cHiddenScale, cVisibleScale, animatedInfoBubbles[i].t/cScaleTime);
+                scale = Lerp(cInfoBubbleHiddenScale, cInfoBubbleVisibleScale, animatedInfoBubbles[i].t/cAnimationTime);
                 infoBubble.mesh.SetAdjustScale(float3.FromScalar(scale));
             }
         }
         else
         {
-            if (!EqualAbs(scale, cHiddenScale, 0.001))
+            if (!EqualAbs(scale, cInfoBubbleHiddenScale, 0.001))
                 animatedInfoBubbles[i].t += dt;
             else
             {
@@ -230,9 +240,9 @@ function AnimateInfoBubbleScale(dt)
                 //infoBubble.placeable.visible = infoBubbleVisible;
             }
 
-            if (!EqualAbs(scale, cHiddenScale, 0.001) && animatedInfoBubbles[i].t < cScaleTime)
+            if (!EqualAbs(scale, cInfoBubbleHiddenScale, 0.001) && animatedInfoBubbles[i].t < cAnimationTime)
             {
-                scale = Lerp(cVisibleScale, cHiddenScale, animatedInfoBubbles[i].t/cScaleTime);
+                scale = Lerp(cInfoBubbleVisibleScale, cInfoBubbleHiddenScale, animatedInfoBubbles[i].t/cAnimationTime);
                 infoBubble.mesh.SetAdjustScale(float3.FromScalar(scale));
             }
         }
@@ -253,11 +263,12 @@ function AnimateInfoBubbleScale(dt)
             animatedIcons.splice(i, 1);
         }
 
-        if (animatedIcons[i] && distance > 0.1 && animatedIcons[i].t < cScaleTime)
+        if (animatedIcons[i] && distance > 0.1 && animatedIcons[i].t < cAnimationTime)
         {
             var t = animatedIcons[i].icon.placeable.transform;
-            t.pos = float3.Lerp(animatedIcons[i].start, animatedIcons[i].dest, animatedIcons[i].t/cScaleTime);
-            t.rot = float3.Lerp(animatedIcons[i].startRot, animatedIcons[i].destRot, animatedIcons[i].t/cScaleTime);
+            t.pos = float3.Lerp(animatedIcons[i].start, animatedIcons[i].dest, animatedIcons[i].t/cAnimationTime);
+            t.rot = float3.Lerp(animatedIcons[i].startRot, animatedIcons[i].destRot, animatedIcons[i].t/cAnimationTime);
+            t.scale = float3.Lerp(animatedIcons[i].startScale, animatedIcons[i].destScale, animatedIcons[i].t/cAnimationTime);
             animatedIcons[i].icon.placeable.transform = t;
         }
     }
