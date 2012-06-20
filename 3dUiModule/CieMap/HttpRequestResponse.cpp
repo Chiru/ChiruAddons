@@ -41,7 +41,7 @@ void HttpRequestResponse::SetResponse(const QByteArray/*byte[]*/ &response)
         memoryStore = requestResponse;
     QString error = "";
 
-    QString str(response);
+    QString str = QString::fromUtf8(response);
     if (!memoryStore->FromString(str))
     {
         error = "Failed to parse rdf data to memory store.";
