@@ -44,7 +44,8 @@ function MovieContainer(parent)
     BaseContainer.call(this, parent);
     this.visual.styleSheet = "background-color:white;";
 
-    titleLabel = new QLabel("FINNKINO PLAZA\n\nAVOINNA 11-23");
+    titleLabel = new QLabel("FINNKINO\n\nAVOINNA 11-23");
+    titleLabel.font = new QFont("SansSerif", 42);
     var title = me.GetComponent("EC_GraphicsViewCanvas", "Title");
     titleLabel.size = new QPoint(title.width, title.height);
     title.GraphicsScene().addWidget(titleLabel);
