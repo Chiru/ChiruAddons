@@ -21,9 +21,9 @@ VisualContainer *EC_VisualContainer::GetVisualContainer() const
 void EC_VisualContainer::SetVisualContainer(VisualContainer *vc)
 {
     if (container)
-        disconnect(container, SIGNAL(destroyed(QObject*)), this, SLOT(HandleVisualContainerDestroyed(QObject*)));
+        disconnect(container, SIGNAL(destroyed(QObject*)));
     if (vc)
-        connect(vc, SIGNAL(destroyed(QObject*)), this, SLOT(HandleVisualContainerDestroyed(QObject*), Qt::UniqueConnection));
+        connect(vc, SIGNAL(destroyed(QObject*)), this, SLOT(HandleVisualContainerDestroyed(QObject*)), Qt::UniqueConnection);
 
     container = vc;
 }
