@@ -128,14 +128,14 @@
    <attribute value="calendar" name="name"/>
    <attribute value="" name="description"/>
   </component>
-  <component type="EC_Placeable" sync="true">
-   <attribute value="3.812210,1.618888,-9.439466,14.000000,-37.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
-   <attribute value="false" name="Show bounding box"/>
-   <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
-   <attribute value="UiCamera" name="Parent entity ref"/>
-   <attribute value="" name="Parent bone name"/>
-  </component>
+ <component type="EC_Placeable" sync="true">
+  <attribute value="5.657230,2.809377,-12.034551,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+  <attribute value="false" name="Show bounding box"/>
+  <attribute value="true" name="Visible"/>
+  <attribute value="1" name="Selection layer"/>
+  <attribute value="UiCamera" name="Parent entity ref"/>
+  <attribute value="" name="Parent bone name"/>
+ </component>
   <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
   <component type="EC_Script" sync="true" name="Screen">
    <attribute value="Screen.js" name="Script ref"/>
@@ -172,7 +172,7 @@
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="-6.830592,1.178902,-13.453753,7.000000,35.000000,2.000000,0.500000,0.500000,0.500000" name="Transform"/>
+   <attribute value="-8.302470,1.440621,-15.541463,7.000000,35.000000,2.000000,0.500000,0.500000,0.500000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
@@ -216,14 +216,14 @@
    <attribute value="0" name="Draw distance"/>
    <attribute value="false" name="Cast shadows"/>
   </component>
-  <component type="EC_Placeable" sync="true">
-   <attribute value="-5.521084,3.300000,-11.420541,24.000000,24.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
-   <attribute value="false" name="Show bounding box"/>
-   <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
-   <attribute value="UiCamera" name="Parent entity ref"/>
-   <attribute value="" name="Parent bone name"/>
-  </component>
+ <component type="EC_Placeable" sync="true">
+  <attribute value="-6.547050,3.721435,-13.099492,24.000000,24.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+  <attribute value="false" name="Show bounding box"/>
+  <attribute value="true" name="Visible"/>
+  <attribute value="1" name="Selection layer"/>
+  <attribute value="UiCamera" name="Parent entity ref"/>
+  <attribute value="" name="Parent bone name"/>
+ </component>
   <component type="EC_Name" sync="true">
    <attribute value="market" name="name"/>
    <attribute value="" name="description"/>
