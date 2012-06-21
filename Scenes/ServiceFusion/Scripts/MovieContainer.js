@@ -117,7 +117,7 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     main.styleSheet = "background-color:white;";
     main.setLayout(new QHBoxLayout());
     main.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
-    main.layout().setContentsMargins(10, 0, 0, 0); 
+    main.layout().setContentsMargins(5, 0, 0, 0); 
     main.objectName = "Movie";
     
     var movieVisual = CreateVisualContainer(main, new QHBoxLayout(), this.visual);
@@ -135,7 +135,7 @@ MovieContainer.prototype.DisplayMovie = function(movie)
         minStr = "00";
     var timeStr = movie.time.getHours() + ":" + minStr;
     var label = new QLabel(timeStr); 
-    label.font = new QFont("FreeSans", 14);
+    label.font = new QFont("FreeSans", 12);
     label.alignment = 0x0001 | 0x0020; // Qt::AlignLeft | Qt::AlignTop
     main.layout().addWidget(label, null, null);
     
@@ -143,6 +143,7 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     var label2 = new QLabel(movie.title + "\n" + movie.auditorium.toUpperCase());
     label2.font = new QFont("FreeSans", 12);
     label2.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
+    label2.styleSheet = "margin-left:20px;";
     main.layout().addWidget(label2, null, null);
     
     var line = CreateHLine();
