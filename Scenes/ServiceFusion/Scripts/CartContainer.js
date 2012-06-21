@@ -57,19 +57,32 @@ function OnDropEvent(e)
 
 function MousePressed()
 {
-    var movieLoginEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
-    movieLoginEntity.SetName("MovieLoginDialog");
-    var script = movieLoginEntity.GetOrCreateComponent("EC_Script");
-    
-    script.scriptRef = new AssetReference("MovieLogin.js");
-    script.runOnLoad = true;
+    if (!scene.EntityByName("MovieLoginDialog"))
+    {
+        var movieLoginEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
+        movieLoginEntity.SetName("MovieLoginDialog");
+        var script = movieLoginEntity.GetOrCreateComponent("EC_Script");
+        script.scriptRef = new AssetReference("MovieLogin.js");
+        script.runOnLoad = true;
+    }
 
-    var movieSeatEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
-    movieSeatEntity.SetName("MovieSeatDialog");
-    script = movieSeatEntity.GetOrCreateComponent("EC_Script");
-    
-    script.scriptRef = new AssetReference("MovieSeatSelection.js");
-    script.runOnLoad = true;
+    if (!scene.EntityByName("MovieSeatDialog"))
+    {
+        var movieSeatEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
+        movieSeatEntity.SetName("MovieSeatDialog");
+        var script = movieSeatEntity.GetOrCreateComponent("EC_Script");
+        script.scriptRef = new AssetReference("MovieSeatSelection.js");
+        script.runOnLoad = true;
+    }
+
+    if (!scene.EntityByName("MoviePaymentDialog"))
+    {
+        var moviePaymentEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
+        moviePaymentEntity.SetName("MoviePaymentDialog");
+        var script = moviePaymentEntity.GetOrCreateComponent("EC_Script");
+        script.scriptRef = new AssetReference("MoviePayment.js");
+        script.runOnLoad = true;
+    }
 }
 
 cartContainer = new CartContainer(null);

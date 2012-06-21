@@ -11,6 +11,7 @@ if (!server.IsRunning() && !framework.IsHeadless())
 var row = -1;
 var SeatInformationArray = [];
 var rotation = 1.0;
+var rotation_2 = 1.2;
 
 var placeable = me.GetOrCreateComponent("EC_Placeable");
 placeable.SetParent(scene.EntityByName("UiCamera"), 0);
@@ -29,10 +30,13 @@ mesh.meshMaterial = materials;
 
 var loginEnt = scene.EntityByName("MovieLoginDialog");
 var seatEnt = scene.EntityByName("MovieSeatDialog");
+var paymentEnt = scene.EntityByName("MoviePaymentDialog");
 var loginPlaceable = loginEnt.GetOrCreateComponent("EC_Placeable");
 var seatPlaceable = seatEnt.GetOrCreateComponent("EC_Placeable");
+var paymentPlaceable = paymentEnt.GetOrCreateComponent("EC_Placeable");
 
 var ProceedBackward = false;
+var ProceedForward = false;
 
 me.Action("SeatSelection").Triggered.connect(SeatSelection);
 
@@ -152,7 +156,7 @@ function SeatSelection()
     frame_seatselection.setFrameStyle(QFrame.StyledPanel);
     frame_seatselection.setStyleSheet("QFrame#Seats { padding: 0px; border: 2px solid black; border-radius: 0px; border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/plaza_2.png); }");
     
-    var buttonOK = new QPushButton("OK");
+    var buttonOK = new QPushButton("Seuraava");
     buttonOK.clicked.connect(OKClicked);
     var buttonCancel = new QPushButton("Peruuta");
     buttonCancel.clicked.connect(CancelClicked);
@@ -284,25 +288,34 @@ function SeatSelection()
 }
 
 function SetEmptyPlaza()
-{
-    
+{    
     frame_seatselection.hide();
     me.graphicsviewcanvas.width = frame_noseats.width;
     me.graphicsviewcanvas.height = frame_noseats.height;
     frame_noseats.show();
-    //me.graphicsviewcanvas.GraphicsScene().clear();
-    
-    
-
 }
 
 function OKClicked()
 {
+    var seat_found = false;
     for (var seat = 0; seat < SeatInformationArray.length; seat++)
     {
-	if (SeatInformationArray[seat][0].checked)
-	    console.LogInfo("Selected seat found. Row: " + SeatInformationArray[seat][1] + " Number: " + SeatInformationArray[seat][2]);
+    	if (SeatInformationArray[seat][0].checked)
+        {
+    	    console.LogInfo("Selected seat found. Row: " + SeatInformationArray[seat][1] + " Number: " + SeatInformationArray[seat][2]);
+            seat_found = true;
+            paymentEnt.Exec(1, "SetRowAndSeat", SeatInformationArray[seat][1], SeatInformationArray[seat][2]);
+            seat_found = true;
+            break;
+        }
+        
 		
+    }
+    
+    if (seat_found)
+    {
+        SetEmptyPlaza();
+        ProceedForward = true;
     }
 }
 
@@ -318,6 +331,7 @@ function Update()
     {
         var loginPos = loginPlaceable.Position();
         var seatPos = seatPlaceable.Position();
+        var paymentPos = paymentPlaceable.Position();
 
         loginPos.z += 0.5;
         loginPos.y -= 0.2;
@@ -328,6 +342,9 @@ function Update()
         seatPos.z -= 0.2;
         seatPlaceable.SetPosition(seatPos); 
 
+        paymentPos.y -= 0.2;
+        paymentPlaceable.SetPosition(paymentPos);
+
         rotation += 0.01;
         
         if (rotation >= 1.2)       
@@ -336,6 +353,31 @@ function Update()
             seatPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / 1.2));
             rotation = 1.0;
         }
+        return;
+    }
+
+    if (ProceedForward)
+    {
+        var seatPos = seatPlaceable.Position();
+        var paymentPos = paymentPlaceable.Position();
+        
+        paymentPos.z += 0.2;
+        paymentPos.y += 0.2;
+        paymentPlaceable.SetPosition(paymentPos);
+        paymentPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / rotation_2));
+
+        seatPos.z -= 0.49;
+        seatPos.y += 0.13;
+        seatPlaceable.SetPosition(seatPos);        
+        rotation_2 -= 0.01;
+
+        if (rotation_2 <= 1.0)       
+        {
+            ProceedForward = false;
+            paymentPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / 1.0));
+            rotation_2 = 1.2;
+        }
+        return;
     }
 }
 
