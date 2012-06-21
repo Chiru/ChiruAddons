@@ -6,18 +6,21 @@ engine.IncludeFile("Log.js");
 engine.IncludeFile("MathUtils.js");
 
 var animatedInfoBubbles = [];
-var autoShownInfoBubbles = [];
+//var autoShownInfoBubbles = [];
 var animatedIcons = [];
 var originalTransforms = {};
 var cam = null;
 
 const cInfoBubbleVisibleScale = 14;
 const cInfoBubbleHiddenScale = 0.01;
-const cIconMoveFactor = 8.75;
-const cIconScaleFactor = 2.5;
-const cIconMove = cInfoBubbleVisibleScale * cIconMoveFactor;
-const cAnimationTime = 1;
-const cToggleInfoBubbleVisibilityTreshold = 250 * 250; // Squared distance treshold
+const cIconVerticalMoveFactor = 8.5; // Do not change this value! Alter cInfoBubbleVisibleScale instead.
+const cIconScaleFactor = 2.25;
+const cIconHorizontalMove = -15;
+const cIconVerticalMove = cInfoBubbleVisibleScale * cIconVerticalMoveFactor;
+const cIconDepthMove = -10;
+const cIconMove = new float3(cIconHorizontalMove, cIconVerticalMove, cIconDepthMove);
+const cAnimationTime = 1; // seconds
+//const cToggleInfoBubbleVisibilityTreshold = 250 * 250; // Squared distance treshold
 
 // Entry point
 if (!framework.IsHeadless())
@@ -89,7 +92,7 @@ function IsEntityAnIcon(e)
 }
 
 // Returns whether or not the visibility was actually changed.
-function SetInfoBubbleVisibility(icon, visible, animate)
+function SetInfoBubbleVisibility(/*Entity*/ icon, /*bool*/ visible, /*bool*/ animate)
 {
     var infoBubbleId = icon.dynamiccomponent.GetAttribute("infoBubbleId");
     var infoBubbleVisible = icon.dynamiccomponent.GetAttribute("infoBubbleVisible");
@@ -133,7 +136,7 @@ function SetInfoBubbleVisibility(icon, visible, animate)
         if (animate)
         {
             originalTransforms[icon.id] = currentTr;
-            destTr.pos = destTr.pos.Add(new float3(0, cIconMove, 0));
+            destTr.pos = destTr.pos.Add(cIconMove);
             destTr.rot.y = 0;
             destTr.scale = destTr.scale.Mul(cIconScaleFactor);
         }
@@ -153,7 +156,7 @@ function SetInfoBubbleVisibility(icon, visible, animate)
         
         if (animate)
         {
-            destTr.pos = destTr.pos.Add(new float3(0, -cIconMove, 0));
+            destTr.pos = destTr.pos.Add(cIconMove.Mul(-1));
             destTr.rot = originalTransforms[icon.id].rot;
             destTr.scale = originalTransforms[icon.id].scale;
         }
@@ -171,8 +174,6 @@ function ToggleInfoBubbleVisibility(icon)
 {
     var infoBubbleVisible = icon.dynamiccomponent.GetAttribute("infoBubbleVisible");
     SetInfoBubbleVisibility(icon, !(infoBubbleVisible != undefined && infoBubbleVisible), true);
-    //if (SetInfoBubbleVisibility(icon, !(infoBubbleVisible != undefined && infoBubbleVisible)))
-        //animatedInfoBubbles.push(new AnimatedInfoBubble(icon));
 }
 
 function DesiredObjectScale(mesh)
@@ -200,9 +201,9 @@ function AnimateInfoBubbles(dt)
         var scale = infoBubble.mesh.nodeTransformation.scale.x;
         if (infoBubbleVisible)
         {
-            if (!EqualAbs(scale, cInfoBubbleVisibleScale, 0.001))
+            //if (!EqualAbs(scale, cInfoBubbleVisibleScale, 0.001))
                 animatedInfoBubbles[i].t += dt;
-            else
+            /*else */if (animatedInfoBubbles[i].t >= cAnimationTime)
             {
                 animatedInfoBubbles.splice(i, 1);
                 //infoBubble.placeable.visible = infoBubbleVisible;
@@ -216,9 +217,9 @@ function AnimateInfoBubbles(dt)
         }
         else
         {
-            if (!EqualAbs(scale, cInfoBubbleHiddenScale, 0.001))
+            //if (!EqualAbs(scale, cInfoBubbleHiddenScale, 0.001))
                 animatedInfoBubbles[i].t += dt;
-            else
+            /*else */if (animatedInfoBubbles[i].t >= cAnimationTime)
             {
                 animatedInfoBubbles.splice(i, 1);
                 //infoBubble.placeable.visible = infoBubbleVisible;
