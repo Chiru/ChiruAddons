@@ -71,7 +71,7 @@
          <string notr="true">QLabel
 {
  color:white;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
 }</string>
         </property>
@@ -79,7 +79,16 @@
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>20</number>
+         </property>
+         <property name="topMargin">
+          <number>8</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
@@ -94,7 +103,7 @@
          <string notr="true">QLabel
 {
  color:white;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
 }</string>
         </property>
@@ -102,7 +111,16 @@
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>8</number>
+         </property>
+         <property name="rightMargin">
+          <number>9</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
@@ -158,15 +176,15 @@
         <property name="styleSheet">
          <string notr="true">QWidget
 {
-	background-color:gray;
+	background-color:#cecece;
 }
 
 QLabel 
 {
 	color:white;
-	font: bold &quot;FreeSans&quot;; 
-	font-size: 21px;
-	background-color:gray; 
+	font: &quot;FreeSans&quot;; 
+	font-size: 18px;
+    background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
 	border-style: solid;
 	border-left-width: 1px;
@@ -514,15 +532,15 @@ QLabel:hover
         <property name="styleSheet">
          <string notr="true">QWidget
 {
-	background-color:gray;
+	background-color:#cecece;
 }
 
 QLabel 
 {
 	color:white;
-	font: bold &quot;FreeSans&quot;; 
-	font-size: 21px;
-	background-color:gray; 
+	font: &quot;FreeSans&quot;; 
+	font-size: 18px;
+    background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
 	border-style: solid;
 	border-left-width: 1px;
@@ -870,15 +888,15 @@ QLabel:hover
         <property name="styleSheet">
          <string notr="true">QWidget
 {
-	background-color:gray;
+	background-color:#cecece;
 }
 
 QLabel 
 {
 	color:white;
-	font: bold &quot;FreeSans&quot;; 
-	font-size: 21px;
-	background-color:gray; 
+	font: &quot;FreeSans&quot;; 
+	font-size: 18px;
+    background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
 	border-style: solid;
 	border-left-width: 1px;
@@ -1226,15 +1244,15 @@ QLabel:hover
         <property name="styleSheet">
          <string notr="true">QWidget
 {
-	background-color:gray;
+	background-color:#cecece;
 }
 
 QLabel 
 {
 	color:white;
-	font: bold &quot;FreeSans&quot;; 
-	font-size: 21px;
-	background-color:gray; 
+	font: &quot;FreeSans&quot;; 
+	font-size: 18px;
+    background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
 	border-style: solid;
 	border-left-width: 1px;
@@ -1582,15 +1600,15 @@ QLabel:hover
         <property name="styleSheet">
          <string notr="true">QWidget
 {
-	background-color:gray;
+	background-color:#cecece;
 }
 
 QLabel 
 {
 	color:white;
-	font: bold &quot;FreeSans&quot;; 
-	font-size: 21px;
-	background-color:gray; 
+	font: &quot;FreeSans&quot;; 
+	font-size: 18px;
+    background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
 	border-style: solid;
 	border-left-width: 1px;
@@ -1938,15 +1956,15 @@ QLabel:hover
         <property name="styleSheet">
          <string notr="true">QWidget
 {
-	background-color:gray;
+	background-color:#cecece;
 }
 
 QLabel 
 {
 	color:white;
-	font: bold &quot;FreeSans&quot;; 
-	font-size: 21px;
-	background-color:gray; 
+	font: &quot;FreeSans&quot;; 
+	font-size: 18px;
+    background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
 	border-style: solid;
 	border-left-width: 1px;

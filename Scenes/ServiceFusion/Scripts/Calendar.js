@@ -15,17 +15,19 @@ me.Action("Reset").Triggered.connect(function()
     me.placeable.transform = defaultTransform;
 });
 
-// Override dragObjectName from VisualContainerUtils.js.
-//dragObjectName = "calendar_day_block";
+var calendar_container = me.GetOrCreateComponent("EC_VisualContainer", "calendar");
+var event_container = me.GetOrCreateComponent("EC_VisualContainer", "calendar_event");
+var day_container = me.GetOrCreateComponent("EC_VisualContainer", "active_day");
 
 var eventsEntityName = "calendar_events";
 var eventsEntity = null;
 var calendarContainer = null;
 var calEventsContainer = null;
+// Override from VisualContainerUtils.js
+dragObjectName = "calendar_day_block";
 
-function DragAddEvent(tag, rdfStore)
-{
-    print(tag);
+function DragAddEvent(tag, rdfStore) 
+{ 
     if (tag.data == "Movie")
     {
         var statements = Select(rdfStore, null, RdfVocabulary.data, null);
@@ -45,6 +47,38 @@ function DragAddEvent(tag, rdfStore)
             AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.data, date.toString());
             AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.data, "Movie");
             AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.data, movieTitle + "\n" + audit.toUpperCase());
+            
+            day_container.vc = this.container.visual;
+            ParseDayEvents(this.container);
+            eventsEntity.placeable.visible = true;
+        }
+        ReleaseStatements(statements);
+    }
+}
+
+function DragAddEventToParent(tag, rdfStore) 
+{
+    if (tag.data == "Movie" && day_container.vc)
+    {
+        var statements = Select(rdfStore, null, RdfVocabulary.data, null);
+        if (statements.length >= 2)
+        {
+            var date = new Date(statements[0].object.literal);
+            var movieTitle = statements[1].object.literal; 
+            var audit = statements[2].object.literal; 
+            
+            var vc = new VisualContainer(day_container.vc);
+            var eventContainer = new Container(vc);
+            eventContainer.parent = day_container.vc.owner;
+            eventContainer.rdfStore = RdfModule.theWorld.CreateStore();
+            
+            AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "datetime");
+
+            AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.data, date.toString());
+            AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.data, "Movie");
+            AddStatement(vc, RdfVocabulary.baseUri, RdfVocabulary.data, movieTitle + "\n" + audit.toUpperCase());
+            
+            ParseDayEvents(day_container.vc.owner);
         }
         ReleaseStatements(statements);
     }
@@ -58,17 +92,16 @@ Date.prototype.getWeek = function()
 
 var date = new Date(2012, 6, 25);
 
-var months = ["Tammikuu", "Helmikuu",  "Maaliskuu",
-              "Huhtikuu", "Toukokuu",  "Kesäkuu",
-              "Heinäkuu", "Elokuu",    "Syyskuu",
-              "Lokakuu",  "Marraskuu", "Joulukuu"];
+var months = ["TAMMIKUU", "HELMIKUU",  "MAALISKUU",
+              "HUHTIKUU", "TOUKOKUU",  "KESÄKUU",
+              "HEINÄKUU", "ELOKUU",    "SYYSKUU",
+              "LOKAKUU",  "MARRASKUU", "JOULUKUU"];
               
 var month = months[date.getMonth()];
 var year = date.getFullYear();
 
 function OnEventPress(e)
 {
-    dragObjectName = "calendar_event_block";
     if (eventsEntity)
     {
         if (this.row == 0 && this.column == 0)
@@ -81,7 +114,7 @@ function OnEventPress(e)
 
 function OnDayPress(e)
 {
-    dragObjectName = "calendar_day_block";
+    day_container.vc = this.container.visual;
     ParseDayEvents(this.container);
     if (eventsEntity)
     {
@@ -99,19 +132,15 @@ function OnDayRelease(e)
 DayCellEvents = {"MousePress":OnDayPress, "MouseRelease":OnDayRelease};
 EventCellEvents = {"MousePress":OnEventPress};
 
-
 function CellObject(w, row, column, events)
 {
+    // construct a VisualContainer and Container.
     var visual = new VisualContainer(calendarContainer.visual);
-    visual.objectName = "cell_" + row + "_" + column;
     this.container = new Container(visual);
     this.container.parent = calendarContainer.visual.owner;
     this.container.rdfStore = RdfModule.theWorld.CreateStore();
-    this.script = new Script();
-    this.RdfVocabulary = RdfVocabulary;
-    this.script.Invoked.connect(this, DragAddEvent);
-    visual.owner.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "Movie"), this.script);
     
+    // Add visual container to calendar widget so drag & drop events will get passed.
     visual.setLayout(new QHBoxLayout());
     visual.layout().setContentsMargins(0,0,0,0);
     visual.layout().spacing = 0;
@@ -124,6 +153,10 @@ function CellObject(w, row, column, events)
     this.widget.container = this.container;
     parent.layout().addWidget(visual, 0, 0);
     visual.layout().addWidget(this.widget, 0, 0);
+
+    this.RdfVocabulary = RdfVocabulary;
+    
+    // Register QEvent listeners to given cell widget, you can find supported events in CalendarCellWidget.js file.
     if (this.widget)
     {
         if (events)
@@ -132,7 +165,8 @@ function CellObject(w, row, column, events)
     MakeDraggable(visual, this.widget);
 }
 
-calendarContainer = new BaseContainer(null)
+calendarContainer = new BaseContainer(null);
+calendar_container.vc = calendarContainer.visual;
 var calLayout = new QHBoxLayout();
 calLayout.setSpacing(0);
 calLayout.setContentsMargins(0, 0, 0, 0);
@@ -160,67 +194,66 @@ for (var i = 1; i < 7; ++i)
 calendarWidget.cells[0][0].widget.layout().addWidget(new QLabel(month), 0, 0);
 calendarWidget.cells[0][1].widget.layout().addWidget(new QLabel(year.toString()), 0, 0);
 
+function AddDayCell(day, row, column, style)
+{
+    var cell = calendarWidget.cells[row][column];
+    if (cell)
+    {
+        var dragAddScript = new Script();
+        var dayLabel = new QLabel(day);
+        if (style)
+            dayLabel.styleSheet = style;
+        cell.widget.layout().addWidget(dayLabel, 0, 0);
+        cell.container.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "Movie"), dragAddScript);
+        dragAddScript.Invoked.connect(cell, DragAddEvent);
+    }
+    return cell;
+}
+
 // Fill july data staticly into the calendar.
 // Todo replace this with a concreate implementation.
-calendarWidget.cells[1][7].widget.layout().addWidget(new QLabel("1"), 0, 0);
+AddDayCell("36", 1, 0); // Week
+AddDayCell("1", 1, 7, Cell.SundayActiveStyle);
 
-calendarWidget.cells[2][1].widget.layout().addWidget(new QLabel("2"), 0, 0);
-calendarWidget.cells[2][2].widget.layout().addWidget(new QLabel("3"), 0, 0);
-calendarWidget.cells[2][3].widget.layout().addWidget(new QLabel("4"), 0, 0);
-calendarWidget.cells[2][4].widget.layout().addWidget(new QLabel("5"), 0, 0);
-calendarWidget.cells[2][5].widget.layout().addWidget(new QLabel("6"), 0, 0);
-calendarWidget.cells[2][6].widget.layout().addWidget(new QLabel("7"), 0, 0);
-calendarWidget.cells[2][7].widget.layout().addWidget(new QLabel("8"), 0, 0);
+AddDayCell("37", 2, 0); // Week
+AddDayCell("2", 2, 1);
+AddDayCell("3", 2, 2);
+AddDayCell("4", 2, 3);
+AddDayCell("5", 2, 4);
+AddDayCell("6", 2, 5);
+AddDayCell("7", 2, 6);
+AddDayCell("8", 2, 7, Cell.SundayActiveStyle);
 
-calendarWidget.cells[3][1].widget.layout().addWidget(new QLabel("9"), 0, 0);
-calendarWidget.cells[3][2].widget.layout().addWidget(new QLabel("10"), 0, 0);
-calendarWidget.cells[3][3].widget.layout().addWidget(new QLabel("11"), 0, 0);
-calendarWidget.cells[3][4].widget.layout().addWidget(new QLabel("12"), 0, 0);
-calendarWidget.cells[3][5].widget.layout().addWidget(new QLabel("13"), 0, 0);
-calendarWidget.cells[3][6].widget.layout().addWidget(new QLabel("14"), 0, 0);
-calendarWidget.cells[3][7].widget.layout().addWidget(new QLabel("15"), 0, 0);
+AddDayCell("38", 3, 0); // Week
+AddDayCell("9", 3, 1);
+AddDayCell("10", 3, 2);
+AddDayCell("11", 3, 3);
+AddDayCell("12", 3, 4);
+AddDayCell("13", 3, 5);
+AddDayCell("14", 3, 6);
+AddDayCell("15", 3, 7, Cell.SundayActiveStyle);
 
-calendarWidget.cells[4][1].widget.layout().addWidget(new QLabel("16"), 0, 0);
-calendarWidget.cells[4][2].widget.layout().addWidget(new QLabel("17"), 0, 0);
-calendarWidget.cells[4][3].widget.layout().addWidget(new QLabel("18"), 0, 0);
-calendarWidget.cells[4][4].widget.layout().addWidget(new QLabel("19"), 0, 0);
-calendarWidget.cells[4][5].widget.layout().addWidget(new QLabel("20"), 0, 0);
-calendarWidget.cells[4][6].widget.layout().addWidget(new QLabel("21"), 0, 0);
-calendarWidget.cells[4][7].widget.layout().addWidget(new QLabel("22"), 0, 0);
+AddDayCell("39", 4, 0); // Week
+AddDayCell("16", 4, 1);
+AddDayCell("17", 4, 2);
+AddDayCell("18", 4, 3);
+AddDayCell("19", 4, 4);
+AddDayCell("20", 4, 5);
+AddDayCell("21", 4, 6);
+AddDayCell("22", 4, 7, Cell.SundayActiveStyle);
 
-calendarWidget.cells[5][1].widget.layout().addWidget(new QLabel("23"), 0, 0);
-calendarWidget.cells[5][2].widget.layout().addWidget(new QLabel("24"), 0, 0);
-calendarWidget.cells[5][3].widget.layout().addWidget(new QLabel("25"), 0, 0);
+AddDayCell("40", 5, 0); // Week
+AddDayCell("23", 5, 1);
+AddDayCell("24", 5, 2);
+AddDayCell("25", 5, 3, Cell.DayActiveStyle);
+AddDayCell("26", 5, 4);
+AddDayCell("27", 5, 5);
+AddDayCell("28", 5, 6);
+AddDayCell("29", 5, 7, Cell.SundayActiveStyle);
 
-calendarWidget.cells[5][3].widget.styleSheet = Cell.DayActiveStyle;
-/*var visual = calendarWidget.cells[5][3].container.visual;
-AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "datetime");
-
-/*AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, Date().toString());
-AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Consert");
-AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, "KUNTOSALI RAATTI");
-
-var d1 = new Date (),
-    d2 = new Date ( d1 );
-d2.setMinutes ( d1.getMinutes() + 30 );
-AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, d2);
-AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Important");
-AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, "KAHVILLE MAIJAN KANSSA ANTELLI");
-
-d1 = new Date (),
-d2 = new Date ( d1 );
-d2.setMinutes ( d1.getMinutes() + 60 );
-AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, d2); 
-AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Custom");
-AddStatement(visual, RdfVocabulary.baseUri, RdfVocabulary.data, "ELOKUVA MEN IN BLACK III PLAZA 1");*/
-
-calendarWidget.cells[5][4].widget.layout().addWidget(new QLabel("26"), 0, 0);
-calendarWidget.cells[5][5].widget.layout().addWidget(new QLabel("27"), 0, 0);
-calendarWidget.cells[5][6].widget.layout().addWidget(new QLabel("28"), 0, 0);
-calendarWidget.cells[5][7].widget.layout().addWidget(new QLabel("29"), 0, 0);
-
-calendarWidget.cells[6][1].widget.layout().addWidget(new QLabel("30"), 0, 0);
-calendarWidget.cells[6][2].widget.layout().addWidget(new QLabel("31"), 0, 0);
+AddDayCell("41", 6, 0); // Week
+AddDayCell("30", 6, 1);
+AddDayCell("31", 6, 2);
 
 calendarContainer.visual.size = calendarWidget.size;
 calLayout.addWidget(calendarWidget, 0, 0);
@@ -232,7 +265,8 @@ calendarContainer.visual.show();
 
 // Todo Move code below to a separete file.
 
-calEventsContainer = new BaseContainer(null)
+calEventsContainer = new BaseContainer(null);
+event_container.vc = calEventsContainer.visual;
 var eventLayout = new QHBoxLayout();
 eventLayout.setSpacing(0);
 eventLayout.setContentsMargins(0, 0, 0, 0);
@@ -241,13 +275,28 @@ calEventsContainer.visual.setLayout(eventLayout);
 eventsEntity = scene.GetEntityByName(eventsEntityName);
 var eventsWidget = asset.GetAsset("CalendarEvents.ui").Instantiate(false, 0);
 calEventsContainer.visual.size = eventsWidget.size;
-
 eventsWidget.cells = new Array();
-for (var i = 0; i < 4; ++i)
+
+function AddEventCell(row, column)
+{
+    var cell = eventsWidget.cells[row][column];
+    if (cell)
+    {
+        var dragAddScript = new Script();
+        cell.container.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "Movie"), dragAddScript);
+        dragAddScript.Invoked.connect(cell, DragAddEventToParent);
+    }
+    return cell;
+}
+
+for (var i = 0; i < 4; ++i) 
 {
     eventsWidget.cells[i] = [new CellObject(eventsWidget, i, 0, EventCellEvents), new CellObject(eventsWidget, i, 1, EventCellEvents)];
+    AddEventCell(i, 0);
+    AddEventCell(i, 1);
 } 
 eventsWidget.cells[0][0].widget.layout().addWidget(new QLabel("25"), 0, 0);
+eventsWidget.cells[0][0].widget.styleSheet = Cell.DayEventStyle;
 eventsWidget.cells[0][1].widget.layout().addWidget(new QLabel("TAPAHTUMAT"), 0, 0);
 
 eventLayout.addWidget(eventsWidget, 0, 0);
@@ -264,10 +313,12 @@ function CalendarEvent(time, name, text)
 }
 
 var oldEventWidgets = new Array();
+// Each day has it's own container and each day can have zero to * events containers as children.
 function ParseDayEvents(container)
 {
+    //calEventsContainer.container.parent = container;
+    // Check if day container has any events inside.
     var events = new Array();
-    // todo remember to relaese statments.
     for(var i = 0; i < container.childCount; ++i)
     {
         statements = Select(container.Child(i).rdfStore, null, RdfVocabulary.data, null);
@@ -277,31 +328,22 @@ function ParseDayEvents(container)
         }
         ReleaseStatements(statements);
     }
-    /*var statements = Select(container.rdfStore, null, RdfVocabulary.sourceApplication, "datetime"); 
-    if (statements.length > 0)
-    {
-        ReleaseStatements(statements);
-        statements = Select(container.rdfStore, null, RdfVocabulary.data, null);
-        if (statements.length > 0 && (statements.length % 3) == 0)
-        {
-            for (var i = 0; (i + 3) <= statements.length; i = i +3)
-            {
-                events.push(new CalendarEvent(new Date(statements[i].object.literal), statements[i+1].object.literal, statements[i+2].object.literal)); 
-            }
-        }
-        ReleaseStatements(statements);
-    }*/
     
+    // Remove previous events from the event widget.
     for (var i = 0; i < oldEventWidgets.length; ++i)
         oldEventWidgets[i].deleteLater();
     oldEventWidgets = new Array();
     
+    // Read event top three calendar events and insert them into a event widget.
     var header = null, text = null;
     for (var i = 0; i < events.length; ++i)
     {
         if (i > 2) break;
         var t = events[i].time;
-        var str = t.getHours() + ":" + t.getMinutes();
+        var minStr = t.getMinutes();
+        if (minStr == 0)
+            minStr = "00";
+        var str = t.getHours() + ":" + minStr;
         header = new QLabel(str);
         text = new QLabel(events[i].text);
         oldEventWidgets.push(header);

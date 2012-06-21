@@ -73,7 +73,7 @@
         <property name="styleSheet">
          <string notr="true">QLabel
 {
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:#404040;
  color:white;
@@ -108,7 +108,7 @@
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 20px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -175,16 +175,10 @@
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
- font-size: 12px;
+ font: &quot;FreeSans&quot;;
+ font-size: 17px;
  background-color:white;
  qproperty-alignment: AlignCenter;
-}
-
-QLabel:hover
-{
- background-color:#404040;
- color:white;
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_55">
@@ -215,16 +209,10 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
- font-size: 9px;
+ font: &quot;FreeSans&quot;;
+ font-size: 17px;
  background-color:white;
  qproperty-alignment: AlignCenter;
-}
-
-QLabel:hover
-{
- background-color:#404040;
- color:white;
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_56">
@@ -288,16 +276,10 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
- font-size: 12px;
+ font: &quot;FreeSans&quot;;
+ font-size: 17px;
  background-color:white;
  qproperty-alignment: AlignCenter;
-}
-
-QLabel:hover
-{
- background-color:#404040;
- color:white;
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_60">
@@ -328,16 +310,10 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
- font-size: 9px;
+ font: &quot;FreeSans&quot;;
+ font-size: 17px;
  background-color:white;
  qproperty-alignment: AlignCenter;
-}
-
-QLabel:hover
-{
- background-color:#404040;
- color:white;
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_61">
@@ -401,16 +377,10 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
- font-size: 12px;
+ font: &quot;FreeSans&quot;;
+ font-size: 17px;
  background-color:white;
  qproperty-alignment: AlignCenter;
-}
-
-QLabel:hover
-{
- background-color:#404040;
- color:white;
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_65">
@@ -441,16 +411,10 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
- font-size: 9px;
+ font: &quot;FreeSans&quot;;
+ font-size: 17px;
  background-color:white;
  qproperty-alignment: AlignCenter;
-}
-
-QLabel:hover
-{
- background-color:#404040;
- color:white;
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_66">

@@ -396,4 +396,26 @@
    <attribute value="" name="Script class name"/>
   </component>
  </entity>
+ <entity id="14" sync="1">
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="info_bubble_movable_block.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="info_bubble_block.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="0.300000,0.300000,-0.100000,0.000000,0.000000,26.000000,0.450000,0.450000,0.450000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="false" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="market" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Name" sync="true">
+   <attribute value="cart_item" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+ </entity>
 </scene>

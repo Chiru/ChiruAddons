@@ -14,11 +14,11 @@ function Movie()
     this.auditorium = "";
     this.time = null;
 }
-
+ 
 Movie.IsEmpty = function()
 {
     if (this.title == "" && this.auditorium == "" && this.time == null) 
-        return true;
+        return true; 
     return false;
 };
 
@@ -42,11 +42,15 @@ Movie.FromString = function(data)
 function MovieContainer(parent)
 {
     BaseContainer.call(this, parent);
+    this.visual.styleSheet = "background-color:white;";
 
-    titleLabel = new QLabel("FINNKINO PLAZA\n\nAVOINNA 11-23");
+    titleLabel = new QLabel("FINNKINO\n\nAVOINNA 11-23");
+    titleLabel.font = new QFont("SansSerif", 42);
     var title = me.GetComponent("EC_GraphicsViewCanvas", "Title");
     titleLabel.size = new QPoint(title.width, title.height);
     title.GraphicsScene().addWidget(titleLabel);
+    title.GraphicsView().styleSheet = "background-color:white;";
+    titleLabel.styleSheet = "background-color:white;";
     titleLabel.show();
     
     this.movies = new Array();
@@ -100,7 +104,7 @@ function MovieContainer(parent)
                     break;
             }
         }
-        response.deleteLater();
+        response.deleteLater(); 
         response = null;
     });
 }
@@ -110,6 +114,7 @@ MovieContainer.prototype = new BaseContainer();
 MovieContainer.prototype.DisplayMovie = function(movie) 
 {
     var main = new QWidget();
+    main.styleSheet = "background-color:white;";
     main.setLayout(new QHBoxLayout());
     main.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.layout().setContentsMargins(10, 0, 0, 0); 
@@ -135,7 +140,7 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     main.layout().addWidget(label, null, null);
     
     // Initialize title/auditorium Label 
-    var label2 = new QLabel(movie.title + "\n" + movie.auditorium);
+    var label2 = new QLabel(movie.title + "\n" + movie.auditorium.toUpperCase());
     label2.font = new QFont("FreeSans", 12);
     label2.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.layout().addWidget(label2, null, null);
