@@ -34,6 +34,9 @@ var movieName = "Elokuvan nimi";
 var moviePlace = "Salinumero";
 var movieTime = "Aika";
 var movieDate = "P‰iv‰m‰‰r‰";
+var label_movieinfo = new QLabel(movieName + " - " + moviePlace + " - " + movieTime + " - " + movieDate);
+
+me.Action("SetMovieInfo").Triggered.connect(SetMovieInfo);
 
 
 var rotation = 1.2;
@@ -104,7 +107,7 @@ function StartLogin()
     var label_phone = new QLabel("Matkapuhelinnumero:");
 
     var label_shoppingcart = new QLabel("Ostoskori:");
-    var label_movieinfo = new QLabel(movieName + " - " + moviePlace + " - " + movieTime + " - " + movieDate);
+    
 
     label_shoppingcart.setStyleSheet("QLabel { font: bold 18px; }");
     label_movieinfo.setStyleSheet("QLabel { font: 18px; }");
@@ -162,7 +165,7 @@ function OKClicked()
 }
 
 function CancelClicked()
-{
+{      
     //Destroy all movie entities
 }
 
@@ -203,6 +206,7 @@ function SetMovieInfo(name, place, time, date)
     moviePlace = place;
     movieTime = time;
     movieDate = date;
+    label_movieinfo.setText(movieName + " - " + moviePlace + " - " + movieTime + " - " + movieDate);
 }
 
 function OnScriptDestroyed()
