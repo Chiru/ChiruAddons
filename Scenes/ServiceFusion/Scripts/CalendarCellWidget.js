@@ -37,7 +37,7 @@ Cell.prototype.mouseMoveEvent = function(e)
 Cell.DayNormalStyle = 'QLabel \
 { \
  color:black; \
- font: bold "FreeSans"; \
+ font: "FreeSans"; \
  font-size: 21px; \
  background-color:white; \
  qproperty-alignment: AlignCenter; \
@@ -51,7 +51,7 @@ QLabel:hover \
 Cell.DayActiveStyle = 'QLabel \
 { \
  color:white; \
- font: bold "FreeSans"; \
+ font: "FreeSans"; \
  font-size: 21px; \
  background-color:#88C3D7; \
  qproperty-alignment: AlignCenter; \
@@ -62,10 +62,24 @@ QLabel:hover \
  color:white; \
 }';
 
+Cell.SundayActiveStyle = 'QLabel \
+{ \
+ color:#D20202; \
+ font: "FreeSans"; \
+ font-size: 21px; \
+ background-color:white; \
+ qproperty-alignment: AlignCenter; \
+} \
+QLabel:hover \
+{ \
+ background-color:#404040; \
+ color:#D20202; \
+}';
+
 Cell.DayEventStyle = 'QLabel \
 { \
  color:white; \
- font: bold "FreeSans"; \
+ font: "FreeSans"; \
  font-size: 21px; \
  background-color:#88C3D7; \
  qproperty-alignment: AlignCenter; \

@@ -212,40 +212,46 @@ function AddDayCell(day, row, column, style)
 
 // Fill july data staticly into the calendar.
 // Todo replace this with a concreate implementation.
-AddDayCell("1", 1, 7);
+AddDayCell("36", 1, 0); // Week
+AddDayCell("1", 1, 7, Cell.SundayActiveStyle);
 
+AddDayCell("37", 2, 0); // Week
 AddDayCell("2", 2, 1);
 AddDayCell("3", 2, 2);
 AddDayCell("4", 2, 3);
 AddDayCell("5", 2, 4);
 AddDayCell("6", 2, 5);
 AddDayCell("7", 2, 6);
-AddDayCell("8", 2, 7);
+AddDayCell("8", 2, 7, Cell.SundayActiveStyle);
 
+AddDayCell("38", 3, 0); // Week
 AddDayCell("9", 3, 1);
 AddDayCell("10", 3, 2);
 AddDayCell("11", 3, 3);
 AddDayCell("12", 3, 4);
 AddDayCell("13", 3, 5);
 AddDayCell("14", 3, 6);
-AddDayCell("15", 3, 7);
+AddDayCell("15", 3, 7, Cell.SundayActiveStyle);
 
+AddDayCell("39", 4, 0); // Week
 AddDayCell("16", 4, 1);
 AddDayCell("17", 4, 2);
 AddDayCell("18", 4, 3);
 AddDayCell("19", 4, 4);
 AddDayCell("20", 4, 5);
 AddDayCell("21", 4, 6);
-AddDayCell("22", 4, 7);
+AddDayCell("22", 4, 7, Cell.SundayActiveStyle);
 
+AddDayCell("40", 5, 0); // Week
 AddDayCell("23", 5, 1);
 AddDayCell("24", 5, 2);
 AddDayCell("25", 5, 3, Cell.DayActiveStyle);
 AddDayCell("26", 5, 4);
 AddDayCell("27", 5, 5);
 AddDayCell("28", 5, 6);
-AddDayCell("29", 5, 7);
+AddDayCell("29", 5, 7, Cell.SundayActiveStyle);
 
+AddDayCell("41", 6, 0); // Week
 AddDayCell("30", 6, 1);
 AddDayCell("31", 6, 2);
 
@@ -334,7 +340,10 @@ function ParseDayEvents(container)
     {
         if (i > 2) break;
         var t = events[i].time;
-        var str = t.getHours() + ":" + t.getMinutes();
+        var minStr = t.getMinutes();
+        if (minStr == 0)
+            minStr = "00";
+        var str = t.getHours() + ":" + minStr;
         header = new QLabel(str);
         text = new QLabel(events[i].text);
         oldEventWidgets.push(header);
