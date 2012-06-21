@@ -150,12 +150,10 @@ function Update()
 {   
     if (ProceedForward)
     {
-        //me.graphicsviewcanvas.update = false;
-        //seatEnt.graphicsviewcanvas.update = false;
         var loginPos = loginPlaceable.Position();
         var seatPos = seatPlaceable.Position();
-        loginPos.z -= 0.1;
-        loginPos.y += 0.1;
+        loginPos.z -= 0.5;
+        loginPos.y += 0.2;
         loginPlaceable.SetPosition(loginPos);
         seatPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / rotation));
         
@@ -168,10 +166,9 @@ function Update()
         if (rotation <= 1.0)       
         {
             ProceedForward = false;
-            //me.graphicsviewcanvas.update = true;
-            //seatEnt.graphicsviewcanvas.update = true;
             seatPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / 1.0));
             rotation = 1.2;
+            seatEnt.Exec(1, "SeatSelection");
         }
     }   
 }

@@ -34,7 +34,7 @@ var seatPlaceable = seatEnt.GetOrCreateComponent("EC_Placeable");
 
 var ProceedBackward = false;
 
-
+me.Action("SeatSelection").Triggered.connect(SeatSelection);
 
 if (me.graphicsviewcanvas)
 {
@@ -50,9 +50,22 @@ if (me.graphicsviewcanvas)
         me.graphicsviewcanvas.outputTexture = asset.GenerateUniqueAssetName("Texture", "Screen");
     }
 }
+var frame_seatselection = new QFrame();
+var seats_added = false;
 
+var frame_noseats = new QFrame();
+frame_noseats.objectName = "NoSeats";
+frame_noseats.setFrameStyle(QFrame.StyledPanel);
+frame_noseats.setStyleSheet("QFrame#NoSeats { padding: 0px; border: 2px solid black; border-radius: 0px; border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/plaza_3.png); }");
+
+me.graphicsviewcanvas.GraphicsScene().addWidget(frame_noseats);
+me.graphicsviewcanvas.width = frame_noseats.width;
+me.graphicsviewcanvas.height = frame_noseats.height;
+frame_noseats.show();
 
 SeatSelection();
+SetEmptyPlaza();
+
 
 
 
@@ -62,7 +75,7 @@ function CreateSeat(row, number)
     var seat = new QCheckBox();
     seat.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed);
     seat.setContentsMargins(0, 0, 0, 0);
-    seat.setStyleSheet("QCheckBox { padding: 0px; } QCheckBox::indicator { width: 30px; height: 38px; } QCheckBox::indicator:unchecked { border-image: url(scenes/ServiceFusion/Assets/Finnkino/green_seat.png); } QCheckBox::indicator:checked { border-image: url(scenes/ServiceFusion/Assets/Finnkino/yellow_seat.png); }");
+    seat.setStyleSheet("QCheckBox { padding: 0px; } QCheckBox::indicator { width: 30px; height: 38px; } QCheckBox::indicator:unchecked { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/green_seat.png); } QCheckBox::indicator:checked { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/yellow_seat.png); }");
     var seat_info = [seat, row, number];
     SeatInformationArray.push(seat_info);
     return seat;
@@ -74,7 +87,7 @@ function CreateHandicapSeat()
     var seat = new QCheckBox();
     seat.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed);
     seat.setContentsMargins(0, 0, 0, 0);
-    seat.setStyleSheet("QCheckBox { padding: 0px; } QCheckBox::indicator { width: 30px; height: 38px; } QCheckBox::indicator:unchecked { border-image: url(scenes/ServiceFusion/Assets/Finnkino/wheelchair.png); } QCheckBox::indicator:checked { border-image: url(scenes/ServiceFusion/Assets/Finnkino/wheelchair.png); }");
+    seat.setStyleSheet("QCheckBox { padding: 0px; } QCheckBox::indicator { width: 30px; height: 38px; } QCheckBox::indicator:unchecked { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/wheelchair.png); } QCheckBox::indicator:checked { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/wheelchair.png); }");
     return seat;
 }
 
@@ -91,7 +104,7 @@ function CreateStep(size, number)
     if (size == 0)
     {
         var label_step = new QLabel("" + number);
-        label_step.setStyleSheet("QLabel { border-image: url(scenes/ServiceFusion/Assets/Finnkino/step_small.png); color: white; font-size: 16px; qproperty-alignment: AlignCenter; }");
+        label_step.setStyleSheet("QLabel { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/step_small.png); color: white; font-size: 16px; qproperty-alignment: AlignCenter; }");
         label_step.setFixedSize(67, 37);
         label_step.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred);
         return label_step;
@@ -99,7 +112,7 @@ function CreateStep(size, number)
     else if (size == 1)
     {
         var label_step = new QLabel("" + number);
-        label_step.setStyleSheet("QLabel { border-image: url(scenes/ServiceFusion/Assets/Finnkino/step_medium.png); color: white; font-size: 16px; qproperty-alignment: AlignCenter; }");
+        label_step.setStyleSheet("QLabel { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/step_medium.png); color: white; font-size: 16px; qproperty-alignment: AlignCenter; }");
         label_step.setFixedSize(84, 37);
         label_step.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred);
         return label_step;
@@ -107,7 +120,7 @@ function CreateStep(size, number)
     else if (size == 2)
     {
         var label_step = new QLabel("" + number);
-        label_step.setStyleSheet("QLabel { border-image: url(scenes/ServiceFusion/Assets/Finnkino/step_large.png); color: white; font-size: 16px; qproperty-alignment: AlignCenter; }");
+        label_step.setStyleSheet("QLabel { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/step_large.png); color: white; font-size: 16px; qproperty-alignment: AlignCenter; }");
         label_step.setFixedSize(101, 37);
         label_step.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred);
         return label_step;
@@ -126,10 +139,18 @@ function CreateStep(size, number)
 
 function SeatSelection()
 {
-    var frame_seatselection = new QFrame();
+    //me.graphicsviewcanvas.GraphicsScene().clear();
+    if (seats_added)
+    {
+        frame_noseats.hide();
+        me.graphicsviewcanvas.width = frame_seatselection.width;
+        me.graphicsviewcanvas.height = frame_seatselection.height;
+        frame_seatselection.show();
+        return;
+    }
     frame_seatselection.objectName = "Seats";
     frame_seatselection.setFrameStyle(QFrame.StyledPanel);
-    frame_seatselection.setStyleSheet("QFrame#Seats { padding: 0px; border: 2px solid black; border-radius: 0px; border-image: url(scenes/ServiceFusion/Assets/Finnkino/plaza_2.png); }");
+    frame_seatselection.setStyleSheet("QFrame#Seats { padding: 0px; border: 2px solid black; border-radius: 0px; border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/plaza_2.png); }");
     
     var buttonOK = new QPushButton("OK");
     buttonOK.clicked.connect(OKClicked);
@@ -256,9 +277,23 @@ function SeatSelection()
     me.graphicsviewcanvas.GraphicsScene().addWidget(frame_seatselection);
     me.graphicsviewcanvas.width = frame_seatselection.width;
     me.graphicsviewcanvas.height = frame_seatselection.height;
-    frame_seatselection.show();
+    frame_seatselection.hide();
 
     row = -1;
+    seats_added = true;
+}
+
+function SetEmptyPlaza()
+{
+    
+    frame_seatselection.hide();
+    me.graphicsviewcanvas.width = frame_noseats.width;
+    me.graphicsviewcanvas.height = frame_noseats.height;
+    frame_noseats.show();
+    //me.graphicsviewcanvas.GraphicsScene().clear();
+    
+    
+
 }
 
 function OKClicked()
@@ -273,6 +308,7 @@ function OKClicked()
 
 function CancelClicked()
 {
+    SetEmptyPlaza();
     ProceedBackward = true;
 }
 
@@ -280,13 +316,11 @@ function Update()
 {
     if (ProceedBackward)
     {
-        //me.graphicsviewcanvas.update = false;
-        //loginEnt.graphicsviewcanvas.update = false;
         var loginPos = loginPlaceable.Position();
         var seatPos = seatPlaceable.Position();
 
-        loginPos.z += 0.1;
-        loginPos.y -= 0.1;
+        loginPos.z += 0.5;
+        loginPos.y -= 0.2;
         loginPlaceable.SetPosition(loginPos);
         seatPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / rotation));
         
@@ -299,13 +333,10 @@ function Update()
         if (rotation >= 1.2)       
         {
             ProceedBackward = false;
-            //me.graphicsviewcanvas.update = true;
-            //loginEnt.graphicsviewcanvas.update = true;
             seatPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / 1.2));
             rotation = 1.0;
         }
     }
-    
 }
 
 function OnScriptDestroyed()
