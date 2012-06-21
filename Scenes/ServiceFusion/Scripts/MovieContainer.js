@@ -42,11 +42,14 @@ Movie.FromString = function(data)
 function MovieContainer(parent)
 {
     BaseContainer.call(this, parent);
+    this.visual.styleSheet = "background-color:white;";
 
     titleLabel = new QLabel("FINNKINO PLAZA\n\nAVOINNA 11-23");
     var title = me.GetComponent("EC_GraphicsViewCanvas", "Title");
     titleLabel.size = new QPoint(title.width, title.height);
     title.GraphicsScene().addWidget(titleLabel);
+    title.GraphicsView().styleSheet = "background-color:white;";
+    titleLabel.styleSheet = "background-color:white;";
     titleLabel.show();
     
     this.movies = new Array();
@@ -110,6 +113,7 @@ MovieContainer.prototype = new BaseContainer();
 MovieContainer.prototype.DisplayMovie = function(movie) 
 {
     var main = new QWidget();
+    main.styleSheet = "background-color:white;";
     main.setLayout(new QHBoxLayout());
     main.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.layout().setContentsMargins(10, 0, 0, 0); 

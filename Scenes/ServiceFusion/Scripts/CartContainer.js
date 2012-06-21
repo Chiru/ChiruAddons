@@ -6,6 +6,7 @@ engine.IncludeFile("VisualContainerUtils.js");
 me.Action("MousePress").Triggered.connect(MousePressed);
 
 var cartContainer = null;
+var cartVisualEntity = scene.GetEntityByName("cart_item");
 
 function ValidateData(rdfData)
 {
@@ -21,6 +22,8 @@ function SourceScript(tag, rdfStore)
     {
         childContainer = new BaseContainer(cartContainer.visual);
         childContainer.container.rdfStore.FromString(rdfStore.toString());
+        if (cartVisualEntity)
+            cartVisualEntity.placeable.visible = true;
         me.Exec(1, "CartItemAdded", tag.data, rdfStore.toString());
     }
 }
