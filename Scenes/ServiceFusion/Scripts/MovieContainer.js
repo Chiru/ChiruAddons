@@ -90,7 +90,7 @@ function MovieContainer(parent)
             for(var i = 0; i < statements.length; ++i)
             {
                 movie = Movie.FromString(statements[i].object.literal.toString());
-                if (movie && movie.time > currentTime.getTime())
+                if (/*movie && movie.time > currentTime.getTime() &&*/ movie.auditorium == "sali 1" || movie.auditorium == "sali 2")
                     this.movies.push(movie);
                 world.FreeStatement(statements[i]);
             }

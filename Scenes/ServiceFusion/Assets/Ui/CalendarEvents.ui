@@ -46,7 +46,7 @@
 	border-style: solid; 
  border-left-width: 1px; 
  border-top-width: 1px; 
- border-color: black;
+ border-color:#9E9E9E;
 }</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -147,7 +147,7 @@
 	border-style: solid; 
  border-left-width: 1px; 
  border-top-width: 1px; 
- border-color: black;
+ border-color:#9E9E9E;
 }</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -248,7 +248,7 @@
 	border-style: solid; 
  border-left-width: 1px; 
  border-top-width: 1px; 
- border-color: black;
+ border-color:#9E9E9E;
 }</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -349,7 +349,7 @@
 	border-style: solid; 
  border-left-width: 1px; 
  border-top-width: 1px; 
- border-color: black;
+ border-color:#9E9E9E;
 }</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_8">

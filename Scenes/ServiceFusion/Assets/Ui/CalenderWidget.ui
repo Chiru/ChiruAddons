@@ -149,7 +149,7 @@
 	border-style: solid; 
  border-left-width: 1px; 
  border-top-width: 1px; 
- border-color: black;
+ border-color: #9E9E9E;
 }</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -186,10 +186,6 @@ QLabel
 	font-size: 18px;
     background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
-	border-style: solid;
-	border-left-width: 1px;
-	border-top-width: 1px;
-	border-color: black;
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_53">
@@ -220,7 +216,7 @@ QLabel
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -260,7 +256,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -300,7 +296,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -340,7 +336,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -380,7 +376,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -420,7 +416,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -460,7 +456,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -505,7 +501,7 @@ QLabel:hover
 	border-style: solid; 
  border-left-width: 1px; 
  border-top-width: 1px; 
- border-color: black;
+ border-color: #9E9E9E;
 }</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -542,10 +538,6 @@ QLabel
 	font-size: 18px;
     background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
-	border-style: solid;
-	border-left-width: 1px;
-	border-top-width: 1px;
-	border-color: black;
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_54">
@@ -576,7 +568,7 @@ QLabel
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -616,7 +608,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -656,7 +648,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -696,7 +688,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -736,7 +728,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -776,7 +768,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -816,7 +808,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -861,7 +853,7 @@ QLabel:hover
 	border-style: solid; 
  border-left-width: 1px; 
  border-top-width: 1px; 
- border-color: black;
+ border-color:#9E9E9E;
 }</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -898,10 +890,6 @@ QLabel
 	font-size: 18px;
     background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
-	border-style: solid;
-	border-left-width: 1px;
-	border-top-width: 1px;
-	border-color: black;
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_59">
@@ -932,7 +920,7 @@ QLabel
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -972,7 +960,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1012,7 +1000,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1052,7 +1040,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1092,7 +1080,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1132,7 +1120,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1172,7 +1160,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1217,7 +1205,7 @@ QLabel:hover
 	border-style: solid; 
  border-left-width: 1px; 
  border-top-width: 1px; 
- border-color: black;
+ border-color: #9E9E9E;
 }</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -1254,10 +1242,6 @@ QLabel
 	font-size: 18px;
     background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
-	border-style: solid;
-	border-left-width: 1px;
-	border-top-width: 1px;
-	border-color: black;
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_64">
@@ -1288,7 +1272,7 @@ QLabel
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1328,7 +1312,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1368,7 +1352,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1408,7 +1392,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1448,7 +1432,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1488,7 +1472,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1528,7 +1512,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1573,7 +1557,7 @@ QLabel:hover
 	border-style: solid; 
  border-left-width: 1px; 
  border-top-width: 1px; 
- border-color: black;
+ border-color: #9E9E9E;
 }</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -1610,10 +1594,6 @@ QLabel
 	font-size: 18px;
     background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
-	border-style: solid;
-	border-left-width: 1px;
-	border-top-width: 1px;
-	border-color: black;
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_69">
@@ -1644,7 +1624,7 @@ QLabel
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1684,7 +1664,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1724,7 +1704,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1764,7 +1744,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1804,7 +1784,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1844,7 +1824,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1884,7 +1864,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -1929,7 +1909,7 @@ QLabel:hover
 	border-style: solid; 
  border-left-width: 1px; 
  border-top-width: 1px; 
- border-color: black;
+ border-color:#9E9E9E;
 }</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_10">
@@ -1966,10 +1946,6 @@ QLabel
 	font-size: 18px;
     background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
-	border-style: solid;
-	border-left-width: 1px;
-	border-top-width: 1px;
-	border-color: black;
 }</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_74">
@@ -2000,7 +1976,7 @@ QLabel
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -2040,7 +2016,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -2080,7 +2056,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -2120,7 +2096,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -2160,7 +2136,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -2200,7 +2176,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
@@ -2240,7 +2216,7 @@ QLabel:hover
          <string notr="true">QLabel
 {
  color:black;
- font: bold &quot;FreeSans&quot;;
+ font: &quot;FreeSans&quot;;
  font-size: 21px;
  background-color:white;
  qproperty-alignment: AlignCenter;
