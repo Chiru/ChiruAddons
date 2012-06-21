@@ -14,11 +14,11 @@ function Movie()
     this.auditorium = "";
     this.time = null;
 }
-
+ 
 Movie.IsEmpty = function()
 {
     if (this.title == "" && this.auditorium == "" && this.time == null) 
-        return true;
+        return true; 
     return false;
 };
 
@@ -100,7 +100,7 @@ function MovieContainer(parent)
                     break;
             }
         }
-        response.deleteLater();
+        response.deleteLater(); 
         response = null;
     });
 }

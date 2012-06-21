@@ -22,6 +22,7 @@
 #include "CieMap/ScriptManager.h"
 #include "CieMap/ScriptServices.h"
 #include "CieMap/HttpRequestService.h"
+#include "EC_VisualContainer.h"
 // Core includes
 #include "Framework.h"
 #include "QScriptEngineHelpers.h"
@@ -125,6 +126,7 @@ C3DUiModule::~C3DUiModule()
 
 void C3DUiModule::Load()
 {
+    framework_->Scene()->RegisterComponentFactory(ComponentFactoryPtr(new GenericComponentFactory<EC_VisualContainer>));
 }
 
 void C3DUiModule::Initialize()

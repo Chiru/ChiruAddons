@@ -75,7 +75,7 @@ void VisualContainer::ParentChanged(CieMap::IContainer * parent)
     //SetIgnoreDrop(true);
     //setAcceptDrops(false);
     /// @todo replace this with layout functionality.
-    setParent(parent->Visual());
+    //setParent(parent->Visual());
 }
 
 void VisualContainer::dragEnterEvent(QDragEnterEvent *e)

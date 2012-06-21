@@ -10,7 +10,7 @@ class VisualContainer : public CieMap::IVisualContainer
 {
     Q_OBJECT
     Q_PROPERTY(CieMap::IContainer* owner READ Owner WRITE SetOwner)
-    Q_PROPERTY(bool useCloneOnDrag READ UseCloneOnDrag WRITE SetUseCloneOnDrag);
+    Q_PROPERTY(bool useCloneOnDrag READ UseCloneOnDrag WRITE SetUseCloneOnDrag)
 
 public:
     explicit VisualContainer(QWidget* parent = 0);
