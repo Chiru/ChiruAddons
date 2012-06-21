@@ -6,7 +6,7 @@ engine.IncludeFile("VisualContainerUtils.js");
 
 ui.MainWindow().mouseTracking = true;  
 
-var titleLabel = null;
+var titleWidget = null;
 
 function Movie()
 {
@@ -44,14 +44,22 @@ function MovieContainer(parent)
     BaseContainer.call(this, parent);
     this.visual.styleSheet = "background-color:white;";
 
-    titleLabel = new QLabel("FINNKINO\n\nAVOINNA 11-23");
+    titleWidget = new QWidget();
+    titleWidget.setLayout(new QVBoxLayout());
+    titleLabel = new QLabel("FINNKINO");
     titleLabel.font = new QFont("SansSerif", 42);
+    titleLabel.alignment = 0x0004; // Qt::AlignHCenter
+    openLabel = new QLabel("\nAVOINNA 11-23"); // Could use spacer here, but going with newline for now
+    openLabel.font = new QFont("SansSerif", 16);
+    openLabel.alignment = 0x0004;
+    titleWidget.layout().addWidget(titleLabel, 0, 0);
+    titleWidget.layout().addWidget(openLabel, 0, 0);
     var title = me.GetComponent("EC_GraphicsViewCanvas", "Title");
-    titleLabel.size = new QPoint(title.width, title.height);
-    title.GraphicsScene().addWidget(titleLabel);
+    titleWidget.size = new QPoint(title.width, title.height);
+    title.GraphicsScene().addWidget(titleWidget);
     title.GraphicsView().styleSheet = "background-color:white;";
-    titleLabel.styleSheet = "background-color:white;";
-    titleLabel.show();
+    titleWidget.styleSheet = "background-color:white;";
+    titleWidget.show();
     
     this.movies = new Array();
     this.visual.size = new QSize(320, 400);
@@ -170,10 +178,10 @@ function OnScriptDestroyed()
 {
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
-    if (titleLabel)
+    if (titleWidget)
     {
-        titleLabel.deleteLater();
-        titleLabel = 0;
+        titleWidget.deleteLater();
+        titleWidget = 0;
     }
     if (container)
     {
