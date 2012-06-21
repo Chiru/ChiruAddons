@@ -92,10 +92,10 @@ Date.prototype.getWeek = function()
 
 var date = new Date(2012, 6, 25);
 
-var months = ["Tammikuu", "Helmikuu",  "Maaliskuu",
-              "Huhtikuu", "Toukokuu",  "Kesäkuu",
-              "Heinäkuu", "Elokuu",    "Syyskuu",
-              "Lokakuu",  "Marraskuu", "Joulukuu"];
+var months = ["TAMMIKUU", "HELMIKUU",  "MAALISKUU",
+              "HUHTIKUU", "TOUKOKUU",  "KESÄKUU",
+              "HEINÄKUU", "ELOKUU",    "SYYSKUU",
+              "LOKAKUU",  "MARRASKUU", "JOULUKUU"];
               
 var month = months[date.getMonth()];
 var year = date.getFullYear();
@@ -194,16 +194,20 @@ for (var i = 1; i < 7; ++i)
 calendarWidget.cells[0][0].widget.layout().addWidget(new QLabel(month), 0, 0);
 calendarWidget.cells[0][1].widget.layout().addWidget(new QLabel(year.toString()), 0, 0);
 
-function AddDayCell(day, row, column)
+function AddDayCell(day, row, column, style)
 {
     var cell = calendarWidget.cells[row][column];
     if (cell)
     {
         var dragAddScript = new Script();
-        cell.widget.layout().addWidget(new QLabel(day), 0, 0);
+        var dayLabel = new QLabel(day);
+        if (style)
+            dayLabel.styleSheet = style;
+        cell.widget.layout().addWidget(dayLabel, 0, 0);
         cell.container.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "Movie"), dragAddScript);
         dragAddScript.Invoked.connect(cell, DragAddEvent);
     }
+    return cell;
 }
 
 // Fill july data staticly into the calendar.
@@ -236,7 +240,7 @@ AddDayCell("22", 4, 7);
 
 AddDayCell("23", 5, 1);
 AddDayCell("24", 5, 2);
-AddDayCell("25", 5, 3);
+AddDayCell("25", 5, 3, Cell.DayActiveStyle);
 AddDayCell("26", 5, 4);
 AddDayCell("27", 5, 5);
 AddDayCell("28", 5, 6);
@@ -276,6 +280,7 @@ function AddEventCell(row, column)
         cell.container.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "Movie"), dragAddScript);
         dragAddScript.Invoked.connect(cell, DragAddEventToParent);
     }
+    return cell;
 }
 
 for (var i = 0; i < 4; ++i) 
@@ -285,6 +290,7 @@ for (var i = 0; i < 4; ++i)
     AddEventCell(i, 1);
 } 
 eventsWidget.cells[0][0].widget.layout().addWidget(new QLabel("25"), 0, 0);
+eventsWidget.cells[0][0].widget.styleSheet = Cell.DayEventStyle;
 eventsWidget.cells[0][1].widget.layout().addWidget(new QLabel("TAPAHTUMAT"), 0, 0);
 
 eventLayout.addWidget(eventsWidget, 0, 0);

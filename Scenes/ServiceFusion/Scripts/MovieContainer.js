@@ -139,7 +139,7 @@ MovieContainer.prototype.DisplayMovie = function(movie)
     main.layout().addWidget(label, null, null);
     
     // Initialize title/auditorium Label 
-    var label2 = new QLabel(movie.title + "\n" + movie.auditorium);
+    var label2 = new QLabel(movie.title + "\n" + movie.auditorium.toUpperCase());
     label2.font = new QFont("FreeSans", 12);
     label2.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.layout().addWidget(label2, null, null);

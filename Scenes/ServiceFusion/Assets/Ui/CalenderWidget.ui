@@ -158,7 +158,7 @@
         <property name="styleSheet">
          <string notr="true">QWidget
 {
-	background-color:gray;
+	background-color:#cecece;
 }
 
 QLabel 
@@ -166,7 +166,7 @@ QLabel
 	color:white;
 	font: bold &quot;FreeSans&quot;; 
 	font-size: 21px;
-	background-color:gray; 
+    background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
 	border-style: solid;
 	border-left-width: 1px;
@@ -514,7 +514,7 @@ QLabel:hover
         <property name="styleSheet">
          <string notr="true">QWidget
 {
-	background-color:gray;
+	background-color:#cecece;
 }
 
 QLabel 
@@ -522,7 +522,7 @@ QLabel
 	color:white;
 	font: bold &quot;FreeSans&quot;; 
 	font-size: 21px;
-	background-color:gray; 
+    background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
 	border-style: solid;
 	border-left-width: 1px;
@@ -870,7 +870,7 @@ QLabel:hover
         <property name="styleSheet">
          <string notr="true">QWidget
 {
-	background-color:gray;
+	background-color:#cecece;
 }
 
 QLabel 
@@ -878,7 +878,7 @@ QLabel
 	color:white;
 	font: bold &quot;FreeSans&quot;; 
 	font-size: 21px;
-	background-color:gray; 
+    background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
 	border-style: solid;
 	border-left-width: 1px;
@@ -1226,7 +1226,7 @@ QLabel:hover
         <property name="styleSheet">
          <string notr="true">QWidget
 {
-	background-color:gray;
+	background-color:#cecece;
 }
 
 QLabel 
@@ -1234,7 +1234,7 @@ QLabel
 	color:white;
 	font: bold &quot;FreeSans&quot;; 
 	font-size: 21px;
-	background-color:gray; 
+    background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
 	border-style: solid;
 	border-left-width: 1px;
@@ -1582,7 +1582,7 @@ QLabel:hover
         <property name="styleSheet">
          <string notr="true">QWidget
 {
-	background-color:gray;
+	background-color:#cecece;
 }
 
 QLabel 
@@ -1590,7 +1590,7 @@ QLabel
 	color:white;
 	font: bold &quot;FreeSans&quot;; 
 	font-size: 21px;
-	background-color:gray; 
+    background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
 	border-style: solid;
 	border-left-width: 1px;
@@ -1938,7 +1938,7 @@ QLabel:hover
         <property name="styleSheet">
          <string notr="true">QWidget
 {
-	background-color:gray;
+	background-color:#cecece;
 }
 
 QLabel 
@@ -1946,7 +1946,7 @@ QLabel
 	color:white;
 	font: bold &quot;FreeSans&quot;; 
 	font-size: 21px;
-	background-color:gray; 
+    background-color:#cecece;
 	qproperty-alignment: AlignCenter; 
 	border-style: solid;
 	border-left-width: 1px;

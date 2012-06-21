@@ -53,11 +53,20 @@ Cell.DayActiveStyle = 'QLabel \
  color:white; \
  font: bold "FreeSans"; \
  font-size: 21px; \
- background-color:blue; \
+ background-color:#88C3D7; \
  qproperty-alignment: AlignCenter; \
 } \
 QLabel:hover \
 { \
  background-color:#404040; \
  color:white; \
+}';
+
+Cell.DayEventStyle = 'QLabel \
+{ \
+ color:white; \
+ font: bold "FreeSans"; \
+ font-size: 21px; \
+ background-color:#88C3D7; \
+ qproperty-alignment: AlignCenter; \
 }';
