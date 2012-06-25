@@ -25,47 +25,46 @@ loginContainer.visual.owner.eventManager.RegisterScript(new Tag(RdfVocabulary.so
 
 function IdScript(tag, rdfStore)
 {
-	if (tag.data == "ID")
-	{
-		//\todo For some reason redland rdf lib will mess up statement order, most likely map container is beeing used.
-		loginContainer.container.rdfStore.FromString(rdfStore.toString());
-		
-		var variables = new Array();
-		var statements = Select(loginContainer.container.rdfStore, null, RdfVocabulary.data, null);
-		print(statements.length);
-		if (statements.length == 6)
-		{
-			for (var i = 0; i < statements.length; ++i)
-			{
-				print(statements[i].object.literal);
-				variables.push(statements[i].object.literal);
-			}
-		}
-		ReleaseStatements(statements);
-		
-		DisplayIdInfo(variables);
-	}
+    if (tag.data == "ID")
+    {
+        //\todo For some reason redland rdf lib will mess up statement order, most likely map container is beeing used.
+        loginContainer.container.rdfStore.FromString(rdfStore.toString());
+        
+        var variables = new Array();
+        var statements = Select(loginContainer.container.rdfStore, null, RdfVocabulary.data, null);
+        print(statements.length);
+        if (statements.length == 6)
+        {
+            for (var i = 0; i < statements.length; ++i)
+            {
+                variables.push(statements[i].object.literal);
+            }
+        }
+        ReleaseStatements(statements);
+        
+        DisplayIdInfo(variables);
+    }
 }
 
 function DisplayIdInfo(variables)
-{	
-	var le_firstname = findChild(loginContainer.visual, "le_firstname");
-	var le_lastname = findChild(loginContainer.visual, "le_lastname");
-	/*var le_email = findChild(loginContainer.visual, "le_email");
-	var le_phone = findChild(loginContainer.visual, "le_phone");
-	var le_birthday = findChild(loginContainer.visual, "le_birthday");
-	var rb_gender_male = findChild(loginContainer.visual, "rb_gender_male");
-	var rb_gender_female = findChild(loginContainer.visual, "rb_gender_female");*/
-	
-	le_firstname.text = variables[0];
-	le_lastname.text = variables[1];
-	/*le_email.text = variables[2];
-	le_phone.text = variables[3];
-	le_birthday.text = variables[4];
-	if (variables[5] == "Male")
-		rb_gender_male.checked = true;
-	else
-		rb_gender_female.checked = true;*/
+{
+    var le_firstname = findChild(loginContainer.visual, "le_firstname");
+    var le_lastname = findChild(loginContainer.visual, "le_lastname");
+    /*var le_email = findChild(loginContainer.visual, "le_email");
+    var le_phone = findChild(loginContainer.visual, "le_phone");
+    var le_birthday = findChild(loginContainer.visual, "le_birthday");
+    var rb_gender_male = findChild(loginContainer.visual, "rb_gender_male");
+    var rb_gender_female = findChild(loginContainer.visual, "rb_gender_female");*/
+
+    le_firstname.text = variables[0];
+    le_lastname.text = variables[1];
+    /*le_email.text = variables[2];
+    le_phone.text = variables[3];
+    le_birthday.text = variables[4];
+    if (variables[5] == "Male")
+        rb_gender_male.checked = true;
+    else
+        rb_gender_female.checked = true;*/
 }
 
 var placeable = me.GetOrCreateComponent("EC_Placeable");
@@ -122,8 +121,7 @@ StartLogin();
 function StartLogin()
 {
     var frame_login = new QFrame();
-    
-    
+    frame_login.objectName = "frame_login";
 
     var buttonOK = new QPushButton("Rekisteröidy");
     buttonOK.clicked.connect(OKClicked);
@@ -171,13 +169,14 @@ function StartLogin()
 
     label_shoppingcart.setStyleSheet("QLabel { font: bold 18px; }");
     label_movieinfo.setStyleSheet("QLabel { font: 18px; }");
+    label_movieinfo.wordWrap = true;
 	
 
     var grid = new QGridLayout();
     grid.setVerticalSpacing(8);
 
-    grid.addWidget(label_shoppingcart, 0, 0, 1, 2);
-    grid.addWidget(label_movieinfo, 1, 0, 1, 2);
+    grid.addWidget(label_shoppingcart, 0, 0, 1, 3);
+    grid.addWidget(label_movieinfo, 1, 0, 1, 3);
     
     grid.addWidget(label_firstname, 2, 0);
     grid.addWidget(le_firstname, 2, 1, Qt.AlignLeft, 2);
@@ -216,7 +215,6 @@ function StartLogin()
     me.graphicsviewcanvas.width = frame_login.width;
     me.graphicsviewcanvas.height = frame_login.height;
     frame_login.show();
-    
 }
 
 function OKClicked()
@@ -266,9 +264,9 @@ function Update()
 
 function SetMovieInfo(name, place, time, date)
 {
-	if (id_entity)
-		id_entity.placeable.visible = true;
-		
+    if (id_entity)
+        id_entity.placeable.visible = true;
+
     movieName = name;
     moviePlace = place;
     movieTime = time;

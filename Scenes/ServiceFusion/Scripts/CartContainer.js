@@ -14,8 +14,14 @@ function ValidateData(rdfData)
     return false;
 }
 
-var supportedTypes = {"Movie":1};
+function CartItem(type, data)
+{
+    this.type = type;
+    this.data = data;
+}
 
+var supportedTypes = {"Movie":1};
+var cartItems = new Array();
 function SourceScript(tag, rdfStore)
 {
     if (cartContainer && supportedTypes[tag.data])
@@ -24,11 +30,32 @@ function SourceScript(tag, rdfStore)
         childContainer.container.rdfStore.FromString(rdfStore.toString());
         if (cartVisualEntity)
             cartVisualEntity.placeable.visible = true;
-        me.Exec(1, "CartItemAdded", tag.data, rdfStore.toString());
+        
+        cartItems.push(FetchMovieData(childContainer.container.rdfStore));
     }
 }
 
-me.Action("CartItemAdded").Triggered.connect(function(type, rdfStoreData) { print(rdfStoreData); });
+function FetchMovieData(rdfStore)
+{
+    var statements = Select(rdfStore, null, RdfVocabulary.data, null);
+    if (statements.length == 3)
+    {
+        var item = new CartItem("Movie", new Object);
+        item.data["time"] = statements[0].object.literal;
+        item.data["title"] = statements[1].object.literal;
+        item.data["auditorium"] = statements[2].object.literal;
+        return item;
+    }
+    FreeStatements(statements)
+}
+
+function GetMovieCartItem()
+{
+    for(var i = 0; i < cartItems.length; ++i)
+        if (cartItems[i].type == "Movie")
+            return cartItems[i];
+    return null;
+}
 
 function CartContainer(parent)
 {
@@ -58,8 +85,28 @@ function OnDropEvent(e)
     }
 }
 
+function SendMovieData()
+{
+    var movieItem = GetMovieCartItem();
+    var movieLoginEntity = scene.GetEntityByName("MovieLoginDialog");
+    if (!movieItem || !movieLoginEntity)
+        return;
+
+    var date = new Date(movieItem.data["time"]);
+    var hour = date.getHours();
+    var minute = date.getMinutes();
+    if (minute == 0) minute = "00";
+    var date = date.getDate() + "." + date.getMonth() + "." + date.getFullYear();
+    var params = [movieItem.data["title"], movieItem.data["auditorium"], (hour + ":" + minute), date.toString()];
+    movieLoginEntity["Exec(EntityAction::ExecTypeField,QString,QVariantList)"](1, "SetMovieInfo", params);
+}
+
 function MousePressed()
 {
+    var movieItem = GetMovieCartItem();
+    if (!movieItem)
+        return;
+
     if (!scene.EntityByName("MovieLoginDialog"))
     {
         var movieLoginEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
@@ -86,6 +133,8 @@ function MousePressed()
         script.scriptRef = new AssetReference("MoviePayment.js");
         script.runOnLoad = true;
     }
+    
+    frame.DelayedExecute(3.0).Triggered.connect(SendMovieData);
 }
 
 cartContainer = new CartContainer(null);
