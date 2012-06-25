@@ -84,9 +84,7 @@ QScriptValue CreateContainer(QScriptContext *ctx, QScriptEngine *engine)
     if (ctx->argumentCount() == 1)
     {
         QScriptValue value = ctx->argument(0);
-        bool isObject = value.isQObject();
         CieMap::IVisualContainer *vc = qscriptvalue_cast<CieMap::IVisualContainer *>(value);
-        CieMap::IVisualContainer *vc2 = dynamic_cast<CieMap::IVisualContainer *>(value.toQObject());
         return engine->toScriptValue(CieMap::ContainerFactory::CreateContainer(vc));
     }
     else
