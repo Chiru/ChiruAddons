@@ -7,9 +7,11 @@ engine.IncludeFile("Lyrics.js");
 
 var lyricslabel = null;
 
+me.placeable.visible = false;
+
 me.Action("ShowLyrics").Triggered.connect(function(type, rdfStoreData) {
     print("starting lyrics fetch");
-    var barent = scene.GetEntityByName("BarContainer");
+    var barent = scene.EntityByName("BarContainer");
     last_song = barent.dynamiccomponent.GetAttribute("last_song");
     if (!last_song) {
         print("no last_song in bar");
@@ -23,6 +25,7 @@ me.Action("ShowLyrics").Triggered.connect(function(type, rdfStoreData) {
             print("no lyricslabel");
         else {
             lyricslabel.text = song.title + "\n\n" + lyrics;
+            me.placeable.visible = true;
         }
     });
 });
