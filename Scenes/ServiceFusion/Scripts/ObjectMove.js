@@ -272,7 +272,7 @@ function Update(/*frameTime*/)
     {
         if (input.IsMouseButtonPressed(1))
         {
-            var obj = FindNearestObject();
+            var obj = FindNearestObject(input.MousePos());
             if (obj)
                 BeginMove(obj, -1);
         }
