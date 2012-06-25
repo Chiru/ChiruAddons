@@ -5,6 +5,9 @@ engine.IncludeFile("VisualContainerUtils.js");
 me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
 frame.Updated.connect(Update);
 
+var calendarEntity = scene.GetEntityByName("calendar");
+var calendar_component = calendarEntity.GetComponent("EC_VisualContainer", "calendar");
+
 if (!server.IsRunning() && !framework.IsHeadless())
 {
     engine.ImportExtension("qt.core");
@@ -401,6 +404,19 @@ function ThankYou()
 function ThankyouClicked()
 {
     //Activate calendar event and close dialogs etc.
+    var movieContainer = new BaseContainer(null);
+    AddStatement(movieContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "Movie");
+    var time = movieTime.split(":");
+    var date = movieDate[0].split(".");
+    var movie_date = new Date();
+    movie_date.setFullYear(parseInt(date[2]), (parseInt(date[1])-1), parseInt(date[0]));
+    movie_date.setHours(parseInt(time[0]));
+    movie_date.setMinutes(parseInt(time[1]));
+    AddStatement(movieContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, movie_date.toString());
+    AddStatement(movieContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, movieName);
+    AddStatement(movieContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, moviePlace);
+    calendar_component.vc.HandleMeshDrop(movieContainer.visual);
+    movieContainer.visual.deleteLater();
 }
 
 function OnScriptDestroyed()

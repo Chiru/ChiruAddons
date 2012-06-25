@@ -23,11 +23,43 @@ var eventsEntityName = "calendar_events";
 var eventsEntity = null;
 var calendarContainer = null;
 var calEventsContainer = null;
+var currentDayCell = null;
 // Override from VisualContainerUtils.js
 dragObjectName = "calendar_day_block";
 
+function AddEventToCalendar(tag, rdfStore)
+{
+    if (tag.data == "Movie")
+    {
+        if (!currentDayCell.container)
+            return;
+        var container = currentDayCell.container;
+
+        var statements = Select(rdfStore, null, RdfVocabulary.data, null);
+        if (statements.length >= 2)
+        {
+            var date = new Date(statements[0].object.literal);
+            var movieTitle = statements[1].object.literal;
+            var audit = statements[2].object.literal;
+            
+            var eventContainer = new BaseContainer(container.visual);
+            eventContainer.container.parent = container;
+            
+            AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "datetime");
+
+            AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, date.toString());
+            AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Movie");
+            AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, movieTitle + "\n" + audit.toUpperCase());
+            
+            day_container.vc = container.visual;
+            ParseDayEvents(container);
+            eventsEntity.placeable.visible = true;
+        }
+    }
+}
+
 function DragAddEvent(tag, rdfStore) 
-{ 
+{
     if (tag.data == "Movie")
     {
         var statements = Select(rdfStore, null, RdfVocabulary.data, null);
@@ -167,6 +199,9 @@ function CellObject(w, row, column, events)
 
 calendarContainer = new BaseContainer(null);
 calendar_container.vc = calendarContainer.visual;
+var calendar_script = new Script();
+calendar_script.Invoked.connect(AddEventToCalendar);
+calendarContainer.container.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "Movie"), calendar_script);
 var calLayout = new QHBoxLayout();
 calLayout.setSpacing(0);
 calLayout.setContentsMargins(0, 0, 0, 0);
@@ -199,13 +234,13 @@ function AddDayCell(day, row, column, style)
     var cell = calendarWidget.cells[row][column];
     if (cell)
     {
-        var dragAddScript = new Script();
         var dayLabel = new QLabel(day);
         if (style)
             dayLabel.styleSheet = style;
         cell.widget.layout().addWidget(dayLabel, 0, 0);
-        cell.container.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "Movie"), dragAddScript);
+        var dragAddScript = new Script();
         dragAddScript.Invoked.connect(cell, DragAddEvent);
+        cell.container.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "Movie"), dragAddScript);
     }
     return cell;
 }
@@ -230,7 +265,7 @@ AddDayCell("10", 3, 2);
 AddDayCell("11", 3, 3);
 AddDayCell("12", 3, 4);
 AddDayCell("13", 3, 5);
-AddDayCell("14", 3, 6);
+AddDayCell("14", 3, 6); 
 AddDayCell("15", 3, 7, Cell.SundayActiveStyle);
 
 AddDayCell("39", 4, 0); // Week
@@ -245,7 +280,7 @@ AddDayCell("22", 4, 7, Cell.SundayActiveStyle);
 AddDayCell("40", 5, 0); // Week
 AddDayCell("23", 5, 1);
 AddDayCell("24", 5, 2);
-AddDayCell("25", 5, 3, Cell.DayActiveStyle);
+currentDayCell = AddDayCell("25", 5, 3, Cell.DayActiveStyle);
 AddDayCell("26", 5, 4);
 AddDayCell("27", 5, 5);
 AddDayCell("28", 5, 6);

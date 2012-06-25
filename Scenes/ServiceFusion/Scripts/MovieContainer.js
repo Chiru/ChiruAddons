@@ -29,8 +29,11 @@ Movie.FromString = function(data)
     if (v.length >= 3)
     {
         movie = new Movie();
-        // Note! fromString should return QDateTime object, but javascript's Date object is returned instead.  
-        var date = QDateTime.fromString(v[2], "yyyy-MM-ddThh:mm:ss");
+        // Note! fromString should return QDateTime object, but javascript's Date object is returned instead.
+        // \todo remove fixed date when calendar is completed.
+        var dateSlit = v[2].split("T");
+        var newDate = "2012-07-25T" + dateSlit[1];
+        var date = QDateTime.fromString(newDate, "yyyy-MM-ddThh:mm:ss");
         movie.title = v[0];
         movie.auditorium = v[1]; 
         movie.time = date;
@@ -78,12 +81,12 @@ function MovieContainer(parent)
     
     response.Ready.connect(this, function(response)
     {
-        if (this.visual.owner.rdfStore.FromString(response.data))
+        if (this.visual.owner.rdfStore.FromString(response.data)) 
         {
-            // Create query statement.
+            // Create query statement. 
             var subject = world.CreateResource(new QUrl("http://cie/news#"));
             var predicate = world.CreateResource(new QUrl(RdfVocabulary.data));
-            var statement = world.CreateStatement(subject, predicate, null);
+            var statement = world.CreateStatement(subject, predicate, null); 
             
             var statements = this.visual.owner.rdfStore.Select(statement); 
             
