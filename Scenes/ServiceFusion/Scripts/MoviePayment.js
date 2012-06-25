@@ -1,3 +1,6 @@
+engine.IncludeFile("RdfVocabulary.js");
+engine.IncludeFile("VisualContainerUtils.js");
+
 me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
 frame.Updated.connect(Update);
 
@@ -7,6 +10,46 @@ if (!server.IsRunning() && !framework.IsHeadless())
     engine.ImportExtension("qt.gui");
 }
 
+var payment_container = new BaseContainer(null);
+// todo replace this with layout object.
+payment_container.visual.setLayout(new QHBoxLayout());
+payment_container.visual.layout().setContentsMargins(0, 0, 0, 0);
+payment_container.visual.layout().setSpacing(0);
+
+var credit_card_container = new BaseContainer(payment_container);
+var credit_script = new Script();
+credit_script.Invoked.connect(CreditScript);
+payment_container.visual.owner.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "CreditCard"), credit_script);
+ 
+function CreditScript(tag, rdfStore)
+{
+    if (tag.data == "CreditCard")
+    {
+        credit_card_container.container.rdfStore.FromString(rdfStore.toString());
+        
+        var variables = new Array();
+        var statements = Select(credit_card_container.container.rdfStore, null, RdfVocabulary.data, null);
+        if (statements.length == 3)
+        {
+            for (var i = 0; i < statements.length; ++i)
+            {
+                variables.push(statements[i].object.literal);
+            }
+        }
+        ReleaseStatements(statements);
+        
+        DisplayCreditCardInfo(variables);
+    }
+}
+
+function DisplayCreditCardInfo(varibles)
+{
+    if (varibles.length == 3)
+    {
+        var label_paymentarea = findChild(payment_container.visual, "label_paymentarea");
+        label_paymentarea.text = "\n\n" + varibles[0] + ": " + varibles[1] + "\n\n";
+    }
+}
 
 var visa_entity = scene.GetEntityByName("visa_card");
 
@@ -65,9 +108,7 @@ StartLogin();
 
 function StartLogin()
 {
-
     var frame_payment = new QFrame();
-    
     
 
     var buttonOK = new QPushButton("Seuraava");
@@ -105,6 +146,7 @@ function StartLogin()
 
 
     var label_paymentarea = new QLabel("\n\nRaahaa maksukortti tälle alueelle\n\n");
+    label_paymentarea.objectName = "label_paymentarea";
     label_paymentarea.setStyleSheet("QLabel { font: bold 18px; qproperty-alignment: AlignCenter; border: 2px solid black;}");
     //label_paymentarea.setFixedSize(300, 200);
     label_paymentarea.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
@@ -144,7 +186,8 @@ function StartLogin()
 
     frame_payment.setLayout(vertLayout);
 
-    me.graphicsviewcanvas.GraphicsScene().addWidget(frame_payment);
+    payment_container.visual.layout().addWidget(frame_payment, 0, 0);
+    me.graphicsviewcanvas.GraphicsScene().addWidget(payment_container.visual);
     me.graphicsviewcanvas.width = frame_payment.width;
     me.graphicsviewcanvas.height = frame_payment.height;
     frame_payment.show();

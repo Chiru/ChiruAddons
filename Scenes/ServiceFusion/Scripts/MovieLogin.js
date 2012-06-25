@@ -17,6 +17,7 @@ if (id_entity)
 var loginContainer = new BaseContainer(null);
 var idContainer = new BaseContainer(loginContainer);
 var movieContainer = new BaseContainer(loginContainer);
+
 // todo replace this with layout object.
 loginContainer.visual.setLayout(new QHBoxLayout());
 loginContainer.visual.layout().setContentsMargins(0, 0, 0, 0);
