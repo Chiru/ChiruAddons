@@ -1,4 +1,4 @@
-//Free Sans
+engine.IncludeFile("MovieStyleSheets.js");
 me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
 frame.Updated.connect(Update);
 
@@ -55,12 +55,13 @@ if (me.graphicsviewcanvas)
     }
 }
 var frame_seatselection = new QFrame();
+frame_seatselection.objectName = "Seats";
 var seats_added = false;
 
 var frame_noseats = new QFrame();
 frame_noseats.objectName = "NoSeats";
 frame_noseats.setFrameStyle(QFrame.StyledPanel);
-frame_noseats.setStyleSheet("QFrame#NoSeats { padding: 0px; border: 2px solid black; border-radius: 0px; border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/plaza_3.png); }");
+frame_noseats.setStyleSheet(NoSeats);
 
 me.graphicsviewcanvas.GraphicsScene().addWidget(frame_noseats);
 me.graphicsviewcanvas.width = frame_noseats.width;
@@ -79,7 +80,7 @@ function CreateSeat(row, number)
     var seat = new QCheckBox();
     seat.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed);
     seat.setContentsMargins(0, 0, 0, 0);
-    seat.setStyleSheet("QCheckBox { padding: 0px; } QCheckBox::indicator { width: 30px; height: 38px; } QCheckBox::indicator:unchecked { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/green_seat.png); } QCheckBox::indicator:checked { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/yellow_seat.png); }");
+    seat.setStyleSheet(SeatCheckBox);
     var seat_info = [seat, row, number];
     SeatInformationArray.push(seat_info);
     return seat;
@@ -91,7 +92,7 @@ function CreateHandicapSeat()
     var seat = new QCheckBox();
     seat.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed);
     seat.setContentsMargins(0, 0, 0, 0);
-    seat.setStyleSheet("QCheckBox { padding: 0px; } QCheckBox::indicator { width: 30px; height: 38px; } QCheckBox::indicator:unchecked { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/wheelchair.png); } QCheckBox::indicator:checked { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/wheelchair.png); }");
+    seat.setStyleSheet(HandicapSeatCheckBox);
     return seat;
 }
 
@@ -108,7 +109,7 @@ function CreateStep(size, number)
     if (size == 0)
     {
         var label_step = new QLabel("" + number);
-        label_step.setStyleSheet("QLabel { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/step_small.png); color: white; font-size: 16px; qproperty-alignment: AlignCenter; }");
+        label_step.setStyleSheet(SmallStep);
         label_step.setFixedSize(67, 37);
         label_step.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred);
         return label_step;
@@ -116,7 +117,7 @@ function CreateStep(size, number)
     else if (size == 1)
     {
         var label_step = new QLabel("" + number);
-        label_step.setStyleSheet("QLabel { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/step_medium.png); color: white; font-size: 16px; qproperty-alignment: AlignCenter; }");
+        label_step.setStyleSheet(MediumStep);
         label_step.setFixedSize(84, 37);
         label_step.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred);
         return label_step;
@@ -124,7 +125,7 @@ function CreateStep(size, number)
     else if (size == 2)
     {
         var label_step = new QLabel("" + number);
-        label_step.setStyleSheet("QLabel { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/step_large.png); color: white; font-size: 16px; qproperty-alignment: AlignCenter; }");
+        label_step.setStyleSheet(LargeStep);
         label_step.setFixedSize(101, 37);
         label_step.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred);
         return label_step;
@@ -132,7 +133,7 @@ function CreateStep(size, number)
     else if (size == 3)
     {
         var label_step = new QLabel("" + number);
-        label_step.setStyleSheet("QLabel { color: white; font-size: 16px; qproperty-alignment: AlignCenter; }");
+        label_step.setStyleSheet(EmptyStep);
         label_step.setFixedSize(101, 37);
         label_step.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred);
         return label_step;
@@ -152,14 +153,18 @@ function SeatSelection()
         frame_seatselection.show();
         return;
     }
-    frame_seatselection.objectName = "Seats";
     frame_seatselection.setFrameStyle(QFrame.StyledPanel);
-    frame_seatselection.setStyleSheet("QFrame#Seats { padding: 0px; border: 2px solid black; border-radius: 0px; border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/plaza_2.png); }");
+    frame_seatselection.setStyleSheet(Seats);
     
     var buttonOK = new QPushButton("Seuraava");
+    buttonOK.setStyleSheet(LargeButton);
+    buttonOK.setFixedSize(200, 100);
     buttonOK.clicked.connect(OKClicked);
     var buttonCancel = new QPushButton("Peruuta");
+    buttonCancel.setStyleSheet(LargeButton);
+    buttonCancel.setFixedSize(200,100);
     buttonCancel.clicked.connect(CancelClicked);
+    
     var rowsLayout = new QVBoxLayout();
     rowsLayout.setContentsMargins(165,0,165,0);
     var row_array = [];
@@ -177,7 +182,7 @@ function SeatSelection()
     for (var seat_number = 1; seat_number <=34; seat_number++)
     {
         row_array[0].addWidget(CreateSeat(15, seat_number), 1, Qt.AlignCenter); 
-	row_array[0].setContentsMargins(0, 130, 0, 0);
+	row_array[0].setContentsMargins(0, 140, 0, 0);
     }
 
     //Add rows 1-7
@@ -271,7 +276,7 @@ function SeatSelection()
     //Add buttons
     row_array[15].addWidget(buttonCancel, 1, Qt.AlignLeft);
     row_array[15].addWidget(buttonOK, 1, Qt.AlignRight);
-    row_array[15].setContentsMargins(0, 150, 0, 180);
+    row_array[15].setContentsMargins(0, 120, 0, 160);
     
     
     for (var i = 0; i <= 15; i++)

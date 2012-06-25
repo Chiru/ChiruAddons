@@ -1,3 +1,4 @@
+engine.IncludeFile("MovieStyleSheets.js");
 engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
 
@@ -169,8 +170,19 @@ function StartLogin()
     var label_shoppingcart = new QLabel("Ostoskori:");
     
 
-    label_shoppingcart.setStyleSheet("QLabel { font: bold 18px; }");
-    label_movieinfo.setStyleSheet("QLabel { font: 18px; }");
+    label_shoppingcart.setStyleSheet(LargeBoldText);
+    label_movieinfo.setStyleSheet(LargeText);
+    label_firstname.setStyleSheet(NormalText);
+    label_lastname.setStyleSheet(NormalText);
+    label_birthday.setStyleSheet(NormalText);
+    label_gender.setStyleSheet(NormalText);
+    label_email.setStyleSheet(NormalText);
+    label_phone.setStyleSheet(NormalText);
+    buttonOK.setStyleSheet(NormalButton);
+    buttonCancel.setStyleSheet(NormalButton);
+    rb_male.setStyleSheet(RadioButton);
+    rb_female.setStyleSheet(RadioButton);
+
     label_movieinfo.wordWrap = true;
 	
 
