@@ -612,7 +612,7 @@ function TouchSelectObject(touchCount, touches, e)
         if (touches[0].state() == Qt.TouchPointPressed)
         {
             if (focusedObject && FindNearestObject(touches[0].pos()) != focusedObject)
-                EndMove(); // We were focused
+                EndMove(); // We were focused on object which no longer is below our finger, release the object
 
             longTouchStartTime = frame.WallClockTime();
             longTouchStartTimePos = touches[0].pos();
