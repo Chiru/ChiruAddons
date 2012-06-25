@@ -36,3 +36,9 @@ function IsObjectMovable(e)
 {
     return e.placeable && !e.terrain && e.dynamiccomponent && !(e.dynamiccomponent && (e.dynamiccomponent.name == "Icon") || e.dynamiccomponent.name == "Screen");
 }
+
+function IsObjectFocusable(e)
+{
+    return e.placeable && !e.terrain && e.dynamiccomponent && e.graphicsviewcanvas;
+    //return e.placeable && !e.terrain && e.dynamiccomponent && !(e.dynamiccomponent && (e.dynamiccomponent.name == "Icon"));
+}

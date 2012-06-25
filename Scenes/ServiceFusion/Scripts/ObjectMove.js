@@ -1,20 +1,12 @@
 // !ref: InfoBubblePrefab.txml
 
-/*
- * Object
-  - Object selection - long press
-  - moving object
-   * object rotation (yaw, pitch) - select object, second finger y-axis drag
-   * object roll - select object, rotate second finger around object
-   * "Zoom" object (depth movement) - select object, one finger bottom-right corner of the screen, second finger y-axis drag
-*/
-
 const cMoveZSpeed = 0.005; // was 0.0007 in Unity
 const cRotateSpeed = 1;
 // Screen resolution of the target device will be 1200x800
 const cReferenceHeight = 800;
 
-var selectedObject = null;
+var selectedObject = null; // Currently selected movable object
+var focusedObject = null;  // Currently focused object, not movable
 var selectedObjectFingerId;
 // TODO: set these variables in BeginMove
 // Alternatively/preferably have selectedObject Object which stores all of the following information
@@ -23,8 +15,8 @@ var selectedObjectOriginalRotation;
 var selectedObjectObjectTransform;
 
 var touchOffset = new float3(0,0,0);
-var prevFrameMouseX = -1;
-var prevFrameMouseY = -1;
+var prevFrameMouseX = -1;//input.MousePos().x();
+var prevFrameMouseY = -1; //input.MousePos().y();
 var prevFrameTouches;
 
 var uiCamera = null;
@@ -76,12 +68,30 @@ function SetSelectedObject(e)
     }
 }
 
-function BeginMove(fingerId)
+function SetFocusedObject(e)
 {
-    var ray = CurrentMouseRay();
+    if (e != focusedObject)
+    {
+        focusedObject = e;
+
+        // Signal object selection to the UI camera
+        if (!uiCamera)
+            uiCamera = scene.EntityByName("UiCamera");
+        uiCamera.Exec(1, "ObjectSelected", e != null ? e.id.toString() : "0");
+    }
+}
+
+function FindNearestObject(/*QPoin(F)*/ pos)
+{
+    var ray = MouseRay(pos.x(), pos.y());
 //    scene.ogre.DebugDrawLine(ray.pos, ray.dir.Mul(200), 1,0,0);
-    var r = scene.ogre.Raycast(ray, -1);
-    SetSelectedObject(r.entity && IsObjectMovable(r.entity) ? r.entity : null);
+    return scene.ogre.Raycast(ray, -1).entity;
+}
+
+function BeginMove(obj, fingerId)
+{
+    SetSelectedObject(obj && IsObjectMovable(obj) ? obj : null);
+    SetFocusedObject(obj && IsObjectFocusable(obj) ? obj : null);
 
     if (selectedObject) // calculate click/touch offset
     {
@@ -107,6 +117,7 @@ function BeginMove(fingerId)
 function EndMove()
 {
     SetSelectedObject(null);
+    SetFocusedObject(null);
 }
 
 function OnTouchUpdate(e)
@@ -241,12 +252,8 @@ function TouchUpdate()
     var touchCount = touches.length;
     for(i in touches)
     {
-        var x = Math.round(touches[i].pos().x());
-        var y = Math.round(touches[i].pos().y());
-        touchDeltaX = x - prevFrameMouseX;
-        touchDeltaY = y - prevFrameMouseY;
-        prevFrameMouseX = x;
-        prevFrameMouseY = y;
+        prevFrameMouseX = Math.round(touches[i].pos().x());
+        prevFrameMouseY = Math.round(touches[i].pos().y());
         break;
     }
 
@@ -264,7 +271,11 @@ function Update(/*frameTime*/)
     else // Rest of the function is the keyboard + mouse input code 
     {
         if (input.IsMouseButtonPressed(1))
-            BeginMove(-1);
+        {
+            var obj = FindNearestObject();
+            if (obj)
+                BeginMove(obj, -1);
+        }
         if (input.IsMouseButtonReleased(1))
             EndMove();
         
@@ -431,7 +442,7 @@ function TouchRotateObject(touchCount, touches, e)
             !IsPosWithinBottomLeftCorner(moveTouch.pos()) &&
             touchesDistance < cMoveZMinTouchDistance * (cReferenceHeight / Screen.height))
         {
-            if (selectedObjectRotationOrigin == Vector2.zero)
+            if (selectedObjectRotationOrigin == new float2(0, 0))
             {
                 selectedObjectRotationOrigin = SubQPointF(moveTouch.pos(), stationaryTouch.pos());
                 selectedObjectOriginalRotation = selectedObjectObjectTransform.rotation;
@@ -484,7 +495,7 @@ function TouchRotateObject(touchCount, touches, e)
 
 function IsPosWithinBottomLeftCorner(pos)
 {
-    return pos.x() < 200 && pos.y() < cReferenceHeight - 200;
+    return pos.x() < 200 && pos.y() > cReferenceHeight - 200;
 }
 
 function TouchMoveObject(touchCount, touches, e)
@@ -532,6 +543,8 @@ function TouchMoveObject(touchCount, touches, e)
         //var touchesDistance = DistanceQPointF(touches[0].pos(), touches[1].pos());
         //if (touchesDistance > cMoveZMinTouchDistance * cReferenceHeight / ui.GraphicsScene().height())
         {
+            if (stationaryTouch)
+                Log(IsPosWithinBottomLeftCorner(stationaryTouch.pos()) + " " + frame.WallClockTime());
             if (stationaryTouch && moveTouch && IsPosWithinBottomLeftCorner(stationaryTouch.pos()))
             {
                 var d = (moveTouch.pos().y() - moveTouch.lastPos().y()) * (cReferenceHeight / ui.GraphicsScene().height()) * cMoveZSpeed * selectedObject.placeable.transform.scale.x;
@@ -556,7 +569,7 @@ function TouchMoveObject(touchCount, touches, e)
                 var Plane nearplane = new Plane(direction, Camera.main.transform.position + direction * 0.012f);
 
                 var nearestPoint = selectedObjectObjectTransform.collider.ClosestPointOnBounds(Camera.main.transform.position);
-                var  distanceToCamera = Vector3.Distance(nearestPoint, Camera.main.transform.position);
+                var  distanceToCamera = float3.Distance(nearestPoint, Camera.main.transform.position);
 
                 if ((d > 0 && distanceToCamera < 0.9f * transform.localScale.x) || (d < 0 && distanceToCamera > 0.2122f))
                     selectedObjectObjectTransform.localPosition = newPos;
@@ -591,14 +604,16 @@ function TouchSelectObject(touchCount, touches, e)
             }
 
     for(i in touches)
-    {
         if (touches[i].state() == Qt.TouchPointPressed)
             startPositions[touches[i].id()] = touches[i].pos();
-    }
+
     if (touchCount == 1 /*&& singleTouch*/)
     {
         if (touches[0].state() == Qt.TouchPointPressed)
         {
+            if (focusedObject && FindNearestObject(touches[0].pos()) != focusedObject)
+                EndMove(); // We were focused
+
             longTouchStartTime = frame.WallClockTime();
             longTouchStartTimePos = touches[0].pos();
         }
@@ -612,12 +627,10 @@ function TouchSelectObject(touchCount, touches, e)
             longTouchStartTime = 0;
             if (DistanceQPointF(longTouchStartTimePos, touches[0].pos()) < 30)
             {
-                BeginMove(touches[0].id());
-                //TODO
-                //StartMove(0,0,0);
-                //Transform highlighted = FindNearestObject(touches[0].pos());
-                //if (highlighted)
-                //    StartMove(highlighted, touches[0].pos(), touches[0].id());
+                var highlighted = FindNearestObject(touches[0].pos());
+                if (highlighted)
+                    BeginMove(highlighted, touches[0].id());
+                    //StartMove(highlighted, touches[0].pos(), touches[0].id());
             }
         }
     }
@@ -633,10 +646,9 @@ function TouchSelectObject(touchCount, touches, e)
         
         if (t1 || t2)
         {
-            //Transform highlighted = FindNearestObject(t.pos());
-            //if (highlighted)
-            //    StartMove(highlighted, t.pos(), t.id());
-            BeginMove(t.id());
+            var  highlighted = FindNearestObject(t.pos());
+            if (highlighted)
+                BeginMove(highlighted, t.id(), t.pos());
         }
     }
     
