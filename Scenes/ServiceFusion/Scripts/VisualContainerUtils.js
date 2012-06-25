@@ -56,16 +56,27 @@ function CreateVisualContainer(widget, layout, parent)
 
 function MakeDraggable(visual, widget)
 {
-    visual.DragStartEvent.connect(widget, function(e) {
-        containerDragObject = ContainerDragObject(this);
-//        containerDragObject.placeable.visible = false;
-//        MoveSelected(e.pos());
-        //SetInfoBoubleHighlight(true);
-        // Signal object selection to the UI camera
-        if (!uiCamera)
-            uiCamera = scene.EntityByName("UiCamera");
-        uiCamera.Exec(1, "ObjectSelected", containerDragObject != null ? containerDragObject.id.toString() : "0");
-    });
+	if (widget) {
+		visual.DragStartEvent.connect(widget, function(e) {
+			containerDragObject = ContainerDragObject(this);
+	//        containerDragObject.placeable.visible = false;
+	//        MoveSelected(e.pos());
+			//SetInfoBoubleHighlight(true);
+			// Signal object selection to the UI camera
+			if (!uiCamera)
+				uiCamera = scene.EntityByName("UiCamera");
+			uiCamera.Exec(1, "ObjectSelected", containerDragObject != null ? containerDragObject.id.toString() : "0");
+		});
+	}
+	else
+	{
+		visual.DragStartEvent.connect(function(e) {
+			containerDragObject = ContainerDragObject();
+			if (!uiCamera)
+				uiCamera = scene.EntityByName("UiCamera");
+			uiCamera.Exec(1, "ObjectSelected", containerDragObject != null ? containerDragObject.id.toString() : "0");
+		});
+	}
 
     visual.DropEvent.connect(function(e) {
         if (containerDragObject) {
@@ -179,6 +190,7 @@ function MoveSelected(pos)
     {
         var ray = CurrentMouseRay();
         var cameraEntity = renderer.MainCamera();
+		//\Todo Invalid raycast plane calculation.
         var camFwd = cameraEntity.placeable.WorldOrientation().Mul(scene.ForwardVector()).Normalized();
 
         var offset = camFwd.Mul(new float3(0,0,distanceFromCamera));
@@ -221,18 +233,22 @@ function GetContainerDragObject()
 function ContainerDragObject(visual) 
 {
     var moveEntity = GetContainerDragObject();
-    var renderLabel = new QLabel();
-    var pixmap =  new QPixmap(visual.size);
-    visual.render(pixmap);
-    renderLabel.size = visual.size;
-    renderLabel.setPixmap(pixmap);
-    moveEntity.graphicsviewcanvas.width = visual.width;
-    moveEntity.graphicsviewcanvas.height = visual.height;
-    renderLabel.acceptDrops = false;
-    
-    moveEntity.graphicsviewcanvas.GraphicsScene().addWidget(renderLabel);
-    moveEntity.graphicsviewcanvas.GraphicsView().acceptDrops = false;
-    renderLabel.show();
+	
+	if (visual && moveEntity && moveEntity.graphicsviewcanvas)
+	{
+		var renderLabel = new QLabel();
+		var pixmap =  new QPixmap(visual.size);
+		visual.render(pixmap);
+		renderLabel.size = visual.size;
+		renderLabel.setPixmap(pixmap);
+		moveEntity.graphicsviewcanvas.width = visual.width;
+		moveEntity.graphicsviewcanvas.height = visual.height;
+		renderLabel.acceptDrops = false;
+		
+		moveEntity.graphicsviewcanvas.GraphicsScene().addWidget(renderLabel);
+		moveEntity.graphicsviewcanvas.GraphicsView().acceptDrops = false;
+		renderLabel.show();
+	}
     moveEntity.placeable.visible = true;
     return moveEntity;
 }

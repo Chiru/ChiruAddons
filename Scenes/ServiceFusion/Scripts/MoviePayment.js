@@ -8,6 +8,7 @@ if (!server.IsRunning() && !framework.IsHeadless())
 }
 
 
+var visa_entity = scene.GetEntityByName("visa_card");
 
 var placeable = me.GetOrCreateComponent("EC_Placeable");
 placeable.SetParent(scene.EntityByName("UiCamera"), 0);
@@ -182,6 +183,9 @@ function Update()
 
 function SetRowAndSeatNumber(row, seat)
 {
+	if (visa_entity)
+		visa_entity.placeable.visible = true;
+		
     rowNumber = row;
     seatNumber = seat;
     console.LogInfo(row + seat);
@@ -190,11 +194,15 @@ function SetRowAndSeatNumber(row, seat)
 
 function OKClicked()
 {
+	if (visa_entity)
+		visa_entity.placeable.visible = false;
     ProceedForward = true;  
 }
 
 function CancelClicked()
 {
+	if (visa_entity)
+		visa_entity.placeable.visible = false;
     ProceedBackward = true;
 }
 

@@ -1,3 +1,6 @@
+engine.IncludeFile("RdfVocabulary.js");
+engine.IncludeFile("VisualContainerUtils.js");
+
 me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
 frame.Updated.connect(Update);
 
@@ -5,6 +8,64 @@ if (!server.IsRunning() && !framework.IsHeadless())
 {
     engine.ImportExtension("qt.core");
     engine.ImportExtension("qt.gui");
+}
+
+var id_entity = scene.GetEntityByName("ID_card");
+if (id_entity)
+	id_entity.placeable.visible = true;
+	
+var loginContainer = new BaseContainer(null);
+// todo replace this with layout object.
+loginContainer.visual.setLayout(new QHBoxLayout());
+loginContainer.visual.layout().setContentsMargins(0, 0, 0, 0);
+loginContainer.visual.layout().setSpacing(0);
+var idScript = new Script();
+idScript.Invoked.connect(IdScript);
+loginContainer.visual.owner.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "ID"), idScript);
+
+function IdScript(tag, rdfStore)
+{
+	if (tag.data == "ID")
+	{
+		//\todo For some reason redland rdf lib will mess up statement order, most likely map container is beeing used.
+		loginContainer.container.rdfStore.FromString(rdfStore.toString());
+		
+		var variables = new Array();
+		var statements = Select(loginContainer.container.rdfStore, null, RdfVocabulary.data, null);
+		print(statements.length);
+		if (statements.length == 6)
+		{
+			for (var i = 0; i < statements.length; ++i)
+			{
+				print(statements[i].object.literal);
+				variables.push(statements[i].object.literal);
+			}
+		}
+		ReleaseStatements(statements);
+		
+		DisplayIdInfo(variables);
+	}
+}
+
+function DisplayIdInfo(variables)
+{	
+	var le_firstname = findChild(loginContainer.visual, "le_firstname");
+	var le_lastname = findChild(loginContainer.visual, "le_lastname");
+	/*var le_email = findChild(loginContainer.visual, "le_email");
+	var le_phone = findChild(loginContainer.visual, "le_phone");
+	var le_birthday = findChild(loginContainer.visual, "le_birthday");
+	var rb_gender_male = findChild(loginContainer.visual, "rb_gender_male");
+	var rb_gender_female = findChild(loginContainer.visual, "rb_gender_female");*/
+	
+	le_firstname.text = variables[0];
+	le_lastname.text = variables[1];
+	/*le_email.text = variables[2];
+	le_phone.text = variables[3];
+	le_birthday.text = variables[4];
+	if (variables[5] == "Male")
+		rb_gender_male.checked = true;
+	else
+		rb_gender_female.checked = true;*/
 }
 
 var placeable = me.GetOrCreateComponent("EC_Placeable");
@@ -60,7 +121,6 @@ StartLogin();
 
 function StartLogin()
 {
-
     var frame_login = new QFrame();
     
     
@@ -74,30 +134,30 @@ function StartLogin()
     buttonCancel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
     var le_firstname = new QLineEdit();
+	le_firstname.objectName = "le_firstname";
     le_firstname.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
     var le_lastname = new QLineEdit();
+	le_lastname.objectName = "le_lastname";
     le_lastname.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
     var le_email = new QLineEdit();
+	le_email.objectName = "le_email";
     le_email.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
     var le_phone = new QLineEdit();
+	le_phone.objectName = "le_phone";
     le_phone.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
     var le_birthday = new QLineEdit();
+	le_birthday.objectName = "le_birthday";
     le_birthday.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
-    var le_email = new QLineEdit();
-    le_email.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
-
-    var le_phone = new QLineEdit();
-    le_phone.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
-
     var rb_male = new QRadioButton("Mies");
+	rb_male.objectName = "rb_gender_male";
     
     var rb_female = new QRadioButton("Nainen");
-
+	rb_male.objectName = "rb_gender_female";
 
     var label_firstname = new QLabel("Etunimi:");
     var label_lastname = new QLabel("Sukunimi:");
@@ -151,21 +211,25 @@ function StartLogin()
 
     frame_login.setLayout(vertLayout);
 
-    me.graphicsviewcanvas.GraphicsScene().addWidget(frame_login);
+    loginContainer.visual.layout().addWidget(frame_login, 0, 0);
+    me.graphicsviewcanvas.GraphicsScene().addWidget(loginContainer.visual);
     me.graphicsviewcanvas.width = frame_login.width;
     me.graphicsviewcanvas.height = frame_login.height;
     frame_login.show();
-    
     
 }
 
 function OKClicked()
 {
-    ProceedForward = true;  
+	if (id_entity)
+		id_entity.placeable.visible = false;
+    ProceedForward = true;
 }
 
 function CancelClicked()
-{      
+{
+	if (id_entity)
+		id_entity.placeable.visible = false;
     //Destroy all movie entities
 }
 
@@ -202,6 +266,9 @@ function Update()
 
 function SetMovieInfo(name, place, time, date)
 {
+	if (id_entity)
+		id_entity.placeable.visible = true;
+		
     movieName = name;
     moviePlace = place;
     movieTime = time;
@@ -213,6 +280,8 @@ function OnScriptDestroyed()
 {
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
+	if (loginContainer && loginContainer.visual)
+		loginContainer.visual.deleteLater();
     if (/*...*/true)
     {
         //...

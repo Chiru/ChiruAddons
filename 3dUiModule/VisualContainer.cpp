@@ -70,6 +70,21 @@ void VisualContainer::HandleMeshDrop(VisualContainer *target)
     HandleDrop(target);
 }
 
+void VisualContainer::StartDrag(QPoint pos)
+{
+    QMimeData *mimeData = new QMimeData;
+    //if (Owner() && Owner()->RdfStore()) mimeData->setText(Owner()->RdfStore()->toString());
+    mimeData->setData("application/x-hotspot", QByteArray::number(pos.x()) + " " + QByteArray::number(pos.y()));
+
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setHotSpot(pos);
+
+    emit DragStartEvent(0);
+
+    drag->exec(Qt::MoveAction, Qt::MoveAction);
+}
+
 void VisualContainer::ParentChanged(CieMap::IContainer * parent)
 {
     //SetIgnoreDrop(true);
@@ -112,15 +127,6 @@ void VisualContainer::dragMoveEvent(QDragMoveEvent *e)
 void VisualContainer::dropEvent(QDropEvent *e)
 {
     VisualContainer* vc = FindVisualContainer(this);
-    /*CieMap::IContainer * parent = 0;
-    while(vc)
-    {
-        parent = vc->Owner()->Parent();
-        if (!parent)
-            break;
-
-        vc = dynamic_cast<VisualContainer*>(vc->Owner()->Parent()->Visual());
-    }*/
 
     if (vc && !e->mimeData()->data("application/x-hotspot").isEmpty())
     {
@@ -138,17 +144,8 @@ void VisualContainer::dropEvent(QDropEvent *e)
         }
 
         VisualContainer* source = FindVisualContainer(e->source());
-        /// @todo Clone on drop check --Joosua.
-        /*vc->AttachToVisualContainer(source);
-        if (vc->layout())
-            vc->layout()->addWidget(source);
-        else
-        {
-            source->setParent(vc);
-            source->move(position - hotSpot);
-        }
-        source->show();*/
         HandleDrop(source);
+        emit DropEvent(e);
         
         if (e->source() == this)
         {
@@ -189,18 +186,7 @@ void VisualContainer::mousePressEvent(QMouseEvent *e)
         return;
 
     QPoint hotSpot = e->pos() - child->pos();
-
-    QMimeData *mimeData = new QMimeData;
-    //if (Owner() && Owner()->RdfStore()) mimeData->setText(Owner()->RdfStore()->toString());
-    mimeData->setData("application/x-hotspot", QByteArray::number(hotSpot.x()) + " " + QByteArray::number(hotSpot.y()));
-
-    QDrag *drag = new QDrag(this);
-    drag->setMimeData(mimeData);
-    drag->setHotSpot(hotSpot);
-
-    emit DragStartEvent(e);
-
-    drag->exec(Qt::MoveAction, Qt::MoveAction);
+    StartDrag(hotSpot);
 }
 
 CieMap::IContainer * VisualContainer::Clone()

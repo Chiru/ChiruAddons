@@ -29,6 +29,8 @@ public:
 
     Q_INVOKABLE void HandleMeshDrop(VisualContainer *target);
 
+    Q_INVOKABLE void StartDrag(QPoint pos);
+
 private slots:
     void ParentChanged(CieMap::IContainer* parent);
 
