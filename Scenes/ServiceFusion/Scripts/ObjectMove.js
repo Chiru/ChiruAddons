@@ -88,7 +88,7 @@ function FindNearestObject(/*QPoin(F)*/ pos)
     return scene.ogre.Raycast(ray, -1).entity;
 }
 
-function BeginMove(obj, fingerId)
+function BeginMove(/*Entity*/ obj, /*QPoin(F)*/ pos, /*int*/ fingerId)
 {
     SetSelectedObject(obj && IsObjectMovable(obj) ? obj : null);
     SetFocusedObject(obj && IsObjectFocusable(obj) ? obj : null);
@@ -99,6 +99,7 @@ function BeginMove(obj, fingerId)
         selectedObjectObjectTransform = selectedObject.placeable.transform;
         
         var cameraEntity = renderer.MainCamera();
+        var ray = MouseRay(pos.x(), pos.y());
 //        var cameraEntity = scene.EntityByName("UiCamera");
         var camFwd = cameraEntity.placeable.WorldOrientation().Mul(scene.ForwardVector());
         var orientedPlane = new Plane(camFwd.Mul(-1), 0);
@@ -274,7 +275,7 @@ function Update(/*frameTime*/)
         {
             var obj = FindNearestObject(input.MousePos());
             if (obj)
-                BeginMove(obj, -1);
+                BeginMove(obj, input.MousePos(), -1);
         }
         if (input.IsMouseButtonReleased(1))
             EndMove();
@@ -629,8 +630,7 @@ function TouchSelectObject(touchCount, touches, e)
             {
                 var highlighted = FindNearestObject(touches[0].pos());
                 if (highlighted)
-                    BeginMove(highlighted, touches[0].id());
-                    //StartMove(highlighted, touches[0].pos(), touches[0].id());
+                    BeginMove(highlighted, touches[0].pos(), touches[0].id());
             }
         }
     }
@@ -648,7 +648,7 @@ function TouchSelectObject(touchCount, touches, e)
         {
             var  highlighted = FindNearestObject(t.pos());
             if (highlighted)
-                BeginMove(highlighted, t.id(), t.pos());
+                BeginMove(highlighted, t.pos(), t.id());
         }
     }
     
