@@ -5,8 +5,6 @@ engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
 engine.IncludeFile("Lyrics.js");
 
-ui.MainWindow().mouseTracking = true;  
-
 var lyricslabel = null;
 
 me.Action("ShowLyrics").Triggered.connect(function(type, rdfStoreData) {
@@ -14,28 +12,29 @@ me.Action("ShowLyrics").Triggered.connect(function(type, rdfStoreData) {
     var barent = scene.GetEntityByName("BarContainer");
     last_song = barent.dynamiccomponent.GetAttribute("last_song");
     if (!last_song) {
-	print("no last_song in bar");
-	return;
+        print("no last_song in bar");
+        return;
     }
 
     print("got entity");
     GetSongLyrics(last_song, function(song, lyrics) {
-	print("got lyrics in barcontainer");
-	if (!lyricslabel)
-	    print("no lyricslabel");
-	else {
-	    lyricslabel.text = song.title + "\n\n" + lyrics;
-	}
+        print("got lyrics in barcontainer");
+        if (!lyricslabel)
+            print("no lyricslabel");
+        else {
+            lyricslabel.text = song.title + "\n\n" + lyrics;
+        }
     });
 });
-
 
 function LyricsContainer(parent)
 {
     BaseContainer.call(this, parent);
-    this.visual.size = new QSize(320, 400);
-    me.graphicsviewcanvas.width = this.visual.width;
-    me.graphicsviewcanvas.height = this.visual.height;
+    this.visual.size = new QSize(512, 512);
+    var contentCanvas = me.GetComponent("EC_GraphicsViewCanvas", "Content");
+    contentCanvas.styleSheet = "background-color:white;";
+    contentCanvas.width = this.visual.width;
+    contentCanvas.height = this.visual.height;
     this.visual.setLayout(new QVBoxLayout());
     this.visual.layout().setContentsMargins(0, 0, 0, 0);
     this.visual.layout().setSpacing(0);
@@ -52,8 +51,9 @@ LyricsContainer.prototype.DisplayLyrics = function(lyrics)
     // mechanism to pass the parsed lyrics objects out?
 
     var main = new QWidget();
-    main.setLayout(new QHBoxLayout());
-    main.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
+    main.styleSheet = "background-color:white;";
+    main.setLayout(new QVBoxLayout());
+//    main.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preffered); -Stinkfist
     main.layout().setContentsMargins(10, 0, 0, 0); 
     main.objectName = "Lyrics";
     
@@ -62,14 +62,16 @@ LyricsContainer.prototype.DisplayLyrics = function(lyrics)
     
     // Initialize title Label 
     lyricslabel = new QLabel(lyrics);
+    lyricslabel.styleSheet = "background-color:white;";
     lyricslabel.font = new QFont("FreeSans", 12);
-    lyricslabel.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
+    lyricslabel.wordWrap = true;
+//    lyricslabel.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);  -Stinkfist
     main.layout().addWidget(lyricslabel, null, null);
     
-    var line = CreateHLine();
-    lyricsVisual.layout().addWidget(line, 0, 0);
+//    var line = CreateHLine();  -Stinkfist
+//    lyricsVisual.layout().addWidget(line, 0, 0);  -Stinkfist
     
-    lyricsVisual.layout().addWidget(main, null, null); 
+    lyricsVisual.layout().addWidget(main, null, null);
     lyricsVisual.layout().spacing = 0;
     lyricsVisual.setContentsMargins(0, 0, 0, 0);
 }

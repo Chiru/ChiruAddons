@@ -156,7 +156,10 @@ SongContainer.prototype.DisplaySong = function(song)
     AddStatement(songVisual, RdfVocabulary.baseUri, RdfVocabulary.data, song.artist.toString());
     
     titleLabel = new QLabel("Otto K");
+    titleLabel.font = new QFont("SansSerif", 42);
+    titleLabel.styleSheet = "background-color:white;";
     var title = me.GetComponent("EC_GraphicsViewCanvas", "Title");
+    title.GraphicsView().styleSheet = "background-color:white;";
     titleLabel.size = new QPoint(title.width, title.height);
     title.GraphicsScene().addWidget(titleLabel);
     titleLabel.show();
@@ -166,9 +169,11 @@ SongContainer.prototype.DisplaySong = function(song)
     // label.alignment = 0x0001 | 0x0020; // Qt::AlignLeft | Qt::AlignTop
     // main.layout().addWidget(label, null, null);
 
-
     label2 = new QLabel(song.artist + "\n\n" + song.title);
-    label2.alignment = 0x1 | 0x20
+    var contentCanvas = me.GetComponent("EC_GraphicsViewCanvas", "Content");
+    label2.size = new QSize(contentCanvas.width, contentCanvas.height);
+    label2.wordWrap = true;
+    label2.alignment = 0x1 | 0x20;
     label2.font = new QFont("FreeSans", 24);
     label2.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.layout().addWidget(label2, null, null);
