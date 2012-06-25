@@ -116,6 +116,7 @@ var frame_2_created = false;
 var label_seat = new QLabel("Rivi: " + rowNumber + " Paikka: " + seatNumber);
 
 var label_movieinfo = new QLabel(movieName + " - " + moviePlace + " - " + movieTime + " - " + movieDate);
+label_movieinfo.wordWrap = true;
 
 var label_seat2 = new QLabel("Rivi: " + rowNumber + " Paikka: " + seatNumber);
 var label_movieinfo2 = new QLabel(movieName + " - " + moviePlace + " - " + movieTime + " - " + movieDate);
@@ -352,7 +353,7 @@ function ThankYou()
     var label_moviename = new QLabel(movieName);
     var label_movietime = new QLabel(movieTime);
     var label_movieplace = new QLabel(moviePlace);
-    var label_moviedate = new QLabel(movieDate);
+    var label_moviedate = new QLabel(movieDate.toString());
     var label_row = new QLabel("Rivi: " + rowNumber);
     var label_seat = new QLabel("Paikka: " + seatNumber + "\n");
 

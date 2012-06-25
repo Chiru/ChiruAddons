@@ -89,7 +89,8 @@ function SendMovieData()
 {
     var movieItem = GetMovieCartItem();
     var movieLoginEntity = scene.GetEntityByName("MovieLoginDialog");
-    if (!movieItem || !movieLoginEntity)
+    var moviePayment = scene.GetEntityByName("MoviePaymentDialog");
+    if (!movieItem || !movieLoginEntity || !moviePayment)
         return;
 
     var date = new Date(movieItem.data["time"]);
@@ -99,6 +100,7 @@ function SendMovieData()
     var date = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
     var params = [movieItem.data["title"], movieItem.data["auditorium"], (hour + ":" + minute), date.toString()];
     movieLoginEntity["Exec(EntityAction::ExecTypeField,QString,QVariantList)"](1, "SetMovieInfo", params);
+    moviePayment["Exec(EntityAction::ExecTypeField,QString,QVariantList)"](1, "SetMovieInfo", params);
 }
 
 function MousePressed()
