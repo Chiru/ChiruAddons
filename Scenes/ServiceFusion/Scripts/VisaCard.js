@@ -8,8 +8,8 @@ dragObjectName = "movable_visa_card";
 var visaContainer = new BaseContainer(null);
 MakeDraggable(visaContainer.visual, null);
 AddStatement(visaContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "CreditCard");
-AddStatement(visaContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Visa"); // card type
-AddStatement(visaContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "xxxx-xxxx-xxxx-2134"); // card number
+AddStatement(visaContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "****4321"); // username for bank access
+AddStatement(visaContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "****"); // password for bank access
 AddStatement(visaContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "823"); // secure number
 
 sceneinteract.EntityClicked.connect(EntityClicked)
