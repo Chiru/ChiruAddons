@@ -53,21 +53,23 @@ function DisplayIdInfo(variables)
 {
     var le_firstname = findChild(loginContainer.visual, "le_firstname");
     var le_lastname = findChild(loginContainer.visual, "le_lastname");
-    /*var le_email = findChild(loginContainer.visual, "le_email");
+    var le_email = findChild(loginContainer.visual, "le_email");
     var le_phone = findChild(loginContainer.visual, "le_phone");
     var le_birthday = findChild(loginContainer.visual, "le_birthday");
     var rb_gender_male = findChild(loginContainer.visual, "rb_gender_male");
-    var rb_gender_female = findChild(loginContainer.visual, "rb_gender_female");*/
+    var rb_gender_female = findChild(loginContainer.visual, "rb_gender_female");
 
     le_firstname.text = variables[0];
     le_lastname.text = variables[1];
-    /*le_email.text = variables[2];
+    le_email.text = variables[2];
     le_phone.text = variables[3];
-    le_birthday.text = variables[4];
+    var date = new Date(variables[4]);
+    var birthday = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
+    le_birthday.text = birthday;
     if (variables[5] == "Male")
         rb_gender_male.checked = true;
     else
-        rb_gender_female.checked = true;*/
+        rb_gender_female.checked = true;
 }
 
 var placeable = me.GetOrCreateComponent("EC_Placeable");
@@ -158,7 +160,7 @@ function StartLogin()
 	rb_male.objectName = "rb_gender_male";
     
     var rb_female = new QRadioButton("Nainen");
-	rb_male.objectName = "rb_gender_female";
+	rb_female.objectName = "rb_gender_female";
 
     var label_firstname = new QLabel("Etunimi:");
     var label_lastname = new QLabel("Sukunimi:");

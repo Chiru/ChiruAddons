@@ -96,7 +96,7 @@ function SendMovieData()
     var hour = date.getHours();
     var minute = date.getMinutes();
     if (minute == 0) minute = "00";
-    var date = date.getDate() + "." + date.getMonth() + "." + date.getFullYear();
+    var date = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
     var params = [movieItem.data["title"], movieItem.data["auditorium"], (hour + ":" + minute), date.toString()];
     movieLoginEntity["Exec(EntityAction::ExecTypeField,QString,QVariantList)"](1, "SetMovieInfo", params);
 }

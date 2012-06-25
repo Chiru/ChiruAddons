@@ -7,8 +7,7 @@ engine.ImportExtension("qt.network");
 engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
 engine.IncludeFile("Lyrics.js");
-
-ui.MainWindow().mouseTracking = true;  
+engine.IncludeFile("Log.js");
 
 function Song()
 {
@@ -28,23 +27,23 @@ var last_song = null; // updated from Song.FromString
 // me.Action("ShowLyrics").Triggered.connect(function(type, rdfStoreData) {
 //     print("starting lyrics fetch");
 //     GetSongLyrics(last_song, function(song, lyrics) {
-// 	print("got lyrics in barcontainer");
-// 	if (!label2)
-// 	    print("no label2");
-// 	else {
-// 	    label2.text = lyrics;
-// 	}
+//         print("got lyrics in barcontainer");
+//         if (!label2)
+//             print("no label2");
+//         else {
+//             label2.text = lyrics;
+//         }
 //     });
 // });
 
 // Construct a song struct from the string, if parse fails null object is returned.
 Song.FromString = function(data)
 {
-    print("fromstring: got data: " + data);
+//    print("fromstring: got data: " + data);
     var re = /(\d\d:\d\d:\d\d)\s+([^-]+) - ([^\)\(]*)/;
     var matchinfo = re.exec(data);
     if (!matchinfo)
-	return null;
+        return null;
     song = new Song();
     song.time = matchinfo[1].trim();
     song.artist = matchinfo[2].trim();
@@ -78,15 +77,15 @@ function SongContainer(parent)
     request.operation = QNetworkAccessManager.GetOperation;
     print("Starting http req");
     var response = ScriptServices.SendPreprocessorRequest(
-	"http://hq.ludocraft.com/ludowww/cie/bar.php",
-	djonline_ottok_url, request); 
+        "http://hq.ludocraft.com/ludowww/cie/bar.php",
+        djonline_ottok_url, request); 
     
     response.Ready.connect(this, function(response)
     {
-	// XXX mock data
-	print("http response data: " + rdfdata);
+        // XXX mock data
+//        print("http response data: " + rdfdata);
         if (this.visual.owner.rdfStore.FromString(rdfdata))
-	// print("http response data: " + response.data.toString());
+        // print("http response data: " + response.data.toString());
         // if (this.visual.owner.rdfStore.FromString(response.data))
 
         {
@@ -107,11 +106,11 @@ function SongContainer(parent)
             for(var i = 0; i < statements.length; ++i)
             {
                 song = Song.FromString(statements[i].object.literal.toString());
-		if (!song)
-		    continue;
+                if (!song)
+                    continue;
                 // if (song && song.time > currentTime.getTime())
                 this.songs.push(song);
-		print("pushing song " + song.title);
+                print("pushing song " + song.title);
                 world.FreeStatement(statements[i]);
             }
             
@@ -191,6 +190,17 @@ function CreateContainer(entity)
 }
 
 var container = CreateContainer(me);
+// TODO must delay the registration, not nice.
+frame.DelayedExecute(2).Triggered.connect(RegisterToIconScript);
+
+function RegisterToIconScript(iconScript)
+{
+    iconScript = scene.EntityByName("IconScript");
+    if (iconScript)
+        iconScript.Exec(1, "RegisterInfoBubble", "OttoKIcon", me.id.toString());
+    else
+        LogE("BarContainer.js RegisterToIconScript: Could not obtain IconScript.");
+}
 
 function OnScriptDestroyed()
 {

@@ -10,11 +10,11 @@ MakeDraggable(idContainer.visual, null);
 AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "ID");
 AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "John");
 AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Doe");
-AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Male");
 AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "johndoe@mymail.com");
 AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "358 04 1234567");
 var birthday = new Date("October 13, 1975");
 AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, birthday.toString());
+AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Male");
 
 sceneinteract.EntityClicked.connect(EntityClicked)
 

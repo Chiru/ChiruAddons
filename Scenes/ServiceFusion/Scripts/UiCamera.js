@@ -255,13 +255,13 @@ function HandleMouseEvent(e)
         {
             var result = scene.ogre.Raycast(e.x, e.y);
             //if (result.entity && !result.entity.dynamiccomponent && result.entity.dynamiccomponent.name != "Icon" && !result.entity.graphicsviewcanvas)
-            moving = !(result.entity && IsObjectMovable(result.entity));
+            moving = !(result.entity && (IsObjectMovable(result.entity) || IsObjectFocusable(result.entity)));
         }
         else if (e.button == 2)
         {
             var result = scene.ogre.Raycast(e.x, e.y);
             //if (result.entity && result.entity.dynamiccomponent && result.entity.dynamiccomponent.name != "Icon" && !result.entity.graphicsviewcanvas)
-            tilting = !(result.entity && IsObjectMovable(result.entity));
+            tilting = !(result.entity && (IsObjectMovable(result.entity) || IsObjectFocusable(result.entity)));
             if (tilting)
             {
                 var mousePos = input.MousePos();
