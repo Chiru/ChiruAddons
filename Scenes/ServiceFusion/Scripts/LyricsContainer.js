@@ -24,7 +24,7 @@ me.Action("ShowLyrics").Triggered.connect(function(type, rdfStoreData) {
 	if (!lyricslabel)
 	    print("no lyricslabel");
 	else {
-	    lyricslabel.text = lyrics;
+	    lyricslabel.text = song.title + "\n\n" + lyrics;
 	}
     });
 });

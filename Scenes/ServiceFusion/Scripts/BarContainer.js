@@ -109,7 +109,7 @@ function SongContainer(parent)
                 song = Song.FromString(statements[i].object.literal.toString());
 		if (!song)
 		    continue;
-                //if (song && song.time > currentTime.getTime())
+                // if (song && song.time > currentTime.getTime())
                 this.songs.push(song);
 		print("pushing song " + song.title);
                 world.FreeStatement(statements[i]);
@@ -156,16 +156,21 @@ SongContainer.prototype.DisplaySong = function(song)
     AddStatement(songVisual, RdfVocabulary.baseUri, RdfVocabulary.data, song.title);
     AddStatement(songVisual, RdfVocabulary.baseUri, RdfVocabulary.data, song.artist.toString());
     
-    // Initialize time Label 
-    var timeStr = song.time;
-    // label = new QLabel(timeStr); 
-    // label.font = new QFont("FreeSans", 14);
+    titleLabel = new QLabel("Otto K");
+    var title = me.GetComponent("EC_GraphicsViewCanvas", "Title");
+    titleLabel.size = new QPoint(title.width, title.height);
+    title.GraphicsScene().addWidget(titleLabel);
+    titleLabel.show();
+
+    // label = new QLabel(song.artist); 
+    // label.font = new QFont("FreeSans", 24);
     // label.alignment = 0x0001 | 0x0020; // Qt::AlignLeft | Qt::AlignTop
     // main.layout().addWidget(label, null, null);
-    
-    // Initialize title Label 
-    label2 = new QLabel(song.title);
-    label2.font = new QFont("FreeSans", 12);
+
+
+    label2 = new QLabel(song.artist + "\n\n" + song.title);
+    label2.alignment = 0x1 | 0x20
+    label2.font = new QFont("FreeSans", 24);
     label2.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.layout().addWidget(label2, null, null);
     
