@@ -25,20 +25,29 @@ const cAnimationTime = 1; // seconds
 // Entry point
 if (!framework.IsHeadless())
 {
-    sceneinteract.EntityClicked.connect(OnEntityClicked);
+    sceneinteract.EntityClicked.connect(OnEntityClicked); 
     frame.Updated.connect(Update)
 }
 
 function OnScriptDestroyed()
 {
-    // TODO
-/*
-    for(i in animatedInfoBubbles)
-        
-    animatedInfoBubbles = [];
-    autoShownInfoBubbles = [];
-    cam = null;
-*/
+    if (framework.IsExiting())
+        return;
+    for(i in originalTransforms)
+    {
+        var icon = scene.EntityById(i);
+        if (icon)
+        {
+            // Reset icon's transform
+            icon.placeable.transform = originalTransforms[i];
+            // Hide info bubbles
+            SetInfoBubbleVisibility(icon, false, false);
+            var infoBubbleVisible = icon.dynamiccomponent.GetAttribute("infoBubbleVisible");
+            var infoBubbleId = icon.dynamiccomponent.GetAttribute("infoBubbleId");
+            var infoBubble = scene.EntityById(infoBubbleId);
+            scene.EntityById(infoBubbleId).mesh.SetAdjustScale(float3.FromScalar(cInfoBubbleHiddenScale));
+        }
+    }
 }
 
 me.Action("RegisterInfoBubble").Triggered.connect(function(iconEntityName, infoBubbleId)
@@ -176,6 +185,7 @@ function ToggleInfoBubbleVisibility(icon)
     SetInfoBubbleVisibility(icon, !(infoBubbleVisible != undefined && infoBubbleVisible), true);
 }
 
+/*
 function DesiredObjectScale(mesh)
 {
     if (!cam)
@@ -189,6 +199,7 @@ function DesiredObjectScale(mesh)
     const multiplier = 0.05;
     return Math.max(multiplier, multiplier*distance);
 }
+*/
 
 function AnimateInfoBubbles(dt)
 {
