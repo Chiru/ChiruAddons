@@ -20,7 +20,7 @@ Movie.IsEmpty = function()
         return true; 
     return false;
 };
-
+ 
 // Construct a movie struct from the string, if parse fails null object is returned.
 Movie.FromString = function(data)
 {

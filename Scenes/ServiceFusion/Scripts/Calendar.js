@@ -281,6 +281,23 @@ AddDayCell("40", 5, 0); // Week
 AddDayCell("23", 5, 1);
 AddDayCell("24", 5, 2);
 currentDayCell = AddDayCell("25", 5, 3, Cell.DayActiveStyle);
+
+var eventContainer = new BaseContainer(currentDayCell.container.visual);
+eventContainer.container.parent = currentDayCell.container;
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "datetime");
+var date = new Date(2012, 6, 25, 8, 30);
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, date.toString());
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Info");
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "KUNTOSALI RAATTI");
+            
+eventContainer = new BaseContainer(currentDayCell.container.visual);
+eventContainer.container.parent = currentDayCell.container;
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "datetime");
+date = new Date(2012, 6, 25, 14, 30);
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, date.toString());
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Meeting");
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "KAHVILLE MAIJAN KANSSA ANTELLI"); 
+
 AddDayCell("26", 5, 4);
 AddDayCell("27", 5, 5);
 AddDayCell("28", 5, 6);
