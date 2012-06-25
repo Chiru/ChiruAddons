@@ -3,8 +3,7 @@ engine.ImportExtension("qt.gui");
 engine.ImportExtension("qt.network");
 engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
-
-ui.MainWindow().mouseTracking = true;  
+engine.IncludeFile("Log.js");
 
 var titleWidget = null;
 
@@ -14,7 +13,7 @@ function Movie()
     this.auditorium = "";
     this.time = null;
 }
- 
+
 Movie.IsEmpty = function()
 {
     if (this.title == "" && this.auditorium == "" && this.time == null) 
@@ -171,8 +170,17 @@ function CreateContainer(entity)
 }
 
 var container = CreateContainer(me);
-// Register ourselves to the Movie icon
-scene.EntityByName("IconScript").Exec(1, "RegisterInfoBubble", "movie_icon_h", me.id.toString());
+// TODO must delay the registration, not nice.
+frame.DelayedExecute(2).Triggered.connect(RegisterToIconScript);
+
+function RegisterToIconScript(iconScript)
+{
+    iconScript = scene.EntityByName("IconScript");
+    if (iconScript)
+        iconScript.Exec(1, "RegisterInfoBubble", "FinnkinoIcon", me.id.toString());
+    else
+        LogE("MovieContainer.js RegisterToIconScript: Could not obtain IconScript.");
+}
 
 function OnScriptDestroyed()
 {

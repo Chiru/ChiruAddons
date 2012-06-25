@@ -1,5 +1,18 @@
 <!DOCTYPE Scene>
 <scene>
+ <entity id="37" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="IconScript" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Script" sync="true">
+   <attribute value="IconScript.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+ </entity>
  <entity id="1" sync="1">
   <component type="EC_Name" sync="true">
    <attribute value="Environment" name="name"/>
@@ -743,7 +756,7 @@
    <attribute value="true" name="Cast shadows"/>
   </component>
   <component type="EC_Name" sync="true">
-   <attribute value="pub_icon_h" name="name"/>
+   <attribute value="OttoKIcon" name="name"/>
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
@@ -766,7 +779,7 @@
    <attribute value="true" name="Cast shadows"/>
   </component>
   <component type="EC_Name" sync="true">
-   <attribute value="movie_icon_h" name="name"/>
+   <attribute value="FinnkinoIcon" name="name"/>
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Placeable" sync="true">
@@ -909,26 +922,13 @@
    <attribute value="-1" name="Collision Mask"/>
   </component>
  </entity>
- <entity id="37" sync="1">
-  <component type="EC_Name" sync="true">
-   <attribute value="IconScript" name="name"/>
-   <attribute value="" name="description"/>
-  </component>
-  <component type="EC_Script" sync="true">
-   <attribute value="IconScript.js" name="Script ref"/>
-   <attribute value="true" name="Run on load"/>
-   <attribute value="0" name="Run mode"/>
-   <attribute value="" name="Script application name"/>
-   <attribute value="" name="Script class name"/>
-  </component>
- </entity>
  <entity id="38" sync="1">
   <component type="EC_Name" sync="true">
    <attribute value="BarContainer" name="name"/>
    <attribute value="" name="description"/>
   </component>
   <component type="EC_Mesh" sync="true">
-   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,3.000000,3.000000,3.000000" name="Transform"/>
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="local://info_bubble.mesh" name="Mesh ref"/>
    <attribute value="" name="Skeleton ref"/>
    <attribute value="local://info_bubble.material;local://lower_text.material;local://upper_text.material" name="Mesh materials"/>
@@ -936,7 +936,7 @@
    <attribute value="false" name="Cast shadows"/>
   </component>
   <component type="EC_Placeable" sync="true">
-   <attribute value="100.0,59.827782,20.788528,0.000000,180.000000,0.000000,2.000000,2.000000,2.000000" name="Transform"/>
+   <attribute value="100.0,59.827782,20.788528,0.000000,180.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
    <attribute value="1" name="Selection layer"/>
