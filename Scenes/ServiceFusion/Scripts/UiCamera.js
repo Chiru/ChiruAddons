@@ -104,7 +104,6 @@ function ResetScene()
     Log("Resetting scene.");
     for(i in defaultContent)
     {
-        defaultContent[i]
         defaultContent[i].Exec(1, "Reset");
     }
     SwitchScene();

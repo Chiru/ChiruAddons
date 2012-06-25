@@ -15,6 +15,8 @@ if (id_entity)
 	id_entity.placeable.visible = true;
 	
 var loginContainer = new BaseContainer(null);
+var idContainer = new BaseContainer(loginContainer);
+var movieContainer = new BaseContainer(loginContainer);
 // todo replace this with layout object.
 loginContainer.visual.setLayout(new QHBoxLayout());
 loginContainer.visual.layout().setContentsMargins(0, 0, 0, 0);
@@ -28,11 +30,10 @@ function IdScript(tag, rdfStore)
     if (tag.data == "ID")
     {
         //\todo For some reason redland rdf lib will mess up statement order, most likely map container is beeing used.
-        loginContainer.container.rdfStore.FromString(rdfStore.toString());
+        idContainer.container.rdfStore.FromString(rdfStore.toString());
         
         var variables = new Array();
-        var statements = Select(loginContainer.container.rdfStore, null, RdfVocabulary.data, null);
-        print(statements.length);
+        var statements = Select(idContainer.container.rdfStore, null, RdfVocabulary.data, null);
         if (statements.length == 6)
         {
             for (var i = 0; i < statements.length; ++i)
@@ -278,8 +279,13 @@ function OnScriptDestroyed()
 {
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
-	if (loginContainer && loginContainer.visual)
-		loginContainer.visual.deleteLater();
+    if (loginContainer && loginContainer.visual)
+        loginContainer.visual.deleteLater();
+    if (idContainer && idContainer.visual)
+        idContainer.visual.deleteLater();
+    if (movieContainer && movieContainer.visual)
+        movieContainer.visual.deleteLater();
+        
     if (/*...*/true)
     {
         //...
