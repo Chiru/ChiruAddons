@@ -11,7 +11,7 @@ material info_bubble_edge
 
 			texture_unit
 			{
-				texture info_bubble_and_block_CompleteMap.png
+				texture info_bubbleCompleteMap.png
 			}
 		}
 
