@@ -423,6 +423,8 @@ function OnScriptDestroyed()
 {
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
+    if (payment_container && payment_container.visual)
+        payment_container.deleteLater();
     if (/*...*/true)
     {
         //...
