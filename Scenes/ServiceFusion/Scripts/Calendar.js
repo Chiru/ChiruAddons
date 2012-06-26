@@ -413,6 +413,7 @@ function RefreshCalendar()
         eventsEntity.graphicsviewcanvas.GraphicsScene().update(eventsEntity.graphicsviewcanvas.GraphicsScene().sceneRect);
 }
 
+// Not best solution, but couldn't find a better solution to know when entity asset are fully loaded.
 frame.DelayedExecute(5).Triggered.connect(RefreshCalendar);
 
 function OnScriptDestroyed()

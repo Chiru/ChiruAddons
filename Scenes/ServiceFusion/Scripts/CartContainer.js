@@ -116,6 +116,7 @@ function MousePressed()
         var script = movieLoginEntity.GetOrCreateComponent("EC_Script");
         script.scriptRef = new AssetReference("MovieLogin.js");
         script.runOnLoad = true;
+        movieLoginEntity.Action("RequestMovieInfo").Triggered.connect(SendMovieData);
     }
 
     if (!scene.EntityByName("MovieSeatDialog"))
@@ -135,8 +136,6 @@ function MousePressed()
         script.scriptRef = new AssetReference("MoviePayment.js");
         script.runOnLoad = true;
     }
-    
-    frame.DelayedExecute(3.0).Triggered.connect(SendMovieData);
 }
 
 cartContainer = new CartContainer(null);

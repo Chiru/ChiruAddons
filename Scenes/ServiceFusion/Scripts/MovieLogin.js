@@ -231,6 +231,7 @@ function StartLogin()
     me.graphicsviewcanvas.width = frame_login.width;
     me.graphicsviewcanvas.height = frame_login.height;
     frame_login.show();
+    me.Exec(1, "RequestMovieInfo");
 }
 
 function OKClicked()
