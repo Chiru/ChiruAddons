@@ -79,9 +79,20 @@ var ProceedBackward = false;
 
 var rotation = 1.0;
 
+var base_widget = new QWidget();
+base_widget.setLayout(new QHBoxLayout());
+base_widget.layout().setContentsMargins(0, 0, 0, 0);
+base_widget.layout().setSpacing(0);
+base_widget.size = new QSize(800,640);
+
 var frame_payment = new QFrame();
+frame_payment.hide();
 var frame_payment_2 = new QFrame();
+frame_payment_2.hide();
 var frame_thankyou = new QFrame();
+frame_thankyou.hide();
+
+me.graphicsviewcanvas.GraphicsScene().addWidget(base_widget);
 
 me.Action("SetRowAndSeat").Triggered.connect(SetRowAndSeatNumber);
 me.Action("SetMovieInfo").Triggered.connect(SetMovieInfo);
@@ -175,14 +186,16 @@ function StartPayment()
 
     frame_payment.setLayout(vertLayout);
 
-    payment_container.visual.layout().addWidget(frame_payment, 0, 0);
-    me.graphicsviewcanvas.GraphicsScene().addWidget(payment_container.visual);
+    //me.graphicsviewcanvas.GraphicsScene().addWidget(payment_container.visual);
+    base_widget.size = frame_payment.size;
     me.graphicsviewcanvas.width = frame_payment.width;
     me.graphicsviewcanvas.height = frame_payment.height;
+    
+    payment_container.visual.layout().addWidget(frame_payment, 0, 0);
+    base_widget.layout().addWidget(payment_container.visual, 0, 0);
+    
     frame_payment_2.hide();
     frame_payment.show();
-    
-    
 }
 
 function Update()
@@ -288,12 +301,14 @@ function CardReceived(variables)
         vertLayout.setContentsMargins(50, 50, 50, 50);
 
         frame_payment_2.setLayout(vertLayout);
-        me.graphicsviewcanvas.GraphicsScene().addWidget(frame_payment_2);
+        //me.graphicsviewcanvas.GraphicsScene().addWidget(frame_payment_2);
     }
     placeable.SetScale(1.0, 0.5, 1);
-    frame_payment.hide();   
-    me.graphicsviewcanvas.width = frame_payment_2.width;
-    me.graphicsviewcanvas.height = frame_payment_2.height;
+    frame_payment.hide();
+    base_widget.size = frame_payment_2.sizeHint;
+    me.graphicsviewcanvas.width = base_widget.width;
+    me.graphicsviewcanvas.height = base_widget.height;
+    base_widget.layout().addWidget(frame_payment_2, 0, 0);
     frame_payment_2.show();
 
     le_username.setText(variables[0]);
@@ -394,10 +409,15 @@ function ThankYou()
     placeable.SetScale(1.0, 0.5, 1);
     
     frame_thankyou.setLayout(vertLayout);
-    me.graphicsviewcanvas.GraphicsScene().addWidget(frame_thankyou);
-    frame_payment_2.hide();   
-    me.graphicsviewcanvas.width = frame_thankyou.width;
-    me.graphicsviewcanvas.height = frame_thankyou.height;
+    //me.graphicsviewcanvas.GraphicsScene().addWidget(frame_thankyou);
+    frame_payment_2.hide();
+    
+    base_widget.size = frame_thankyou.sizeHint;
+    me.graphicsviewcanvas.width = base_widget.width;
+    me.graphicsviewcanvas.height = base_widget.height;
+    
+    base_widget.layout().addWidget(frame_thankyou, 0, 0);
+
     frame_thankyou.show();
 }
 

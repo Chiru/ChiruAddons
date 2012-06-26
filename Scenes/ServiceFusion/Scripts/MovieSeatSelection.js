@@ -57,6 +57,7 @@ if (me.graphicsviewcanvas)
 var base_widget = new QWidget();
 base_widget.setLayout(new QHBoxLayout());
 base_widget.layout().setContentsMargins(0, 0, 0, 0);
+base_widget.layout().setSpacing(0);
 
 var frame_seatselection = new QFrame();
 frame_seatselection.objectName = "Seats";
