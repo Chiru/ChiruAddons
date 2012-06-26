@@ -329,7 +329,7 @@ var eventsWidget = asset.GetAsset("CalendarEvents.ui").Instantiate(false, 0);
 calEventsContainer.visual.size = eventsWidget.size;
 eventsWidget.cells = new Array();
 
-function AddEventCell(row, column)
+function AddEventCellScript(row, column)
 {
     var cell = eventsWidget.cells[row][column];
     if (cell)
@@ -344,8 +344,8 @@ function AddEventCell(row, column)
 for (var i = 0; i < 4; ++i) 
 {
     eventsWidget.cells[i] = [new CellObject(eventsWidget, i, 0, EventCellEvents), new CellObject(eventsWidget, i, 1, EventCellEvents)];
-    AddEventCell(i, 0);
-    AddEventCell(i, 1);
+    AddEventCellScript(i, 0);
+    AddEventCellScript(i, 1);
 } 
 eventsWidget.cells[0][0].widget.layout().addWidget(new QLabel("25"), 0, 0);
 eventsWidget.cells[0][0].widget.styleSheet = Cell.DayEventStyle;
@@ -368,7 +368,6 @@ var oldEventWidgets = new Array();
 // Each day has it's own container and each day can have zero to * events containers as children.
 function ParseDayEvents(container)
 {
-    //calEventsContainer.container.parent = container;
     // Check if day container has any events inside.
     var events = new Array();
     for(var i = 0; i < container.childCount; ++i)
@@ -386,7 +385,7 @@ function ParseDayEvents(container)
         oldEventWidgets[i].deleteLater();
     oldEventWidgets = new Array();
     
-    // Read event top three calendar events and insert them into a event widget.
+    // Read top three calendar events and insert them into the event widget.
     var header = null, text = null;
     for (var i = 0; i < events.length; ++i)
     {
@@ -406,11 +405,21 @@ function ParseDayEvents(container)
     }
 }
 
+function RefreshCalendar()
+{
+    if (me.graphicsviewcanvas)
+        me.graphicsviewcanvas.GraphicsScene().update(me.graphicsviewcanvas.GraphicsScene().sceneRect);
+    if (eventsEntity && eventsEntity.graphicsviewcanvas)
+        eventsEntity.graphicsviewcanvas.GraphicsScene().update(eventsEntity.graphicsviewcanvas.GraphicsScene().sceneRect);
+}
+
+frame.DelayedExecute(5).Triggered.connect(RefreshCalendar);
+
 function OnScriptDestroyed()
 {
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
-    if (calendarWidget)
+    if (calendarWidget) 
     {
         calendarWidget.deleteLater();
         calendarWidget = null;
