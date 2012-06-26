@@ -39,3 +39,4 @@ Service Fusion Scripting
     });
 
 - See TestScript.js for more examples
+- If using GraphicsViewCanvas component in your entity, rememer to have Screen.js script present in the entity also
