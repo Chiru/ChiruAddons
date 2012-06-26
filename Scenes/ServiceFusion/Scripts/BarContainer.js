@@ -195,17 +195,6 @@ function CreateContainer(entity)
 }
 
 var container = CreateContainer(me);
-// TODO must delay the registration, not nice.
-frame.DelayedExecute(2).Triggered.connect(RegisterToIconScript);
-
-function RegisterToIconScript(iconScript)
-{
-    iconScript = scene.EntityByName("IconScript");
-    if (iconScript)
-        iconScript.Exec(1, "RegisterInfoBubble", "OttoKIcon", me.id.toString());
-    else
-        LogE("BarContainer.js RegisterToIconScript: Could not obtain IconScript.");
-}
 
 function OnScriptDestroyed()
 {

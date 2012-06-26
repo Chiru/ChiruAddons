@@ -901,7 +901,9 @@
    <attribute value="256" name="Texture height"/>
    <attribute value="3" name="Submesh"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Screen"/>
+  <component type="EC_DynamicComponent" sync="true" name="Screen">
+   <attribute type="string" value="FinnkinoIcon" name="iconName"/>
+  </component>
   <component type="EC_RigidBody" sync="true">
    <attribute value="0" name="Mass"/>
    <attribute value="0" name="Shape type"/>
@@ -969,7 +971,9 @@
    <attribute value="256" name="Texture height"/>
    <attribute value="2" name="Submesh"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Screen"/>
+  <component type="EC_DynamicComponent" sync="true" name="Screen">
+   <attribute type="string" value="OttoKIcon" name="iconName"/>
+  </component>
   <component type="EC_RigidBody" sync="true">
    <attribute value="0" name="Mass"/>
    <attribute value="0" name="Shape type"/>

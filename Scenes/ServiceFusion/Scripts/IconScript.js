@@ -27,6 +27,37 @@ if (!framework.IsHeadless())
 {
     sceneinteract.EntityClicked.connect(OnEntityClicked); 
     frame.Updated.connect(Update)
+
+    // Gather info bubbles that want to register themselves to icons
+    var infoBubbles = scene.EntitiesWithComponent("EC_DynamicComponent", "Screen");
+    for(i in infoBubbles)
+    {
+        var infoBubble = infoBubbles[i];
+        var iconName = infoBubble.dynamiccomponent.GetAttribute("iconName");
+        if (iconName)
+        {
+            icon = scene.EntityByName(iconName);
+            if (!icon)
+            {
+                LogE("RegisterInfoBubble: icon with name " + iconName + " not found.");
+                return;
+            }
+            var dc = icon.GetComponent("EC_DynamicComponent", "Icon");
+            if (!dc)
+            {
+                LogE("RegisterInfoBubble: dc for icon null.");
+                return;
+            }
+
+            infoBubble.placeable.SetPosition(icon.placeable.WorldPosition());
+            dc.CreateAttribute("uint", "infoBubbleId");
+            dc.CreateAttribute("bool", "infoBubbleVisible");
+            dc.SetAttribute("infoBubbleId", parseInt(infoBubbleId));
+            dc.SetAttribute("infoBubbleVisible", true);
+            // Enforce hide for newly registered info bubbles, do not move icon yet.
+            SetInfoBubbleVisibility(icon, false, false);
+        }
+    }
 }
 
 function OnScriptDestroyed()
@@ -49,31 +80,6 @@ function OnScriptDestroyed()
         }
     }
 }
-
-me.Action("RegisterInfoBubble").Triggered.connect(function(iconEntityName, infoBubbleId)
-{
-    var icon = scene.EntityByName(iconEntityName);
-    if (!icon)
-    {
-        LogE("RegisterInfoBubble: icon null.");
-        return;
-    }
-    var dc = icon.GetComponent("EC_DynamicComponent", "Icon");
-    if (!dc)
-    {
-        LogE("RegisterInfoBubble: dc null.");
-        return;
-    }
-
-    var infoBubble = scene.EntityById(parseInt(infoBubbleId));
-    infoBubble.placeable.SetPosition(icon.placeable.WorldPosition());
-    dc.CreateAttribute("uint", "infoBubbleId");
-    dc.CreateAttribute("bool", "infoBubbleVisible");
-    dc.SetAttribute("infoBubbleId", parseInt(infoBubbleId));
-    dc.SetAttribute("infoBubbleVisible", true);
-    // Enforce hide for newly registered info bubbles, do not move icon yet.
-    SetInfoBubbleVisibility(icon, false, false);
-});
 
 function AnimatedIcon(/*Entity*/ icon, /*Transform*/ start, /*Transform*/ dest)
 {
