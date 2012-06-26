@@ -52,7 +52,7 @@ if (!framework.IsHeadless())
             infoBubble.placeable.SetPosition(icon.placeable.WorldPosition());
             dc.CreateAttribute("uint", "infoBubbleId");
             dc.CreateAttribute("bool", "infoBubbleVisible");
-            dc.SetAttribute("infoBubbleId", parseInt(infoBubbleId));
+            dc.SetAttribute("infoBubbleId", infoBubble.id);
             dc.SetAttribute("infoBubbleVisible", true);
             // Enforce hide for newly registered info bubbles, do not move icon yet.
             SetInfoBubbleVisibility(icon, false, false);
