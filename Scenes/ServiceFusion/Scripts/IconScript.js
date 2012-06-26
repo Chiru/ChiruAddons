@@ -25,9 +25,6 @@ const cAnimationTime = 1; // seconds
 // Entry point
 if (!framework.IsHeadless())
 {
-    sceneinteract.EntityClicked.connect(OnEntityClicked); 
-    frame.Updated.connect(Update)
-
     // Gather info bubbles that want to register themselves to icons
     var infoBubbles = scene.EntitiesWithComponent("EC_DynamicComponent", "Screen");
     for(i in infoBubbles)
@@ -36,7 +33,7 @@ if (!framework.IsHeadless())
         var iconName = infoBubble.dynamiccomponent.GetAttribute("iconName");
         if (iconName)
         {
-            icon = scene.EntityByName(iconName);
+            var icon = scene.EntityByName(iconName);
             if (!icon)
             {
                 LogE("RegisterInfoBubble: icon with name " + iconName + " not found.");
@@ -58,6 +55,9 @@ if (!framework.IsHeadless())
             SetInfoBubbleVisibility(icon, false, false);
         }
     }
+
+    sceneinteract.EntityClicked.connect(OnEntityClicked);
+    frame.Updated.connect(Update);
 }
 
 function OnScriptDestroyed()
@@ -178,9 +178,15 @@ function SetInfoBubbleVisibility(/*Entity*/ icon, /*bool*/ visible, /*bool*/ ani
     }
 
     if (animate)
+    {
         animatedIcons.push(new AnimatedIcon(icon, currentTr, destTr));
-
-    animatedInfoBubbles.push(new AnimatedInfoBubble(icon));
+        animatedInfoBubbles.push(new AnimatedInfoBubble(icon));
+    }
+    else
+    {
+        var dest = visible ? cInfoBubbleVisibleScale : cInfoBubbleHiddenScale;
+        infoBubble.mesh.SetAdjustScale(float3.FromScalar(dest));
+    }
 
     return true;
 }
@@ -226,7 +232,7 @@ function AnimateInfoBubbles(dt)
         }
         else
         {
-            // TODO Ensure dest scale?
+            infoBubble.mesh.SetAdjustScale(float3.FromScalar(dest));
             animatedInfoBubbles.splice(i, 1);
         }
     }
@@ -247,7 +253,7 @@ function AnimateIcons(dt)
         }
         else
         {
-            // TODO Ensure dest transform?
+            animatedIcons[i].icon.placeable.transform = animatedIcons[i].dest;
             animatedIcons.splice(i, 1);
         }
     }
