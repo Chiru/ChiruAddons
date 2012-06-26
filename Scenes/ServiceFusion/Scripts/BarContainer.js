@@ -154,15 +154,23 @@ SongContainer.prototype.DisplaySong = function(song)
     AddStatement(songVisual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "Song");
     AddStatement(songVisual, RdfVocabulary.baseUri, RdfVocabulary.data, song.title);
     AddStatement(songVisual, RdfVocabulary.baseUri, RdfVocabulary.data, song.artist.toString());
-    
-    titleLabel = new QLabel("Otto K");
+
+    titleWidget = new QWidget();
+    titleWidget.setLayout(new QVBoxLayout());
+    titleLabel = new QLabel("Otto.K");
     titleLabel.font = new QFont("SansSerif", 42);
-    titleLabel.styleSheet = "background-color:white;";
+    titleLabel.alignment = 0x0004; // Qt::AlignHCenter
+    openLabel = new QLabel("\nAVOINNA 11-23"); // Could use spacer here, but going with newline for now
+    openLabel.font = new QFont("SansSerif", 16);
+    openLabel.alignment = 0x0004;
+    titleWidget.layout().addWidget(titleLabel, 0, 0);
+    titleWidget.layout().addWidget(openLabel, 0, 0);
     var title = me.GetComponent("EC_GraphicsViewCanvas", "Title");
+    titleWidget.size = new QPoint(title.width, title.height);
+    title.GraphicsScene().addWidget(titleWidget);
     title.GraphicsView().styleSheet = "background-color:white;";
-    titleLabel.size = new QPoint(title.width, title.height);
-    title.GraphicsScene().addWidget(titleLabel);
-    titleLabel.show();
+    titleWidget.styleSheet = "background-color:white;";
+    titleWidget.show();
 
     // label = new QLabel(song.artist); 
     // label.font = new QFont("FreeSans", 24);
