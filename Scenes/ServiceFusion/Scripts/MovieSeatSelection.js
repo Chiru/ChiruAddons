@@ -54,25 +54,29 @@ if (me.graphicsviewcanvas)
         me.graphicsviewcanvas.outputTexture = asset.GenerateUniqueAssetName("Texture", "Screen");
     }
 }
+var base_widget = new QWidget();
+base_widget.setLayout(new QHBoxLayout());
+base_widget.layout().setContentsMargins(0, 0, 0, 0);
+
 var frame_seatselection = new QFrame();
 frame_seatselection.objectName = "Seats";
 var seats_added = false;
+frame_seatselection.hide();
+base_widget.layout().addWidget(frame_seatselection, 0, 0);
 
 var frame_noseats = new QFrame();
 frame_noseats.objectName = "NoSeats";
 frame_noseats.setFrameStyle(QFrame.StyledPanel);
 frame_noseats.setStyleSheet(NoSeats);
+base_widget.layout().addWidget(frame_noseats, 0, 0);
 
-me.graphicsviewcanvas.GraphicsScene().addWidget(frame_noseats);
-me.graphicsviewcanvas.width = frame_noseats.width;
-me.graphicsviewcanvas.height = frame_noseats.height;
+me.graphicsviewcanvas.GraphicsScene().addWidget(base_widget);
+me.graphicsviewcanvas.width = base_widget.width;
+me.graphicsviewcanvas.height = base_widget.height;
 frame_noseats.show();
 
 SeatSelection();
 SetEmptyPlaza();
-
-
-
 
 function CreateSeat(row, number)
 {
@@ -283,10 +287,11 @@ function SeatSelection()
         rowsLayout.addLayout(row_array[i]);
     
     frame_seatselection.setLayout(rowsLayout);
-    me.graphicsviewcanvas.GraphicsScene().addWidget(frame_seatselection);
+    
+    frame_seatselection.show();
+    
     me.graphicsviewcanvas.width = frame_seatselection.width;
     me.graphicsviewcanvas.height = frame_seatselection.height;
-    frame_seatselection.hide();
 
     row = -1;
     seats_added = true;
@@ -295,8 +300,8 @@ function SeatSelection()
 function SetEmptyPlaza()
 {    
     frame_seatselection.hide();
-    me.graphicsviewcanvas.width = frame_noseats.width;
-    me.graphicsviewcanvas.height = frame_noseats.height;
+    me.graphicsviewcanvas.width = frame_seatselection.width;
+    me.graphicsviewcanvas.height = frame_seatselection.height;
     frame_noseats.show();
 }
 
