@@ -187,9 +187,9 @@ function StartPayment()
     frame_payment.setLayout(vertLayout);
 
     //me.graphicsviewcanvas.GraphicsScene().addWidget(payment_container.visual);
-    base_widget.size = frame_payment.size;
-    me.graphicsviewcanvas.width = frame_payment.width;
-    me.graphicsviewcanvas.height = frame_payment.height;
+    base_widget.size = frame_payment.sizeHint;
+    me.graphicsviewcanvas.width = base_widget.width;
+    me.graphicsviewcanvas.height = base_widget.height;
     
     payment_container.visual.layout().addWidget(frame_payment, 0, 0);
     base_widget.layout().addWidget(payment_container.visual, 0, 0);
@@ -305,7 +305,7 @@ function CardReceived(variables)
     }
     placeable.SetScale(1.0, 0.5, 1);
     frame_payment.hide();
-    base_widget.size = frame_payment_2.sizeHint;
+    base_widget.size = frame_payment_2.minimumSizeHint;
     me.graphicsviewcanvas.width = base_widget.width;
     me.graphicsviewcanvas.height = base_widget.height;
     base_widget.layout().addWidget(frame_payment_2, 0, 0);
@@ -325,7 +325,7 @@ function SetRowAndSeatNumber(row, seat)
     label_seat.setText("Rivi: " + rowNumber + " Paikka: " + seatNumber);
     label_seat2.setText("Rivi: " + rowNumber + " Paikka: " + seatNumber);
 }
-
+ 
 function OKClicked()
 {
 	if (visa_entity)
@@ -412,7 +412,7 @@ function ThankYou()
     //me.graphicsviewcanvas.GraphicsScene().addWidget(frame_thankyou);
     frame_payment_2.hide();
     
-    base_widget.size = frame_thankyou.sizeHint;
+    base_widget.size = frame_thankyou.minimumSizeHint; 
     me.graphicsviewcanvas.width = base_widget.width;
     me.graphicsviewcanvas.height = base_widget.height;
     

@@ -288,7 +288,7 @@ AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.sourceA
 var date = new Date(2012, 6, 25, 8, 30);
 AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, date.toString());
 AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Info");
-AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "KUNTOSALI RAATTI");
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Kuntosali Raatti");
             
 eventContainer = new BaseContainer(currentDayCell.container.visual);
 eventContainer.container.parent = currentDayCell.container;
@@ -296,7 +296,7 @@ AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.sourceA
 date = new Date(2012, 6, 25, 14, 30);
 AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, date.toString());
 AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Meeting");
-AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "KAHVILLE MAIJAN KANSSA ANTELLI"); 
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Kahville Maijan kanssa Antelli"); 
 
 AddDayCell("26", 5, 4);
 AddDayCell("27", 5, 5);
