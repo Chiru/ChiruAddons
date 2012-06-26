@@ -421,9 +421,10 @@ function ThankyouClicked()
     
     //Create a 3D-ticket
     if (!scene.EntityByName("MovieTicket"))
-    {    
+    {
+        // todo remove movie rdf data from the cart container.
         if (scene.EntityByName("cart_item"))
-            scene.RemoveEntity(scene.EntityByName("cart_item").id);
+            scene.EntityByName("cart_item").placeable.visible = false;
         if (scene.EntityByName("MovieLoginDialog"))
             scene.RemoveEntity(scene.EntityByName("MovieLoginDialog").id);
         if (scene.EntityByName("MovieSeatDialog"))
@@ -434,6 +435,10 @@ function ThankyouClicked()
         var script = movieTicketEntity.GetOrCreateComponent("EC_Script");
         script.scriptRef = new AssetReference("MovieTicket.js");
         script.runOnLoad = true;
+        
+        script = movieTicketEntity.GetOrCreateComponent("EC_Script", "Screen");
+        script.scriptRef = new AssetReference("Screen.js"); 
+        script.runOnLoad = true; 
         frame.DelayedExecute(1.0).Triggered.connect(SendTicketData);
     }
 }

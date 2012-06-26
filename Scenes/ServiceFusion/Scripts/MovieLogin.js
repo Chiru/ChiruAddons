@@ -295,12 +295,12 @@ function OnScriptDestroyed()
 {
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
-    if (loginContainer && loginContainer.visual)
+    /*if (loginContainer && loginContainer.visual)
         loginContainer.visual.deleteLater();
     if (idContainer && idContainer.visual)
         idContainer.visual.deleteLater();
     if (movieContainer && movieContainer.visual)
-        movieContainer.visual.deleteLater();
+        movieContainer.visual.deleteLater();*/
         
     if (/*...*/true)
     {

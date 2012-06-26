@@ -55,9 +55,9 @@ if (me.graphicsviewcanvas)
 var frame_ticket = new QFrame();
 frame_ticket.objectName = "Ticket";
 
-var TicketStyle = "QFrame#Ticket { padding: 0px; border: 0px; border-radius: 0px; border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/Elokuvalippu3.png); }";
-
-
+var asset = asset.GetAsset("local://Elokuvalippu3.png");
+if (asset)
+    var TicketStyle = "QFrame#Ticket { padding: 0px; border: 0px; border-radius: 0px; border-image: url(\"" + asset.DiskSource() + "\"); }";
 
 frame_ticket.setStyleSheet(TicketStyle);
 
@@ -117,8 +117,8 @@ function SetTicketInfo2(place, row, seat)
     me.graphicsviewcanvas.height = frame_ticket.height;
     frame_ticket.show();
     placeable.visible = true;
+    me.mesh.meshRef = me.mesh.meshRef;
 }
-
 
 
 

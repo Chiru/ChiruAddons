@@ -53,7 +53,6 @@ if (!framework.IsHeadless())
 function OnDropEvent(e)
 {
     var data = e.mimeData().data("application/x-hotspot").toString();
-    print(data.length);
     if (data.length > 0)
     {
         var ray = CurrentMouseRay();
