@@ -1,5 +1,14 @@
 //Stylesheet-file for movie dialogs
 
+var plaza2_asset = asset.GetAsset("local://plaza_2.png");
+var plaza3_asset = asset.GetAsset("local://plaza_3.png");
+var step_s_asset = asset.GetAsset("local://step_small.png");
+var step_m_asset = asset.GetAsset("local://step_medium.png");
+var step_l_asset = asset.GetAsset("local://step_large.png");
+var green_seat   = asset.GetAsset("local://green_seat.png");
+var yellow_seat   = asset.GetAsset("local://yellow_seat.png");
+var wheel_chair   = asset.GetAsset("local://wheelchair.png");
+
 var LargeBoldText = "QLabel { font: bold 18px 'FreeSans'; }";
 
 var LargeText = "QLabel { font: 18px 'FreeSans'; }";
@@ -24,22 +33,22 @@ var LargeTextRight = "QLabel { font: 18px; qproperty-alignment: AlignRight; }";
 
 var LargeTextRightBold = "QLabel { font: bold 18px; qproperty-alignment: AlignRight; }";
 
-var NoSeats = "QFrame#NoSeats { padding: 0px; border: 2px solid black; border-radius: 0px; border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/plaza_3.png); }";
+var NoSeats = "QFrame#NoSeats { padding: 0px; border: 2px solid black; border-radius: 0px; border-image: url(" + plaza3_asset.DiskSource() + "); }";
 
-var Seats = "QFrame#Seats { padding: 0px; border: 2px solid black; border-radius: 0px; border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/plaza_2.png); }";
+var Seats = "QFrame#Seats { padding: 0px; border: 2px solid black; border-radius: 0px; border-image: url(" + plaza2_asset.DiskSource() + "); }";
 
-var SmallStep = "QLabel { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/step_small.png); color: white; font: 16px 'FreeSans'; qproperty-alignment: AlignCenter; }";
+var SmallStep = "QLabel { border-image: url(" + step_s_asset.DiskSource() + "); color: white; font: 16px 'FreeSans'; qproperty-alignment: AlignCenter; }";
 
-var MediumStep = "QLabel { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/step_medium.png); color: white; font: 16px 'FreeSans'; qproperty-alignment: AlignCenter; }";
+var MediumStep = "QLabel { border-image: url(" + step_m_asset.DiskSource() + "); color: white; font: 16px 'FreeSans'; qproperty-alignment: AlignCenter; }";
 
-var LargeStep = "QLabel { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/step_large.png); color: white; font: 16px 'FreeSans'; qproperty-alignment: AlignCenter; }";
+var LargeStep = "QLabel { border-image: url(" + step_l_asset.DiskSource() + "); color: white; font: 16px 'FreeSans'; qproperty-alignment: AlignCenter; }";
 
 var EmptyStep = "QLabel { color: white; font: 16px 'FreeSans'; qproperty-alignment: AlignCenter; }";
 
 var LargeButton = "QPushButton { font: 32px 'FreeSans'; }";
 
-var SeatCheckBox = "QCheckBox { padding: 0px; } QCheckBox::indicator { width: 30px; height: 38px; } QCheckBox::indicator:unchecked { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/green_seat.png); } QCheckBox::indicator:checked { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/yellow_seat.png); }";
+var SeatCheckBox = "QCheckBox { padding: 0px; } QCheckBox::indicator { width: 30px; height: 38px; } QCheckBox::indicator:unchecked { border-image: url(" + green_seat.DiskSource() + "); } QCheckBox::indicator:checked { border-image: url(" + yellow_seat.DiskSource() + "); }";
 
-var HandicapSeatCheckBox = "QCheckBox { padding: 0px; } QCheckBox::indicator { width: 30px; height: 38px; } QCheckBox::indicator:unchecked { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/wheelchair.png); } QCheckBox::indicator:checked { border-image: url(../src/ChiruAddons/Scenes/ServiceFusion/Assets/Finnkino/wheelchair.png); }";
+var HandicapSeatCheckBox = "QCheckBox { padding: 0px; } QCheckBox::indicator { width: 30px; height: 38px; } QCheckBox::indicator:unchecked { border-image: url(" + wheel_chair.DiskSource() + "); } QCheckBox::indicator:checked { border-image: url(" + wheel_chair.DiskSource() + "); }";
 
 
