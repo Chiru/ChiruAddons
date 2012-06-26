@@ -86,10 +86,14 @@ base_widget.layout().setSpacing(0);
 base_widget.size = new QSize(800,640);
 
 var frame_payment = new QFrame();
+payment_container.visual.layout().addWidget(frame_payment, 0, 0);
+base_widget.layout().addWidget(payment_container.visual, 0, 0);
 frame_payment.hide();
 var frame_payment_2 = new QFrame();
+base_widget.layout().addWidget(frame_payment_2, 0, 0);
 frame_payment_2.hide();
 var frame_thankyou = new QFrame();
+base_widget.layout().addWidget(frame_thankyou, 0, 0);
 frame_thankyou.hide();
 
 me.graphicsviewcanvas.GraphicsScene().addWidget(base_widget);
@@ -127,6 +131,7 @@ var seatNumber = 0;
 var rowNumber = 0;
 
 var frame_2_created = false;
+var frame_created = false;
 
 var label_seat = new QLabel("Rivi: " + rowNumber + " Paikka: " + seatNumber);
 
@@ -143,56 +148,55 @@ StartPayment();
 
 function StartPayment()
 {
-    var buttonCancel = new QPushButton("Peruuta");
-    buttonCancel.clicked.connect(CancelClicked);
-    buttonCancel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
+    if (!frame_created)
+    {
+        var buttonCancel = new QPushButton("Peruuta");
+        buttonCancel.clicked.connect(CancelClicked);
+        buttonCancel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
+        var label_paymentarea = new QLabel("\n\n\nRaahaa maksukortti tälle alueelle\n\n\n");
+        label_paymentarea.setStyleSheet(PaymentArea);
+        label_paymentarea.objectName = "label_paymentarea";
+        label_paymentarea.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
+        
 
+        var label_shoppingcart = new QLabel("Tuote:");
+        var label_price = new QLabel("Summa: 9.00 euroa");
 
-    var label_paymentarea = new QLabel("\n\n\nRaahaa maksukortti tälle alueelle\n\n\n");
-    label_paymentarea.setStyleSheet(PaymentArea);
-    label_paymentarea.objectName = "label_paymentarea";
-    label_paymentarea.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
-    
+        buttonCancel.setStyleSheet(NormalButton);
+        label_shoppingcart.setStyleSheet(LargeBoldText);
+        label_movieinfo.setStyleSheet(LargeText);
+        label_price.setStyleSheet(Price);
 
-    var label_shoppingcart = new QLabel("Tuote:");
-    var label_price = new QLabel("Summa: 9.00 euroa");
+        var grid = new QGridLayout();
+        grid.setVerticalSpacing(8);
 
-    buttonCancel.setStyleSheet(NormalButton);
-    label_shoppingcart.setStyleSheet(LargeBoldText);
-    label_movieinfo.setStyleSheet(LargeText);
-    label_price.setStyleSheet(Price);
+        grid.addWidget(label_shoppingcart, 0, 0, 1, 1);
+        grid.addWidget(label_movieinfo, 0, 1, 1, 1);
 
-    var grid = new QGridLayout();
-    grid.setVerticalSpacing(8);
+        grid.addWidget(label_seat, 1, 0, 1, 1);
+        grid.addWidget(label_price, 1, 1, 1, 1);
+        
+        grid.addWidget(label_paymentarea, 2, 0, 1 , 2);
 
-    grid.addWidget(label_shoppingcart, 0, 0, 1, 1);
-    grid.addWidget(label_movieinfo, 0, 1, 1, 1);
+        var buttonLayout = new QHBoxLayout();
+        buttonLayout.addWidget(buttonCancel, 0, 0);
+        buttonLayout.setContentsMargins(0,0,0,0);
 
-    grid.addWidget(label_seat, 1, 0, 1, 1);
-    grid.addWidget(label_price, 1, 1, 1, 1);
-    
-    grid.addWidget(label_paymentarea, 2, 0, 1 , 2);
+        var vertLayout = new QVBoxLayout();
+        vertLayout.addLayout(grid);
+        vertLayout.addSpacerItem(new QSpacerItem(1,1, QSizePolicy.Fixed, QSizePolicy.Expanding));
+        vertLayout.addLayout(buttonLayout);
+        vertLayout.setContentsMargins(50, 50, 50, 50);
 
-    var buttonLayout = new QHBoxLayout();
-    buttonLayout.addWidget(buttonCancel, 0, 0);
-    buttonLayout.setContentsMargins(0,0,0,0);
-
-    var vertLayout = new QVBoxLayout();
-    vertLayout.addLayout(grid);
-    vertLayout.addSpacerItem(new QSpacerItem(1,1, QSizePolicy.Fixed, QSizePolicy.Expanding));
-    vertLayout.addLayout(buttonLayout);
-    vertLayout.setContentsMargins(50, 50, 50, 50);
-
-    frame_payment.setLayout(vertLayout);
+        frame_payment.setLayout(vertLayout);
+        frame_created = true;
+    }
 
     //me.graphicsviewcanvas.GraphicsScene().addWidget(payment_container.visual);
     base_widget.size = frame_payment.sizeHint;
     me.graphicsviewcanvas.width = base_widget.width;
     me.graphicsviewcanvas.height = base_widget.height;
-    
-    payment_container.visual.layout().addWidget(frame_payment, 0, 0);
-    base_widget.layout().addWidget(payment_container.visual, 0, 0);
     
     frame_payment_2.hide();
     frame_payment.show();
@@ -239,8 +243,10 @@ function CardReceived(variables)
         buttonCancel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
         
         var le_username = new QLineEdit();
+        le_username.objectName = "le_username";
         le_username.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
         var le_password = new QLineEdit();
+        le_password.objectName = "le_password";
         le_password.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
         var label_shoppingcart = new QLabel("Tuote:");
@@ -249,7 +255,7 @@ function CardReceived(variables)
         var label_price = new QLabel("Summa: 9.00 euroa");
 
         label_shoppingcart.setStyleSheet(LargeBoldText);
-        label_movieinfo.setStyleSheet(LargeText);
+        label_movieinfo.setStyleSheet(LargeText); 
 
         label_price.setStyleSheet(Price);
         
@@ -301,18 +307,22 @@ function CardReceived(variables)
         vertLayout.setContentsMargins(50, 50, 50, 50);
 
         frame_payment_2.setLayout(vertLayout);
+        frame_2_created = true;
         //me.graphicsviewcanvas.GraphicsScene().addWidget(frame_payment_2);
     }
     placeable.SetScale(1.0, 0.5, 1);
     frame_payment.hide();
-    base_widget.size = frame_payment_2.minimumSizeHint;
+    base_widget.size = frame_payment_2.sizeHint;
     me.graphicsviewcanvas.width = base_widget.width;
     me.graphicsviewcanvas.height = base_widget.height;
-    base_widget.layout().addWidget(frame_payment_2, 0, 0);
     frame_payment_2.show();
 
-    le_username.setText(variables[0]);
-    le_password.setText(variables[1]);
+    var username = findChild(frame_payment_2, "le_username");
+    if (username)
+        username.setText(variables[0]);
+    var password = findChild(frame_payment_2, "le_password");
+    if (password)
+        password.setText(variables[1]);
 }
 
 function SetRowAndSeatNumber(row, seat)
@@ -343,8 +353,9 @@ function CancelClicked()
 function Cancel2Clicked()
 {
     frame_payment_2.hide();
-    me.graphicsviewcanvas.width = frame_payment.width;
-    me.graphicsviewcanvas.height = frame_payment.height;
+    base_widget.size = frame_payment.sizeHint;
+    me.graphicsviewcanvas.width = base_widget.width;
+    me.graphicsviewcanvas.height = base_widget.height;
     frame_payment.show();
     placeable.SetScale(1.0, 0.5, 1);
 }
@@ -415,8 +426,6 @@ function ThankYou()
     base_widget.size = frame_thankyou.minimumSizeHint; 
     me.graphicsviewcanvas.width = base_widget.width;
     me.graphicsviewcanvas.height = base_widget.height;
-    
-    base_widget.layout().addWidget(frame_thankyou, 0, 0);
 
     frame_thankyou.show();
 }
