@@ -136,6 +136,8 @@ function MousePressed()
         script.scriptRef = new AssetReference("MoviePayment.js");
         script.runOnLoad = true;
     }
+    
+    frame.DelayedExecute(1.0).Triggered.connect(SendMovieData);
 }
 
 cartContainer = new CartContainer(null);

@@ -104,6 +104,7 @@ if (me.graphicsviewcanvas)
 
 var paymentEnt = scene.EntityByName("MoviePaymentDialog");
 var seatEnt = scene.EntityByName("MovieSeatDialog");
+var loginEnt = scene.EntityByName("MovieLoginDialog");
 var paymentPlaceable = paymentEnt.GetOrCreateComponent("EC_Placeable");
 var seatPlaceable = seatEnt.GetOrCreateComponent("EC_Placeable");
 
@@ -210,7 +211,6 @@ function Update()
         }
         return;
     }
-
 }
 
 function CardReceived(variables)
@@ -417,6 +417,33 @@ function ThankyouClicked()
     AddStatement(movieContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, moviePlace);
     calendar_component.vc.HandleMeshDrop(movieContainer.visual);
     movieContainer.visual.deleteLater();
+    
+    
+    //Create a 3D-ticket
+    if (!scene.EntityByName("MovieTicket"))
+    {    
+        if (scene.EntityByName("cart_item"))
+            scene.RemoveEntity(scene.EntityByName("cart_item").id);
+        if (scene.EntityByName("MovieLoginDialog"))
+            scene.RemoveEntity(scene.EntityByName("MovieLoginDialog").id);
+        if (scene.EntityByName("MovieSeatDialog"))
+            scene.RemoveEntity(scene.EntityByName("MovieSeatDialog").id);
+        me.placeable.visible = false;
+        var movieTicketEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
+        movieTicketEntity.SetName("MovieTicket");
+        var script = movieTicketEntity.GetOrCreateComponent("EC_Script");
+        script.scriptRef = new AssetReference("MovieTicket.js");
+        script.runOnLoad = true;
+        frame.DelayedExecute(1.0).Triggered.connect(SendTicketData);
+    }
+}
+
+function SendTicketData()
+{
+    var movieTicketEntity = scene.EntityByName("MovieTicket");
+    movieTicketEntity.Exec(1, "SetTicketInfo", movieName, movieTime, movieDate);
+    movieTicketEntity.Exec(1, "SetTicketInfo2", moviePlace, seatNumber, rowNumber);
+
 }
 
 function OnScriptDestroyed()
@@ -425,11 +452,6 @@ function OnScriptDestroyed()
         return; // Application shutting down, the widget pointers are garbage.
     if (payment_container && payment_container.visual)
         payment_container.visual.deleteLater();
-    if (/*...*/true)
-    {
-        //...
-        return;
-    }
 }
 
 
