@@ -128,7 +128,7 @@ function StartLogin()
     var frame_login = new QFrame();
     frame_login.objectName = "frame_login";
 
-    var buttonOK = new QPushButton("Rekisteröidy");
+    var buttonOK = new QPushButton("OK");
     buttonOK.clicked.connect(OKClicked);
     var buttonCancel = new QPushButton("Peruuta");
     buttonCancel.clicked.connect(CancelClicked);

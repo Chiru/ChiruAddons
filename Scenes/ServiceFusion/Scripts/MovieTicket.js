@@ -83,7 +83,7 @@ label_seat.setStyleSheet(NormalText);
 
 grid.addWidget(ticket, 0, 0, 1, 2);
 
-frame_ticket.setLayout(grid);
+//frame_ticket.setLayout(grid);
 
 
 function SetTicketInfo(name, time, date)
@@ -92,7 +92,7 @@ function SetTicketInfo(name, time, date)
     label_time.setText(time);
     label_date.setText(date);
     
-    grid.addWidget(label_name, 1, 0);
+    grid.addWidget(label_name, 1, 0, 1, 2);
     grid.addWidget(label_time, 2, 0);
     grid.addWidget(label_date, 2, 1);
 

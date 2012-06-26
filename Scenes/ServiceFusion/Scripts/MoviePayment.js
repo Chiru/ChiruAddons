@@ -240,10 +240,10 @@ function CardReceived(variables)
 
         label_price.setStyleSheet(Price);
         
-        var label_transfer = new QLabel("Verkkomaksu");
+        var label_transfer = new QLabel("\nVerkkomaksu");
         label_transfer.setStyleSheet(LargeBoldText);
 
-        var label_info = new QLabel("Anna käyttäjätunnuksesi ja salasanasi alla oleviin kenttiin ja paina Maksa-painiketta.");
+        var label_info = new QLabel("Anna käyttäjätunnuksesi ja salasanasi alla\noleviin kenttiin ja paina Maksa-painiketta.\n");
 
         var label_username = new QLabel("Käyttäjätunnus:");
         var label_password = new QLabel("Salasana:");
@@ -290,7 +290,7 @@ function CardReceived(variables)
         frame_payment_2.setLayout(vertLayout);
         me.graphicsviewcanvas.GraphicsScene().addWidget(frame_payment_2);
     }
-    placeable.SetScale(1.5, 0.45, 1);
+    placeable.SetScale(1.0, 0.5, 1);
     frame_payment.hide();   
     me.graphicsviewcanvas.width = frame_payment_2.width;
     me.graphicsviewcanvas.height = frame_payment_2.height;
@@ -331,7 +331,7 @@ function Cancel2Clicked()
     me.graphicsviewcanvas.width = frame_payment.width;
     me.graphicsviewcanvas.height = frame_payment.height;
     frame_payment.show();
-    placeable.SetScale(1.4, 0.5, 1);
+    placeable.SetScale(1.0, 0.5, 1);
 }
 
 function SetMovieInfo(name, place, time, date)
@@ -352,7 +352,7 @@ function ThankYou()
 
     buttonOK.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
     
-    var label_thankyou = new QLabel("Kiitos lippuostoksestasi:\n");
+    var label_thankyou = new QLabel("Kiitos lippuostoksestasi,\ntervetuloa elokuviin!\n");
     var label_moviename = new QLabel(movieName);
     var label_movietime = new QLabel(movieTime);
     var label_movieplace = new QLabel(moviePlace);
