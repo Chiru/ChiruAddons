@@ -120,11 +120,4 @@ function SetTicketInfo2(place, row, seat)
     me.mesh.meshRef = me.mesh.meshRef;
 }
 
-
-
-
-
-
-
-
-
+me.Action("MousePress").Triggered.connect(function(){me.placeable.visible = false;});
