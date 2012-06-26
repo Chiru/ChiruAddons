@@ -22,7 +22,6 @@ const cTouchInputOnly = false;
 
 var cameraData =
 {
-    connected : false,
     rotate :
     {
         sensitivity : 0.3
@@ -39,8 +38,8 @@ var cameraData =
 const cMoveZSpeed = 0.0007 // in Unity
 const cMinTiltAngle = 110;
 const cMaxTiltAngle = 170;
-const cMinDistanceFromGround = 50;
-const cMaxDistanceFromGround = 400;
+const cMinDistanceFromGround = 100 * 100; // squared distance
+const cMaxDistanceFromGround = 700 * 700; // squared distance
 var moving = false; // Is camera in moving state
 var tilting = false; // Is camera in tilting state
 var prevFrameMouseX = -1;
@@ -253,13 +252,11 @@ function HandleMouseEvent(e)
         if (e.button == 1)
         {
             var result = scene.ogre.Raycast(e.x, e.y);
-            //if (result.entity && !result.entity.dynamiccomponent && result.entity.dynamiccomponent.name != "Icon" && !result.entity.graphicsviewcanvas)
             moving = !(result.entity && (IsObjectMovable(result.entity) || IsObjectFocusable(result.entity)));
         }
         else if (e.button == 2)
         {
             var result = scene.ogre.Raycast(e.x, e.y);
-            //if (result.entity && result.entity.dynamiccomponent && result.entity.dynamiccomponent.name != "Icon" && !result.entity.graphicsviewcanvas)
             tilting = !(result.entity && (IsObjectMovable(result.entity) || IsObjectFocusable(result.entity)));
             if (tilting)
             {
@@ -285,10 +282,21 @@ function Zoom(d)
 {
     var newPos = me.placeable.WorldPosition();
     var dir = me.placeable.Orientation().Mul(scene.ForwardVector()).Normalized();
-    //var r = scene.ogre.Raycast(new Ray(newPos, dir), -1);
+ 
+    // Check that we stay within reasonable distance from the ground
+    var r = scene.ogre.Raycast(new Ray(newPos, dir), -1);
+    if (r.entity)
+    {
+        var distanceFromGround = r.pos.DistanceSq(newPos);
+        if ((distanceFromGround > cMaxDistanceFromGround && d < 0) || 
+            (distanceFromGround < cMinDistanceFromGround && d > 0))
+        {
+            return;
+        }
+    }
+
     newPos = newPos.Add(dir.Mul(d));
     me.placeable.SetPosition(newPos);
-    // TODO Use cMinDistanceFromGround and cMaxDistanceFromGround 
 }
 
 function ToggleCamera()
