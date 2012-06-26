@@ -4,7 +4,7 @@
 // !ref: Scene1.txml
 // !ref: Scene2.txml
 // !ref: Scene3.txml
-// ref ADD_SCENE_FILENAME_HERE
+// !ref ADD_SCENE_FILENAME_HERE
 
 // Scene rotation
 var sceneIndex = -1;
@@ -17,6 +17,7 @@ var /*EntityList*/ currentContent = [];
 const cReferenceHeight = 800;
 // Currently selected object, if any, as signaled by ObjectMove script
 var selectedObject = null;
+
 const cTouchInputOnly = false;
 
 var cameraData =
@@ -36,10 +37,10 @@ var cameraData =
 };
 
 const cMoveZSpeed = 0.0007 // in Unity
-const minTiltAngle = 110;
-const maxTiltAngle = 170;
-const minDistanceFromGround = 50;
-const maxDistanceFromGround = 400;
+const cMinTiltAngle = 110;
+const cMaxTiltAngle = 170;
+const cMinDistanceFromGround = 50;
+const cMaxDistanceFromGround = 400;
 var moving = false; // Is camera in moving state
 var tilting = false; // Is camera in tilting state
 var prevFrameMouseX = -1;
@@ -103,9 +104,7 @@ function ResetScene()
 {
     Log("Resetting scene.");
     for(i in defaultContent)
-    {
         defaultContent[i].Exec(1, "Reset");
-    }
     SwitchScene();
     ResetCamera();
 }
@@ -121,17 +120,17 @@ function SwitchScene()
     ClearScene();
 
     Log("Loading scene " + sceneIndex + " " + scenes[sceneIndex]);
+
     currentContent = scene.LoadSceneXML(asset.GetAsset(scenes[sceneIndex]).DiskSource(), false, false, 0);
-    
+    // Comment out the code below and find-replace ADD_SCENE_FILENAME_HERE with the actual filename 
+    // in order to enable the additional content not in this repo.
 /*
-    currentContent = currentContent.concat(scene.LoadSceneXML(asset.GetAsset(ADD_SCENE_FILENAME_HERE).DiskSource(), false, false, 0));
+    currentContent = currentContent.concat(scene.LoadSceneXML(asset.GetAsset("ADD_SCENE_FILENAME_HERE").DiskSource(), false, false, 0));
     scene.RemoveEntity(scene.EntityByName("oulu").id);
-    var terrain = scene.EntityByName("Terrain");
-    var p = terrain.placeable.WorldPosition();
-    p.y = 3,86;
-    terrain.placelable.SetPosition(p);
+    var fogs = scene.EntitiesWithComponent("EC_Fog");
+    for(i in fogs)
+        scene.RemoveEntity(fogs[i].id);
 */
-    // TODO Reset camera etc?
 }
 
 function ApplyCamera()
@@ -166,13 +165,13 @@ function TouchUpdate(e)
         break; // for now, just use the pos from the first touch
     }
 
-    if (!selectedObject)
-    {
-        TouchMove(touchCount, touches, e);
-        TouchZoom(touchCount, touches, e);
-        TouchResetScene(touchCount, touches, e);
-        TouchChangeScene(touchCount, touches, e);
-    }
+    if (selectedObject)
+        return;
+
+    TouchMove(touchCount, touches, e);
+    TouchZoom(touchCount, touches, e);
+    TouchResetScene(touchCount, touches, e);
+    TouchChangeScene(touchCount, touches, e);
 }
 
 function OnTouchEnd(e)
@@ -230,10 +229,10 @@ function HandleMouseEvent(e)
             var transform = me.placeable.transform;
             transform.rot.x -= cameraData.rotate.sensitivity * e.relativeY;
             var oldRotX = transform.rot.x;
-            transform.rot.x = Clamp(transform.rot.x, minTiltAngle, maxTiltAngle);
+            transform.rot.x = Clamp(transform.rot.x, cMinTiltAngle, cMaxTiltAngle);
             me.placeable.transform = transform;
 
-            if (oldRotX > minTiltAngle && oldRotX < maxTiltAngle)
+            if (oldRotX > cMinTiltAngle && oldRotX < cMaxTiltAngle)
             {
                 var d = e.relativeY * cMoveZSpeed * 30;
                 var newPos = me.placeable.WorldPosition();
@@ -289,7 +288,7 @@ function Zoom(d)
     //var r = scene.ogre.Raycast(new Ray(newPos, dir), -1);
     newPos = newPos.Add(dir.Mul(d));
     me.placeable.SetPosition(newPos);
-    // TODO Use minDistanceFromGround and maxDistanceFromGround 
+    // TODO Use cMinDistanceFromGround and cMaxDistanceFromGround 
 }
 
 function ToggleCamera()
@@ -424,10 +423,10 @@ function TouchMove(touchCount, touches, e)
         var t = me.placeable.transform;
         t.rot.x -= cameraData.rotate.sensitivity * delta.y;
         var oldRotX = t.rot.x;
-        t.rot.x = Clamp(t.rot.x, minTiltAngle, maxTiltAngle);
+        t.rot.x = Clamp(t.rot.x, cMinTiltAngle, cMaxTiltAngle);
         me.placeable.transform = t;
 
-        if (oldRotX > minTiltAngle && oldRotX < maxTiltAngle)
+        if (oldRotX > cMinTiltAngle && oldRotX < cMaxTiltAngle)
         {
             var d = delta.y * cMoveZSpeed;
             var newPos = me.placeable.WorldPosition();
