@@ -25,7 +25,7 @@ var placeable = me.GetOrCreateComponent("EC_Placeable");
 placeable.visible = false;
 placeable.SetParent(scene.EntityByName("UiCamera"), 0);
 placeable.SetScale(1, 0.4, 1);
-placeable.SetPosition(-12, -6, -20.0);
+placeable.SetPosition(-11, -6, -20.0);
 //placeable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / 1.2));
 var mesh = me.GetOrCreateComponent("EC_Mesh");
 var canvas = me.GetOrCreateComponent("EC_GraphicsViewCanvas");
