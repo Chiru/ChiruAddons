@@ -6,20 +6,11 @@ me.Action("Reset").Triggered.connect(function()
     me.placeable.transform = defaultTransform;
 });
 
-/*
-engine.ImportExtension("qt.core");
-engine.ImportExtension("qt.gui");
-
-me.Action("MousePress").Triggered.connect(function() {
-    QDesktopServices.openUrl(new QUrl("http://grooveshark.com/"));
-});
-*/
-
-var show_debug = true;
+var show_debug = false;
 
 function debug(arg) {
     if (show_debug)
-	print(arg)
+        print(arg)
 }
 
 engine.IncludeFile("VisualContainerUtils.js");
@@ -39,14 +30,13 @@ script.Invoked.connect(RunScript);
 dummyContainer.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "Song"), script);
 dummyContainer.eventManager.RegisterScript(new Tag("test", "test"), script);
 
-
 function RunScript(tag, rdfStore)
 {
     debug("RunScript called");
-    console.LogInfo("This is a test script!:");
-    console.LogInfo("Tag type: " + tag.type);
-    console.LogInfo("Tag data: " + tag.data);
-    console.LogInfo("RDF store: " + rdfStore.toString());
+    debug("This is a test script!:");
+    debug("Tag type: " + tag.type);
+    debug("Tag data: " + tag.data);
+    debug("RDF store: " + rdfStore.toString());
 
     var lyricsent = scene.GetEntityByName("LyricsContainer");
     debug("got entity");
@@ -70,7 +60,7 @@ function OnDropEvent(e)
         var r = scene.ogre.Raycast(ray, -1);
         if (r.entity && r.entity.id == me.id)
         {
-	    debug("radio: call handlemeshdrop");
+            debug("radio: call handlemeshdrop");
             dummyContainer.visual.HandleMeshDrop(e.source());
         }
     }
