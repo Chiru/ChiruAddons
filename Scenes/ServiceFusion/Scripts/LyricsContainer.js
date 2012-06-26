@@ -9,8 +9,15 @@ engine.IncludeFile("Lyrics.js");
 const cAnimationTime = 1; // seconds
 var startOrientation, destOrientation;
 
+var pressCount = 0;
+
 me.Action("MousePress").Triggered.connect(function()
 {
+    if (++pressCount % 2 == 0)
+    {
+        me.placeable.visible = false;
+        return;
+    }
     startOrientation = me.placeable.WorldOrientation();
     var dir = me.placeable.WorldPosition().Sub(renderer.MainCamera().placeable.WorldPosition()).Normalized();
     destOrientation = Quat.LookAt(scene.ForwardVector(), dir, scene.UpVector(), scene.UpVector());
