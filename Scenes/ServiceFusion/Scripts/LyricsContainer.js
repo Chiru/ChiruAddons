@@ -71,6 +71,7 @@ me.Action("ShowLyrics").Triggered.connect(function(type, rdfStoreData) {
 function LyricsContainer(parent)
 {
     BaseContainer.call(this, parent);
+    this.visual.styleSheet = "background-color:white;";
     this.visual.size = new QSize(512, 512);
     var contentCanvas = me.GetComponent("EC_GraphicsViewCanvas", "Content");
     contentCanvas.styleSheet = "background-color:white;";
@@ -99,7 +100,6 @@ LyricsContainer.prototype.DisplayLyrics = function(lyrics)
     main.objectName = "Lyrics";
     
     var lyricsVisual = CreateVisualContainer(main, new QHBoxLayout(), this.visual);
-    
     
     // Initialize title Label 
     lyricslabel = new QLabel(lyrics);

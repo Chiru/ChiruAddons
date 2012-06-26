@@ -48,12 +48,6 @@ Song.FromString = function(data)
     song.time = matchinfo[1].trim();
     song.artist = matchinfo[2].trim();
     song.title = matchinfo[3].trim();
-    me.dynamiccomponent.CreateAttribute("qvariant", "last_song");
-    me.dynamiccomponent.SetAttribute("last_song", song);
-    // me.dynamiccomponent.CreateAttribute("string", "last_song_title");
-    // me.dynamiccomponent.SetAttribute("last_song_title", song.title);
-    print("dc: " + me.dynamiccomponent.GetAttribute("last_song").artist);
-    last_song = song;
     
     return song;
 };
@@ -63,12 +57,30 @@ function SongContainer(parent)
     BaseContainer.call(this, parent);
     print("SongContainer init");
     this.songs = new Array();
+    this.visual.styleSheet = "background-color:white;";
     this.visual.size = new QSize(320, 400);
     me.graphicsviewcanvas.width = this.visual.width;
     me.graphicsviewcanvas.height = this.visual.height;
     this.visual.setLayout(new QVBoxLayout());
     this.visual.layout().setContentsMargins(0, 0, 0, 0);
     this.visual.layout().setSpacing(0);
+    
+    titleWidget = new QWidget();
+    titleWidget.setLayout(new QVBoxLayout());
+    titleLabel = new QLabel("Otto.K");
+    titleLabel.font = new QFont("SansSerif", 42);
+    titleLabel.alignment = 0x0004; // Qt::AlignHCenter
+    openLabel = new QLabel("\nAVOINNA 11-02"); // Could use spacer here, but going with newline for now
+    openLabel.font = new QFont("SansSerif", 16);
+    openLabel.alignment = 0x0004;
+    titleWidget.layout().addWidget(titleLabel, 0, 0);
+    titleWidget.layout().addWidget(openLabel, 0, 0);
+    var title = me.GetComponent("EC_GraphicsViewCanvas", "Title");
+    titleWidget.size = new QPoint(title.width, title.height);
+    title.GraphicsScene().addWidget(titleWidget);
+    title.GraphicsView().styleSheet = "background-color:white;";
+    titleWidget.styleSheet = "background-color:white;";
+    titleWidget.show();
     
     var world    = RdfModule.theWorld;
     var request  = new HttpRequest();
@@ -114,6 +126,15 @@ function SongContainer(parent)
                 world.FreeStatement(statements[i]);
             }
             
+            this.songs.push(Song.FromString("11:55:18 Metallica - Nothing Else Matters"));
+            this.songs.push(Song.FromString("12:00:18 Muse - Uprising"));
+            this.songs.push(Song.FromString("12:05:18 Led Zeppelin - Stairway To Heaven"));
+            this.songs.push(Song.FromString("12:10:18 The Trashmen - Surfin Bird"));
+            
+            me.dynamiccomponent.CreateAttribute("qvariant", "last_song");
+            me.dynamiccomponent.SetAttribute("last_song", this.songs[0]);
+            last_song = song;
+            
             var displayCount = 5;
             for (var i = 0; i < this.songs.length; ++i)
             {
@@ -155,39 +176,22 @@ SongContainer.prototype.DisplaySong = function(song)
     AddStatement(songVisual, RdfVocabulary.baseUri, RdfVocabulary.data, song.title);
     AddStatement(songVisual, RdfVocabulary.baseUri, RdfVocabulary.data, song.artist.toString());
 
-    titleWidget = new QWidget();
-    titleWidget.setLayout(new QVBoxLayout());
-    titleLabel = new QLabel("Otto.K");
-    titleLabel.font = new QFont("SansSerif", 42);
-    titleLabel.alignment = 0x0004; // Qt::AlignHCenter
-    openLabel = new QLabel("\nAVOINNA 11-23"); // Could use spacer here, but going with newline for now
-    openLabel.font = new QFont("SansSerif", 16);
-    openLabel.alignment = 0x0004;
-    titleWidget.layout().addWidget(titleLabel, 0, 0);
-    titleWidget.layout().addWidget(openLabel, 0, 0);
-    var title = me.GetComponent("EC_GraphicsViewCanvas", "Title");
-    titleWidget.size = new QPoint(title.width, title.height);
-    title.GraphicsScene().addWidget(titleWidget);
-    title.GraphicsView().styleSheet = "background-color:white;";
-    titleWidget.styleSheet = "background-color:white;";
-    titleWidget.show();
-
     // label = new QLabel(song.artist); 
     // label.font = new QFont("FreeSans", 24);
     // label.alignment = 0x0001 | 0x0020; // Qt::AlignLeft | Qt::AlignTop
     // main.layout().addWidget(label, null, null);
 
-    label2 = new QLabel(song.artist + "\n\n" + song.title);
+    label2 = new QLabel(song.artist + "\n" + song.title);
     var contentCanvas = me.GetComponent("EC_GraphicsViewCanvas", "Content");
     label2.size = new QSize(contentCanvas.width, contentCanvas.height);
     label2.wordWrap = true;
     label2.alignment = 0x1 | 0x20;
-    label2.font = new QFont("FreeSans", 24);
+    label2.font = new QFont("FreeSans", 18);
     label2.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.layout().addWidget(label2, null, null);
     
     var line = CreateHLine();
-    songVisual.layout().addWidget(line, 0, 0);
+    this.visual.layout().addWidget(line, 0, 0);
     
     songVisual.layout().addWidget(main, null, null); 
     songVisual.layout().spacing = 0;
