@@ -3,6 +3,25 @@
 // engine.ImportExtension("qt.core");
 // engine.IncludeFile("MathUtils.js");
 
+// QByteArray's toString not exposed in QtScript, must do it manually.
+QByteArray.prototype.toString = function()
+{
+    ts = new QTextStream(this, QIODevice.ReadOnly);
+    ts.setCodec("UTF-8");
+    return ts.readAll();
+}
+
+// From http://stackoverflow.org/wiki/JavaScript_string_trim
+String.prototype.trim = function() {
+    return this.replace(/^\s+|\s+$/g,"");
+}
+String.prototype.ltrim = function() {
+    return this.replace(/^\s+/,"");
+}
+String.prototype.rtrim = function() {
+    return this.replace(/\s+$/,"");
+}
+
 // Returns mouse ray from the active camera at screen point coordinates.
 function MouseRay(x, y)
 {
@@ -23,12 +42,6 @@ function IsTouchStateStationary(touch)
 {
     return touch.state() == Qt.TouchPointStationary || EqualsQPointF(touch.pos(), touch.lastPos());
 
-}
-
-// QByteArray's toString not exposed in QtScript, must do it manually.
-QByteArray.prototype.toString = function()
-{
-    return new QTextStream(this, QIODevice.ReadOnly).readAll();
 }
 
 // Checks whether or not we're allowed to move an object in the scene.

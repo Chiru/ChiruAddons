@@ -44,6 +44,7 @@ function Animate(dt)
 // LookAtCamera END
 
 var lyricslabel = null;
+var titleLabel = null;
 
 me.placeable.visible = false;
 
@@ -62,7 +63,7 @@ me.Action("ShowLyrics").Triggered.connect(function(type, rdfStoreData) {
         if (!lyricslabel)
             print("no lyricslabel");
         else {
-            lyricslabel.text = song.title + "\n\n" + lyrics;
+            lyricslabel.text = song.artist + " - " + song.title + "\n\n" + lyrics.trim();
             me.placeable.visible = true;
         }
     });
@@ -100,8 +101,14 @@ LyricsContainer.prototype.DisplayLyrics = function(lyrics)
     main.objectName = "Lyrics";
     
     var lyricsVisual = CreateVisualContainer(main, new QHBoxLayout(), this.visual);
-    
-    // Initialize title Label 
+
+    titleLabel = new QLabel("Lyrics");
+    titleLabel.styleSheet = "background-color:white;";
+    titleLabel.font = new QFont("FreeSans", 24);
+    titleLabel.alignment = 0x0004; // Qt::AlignHCenter
+    titleLabel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preffered);
+    main.layout().addWidget(titleLabel, null, null);
+
     lyricslabel = new QLabel(lyrics);
     lyricslabel.styleSheet = "background-color:white;";
     lyricslabel.font = new QFont("FreeSans", 12);
@@ -114,7 +121,7 @@ LyricsContainer.prototype.DisplayLyrics = function(lyrics)
     
     lyricsVisual.layout().addWidget(main, null, null);
     lyricsVisual.layout().spacing = 0;
-    lyricsVisual.setContentsMargins(0, 0, 0, 0);
+//    lyricsVisual.setContentsMargins(0, 0, 0, 0);
 }
 
 function CreateContainer(entity)

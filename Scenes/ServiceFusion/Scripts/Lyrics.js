@@ -1,6 +1,4 @@
-
 /* 
-
  - feed of played songs from a bar
  - current song should be a selectable object that can be dragged onto 
    radio
@@ -12,13 +10,7 @@ engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
 engine.ImportExtension("qt.network");
 engine.IncludeFile("Log.js");
-
-QByteArray.prototype.toString = function()
-{
-    ts = new QTextStream( this, QIODevice.ReadOnly );
-    ts.setCodec("UTF-8");
-    return ts.readAll();
-}
+engine.IncludeFile("Utils.js");
 
 var qnam = new QNetworkAccessManager();
 
@@ -52,8 +44,8 @@ function HttpFinished(reply, song, callback)
     var start = stringCode.search(strStart);
     var end = stringCode.search(strEnd);
     if (end === -1) {
-	print("no lyrics found, end was -1");
-	return null;
+        print("no lyrics found, end was -1");
+        return null;
     }
     var strLyrics = stringCode.substring(start + strStart.length, end);
     strLyrics = strLyrics.replace(/<br \/>/g, " -");
@@ -61,5 +53,3 @@ function HttpFinished(reply, song, callback)
     Log("Calling callback with lyrics");
     callback(song, strLyrics);
 }
-
-
