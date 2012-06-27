@@ -8,7 +8,7 @@
 
 // Scene rotation
 var sceneIndex = -1;
-const scenes = ["Scene1New.txml", "Scene1.txml", "Scene2.txml", "Scene3.txml"];
+const scenes = ["Scene1.txml", "Scene2.txml", "Scene3.txml", "Scene4.txml"];
 // Default content (Scene.txml) always present in the scene
 var /*EntityMap*/ defaultContent = {};
 // Current content of the active scene
