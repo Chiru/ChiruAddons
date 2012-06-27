@@ -2,7 +2,7 @@ material guitar_icon_color
 {
     technique
     {
-        //scheme glow
+        scheme glow
 
         pass
         {

@@ -2,7 +2,7 @@ material bar_icon_color
 {
     technique
     {
-       // scheme glow
+        scheme glow
 
         pass
         {
