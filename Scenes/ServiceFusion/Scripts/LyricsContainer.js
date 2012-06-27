@@ -44,6 +44,7 @@ function Animate(dt)
 // LookAtCamera END
 
 var lyricslabel = null;
+var artistLabel = null;
 var titleLabel = null;
 
 me.placeable.visible = false;
@@ -63,7 +64,8 @@ me.Action("ShowLyrics").Triggered.connect(function(type, rdfStoreData) {
         if (!lyricslabel)
             print("no lyricslabel");
         else {
-            lyricslabel.text = song.artist + " - " + song.title + "\n\n" + lyrics.trim();
+            artistLabel.text = song.artist + " - " + song.title;
+            lyricslabel.text = lyrics.trim();
             me.placeable.visible = true;
         }
     });
@@ -109,10 +111,18 @@ LyricsContainer.prototype.DisplayLyrics = function(lyrics)
     titleLabel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preffered);
     main.layout().addWidget(titleLabel, null, null);
 
+    artistLabel = new QLabel("Artist - Song");
+    artistLabel.styleSheet = "background-color:white;";
+    artistLabel.font = new QFont("FreeSans", 18);
+    artistLabel.alignment = 0x0004; // Qt::AlignHCenter
+    artistLabel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preffered);
+    main.layout().addWidget(artistLabel, null, null);
+
     lyricslabel = new QLabel(lyrics);
     lyricslabel.styleSheet = "background-color:white;";
     lyricslabel.font = new QFont("FreeSans", 12);
     lyricslabel.wordWrap = true;
+    lyricslabel.setSizePolicy(QSizePolicy.Preffered, QSizePolicy.Preffered);
 //    lyricslabel.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);  -Stinkfist
     main.layout().addWidget(lyricslabel, null, null);
     

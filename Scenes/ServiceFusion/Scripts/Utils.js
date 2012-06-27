@@ -41,7 +41,6 @@ function IsTouchStateMoved(touch)
 function IsTouchStateStationary(touch)
 {
     return touch.state() == Qt.TouchPointStationary || EqualsQPointF(touch.pos(), touch.lastPos());
-
 }
 
 // Checks whether or not we're allowed to move an object in the scene.

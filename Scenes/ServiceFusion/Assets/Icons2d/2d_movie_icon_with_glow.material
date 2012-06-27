@@ -12,7 +12,7 @@ material 2d_movie_icon_with_glow
 		depth_write off
             texture_unit
             {
-                texture local://movie_icon_2d_glow.png
+                texture local://2d_movie_icon_glow.png
             }
         }
     }
