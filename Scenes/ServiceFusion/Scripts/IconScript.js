@@ -259,6 +259,9 @@ function AnimateIcons(dt)
     }
 }
 
+const cUp = scene.UpVector();
+const cForward = scene.ForwardVector();
+
 function Update(dt)
 {
     if (!cam)
@@ -267,13 +270,11 @@ function Update(dt)
         return;
     AnimateInfoBubbles(dt);
     AnimateIcons(dt);
-/*
-    var entities = scene.Entities();
-    for(i in entities)
+
+    var icons = scene.EntitiesWithComponent("EC_DynamicComponent", "Icon");
+    for(i in icons)
     {
-        var e = entities[i];
-        if (IsEntityAnIcon(e))
-        {
+/*
             var entityId = parseInt(e.id); // WTF NOTE: typeof(e.id) is object, not number, so must convert it explicitly here
             var idx = autoShownInfoBubbles.indexOf(entityId);
             if (e.placeable.WorldPosition().DistanceSq(cam.placeable.WorldPosition()) < cToggleInfoBubbleVisibilityTreshold)
@@ -296,15 +297,14 @@ function Update(dt)
                     }
                 }
             }
-
-            // Uncomment to enable auto-rotation and -scaling
-            // var dir = e.placeable.WorldPosition().Sub(cam.placeable.WorldPosition()).Normalized();
-            // var q = Quat.LookAt(scene.ForwardVector(), dir, scene.UpVector(), scene.UpVector());
-            // e.placeable.SetOrientation(q);
+*/
+            if (icons[i].GetComponent("EC_DynamicComponent", "Icon").GetAttribute("lookAtCamera"))
+            {
+                var dir = icons[i].placeable.WorldPosition().Sub(cam.placeable.WorldPosition()).Normalized();
+                icons[i].placeable.SetOrientation(Quat.LookAt(cForward, dir, cUp, cUp));
+            }
 
             // // Auto-scale
             // e.mesh.SetAdjustScale(float3.FromScalar(DesiredObjectScale(e.mesh)));
-        }
     }
-*/
 }

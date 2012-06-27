@@ -138,7 +138,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="6" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -161,7 +163,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="7" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -184,7 +188,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="8" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -207,7 +213,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="9" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -230,7 +238,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="10" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -253,7 +263,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="11" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -276,7 +288,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="12" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -321,7 +335,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="14" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -388,7 +404,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="17" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -411,7 +429,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="18" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -434,7 +454,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="19" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -457,7 +479,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="20" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -480,7 +504,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="21" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -767,7 +793,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="34" sync="1">
   <component type="EC_Mesh" sync="true">
@@ -790,7 +818,9 @@
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>
-  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute type="bool" name="lookAtCamera" value="true"/>
+  </component>
  </entity>
  <entity id="35" sync="1">
   <component type="EC_Mesh" sync="true">
