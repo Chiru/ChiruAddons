@@ -49,7 +49,7 @@
    <attribute value="-339.718750,3.861233,-375.771179,0.000000,0.000000,0.000000,400.000000,1.000000,400.000000" name="Transform"/>
    <attribute value="false" name="Show bounding box"/>
    <attribute value="true" name="Visible"/>
-   <attribute value="1" name="Selection layer"/>
+   <attribute value="3" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
   </component>

@@ -38,7 +38,7 @@ var cameraData =
 const cMoveZSpeed = 0.0007 // in Unity
 const cMinTiltAngle = 110;
 const cMaxTiltAngle = 170;
-const cMinDistanceFromGround = 100 * 100; // squared distance
+const cMinDistanceFromGround = 200 * 200; // squared distance
 const cMaxDistanceFromGround = 700 * 700; // squared distance
 var moving = false; // Is camera in moving state
 var tilting = false; // Is camera in tilting state
@@ -284,7 +284,7 @@ function Zoom(d)
     var dir = me.placeable.Orientation().Mul(scene.ForwardVector()).Normalized();
  
     // Check that we stay within reasonable distance from the ground
-    var r = scene.ogre.Raycast(new Ray(newPos, dir), -1);
+    var r = scene.ogre.Raycast(new Ray(newPos, dir), 3);
     if (r.entity)
     {
         var distanceFromGround = r.pos.DistanceSq(newPos);
