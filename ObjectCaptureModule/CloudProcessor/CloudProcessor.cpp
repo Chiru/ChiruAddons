@@ -62,16 +62,24 @@ void CloudProcessor::rewindCloud()
 
 void CloudProcessor::handleGlobalModelUpdated(PointCloud::Ptr cloud)
 {
-    final_cloud_ = cloud;
-    moveToOrigo(final_cloud_);
-    emit globalModelUpdated(final_cloud_);
+    if(cloud.get())
+    {
+        final_cloud_.reset(new PointCloud);
+        pcl::copyPointCloud(*cloud, *final_cloud_);
+        moveToOrigo(final_cloud_);
+        emit globalModelUpdated(final_cloud_);
+    }
 }
 
 void CloudProcessor::handleLiveCloudUpdated(PointCloud::Ptr cloud)
 {
-    live_cloud_ = cloud;
-    moveToOrigo(live_cloud_);
-    emit liveCloudUpdated(live_cloud_);
+    if(cloud.get())
+    {
+        live_cloud_.reset(new PointCloud);
+        pcl::copyPointCloud(*cloud, *live_cloud_);
+        moveToOrigo(live_cloud_);
+        emit liveCloudUpdated(live_cloud_);
+    }
 }
 
 /// \todo unnecessary, refactor.
@@ -82,6 +90,9 @@ void CloudProcessor::finalizeCapturing()
 
 void CloudProcessor::moveToOrigo(PointCloud::Ptr cloud)
 {
+    if(!cloud.get())
+        return;
+
     float3 distance(0, 0, 0);
     for(unsigned i = 0; i < cloud->points.size(); ++i)
     {
