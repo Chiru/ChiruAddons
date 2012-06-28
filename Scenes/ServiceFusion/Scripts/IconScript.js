@@ -184,8 +184,8 @@ function SetInfoBubbleVisibility(/*Entity*/ icon, /*bool*/ visible, /*bool*/ ani
     }
     else
     {
-        var dest = visible ? cInfoBubbleVisibleScale : cInfoBubbleHiddenScale;
-        infoBubble.mesh.SetAdjustScale(float3.FromScalar(dest));
+        // No amination, set the scale immediately
+        infoBubble.mesh.SetAdjustScale(float3.FromScalar(visible ? cInfoBubbleVisibleScale : cInfoBubbleHiddenScale));
     }
 
     return true;
@@ -300,8 +300,19 @@ function Update(dt)
 */
             if (icons[i].GetComponent("EC_DynamicComponent", "Icon").GetAttribute("lookAtCamera"))
             {
-                var dir = icons[i].placeable.WorldPosition().Sub(cam.placeable.WorldPosition()).Normalized();
-                icons[i].placeable.SetOrientation(Quat.LookAt(cForward, dir, cUp, cUp));
+                var orgTr = originalTransforms[icons[i].id];
+                if (orgTr && icons[i].placeable.WorldPosition().Equals(orgTr.pos.Add(cIconMove), 0.01))
+                {
+                    // Look-at-camera icon reached its upper position, match the orientation with the info bubble.
+                    var t = icons[i].placeable.transform;
+                    t.rot.x = 180;
+                    icons[i].placeable.transform = t;
+                }
+                else
+                {
+                    var dir = icons[i].placeable.WorldPosition().Sub(cam.placeable.WorldPosition()).Normalized();
+                    icons[i].placeable.SetOrientation(Quat.LookAt(cForward, dir, cUp, cUp));
+                }
             }
 
             // // Auto-scale
