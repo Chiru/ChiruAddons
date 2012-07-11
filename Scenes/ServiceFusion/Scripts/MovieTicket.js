@@ -91,14 +91,14 @@ function SetTicketInfo(name, time, date)
     label_name.setText(name);
     label_time.setText(time);
     label_date.setText(date);
-    
+
     grid.addWidget(label_name, 1, 0, 1, 2);
     grid.addWidget(label_time, 2, 0);
     grid.addWidget(label_date, 2, 1);
 
     //This causes crash
-    //if (scene.EntityByName("MoviePaymentDialog")) 
-    //    scene.RemoveEntity(scene.EntityByName("MoviePaymentDialog").id); 
+    //if (scene.EntityByName("MoviePaymentDialog"))
+    //    scene.RemoveEntity(scene.EntityByName("MoviePaymentDialog").id);
 }
 
 function SetTicketInfo2(place, row, seat)
@@ -112,7 +112,7 @@ function SetTicketInfo2(place, row, seat)
     grid.addWidget(label_seat, 3, 2);
     frame_ticket.setLayout(grid);
     //grid.addWidget(label_ticketinfo, 1, 0);
-    me.graphicsviewcanvas.GraphicsScene().addWidget(frame_ticket);  
+    me.graphicsviewcanvas.GraphicsScene().addWidget(frame_ticket);
     me.graphicsviewcanvas.width = frame_ticket.width;
     me.graphicsviewcanvas.height = frame_ticket.height;
     frame_ticket.show();

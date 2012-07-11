@@ -13,8 +13,8 @@ if (!server.IsRunning() && !framework.IsHeadless())
 
 var id_entity = scene.GetEntityByName("ID_card");
 if (id_entity)
-	id_entity.placeable.visible = true;
-	
+    id_entity.placeable.visible = true;
+
 var loginContainer = new BaseContainer(null);
 var idContainer = new BaseContainer(loginContainer);
 var movieContainer = new BaseContainer(loginContainer);
@@ -33,7 +33,7 @@ function IdScript(tag, rdfStore)
     {
         //\todo For some reason redland rdf lib will mess up statement order, most likely map container is beeing used.
         idContainer.container.rdfStore.FromString(rdfStore.toString());
-        
+
         var variables = new Array();
         var statements = Select(idContainer.container.rdfStore, null, RdfVocabulary.data, null);
         if (statements.length == 6)
@@ -44,7 +44,7 @@ function IdScript(tag, rdfStore)
             }
         }
         ReleaseStatements(statements);
-        
+
         DisplayIdInfo(variables);
     }
 }
@@ -137,30 +137,30 @@ function StartLogin()
     buttonCancel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
     var le_firstname = new QLineEdit();
-	le_firstname.objectName = "le_firstname";
+    le_firstname.objectName = "le_firstname";
     le_firstname.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
     var le_lastname = new QLineEdit();
-	le_lastname.objectName = "le_lastname";
+    le_lastname.objectName = "le_lastname";
     le_lastname.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
     var le_email = new QLineEdit();
-	le_email.objectName = "le_email";
+    le_email.objectName = "le_email";
     le_email.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
     var le_phone = new QLineEdit();
-	le_phone.objectName = "le_phone";
+    le_phone.objectName = "le_phone";
     le_phone.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
     var le_birthday = new QLineEdit();
-	le_birthday.objectName = "le_birthday";
+    le_birthday.objectName = "le_birthday";
     le_birthday.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
     var rb_male = new QRadioButton("Mies");
-	rb_male.objectName = "rb_gender_male";
-    
+    rb_male.objectName = "rb_gender_male";
+
     var rb_female = new QRadioButton("Nainen");
-	rb_female.objectName = "rb_gender_female";
+    rb_female.objectName = "rb_gender_female";
 
     var label_firstname = new QLabel("Etunimi:");
     var label_lastname = new QLabel("Sukunimi:");
@@ -170,7 +170,7 @@ function StartLogin()
     var label_phone = new QLabel("Matkapuhelinnumero:");
 
     var label_shoppingcart = new QLabel("Ostoskori:");
-    
+
 
     label_shoppingcart.setStyleSheet(LargeBoldText);
     label_movieinfo.setStyleSheet(LargeText);
@@ -186,14 +186,14 @@ function StartLogin()
     rb_female.setStyleSheet(RadioButton);
 
     label_movieinfo.wordWrap = true;
-	
+
 
     var grid = new QGridLayout();
     grid.setVerticalSpacing(8);
 
     grid.addWidget(label_shoppingcart, 0, 0, 1, 3);
     grid.addWidget(label_movieinfo, 1, 0, 1, 3);
-    
+
     grid.addWidget(label_firstname, 2, 0);
     grid.addWidget(le_firstname, 2, 1, Qt.AlignLeft, 2);
 
@@ -212,7 +212,7 @@ function StartLogin()
 
     grid.addWidget(label_phone, 7, 0);
     grid.addWidget(le_phone, 7, 1, Qt.AlignLeft, 2);
-    
+
 
     var buttonLayout = new QHBoxLayout();
     buttonLayout.addWidget(buttonCancel, 0, 0);
@@ -236,15 +236,15 @@ function StartLogin()
 
 function OKClicked()
 {
-	if (id_entity)
-		id_entity.placeable.visible = false;
+    if (id_entity)
+        id_entity.placeable.visible = false;
     ProceedForward = true;
 }
 
 function CancelClicked()
 {
-	if (id_entity)
-		id_entity.placeable.visible = false;
+    if (id_entity)
+        id_entity.placeable.visible = false;
     //Destroy all movie entities
 }
 
@@ -259,24 +259,24 @@ function Update()
         loginPos.y += 0.2;
         loginPlaceable.SetPosition(loginPos);
         seatPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / rotation));
-        
+
         seatPos.y += 0.2;
         seatPos.z += 0.2;
         seatPlaceable.SetPosition(seatPos);
 
         paymentPos.y += 0.2;
-        paymentPlaceable.SetPosition(paymentPos); 
+        paymentPlaceable.SetPosition(paymentPos);
 
         rotation -= 0.01;
-        
-        if (rotation <= 1.0)       
+
+        if (rotation <= 1.0)
         {
             ProceedForward = false;
             seatPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / 1.0));
             rotation = 1.2;
             seatEnt.Exec(1, "SeatSelection");
         }
-    }   
+    }
 }
 
 function SetMovieInfo(name, place, time, date)
@@ -296,12 +296,12 @@ function OnScriptDestroyed()
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
     /*if (loginContainer && loginContainer.visual)
-        loginContainer.visual.deleteLater();
-    if (idContainer && idContainer.visual)
-        idContainer.visual.deleteLater();
-    if (movieContainer && movieContainer.visual)
-        movieContainer.visual.deleteLater();*/
-        
+loginContainer.visual.deleteLater();
+if (idContainer && idContainer.visual)
+idContainer.visual.deleteLater();
+if (movieContainer && movieContainer.visual)
+movieContainer.visual.deleteLater();*/
+
     if (/*...*/true)
     {
         //...

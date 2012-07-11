@@ -24,13 +24,13 @@ var credit_card_container = new BaseContainer(payment_container);
 var credit_script = new Script();
 credit_script.Invoked.connect(CreditScript);
 payment_container.visual.owner.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "CreditCard"), credit_script);
- 
+
 function CreditScript(tag, rdfStore)
 {
     if (tag.data == "CreditCard")
     {
         credit_card_container.container.rdfStore.FromString(rdfStore.toString());
-        
+
         var variables = new Array();
         var statements = Select(credit_card_container.container.rdfStore, null, RdfVocabulary.data, null);
         if (statements.length == 3)
@@ -41,7 +41,7 @@ function CreditScript(tag, rdfStore)
             }
         }
         ReleaseStatements(statements);
-        
+
         //DisplayCreditCardInfo(variables);
         CardReceived(variables);
     }
@@ -158,7 +158,7 @@ function StartPayment()
         label_paymentarea.setStyleSheet(PaymentArea);
         label_paymentarea.objectName = "label_paymentarea";
         label_paymentarea.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
-        
+
 
         var label_shoppingcart = new QLabel("Tuote:");
         var label_price = new QLabel("Summa: 9.00 euroa");
@@ -176,7 +176,7 @@ function StartPayment()
 
         grid.addWidget(label_seat, 1, 0, 1, 1);
         grid.addWidget(label_price, 1, 1, 1, 1);
-        
+
         grid.addWidget(label_paymentarea, 2, 0, 1 , 2);
 
         var buttonLayout = new QHBoxLayout();
@@ -197,7 +197,7 @@ function StartPayment()
     base_widget.size = frame_payment.sizeHint;
     me.graphicsviewcanvas.width = base_widget.width;
     me.graphicsviewcanvas.height = base_widget.height;
-    
+
     frame_payment_2.hide();
     frame_payment.show();
 }
@@ -208,7 +208,7 @@ function Update()
     {
         var seatPos = seatPlaceable.Position();
         var paymentPos = paymentPlaceable.Position();
-        
+
         paymentPos.z -= 0.2;
         paymentPos.y -= 0.2;
         paymentPlaceable.SetPosition(paymentPos);
@@ -216,10 +216,10 @@ function Update()
 
         seatPos.z += 0.49;
         seatPos.y -= 0.13;
-        seatPlaceable.SetPosition(seatPos);        
+        seatPlaceable.SetPosition(seatPos);
         rotation += 0.01;
 
-        if (rotation >= 1.2)       
+        if (rotation >= 1.2)
         {
             ProceedBackward = false;
             paymentPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / 1.2));
@@ -241,7 +241,7 @@ function CardReceived(variables)
 
         buttonOK.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
         buttonCancel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
-        
+
         var le_username = new QLineEdit();
         le_username.objectName = "le_username";
         le_username.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
@@ -250,15 +250,15 @@ function CardReceived(variables)
         le_password.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
         var label_shoppingcart = new QLabel("Tuote:");
-        
-        
+
+
         var label_price = new QLabel("Summa: 9.00 euroa");
 
         label_shoppingcart.setStyleSheet(LargeBoldText);
-        label_movieinfo.setStyleSheet(LargeText); 
+        label_movieinfo.setStyleSheet(LargeText);
 
         label_price.setStyleSheet(Price);
-        
+
         var label_transfer = new QLabel("\nVerkkomaksu");
         label_transfer.setStyleSheet(LargeBoldText);
 
@@ -275,7 +275,7 @@ function CardReceived(variables)
         label_info.setStyleSheet(LargeText);
         label_username.setStyleSheet(LargeText);
         label_password.setStyleSheet(LargeText);
-	
+
 
         var grid = new QGridLayout();
         grid.setVerticalSpacing(8);
@@ -285,13 +285,13 @@ function CardReceived(variables)
 
         grid.addWidget(label_seat2, 1, 0, 1, 1);
         grid.addWidget(label_price, 1, 1, 1, 1);
-        
+
         grid.addWidget(label_transfer, 2, 0, 1, 2);
         grid.addWidget(label_info, 3, 0, 1, 2);
-        
+
         grid.addWidget(label_username, 4, 0);
         grid.addWidget(le_username, 4, 1, Qt.AlignLeft, 2);
-        
+
         grid.addWidget(label_password, 5, 0);
         grid.addWidget(le_password, 5, 1, Qt.AlignLeft, 2);
 
@@ -327,26 +327,26 @@ function CardReceived(variables)
 
 function SetRowAndSeatNumber(row, seat)
 {
-	if (visa_entity)
-		visa_entity.placeable.visible = true;
-		
+    if (visa_entity)
+        visa_entity.placeable.visible = true;
+
     rowNumber = row;
     seatNumber = seat;
     label_seat.setText("Rivi: " + rowNumber + " Paikka: " + seatNumber);
     label_seat2.setText("Rivi: " + rowNumber + " Paikka: " + seatNumber);
 }
- 
+
 function OKClicked()
 {
-	if (visa_entity)
-		visa_entity.placeable.visible = false;
+    if (visa_entity)
+        visa_entity.placeable.visible = false;
     ThankYou();
 }
 
 function CancelClicked()
 {
-	if (visa_entity)
-		visa_entity.placeable.visible = false;
+    if (visa_entity)
+        visa_entity.placeable.visible = false;
     ProceedBackward = true;
 }
 
@@ -377,7 +377,7 @@ function ThankYou()
     buttonOK.clicked.connect(ThankyouClicked);
 
     buttonOK.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
-    
+
     var label_thankyou = new QLabel("Kiitos lippuostoksestasi,\ntervetuloa elokuviin!\n");
     var label_moviename = new QLabel(movieName);
     var label_movietime = new QLabel(movieTime);
@@ -394,7 +394,7 @@ function ThankYou()
 
     label_movietime.setStyleSheet(NormalTextRightBold);
     label_moviedate.setStyleSheet(NormalTextRight);
-    
+
     var grid = new QGridLayout();
     grid.setVerticalSpacing(8);
 
@@ -404,7 +404,7 @@ function ThankYou()
     grid.addWidget(label_movieplace, 2, 0, 1, 1);
     grid.addWidget(label_moviedate, 2, 1, 1, 1);
     grid.addWidget(label_row, 3, 0, 1, 1);
-    grid.addWidget(label_seat, 4, 0, 1, 1);     
+    grid.addWidget(label_seat, 4, 0, 1, 1);
 
 
     var buttonLayout = new QHBoxLayout();
@@ -418,12 +418,12 @@ function ThankYou()
     vertLayout.setContentsMargins(80, 50, 80, 50);
 
     placeable.SetScale(1.0, 0.5, 1);
-    
+
     frame_thankyou.setLayout(vertLayout);
     //me.graphicsviewcanvas.GraphicsScene().addWidget(frame_thankyou);
     frame_payment_2.hide();
-    
-    base_widget.size = frame_thankyou.minimumSizeHint; 
+
+    base_widget.size = frame_thankyou.minimumSizeHint;
     me.graphicsviewcanvas.width = base_widget.width;
     me.graphicsviewcanvas.height = base_widget.height;
 
@@ -446,8 +446,8 @@ function ThankyouClicked()
     AddStatement(movieContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, moviePlace);
     calendar_component.vc.HandleMeshDrop(movieContainer.visual);
     movieContainer.visual.deleteLater();
-    
-    
+
+
     //Create a 3D-ticket
     if (!scene.EntityByName("MovieTicket"))
     {
@@ -464,10 +464,10 @@ function ThankyouClicked()
         var script = movieTicketEntity.GetOrCreateComponent("EC_Script");
         script.scriptRef = new AssetReference("MovieTicket.js");
         script.runOnLoad = true;
-        
+
         script = movieTicketEntity.GetOrCreateComponent("EC_Script", "Screen");
-        script.scriptRef = new AssetReference("Screen.js"); 
-        script.runOnLoad = true; 
+        script.scriptRef = new AssetReference("Screen.js");
+        script.runOnLoad = true;
         frame.DelayedExecute(1.0).Triggered.connect(SendTicketData);
     }
 }

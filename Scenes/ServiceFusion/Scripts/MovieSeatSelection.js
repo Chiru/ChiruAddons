@@ -160,7 +160,7 @@ function SeatSelection()
     }
     frame_seatselection.setFrameStyle(QFrame.StyledPanel);
     frame_seatselection.setStyleSheet(Seats);
-    
+
     var buttonOK = new QPushButton("Seuraava");
     buttonOK.setStyleSheet(LargeButton);
     buttonOK.setFixedSize(200, 100);
@@ -169,25 +169,25 @@ function SeatSelection()
     buttonCancel.setStyleSheet(LargeButton);
     buttonCancel.setFixedSize(200,100);
     buttonCancel.clicked.connect(CancelClicked);
-    
+
     var rowsLayout = new QVBoxLayout();
     rowsLayout.setContentsMargins(165,0,165,0);
     var row_array = [];
     var real_seat_number = 0;
-    
+
     for (var i = 1; i <= 16; i++)
-    {    
+    {
         row_array.push(CreateRowLayout());
     }
 
-    
 
-    
+
+
     //Add first row (0)
     for (var seat_number = 1; seat_number <=34; seat_number++)
     {
-        row_array[0].addWidget(CreateSeat(15, seat_number), 1, Qt.AlignCenter); 
-	row_array[0].setContentsMargins(0, 140, 0, 0);
+        row_array[0].addWidget(CreateSeat(15, seat_number), 1, Qt.AlignCenter);
+        row_array[0].setContentsMargins(0, 140, 0, 0);
     }
 
     //Add rows 1-7
@@ -200,34 +200,34 @@ function SeatSelection()
 
             if (seat_number == 3 || seat_number == 30) //Add stair steps
             {
-                
+
                 row_array[row_number].addWidget(CreateStep(0, (15-row_number)), 1, 0);
-		real_seat_number--;
+                real_seat_number--;
             }
-                
+
             else
             {
-                row_array[row_number].addWidget(CreateSeat((15-row_number), real_seat_number), 1, Qt.AlignCenter); 
+                row_array[row_number].addWidget(CreateSeat((15-row_number), real_seat_number), 1, Qt.AlignCenter);
             }
         }
-	real_seat_number = 0;
+        real_seat_number = 0;
     }
     real_seat_number = 0;
 
     //Add row 7
     for (var seat_number = 1; seat_number <=31; seat_number++)
     {
-	real_seat_number++;
+        real_seat_number++;
         if (seat_number == 3 || seat_number == 29) //Add stair steps
         {
-            
+
             row_array[8].addWidget(CreateStep(1, 7), 1, 0);
-	    real_seat_number--;
+            real_seat_number--;
         }
-            
+
         else
         {
-            row_array[8].addWidget(CreateSeat(7, real_seat_number), 1, Qt.AlignCenter); 
+            row_array[8].addWidget(CreateSeat(7, real_seat_number), 1, Qt.AlignCenter);
         }
     }
 
@@ -239,20 +239,20 @@ function SeatSelection()
         row_array[row_number].setContentsMargins(73,0,73,0);
         for (var seat_number = 1; seat_number <= 26; seat_number++)
         {
-	    real_seat_number++;
+            real_seat_number++;
             if (seat_number == 1 || seat_number == 26) //Add stair steps
             {
-                
+
                 row_array[row_number].addWidget(CreateStep(2, (6 + 9 - row_number)), 1, 0);
-		real_seat_number--;
+                real_seat_number--;
             }
-                
+
             else
             {
-                row_array[row_number].addWidget(CreateSeat((6 + 9 - row_number), real_seat_number), 1, Qt.AlignCenter); 
+                row_array[row_number].addWidget(CreateSeat((6 + 9 - row_number), real_seat_number), 1, Qt.AlignCenter);
             }
         }
-	real_seat_number = 0;
+        real_seat_number = 0;
     }
 
     real_seat_number = 0;
@@ -261,36 +261,36 @@ function SeatSelection()
     row_array[14].setContentsMargins(73,0,73,0);
     for (var seat_number = 1; seat_number <= 24; seat_number++)
     {
-	real_seat_number++;
+        real_seat_number++;
         if (seat_number == 1 || seat_number == 24) //Add stair steps
-	{
+        {
             row_array[14].addWidget(CreateStep(3, 1), 1 , 0);
-	    real_seat_number--;
-	}
+            real_seat_number--;
+        }
         else if ((seat_number > 1 && seat_number < 5) || (seat_number > 20 && seat_number < 24))
-	{
+        {
             row_array[14].addWidget(CreateHandicapSeat(), 1, Qt.AlignCenter);
-	    real_seat_number--;
-	}
+            real_seat_number--;
+        }
         else
-	{
+        {
             row_array[14].addWidget(CreateSeat(1, real_seat_number), 1, Qt.AlignCenter);
-	}
+        }
     }
 
     //Add buttons
     row_array[15].addWidget(buttonCancel, 1, Qt.AlignLeft);
     row_array[15].addWidget(buttonOK, 1, Qt.AlignRight);
     row_array[15].setContentsMargins(0, 120, 0, 160);
-    
-    
+
+
     for (var i = 0; i <= 15; i++)
         rowsLayout.addLayout(row_array[i]);
-    
+
     frame_seatselection.setLayout(rowsLayout);
-    
+
     frame_seatselection.show();
-    
+
     me.graphicsviewcanvas.width = frame_seatselection.width;
     me.graphicsviewcanvas.height = frame_seatselection.height;
 
@@ -311,18 +311,18 @@ function OKClicked()
     var seat_found = false;
     for (var seat = 0; seat < SeatInformationArray.length; seat++)
     {
-    	if (SeatInformationArray[seat][0].checked)
+        if (SeatInformationArray[seat][0].checked)
         {
-    	    console.LogInfo("Selected seat found. Row: " + SeatInformationArray[seat][1] + " Number: " + SeatInformationArray[seat][2]);
+            console.LogInfo("Selected seat found. Row: " + SeatInformationArray[seat][1] + " Number: " + SeatInformationArray[seat][2]);
             seat_found = true;
             paymentEnt.Exec(1, "SetRowAndSeat", SeatInformationArray[seat][1], SeatInformationArray[seat][2]);
             seat_found = true;
             break;
         }
-        
-		
+
+
     }
-    
+
     if (seat_found)
     {
         SetEmptyPlaza();
@@ -348,17 +348,17 @@ function Update()
         loginPos.y -= 0.2;
         loginPlaceable.SetPosition(loginPos);
         seatPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / rotation));
-        
+
         seatPos.y -= 0.2;
         seatPos.z -= 0.2;
-        seatPlaceable.SetPosition(seatPos); 
+        seatPlaceable.SetPosition(seatPos);
 
         paymentPos.y -= 0.2;
         paymentPlaceable.SetPosition(paymentPos);
 
         rotation += 0.01;
-        
-        if (rotation >= 1.2)       
+
+        if (rotation >= 1.2)
         {
             ProceedBackward = false;
             seatPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / 1.2));
@@ -371,7 +371,7 @@ function Update()
     {
         var seatPos = seatPlaceable.Position();
         var paymentPos = paymentPlaceable.Position();
-        
+
         paymentPos.z += 0.2;
         paymentPos.y += 0.2;
         paymentPlaceable.SetPosition(paymentPos);
@@ -379,10 +379,10 @@ function Update()
 
         seatPos.z -= 0.49;
         seatPos.y += 0.13;
-        seatPlaceable.SetPosition(seatPos);        
+        seatPlaceable.SetPosition(seatPos);
         rotation_2 -= 0.01;
 
-        if (rotation_2 <= 1.0)       
+        if (rotation_2 <= 1.0)
         {
             ProceedForward = false;
             paymentPlaceable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / 1.0));
