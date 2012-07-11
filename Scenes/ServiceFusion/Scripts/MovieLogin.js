@@ -236,6 +236,20 @@ function StartLogin()
 
 function OKClicked()
 {
+    // 'Validate' info fields
+    var le_firstname = findChild(loginContainer.visual, "le_firstname");
+    var le_lastname = findChild(loginContainer.visual, "le_lastname");
+    var le_email = findChild(loginContainer.visual, "le_email");
+    var le_phone = findChild(loginContainer.visual, "le_phone");
+    var le_birthday = findChild(loginContainer.visual, "le_birthday");
+    var rb_gender_male = findChild(loginContainer.visual, "rb_gender_male");
+    var rb_gender_female = findChild(loginContainer.visual, "rb_gender_female");
+
+    if(le_firstname.text === "" || le_lastname === "" || le_email === "" || le_phone === ""
+            || le_birthday === "" || (rb_gender_male.checked === false && rb_gender_female === false) ) {
+        return;
+    }
+
     if (id_entity)
         id_entity.placeable.visible = false;
     ProceedForward = true;
@@ -245,6 +259,7 @@ function CancelClicked()
 {
     if (id_entity)
         id_entity.placeable.visible = false;
+
     //Destroy all movie entities
 }
 
