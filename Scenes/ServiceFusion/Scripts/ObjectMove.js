@@ -372,36 +372,52 @@ function CanObjectBeMoved(obj, pos)
 
 function MoveSelected(/*QPoint(F)*/pos)
 {
+    //*******************************
+    // QPoint: X,Y window coordinates
+    // QPoint.x(): X component
+    // QPoint.y(): Y component
+    //*******************************
     if (selectedObject)
     {
-        var ray = MouseRay(pos.x(), pos.y());
-        var cameraEntity = renderer.MainCamera();
-//        var cameraEntity = scene.EntityByName("UiCamera");
-        var camFwd = cameraEntity.placeable.WorldOrientation().Mul(scene.ForwardVector()).Normalized();
-        var orientedPlane = new Plane(camFwd, 0);
-        //camFwd = camFwd.Mul(-1);
-        var movePlane = new Plane(camFwd, orientedPlane.Distance(selectedObject.placeable.WorldPosition()));
+        // Mainwindow size
+        var mainWindow = ui.MainWindow();
+        var windowWidth = mainWindow.width;
+        var windowHeight = mainWindow.height;
 
-//        scene.ogre.DebugDrawLine(ray.pos, ray.dir.Mul(200), 1,0,0);
-//        scene.ogre.DebugDrawPlane(orientedPlane, 0,0,1);
-//        scene.ogre.DebugDrawPlane(movePlane, 0,1,0);
+        // Delta movement
+        var deltaX = pos.x() - prevFrameMouseX;
+        var deltaY = pos.y() - prevFrameMouseY;
 
-        var r = IntersectRayPlane(movePlane, ray);
-        if (r.intersects)
-        {
-            var moveTo = ray.GetPoint(r.distance);
+        var movedX = deltaX * (1 / windowWidth);
+        var movedY = deltaY * (1 / windowHeight);
 
-            moveTo = moveTo.Add(touchOffset);
+        // Get camera and field of vision
+        var cameraEnt = renderer.MainCamera();
+        var fov = cameraEnt.camera.verticalFov;
 
-            var parent = selectedObject.placeable.ParentPlaceableComponent();
-            if (parent)
-                moveTo = parent.WorldToLocal().MulPos(moveTo);
+        // Camera is always on 0,0,0 coordinates because it is parent to selectedObject
+        var cameraPosition = new float3(0,0,0);
+        var selectedPosition = selectedObject.placeable.transform.pos;
 
-            if (!CanObjectBeMoved(selectedObject, moveTo.Add(selectedObject.mesh.nodeTransformation.pos)))
-                return;
+        // Distance from camera to selectedObject
+        var distance = cameraPosition.Distance(selectedPosition);
 
-            selectedObject.placeable.SetPosition(moveTo);
-        }
+        // Length of X,Y vectors
+        var width = (Math.tan(fov/2) * distance) * 2;
+        var height = (windowHeight*width) / windowWidth;
+
+        var moveFactor = windowWidth / windowHeight;
+
+        var amountX = width * movedX * moveFactor;
+        var amountY = height * movedY * moveFactor;
+
+        // Calculate position for object relative to parent entity
+        var newPosition = selectedPosition.Add(cameraEnt.placeable.Orientation().Mul(new float3(-amountX, -amountY, 0)));
+
+        // Set new transformation to object
+        var transform = selectedObject.placeable.transform;
+        transform.pos = newPosition;
+        selectedObject.placeable.transform = transform;
     }
 }
 
