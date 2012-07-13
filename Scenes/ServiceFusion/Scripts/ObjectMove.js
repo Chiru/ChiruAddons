@@ -111,12 +111,45 @@ function BeginMove(/*Entity*/ obj, /*QPoin(F)*/ pos, /*int*/ fingerId)
             touchOffset = selectedObject.placeable.WorldPosition().Sub(moveTo);
         }
 
-        // TODO Highlighting of selected object
+        // Highlight the selected object
+        var src_mesh = selectedObject.GetOrCreateComponent("EC_Mesh");
+
+        var i = 0; // Hack to determine the length of the meshMaterial list (not exposed to script).
+        while(typeof src_mesh.meshMaterial[i] !== "undefined") {
+            var input_mat = src_mesh.meshMaterial[i];
+            var material_component = selectedObject.CreateComponent("EC_Material");
+            material_component.inputMat = input_mat;
+
+            p = [];
+            p[0] = "emissive=0.3 1 1 1";
+            material_component.parameters = p;
+
+            i++;
+        }
     }
 }
 
 function EndMove()
 {
+    if(selectedObject)
+    {
+        // Remove highlight
+        var src_mesh = selectedObject.GetOrCreateComponent("EC_Mesh");
+
+        var i = 0;
+        while(typeof src_mesh.meshMaterial[i] !== "undefined") {
+            selectedObject.RemoveComponent("EC_Material");
+            i++;
+        }
+
+        var j = 0;
+        while(typeof src_mesh.meshMaterial[j] !== "undefined") {
+            var material = src_mesh.meshMaterial[j];
+            asset.RequestAsset(material, "OgreMaterial", true);
+            j++;
+        }
+    }
+
     SetSelectedObject(null);
     SetFocusedObject(null);
 }
