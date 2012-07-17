@@ -10,6 +10,7 @@
 #include "CloudProcessor/CloudProcessor.h"
 #include "MeshReconstructor/MeshReconstructor.h"
 #include "MeshReconstructor/MeshConverter.h"
+#include "MeshReconstructor/ColladaExporter.h"
 
 #include "Framework.h"
 #include "SceneAPI.h"
@@ -38,6 +39,7 @@ ObjectCaptureModule::ObjectCaptureModule() :
     IModule("ObjectCapture"),
     cloud_processor_(new CloudProcessor()),
     mesh_reconstructor_(new MeshReconstructor()),
+    collada_exporter_(new ColladaExporter()),
     mesh_converter_(0),
     worker_thread_(new QThread)
 {
@@ -54,6 +56,7 @@ ObjectCaptureModule::~ObjectCaptureModule()
     worker_thread_->quit();
     SAFE_DELETE(cloud_processor_);
     SAFE_DELETE(mesh_reconstructor_);
+    SAFE_DELETE(collada_exporter_);
     SAFE_DELETE(mesh_converter_);
     SAFE_DELETE(worker_thread_);
 }
@@ -224,8 +227,9 @@ void ObjectCaptureModule::visualizeFinalMesh(pcl::PolygonMesh::Ptr polygonMesh, 
     // Special case which requires script interaction.
     // Application needs to be aware of the final entity id, and in control of it's placement etc.
 
-    //static EntityPtr entity;
+    final_polygon_mesh_ = polygonMesh;
     Scene *scene = framework_->Scene()->MainCameraScene();
+
 
     if(!final_mesh_entity.get())
         final_mesh_entity = scene->CreateEntity(scene->NextFreeIdLocal(), QStringList(), AttributeChange::LocalOnly, false);
@@ -234,6 +238,14 @@ void ObjectCaptureModule::visualizeFinalMesh(pcl::PolygonMesh::Ptr polygonMesh, 
     addObjectToScene(final_mesh_entity, mesh, final_mesh_position_.orientation, final_mesh_position_.position, final_mesh_position_.scale);
 
     emit objectCaptured(final_mesh_entity->Id());
+}
+
+void ObjectCaptureModule::exportCollada(QString filename)
+{
+    if (final_polygon_mesh_.get())
+        collada_exporter_->Export(final_polygon_mesh_, filename);
+    else
+        LogError("Couldn't export polygon mesh! Mesh was not available.");
 }
 
 void ObjectCaptureModule::updatePointSize()

@@ -28,6 +28,7 @@ namespace ObjectCapture
 class CloudProcessor;
 class MeshReconstructor;
 class MeshConverter;
+class ColladaExporter;
 
 /**
  *  Implementation of Chiru object capture.
@@ -85,6 +86,8 @@ public slots:
     /// Stops capturing and processes the clouds to a mesh
     void finalizeCapturing();
 
+    void exportCollada(QString filename);
+
     void setLiveCloudPosition(Quat orientation, float3 position, float3 scale);
 
     void setGlobalModelPosition(Quat orientation, float3 position, float3 scale);
@@ -109,7 +112,10 @@ private:
     CloudProcessor *cloud_processor_;
     MeshReconstructor *mesh_reconstructor_;
     MeshConverter *mesh_converter_;
+    ColladaExporter *collada_exporter_;
     QThread *worker_thread_;
+
+    pcl::PolygonMesh::Ptr final_polygon_mesh_;
 
     EntityPtr live_cloud_entity;
     EntityPtr global_model_entity;
