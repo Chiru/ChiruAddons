@@ -186,7 +186,7 @@ function CurrentMouseRay()
 
 function MoveSelected(pos)
 {
-    if (containerDragObject)
+    if (containerDragObject && !input.IsKeyDown(Qt.Key_1))
     {
         var ray = CurrentMouseRay();
         var cameraEntity = renderer.MainCamera();

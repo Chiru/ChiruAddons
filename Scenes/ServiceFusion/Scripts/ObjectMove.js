@@ -44,7 +44,10 @@ if (!framework.IsHeadless())
 
     ui.GraphicsView().DragEnterEvent.connect(HandleDragEnterEvent);
     ui.GraphicsView().DragMoveEvent.connect(HandleDragMoveEvent);
-    //ui.GraphicsView().DropEvent.connect(HandleDropEvent);
+    // This is to prevent object moving after move event. MouseRelease-event
+    // is lost in the visualContainer widget which causes grabbed object to be
+    // stuck on mouse cursor.
+    ui.GraphicsView().DropEvent.connect(HandleDropEvent);
     
     frame.Updated.connect(Update);
 }
@@ -212,6 +215,11 @@ function HandleDragMoveEvent(e)
         e.acceptProposedAction();
 }
 
+function HandleDropEvent(e)
+{
+    EndMove();
+}
+
 /*function HandleDropEvent(e)
 {
     var data = e.mimeData().data("application/x-hotspot").toString();
@@ -311,8 +319,9 @@ function Update(/*frameTime*/)
                 BeginMove(obj, input.MousePos(), -1);
         }
         if (input.IsMouseButtonReleased(1))
+        {
             EndMove();
-        
+        }
         if (input.IsMouseButtonDown(1))
         {
             if (selectedObject)

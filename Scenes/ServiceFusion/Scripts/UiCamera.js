@@ -58,6 +58,9 @@ if (!framework.IsHeadless())
     ic.KeyEventReceived.connect(HandleKeyEvent);
     ic.MouseEventReceived.connect(HandleMouseEvent);
 
+    // This is here to stop moving the uicamera if drag'n'drop widget is misplaced in the scene. Hax.
+    ui.GraphicsView().DropEvent.connect(HandleDropEvent);
+
     frame.DelayedExecute(1).Triggered.connect(ApplyCamera);
     me.Action("ResetCamera").Triggered.connect(ResetCamera);
     me.Action("ObjectSelected").Triggered.connect(function(id) {
@@ -276,6 +279,11 @@ function HandleMouseEvent(e)
     default:
         break;
     }
+}
+
+function HandleDropEvent()
+{
+    StopMovement();
 }
 
 function Zoom(d)
