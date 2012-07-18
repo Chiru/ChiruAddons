@@ -85,6 +85,7 @@ base_widget.layout().setContentsMargins(0, 0, 0, 0);
 base_widget.layout().setSpacing(0);
 base_widget.size = new QSize(800,640);
 
+
 var frame_payment = new QFrame();
 payment_container.visual.layout().addWidget(frame_payment, 0, 0);
 base_widget.layout().addWidget(payment_container.visual, 0, 0);
@@ -97,6 +98,8 @@ base_widget.layout().addWidget(frame_thankyou, 0, 0);
 frame_thankyou.hide();
 
 me.graphicsviewcanvas.GraphicsScene().addWidget(base_widget);
+
+var focusedEdit = "";
 
 me.Action("SetRowAndSeat").Triggered.connect(SetRowAndSeatNumber);
 me.Action("SetMovieInfo").Triggered.connect(SetMovieInfo);
@@ -243,12 +246,16 @@ function CardReceived(variables)
         buttonOK.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
         buttonCancel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
-        var le_username = new QLineEdit();
+        var le_username = new QPushButton();
         le_username.objectName = "le_username";
         le_username.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
-        var le_password = new QLineEdit();
+        le_username.setStyleSheet("QPushButton {color: black; background-color: white; border: 1px inset grey; text-align: left; }");
+        le_username.clicked.connect(UsernameFocused);
+        var le_password = new QPushButton();
         le_password.objectName = "le_password";
         le_password.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
+        le_password.setStyleSheet("QPushButton {color: black; background-color: white; border: 1px inset grey; text-align: left; }");
+        le_password.clicked.connect(PasswordFocused);
 
         var label_shoppingcart = new QLabel("Tuote:");
 
@@ -310,6 +317,8 @@ function CardReceived(variables)
         frame_payment_2.setLayout(vertLayout);
         frame_2_created = true;
         //me.graphicsviewcanvas.GraphicsScene().addWidget(frame_payment_2);
+
+
     }
     placeable.SetScale(1.0, 0.5, 1);
     frame_payment.hide();
@@ -318,12 +327,56 @@ function CardReceived(variables)
     me.graphicsviewcanvas.height = base_widget.height;
     frame_payment_2.show();
 
-    var username = findChild(frame_payment_2, "le_username");
+    if(!scene.EntityByName("PaymentKeyboard"))
+        {
+        var movieDimEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name", "EC_Placeable"]);
+        movieDimEntity.SetName("PaymentKeyboard");
+        var script = movieDimEntity.GetOrCreateComponent("EC_Script");
+        script.scriptRef = new AssetReference("keyboard.js");
+        script.runOnLoad = true;
+    }
+
+    me.Action("KeyPressed").Triggered.connect(KeyPressed);
+
+    /*var username = findChild(frame_payment_2, "le_username");
     if (username)
         username.setText(variables[0]);
     var password = findChild(frame_payment_2, "le_password");
     if (password)
-        password.setText(variables[1]);
+        password.setText(variables[1]);*/
+}
+
+function UsernameFocused()
+{
+    focusedEdit = "le_username";
+}
+
+function PasswordFocused()
+{
+    focusedEdit = "le_password";
+}
+
+function KeyPressed(key)
+{
+    var lineEdit = findChild(frame_payment_2, focusedEdit);
+
+    var char_patt = RegExp("^[0-9a-ä]$", "i");
+    if(key.match(char_patt))
+    {
+        lineEdit.text = lineEdit.text + key;
+    }
+    else if(key === "ENTER")
+    {
+        OKClicked();
+    }
+    else if(key === "<-")
+    {
+        lineEdit.text = lineEdit.text.substr(0,lineEdit.text.length-1);
+    }
+    else
+    {
+        print("Unknown character pressed!");
+    }
 }
 
 function SetRowAndSeatNumber(row, seat)
@@ -348,6 +401,9 @@ function CancelClicked()
 {
     if (visa_entity)
         visa_entity.placeable.visible = false;
+    var keyboardEntity = scene.GetEntityByName("PaymentKeyboard");
+    if(keyboardEntity)
+        scene.RemoveEntity(keyboardEntity.Id());
     ProceedBackward = true;
 }
 
@@ -358,6 +414,9 @@ function Cancel2Clicked()
     me.graphicsviewcanvas.width = base_widget.width;
     me.graphicsviewcanvas.height = base_widget.height;
     frame_payment.show();
+    var keyboardEntity = scene.GetEntityByName("PaymentKeyboard");
+    if(keyboardEntity)
+        scene.RemoveEntity(keyboardEntity.Id());
     placeable.SetScale(1.0, 0.5, 1);
 }
 
@@ -491,6 +550,9 @@ function OnScriptDestroyed()
 {
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
+    var keyboardEntity = scene.GetEntityByName("PaymentKeyboard");
+    if(keyboardEntity)
+        scene.RemoveEntity(keyboardEntity);
     if (payment_container && payment_container.visual)
     {
         payment_container.visual.deleteLater();
