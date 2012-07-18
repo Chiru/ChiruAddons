@@ -109,6 +109,15 @@ function MousePressed()
     if (!movieItem)
         return;
 
+    if (!scene.EntityByName("MovieManager"))
+    {
+        var movieManagerEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
+        movieManagerEntity.SetName("MovieManager");
+        var script = movieManagerEntity.GetOrCreateComponent("EC_Script");
+        script.scriptRef = new AssetReference("MovieManager.js");
+        script.runOnLoad = true;
+    }
+
     if (!scene.EntityByName("MovieLoginDialog"))
     {
         var movieLoginEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);

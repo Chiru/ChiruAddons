@@ -122,6 +122,7 @@ var seatEnt = scene.EntityByName("MovieSeatDialog");
 var loginEnt = scene.EntityByName("MovieLoginDialog");
 var paymentPlaceable = paymentEnt.GetOrCreateComponent("EC_Placeable");
 var seatPlaceable = seatEnt.GetOrCreateComponent("EC_Placeable");
+var managerEnt = scene.EntityByName("MovieManager");
 
 var movieName = "Elokuvan nimi";
 var moviePlace = "Salinumero";
@@ -458,7 +459,7 @@ function ThankyouClicked()
             scene.RemoveEntity(scene.EntityByName("MovieLoginDialog").id);
         if (scene.EntityByName("MovieSeatDialog"))
             scene.RemoveEntity(scene.EntityByName("MovieSeatDialog").id);
-        me.placeable.visible = false;
+        //me.placeable.visible = false;
         var movieTicketEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
         movieTicketEntity.SetName("MovieTicket");
         var script = movieTicketEntity.GetOrCreateComponent("EC_Script");
@@ -468,8 +469,9 @@ function ThankyouClicked()
         script = movieTicketEntity.GetOrCreateComponent("EC_Script", "Screen");
         script.scriptRef = new AssetReference("Screen.js");
         script.runOnLoad = true;
-        frame.DelayedExecute(1.0).Triggered.connect(SendTicketData);
+        frame.DelayedExecute(0.1).Triggered.connect(SendTicketData);
     }
+    frame.DelayedExecute(0.2).Triggered.connect(destroyPayment);
 }
 
 function SendTicketData()
@@ -480,12 +482,17 @@ function SendTicketData()
 
 }
 
+function destroyPayment()
+{
+    managerEnt.Exec(1, "destroyMoviePayment");
+}
+
 function OnScriptDestroyed()
 {
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
     if (payment_container && payment_container.visual)
+    {
         payment_container.visual.deleteLater();
+    }
 }
-
-

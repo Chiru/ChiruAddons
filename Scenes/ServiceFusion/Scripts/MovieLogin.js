@@ -1,6 +1,7 @@
 engine.IncludeFile("MovieStyleSheets.js");
 engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
+engine.IncludeFile("MovieManager.js");
 
 me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
 frame.Updated.connect(Update);
@@ -12,12 +13,13 @@ if (!server.IsRunning() && !framework.IsHeadless())
 }
 
 var id_entity = scene.GetEntityByName("ID_card");
-if (id_entity)
-    id_entity.placeable.visible = true;
+if (id_entity)    id_entity.placeable.visible = true;
 
 var loginContainer = new BaseContainer(null);
 var idContainer = new BaseContainer(loginContainer);
 var movieContainer = new BaseContainer(loginContainer);
+
+var frame_login = null;
 
 // todo replace this with layout object.
 loginContainer.visual.setLayout(new QHBoxLayout());
@@ -94,6 +96,7 @@ var paymentEnt = scene.EntityByName("MoviePaymentDialog");
 var loginPlaceable = loginEnt.GetOrCreateComponent("EC_Placeable");
 var seatPlaceable = seatEnt.GetOrCreateComponent("EC_Placeable");
 var paymentPlaceable = paymentEnt.GetOrCreateComponent("EC_Placeable");
+var managerEnt = scene.EntityByName("MovieManager");
 
 var movieName = "Elokuvan nimi";
 var moviePlace = "Salinumero";
@@ -125,7 +128,7 @@ StartLogin();
 
 function StartLogin()
 {
-    var frame_login = new QFrame();
+    frame_login = new QFrame();
     frame_login.objectName = "frame_login";
 
     var buttonOK = new QPushButton("OK");
@@ -259,12 +262,12 @@ function CancelClicked()
 {
     if (id_entity)
         id_entity.placeable.visible = false;
-
-    //Destroy all movie entities
+    managerEnt.Exec(1, "destroyMovieLogin");
 }
 
+
 function Update()
-{   
+{
     if (ProceedForward)
     {
         var loginPos = loginPlaceable.Position();
@@ -319,7 +322,9 @@ movieContainer.visual.deleteLater();*/
 
     if (/*...*/true)
     {
-        //...
+        frame_login.deleteLater();
+        frame.Updated.disconnect(Update);
+        loginEnt = null;
         return;
     }
 }
