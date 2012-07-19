@@ -514,7 +514,7 @@ function ThankyouClicked()
 
 
     //Create a 3D-ticket
-    if (!scene.EntityByName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace))
+    if (!scene.EntityByName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace + "_" + movieTime))
     {
         print("Creating movie ticket! Name: " + movieName + ", date: " + movieDate + ", place: " + moviePlace);
         // todo remove movie rdf data from the cart container.
@@ -532,7 +532,7 @@ function ThankyouClicked()
         }
         //me.placeable.visible = false;
         var movieTicketEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
-        movieTicketEntity.SetName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace);
+        movieTicketEntity.SetName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace + "_" + movieTime);
         var script = movieTicketEntity.GetOrCreateComponent("EC_Script");
         script.scriptRef = new AssetReference("MovieTicket.js");
         script.runOnLoad = true;
@@ -547,10 +547,9 @@ function ThankyouClicked()
 
 function SendTicketData()
 {
-    var movieTicketEntity = scene.EntityByName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace);
+    var movieTicketEntity = scene.EntityByName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace + "_" + movieTime);
     movieTicketEntity.Exec(1, "SetTicketInfo", movieName, movieTime, movieDate);
     movieTicketEntity.Exec(1, "SetTicketInfo2", moviePlace, seatNumber, rowNumber);
-
 }
 
 function destroyPayment()
