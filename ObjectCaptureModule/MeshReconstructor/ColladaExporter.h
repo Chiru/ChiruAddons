@@ -8,7 +8,6 @@
 namespace ObjectCapture
 {
 
-
 class ColladaExporter : public QObject
 {
     Q_OBJECT
