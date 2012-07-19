@@ -10,7 +10,7 @@ ColladaExporter::ColladaExporter()
 }
 ColladaExporter::~ColladaExporter()
 {
-
+    input_mesh_.reset();
 }
 
 void ColladaExporter::Export(pcl::PolygonMesh::Ptr inputmesh, QString filename)
