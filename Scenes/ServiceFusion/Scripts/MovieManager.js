@@ -3,6 +3,8 @@ me.Action("destroyMoviePayment").Triggered.connect(destroyMoviePayment);
 
 function destroyMovieLogin()
 {
+    // This function is invoked from movieLogin when payment procedure is cancelled.
+
     //Destroy all movie entities
     if (scene.EntityByName("cart_item"))
         scene.EntityByName("cart_item").placeable.visible = false;
@@ -35,6 +37,8 @@ function DelayedDestroyMovieLogin()
 
 function destroyMoviePayment()
 {
+    // This function is invoked from moviePayment when payment procedure is finished.
+
     //Destroy all movie entities
     if (scene.EntityByName("cart_item"))
         scene.EntityByName("cart_item").placeable.visible = false;
