@@ -10,8 +10,10 @@ function destroyMovieLogin()
     frame.DelayedExecute(0.2).Triggered.connect(DelayedDestroyMovieLogin);
 
     if (scene.EntityByName("MoviePaymentDialog"))
+    {
+        scene.EntityByName("MoviePaymentDialog").Exec(1, "Cleanup");
         scene.RemoveEntity(scene.EntityByName("MoviePaymentDialog").id);
-
+    }
     if (scene.EntityByName("MovieSeatDialog"))
         scene.RemoveEntity(scene.EntityByName("MovieSeatDialog").id);
 
@@ -26,9 +28,7 @@ function DelayedDestroyMovieLogin()
 {
     if (scene.EntityByName("MovieLoginDialog"))
     {
-        print("MovieLoginFound!");
-        var loginEnt = scene.EntityByName("MovieLoginDialog");
-        //loginEnt.placeable.visible = false;
+        scene.EntityByName("MovieLoginDialog").Exec(1, "Cleanup");
         scene.RemoveEntity(scene.EntityByName("MovieLoginDialog").id);
     }
 }
@@ -51,7 +51,10 @@ function destroyMoviePayment()
 
 
     if (scene.EntityByName("MovieLoginDialog"))
+    {
+        scene.EntityByName("MovieLoginDialog").Exec(1, "Cleanup");
         scene.RemoveEntity(scene.EntityByName("MovieLoginDialog").id);
+    }
 }
 
 function DelayedDestroyMoviePayment()
@@ -59,7 +62,7 @@ function DelayedDestroyMoviePayment()
 
     if (scene.EntityByName("MoviePaymentDialog"))
     {
-        var entity = scene.EntityByName("MoviePaymentDialog");
+        scene.EntityByName("MoviePaymentDialog").Exec(1, "Cleanup");
         scene.RemoveEntity(scene.EntityByName("MoviePaymentDialog").id);
     }
 }

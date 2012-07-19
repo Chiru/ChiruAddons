@@ -519,9 +519,15 @@ function ThankyouClicked()
         if (scene.EntityByName("cart_item"))
             scene.EntityByName("cart_item").placeable.visible = false;
         if (scene.EntityByName("MovieLoginDialog"))
+        {
+            scene.EntityByName("MovieLoginDialog").Exec(1, "Cleanup");
             scene.RemoveEntity(scene.EntityByName("MovieLoginDialog").id);
+        }
         if (scene.EntityByName("MovieSeatDialog"))
+        {
+            scene.EntityByName("MovieSeatDialog").Exec(1, "Cleanup");
             scene.RemoveEntity(scene.EntityByName("MovieSeatDialog").id);
+        }
         //me.placeable.visible = false;
         var movieTicketEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
         movieTicketEntity.SetName("MovieTicket");
@@ -558,12 +564,17 @@ function OnScriptDestroyed()
     // Remove payment keyboard on entity deletion.
     var keyboardEntity = scene.EntityByName("PaymentKeyboard");
     if(keyboardEntity)
+    {
+        // Make cleanup first to get proper deletion of objects created.
+        keyboardEntity.Exec(1, "Cleanup");
         scene.RemoveEntity(keyboardEntity.id);
+    }
 
     // payment_container is garbage if entity is deleted and cleanup process started.
-    // Causes error but not crash.
+    // Causes error but not crash. Cleanup should be done before entity deletion.
     if (payment_container && payment_container.visual)
     {
         payment_container.visual.deleteLater();
+        payment_container = null;
     }
 }

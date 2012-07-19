@@ -320,11 +320,14 @@ idContainer.visual.deleteLater();
 if (movieContainer && movieContainer.visual)
 movieContainer.visual.deleteLater();*/
 
-    if (/*...*/true)
+    // Before entity deletion it should be executed with cleanup action
+    // to properly clear objects.
+    if (frame_login)
     {
         // frame_login is most likely garbage at this point when entity deletion in progress.
         frame_login.deleteLater();
         frame.Updated.disconnect(Update);
+        frame_login = null;
         loginEnt = null;
         return;
     }
