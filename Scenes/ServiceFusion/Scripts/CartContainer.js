@@ -101,6 +101,9 @@ function SendMovieData()
     var params = [movieItem.data["title"], movieItem.data["auditorium"], (hour + ":" + minute), date.toString()];
     movieLoginEntity["Exec(EntityAction::ExecTypeField,QString,QVariantList)"](1, "SetMovieInfo", params);
     moviePayment["Exec(EntityAction::ExecTypeField,QString,QVariantList)"](1, "SetMovieInfo", params);
+
+    RemoveMovieCartItem(movieItem);
+
 }
 
 function MousePressed()
@@ -115,6 +118,15 @@ function MousePressed()
         movieManagerEntity.SetName("MovieManager");
         var script = movieManagerEntity.GetOrCreateComponent("EC_Script");
         script.scriptRef = new AssetReference("MovieManager.js");
+        script.runOnLoad = true;
+    }
+
+    if (!scene.EntityByName("MoviePaymentDialog"))
+    {
+        var moviePaymentEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
+        moviePaymentEntity.SetName("MoviePaymentDialog");
+        var script = moviePaymentEntity.GetOrCreateComponent("EC_Script");
+        script.scriptRef = new AssetReference("MoviePayment.js");
         script.runOnLoad = true;
     }
 
@@ -136,15 +148,6 @@ function MousePressed()
         script.scriptRef = new AssetReference("MovieSeatSelection.js");
         script.runOnLoad = true;
     }
-
-    if (!scene.EntityByName("MoviePaymentDialog"))
-    {
-        var moviePaymentEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
-        moviePaymentEntity.SetName("MoviePaymentDialog");
-        var script = moviePaymentEntity.GetOrCreateComponent("EC_Script");
-        script.scriptRef = new AssetReference("MoviePayment.js");
-        script.runOnLoad = true;
-    }
     
     frame.DelayedExecute(1.0).Triggered.connect(SendMovieData);
 }
@@ -160,4 +163,12 @@ function OnScriptDestroyed()
         cartContainer.visual.deleteLater();
         cartContainer = null;
     }
+}
+
+function RemoveMovieCartItem(movieItem)
+{
+    print("Removing moviecartitem DERP!");
+    for(var i = 0; i < cartItems.length; ++i)
+        if (cartItems[i] == movieItem)
+            cartItems.splice(i,1);
 }
