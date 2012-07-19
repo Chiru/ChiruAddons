@@ -167,7 +167,6 @@ function OnScriptDestroyed()
 
 function RemoveMovieCartItem(movieItem)
 {
-    print("Removing moviecartitem DERP!");
     for(var i = 0; i < cartItems.length; ++i)
         if (cartItems[i] == movieItem)
             cartItems.splice(i,1);

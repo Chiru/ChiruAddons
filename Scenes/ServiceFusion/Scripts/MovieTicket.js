@@ -2,9 +2,16 @@ engine.IncludeFile("MovieStyleSheets.js");
 engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
 
+if (!server.IsRunning() && !framework.IsHeadless())
+{
+    engine.ImportExtension("qt.core");
+    engine.ImportExtension("qt.gui");
+}
+
 me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
 me.Action("SetTicketInfo").Triggered.connect(SetTicketInfo);
 me.Action("SetTicketInfo2").Triggered.connect(SetTicketInfo2);
+me.Action("SetTicketCount").Triggered.connect(SetTicketCount);
 //frame.Updated.connect(Update);
 
 if (!server.IsRunning() && !framework.IsHeadless())
@@ -19,13 +26,25 @@ function OnScriptDestroyed()
         return; // Application shutting down, the widget pointers are garbage.
 }
 
+var managerEnt = scene.EntityByName("MovieManager");
 
+// Varible to store how many tickets are created including this.
+var ticketCount = 0;
+
+// Get ticketCount via entity action.
+managerEnt.Exec(1, "ticketAdded", me.Name());
 
 var placeable = me.GetOrCreateComponent("EC_Placeable");
 placeable.visible = false;
 placeable.SetParent(scene.EntityByName("UiCamera"), 0);
 placeable.SetScale(1, 0.4, 1);
-placeable.SetPosition(-11, -6, -20.0);
+
+// With ticketCount factor this ticket is placed in slightly different position than previous tickets.
+var y = ticketCount*0.2-6;
+var x = -11-ticketCount*0.2;
+var z = -20+ticketCount*0.1;
+placeable.SetPosition(x, y, z);
+
 //placeable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / 1.2));
 var mesh = me.GetOrCreateComponent("EC_Mesh");
 var canvas = me.GetOrCreateComponent("EC_GraphicsViewCanvas");
@@ -118,6 +137,11 @@ function SetTicketInfo2(place, row, seat)
     frame_ticket.show();
     placeable.visible = true;
     me.mesh.meshRef = me.mesh.meshRef;
+}
+
+function SetTicketCount(tcount)
+{
+    ticketCount = tcount;
 }
 
 me.Action("MousePress").Triggered.connect(function(){me.placeable.visible = false;});

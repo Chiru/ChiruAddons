@@ -1,5 +1,8 @@
 me.Action("destroyMovieLogin").Triggered.connect(destroyMovieLogin);
 me.Action("destroyMoviePayment").Triggered.connect(destroyMoviePayment);
+me.Action("ticketAdded").Triggered.connect(ticketAdded);
+
+var tickets = 0;
 
 function destroyMovieLogin()
 {
@@ -69,4 +72,12 @@ function DelayedDestroyMoviePayment()
         scene.EntityByName("MoviePaymentDialog").Exec(1, "Cleanup");
         scene.RemoveEntity(scene.EntityByName("MoviePaymentDialog").id);
     }
+}
+
+function ticketAdded(entity_name)
+{
+    tickets++;
+    var ent = scene.EntityByName(entity_name);
+    print(entity_name);
+    ent.Exec(1, "SetTicketCount", tickets);
 }
