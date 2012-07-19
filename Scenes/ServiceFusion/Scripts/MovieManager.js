@@ -56,6 +56,10 @@ function destroyMoviePayment()
 
 function DelayedDestroyMoviePayment()
 {
+
     if (scene.EntityByName("MoviePaymentDialog"))
+    {
+        var entity = scene.EntityByName("MoviePaymentDialog");
         scene.RemoveEntity(scene.EntityByName("MoviePaymentDialog").id);
+    }
 }

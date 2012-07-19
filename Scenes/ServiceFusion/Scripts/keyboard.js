@@ -49,6 +49,8 @@ keyLayout.setContentsMargins(0, 0, 0, 0);
 keyboardContainer.visual.setLayout(keyLayout);
 
 var keyboardWidget = asset.GetAsset("Keyboard.ui").Instantiate(false, 0);
+keyboardWidget.destroyed.connect(this, function() { print("Widget DESTROYED!"); keyboardWidget = null; } );
+
 
 keyboardWidget.visible = true;
 keyboardContainer.visual.size = keyboardWidget.size;

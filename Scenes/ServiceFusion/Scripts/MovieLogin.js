@@ -322,6 +322,7 @@ movieContainer.visual.deleteLater();*/
 
     if (/*...*/true)
     {
+        // frame_login is most likely garbage at this point when entity deletion in progress.
         frame_login.deleteLater();
         frame.Updated.disconnect(Update);
         loginEnt = null;

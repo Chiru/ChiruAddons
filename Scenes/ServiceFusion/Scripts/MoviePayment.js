@@ -328,7 +328,7 @@ function CardReceived(variables)
     frame_payment_2.show();
 
     if(!scene.EntityByName("PaymentKeyboard"))
-        {
+    {
         var movieDimEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name", "EC_Placeable"]);
         movieDimEntity.SetName("PaymentKeyboard");
         var script = movieDimEntity.GetOrCreateComponent("EC_Script");
@@ -401,9 +401,9 @@ function CancelClicked()
 {
     if (visa_entity)
         visa_entity.placeable.visible = false;
-    var keyboardEntity = scene.GetEntityByName("PaymentKeyboard");
+    var keyboardEntity = scene.EntityByName("PaymentKeyboard");
     if(keyboardEntity)
-        scene.RemoveEntity(keyboardEntity.Id());
+        scene.RemoveEntity(keyboardEntity.id);
     ProceedBackward = true;
 }
 
@@ -414,9 +414,9 @@ function Cancel2Clicked()
     me.graphicsviewcanvas.width = base_widget.width;
     me.graphicsviewcanvas.height = base_widget.height;
     frame_payment.show();
-    var keyboardEntity = scene.GetEntityByName("PaymentKeyboard");
+    var keyboardEntity = scene.EntityByName("PaymentKeyboard");
     if(keyboardEntity)
-        scene.RemoveEntity(keyboardEntity.Id());
+        scene.RemoveEntity(keyboardEntity.id);
     placeable.SetScale(1.0, 0.5, 1);
 }
 
@@ -432,6 +432,10 @@ function SetMovieInfo(name, place, time, date)
 
 function ThankYou()
 {
+    var keyboardEntity = scene.GetEntityByName("PaymentKeyboard");
+    if(keyboardEntity)
+        keyboardEntity.placeable.visible = false;
+
     var buttonOK = new QPushButton("OK");
     buttonOK.setStyleSheet(NormalButton);
     buttonOK.clicked.connect(ThankyouClicked);
@@ -550,9 +554,14 @@ function OnScriptDestroyed()
 {
     if (framework.IsExiting())
         return; // Application shutting down, the widget pointers are garbage.
-    var keyboardEntity = scene.GetEntityByName("PaymentKeyboard");
+
+    // Remove payment keyboard on entity deletion.
+    var keyboardEntity = scene.EntityByName("PaymentKeyboard");
     if(keyboardEntity)
-        scene.RemoveEntity(keyboardEntity);
+        scene.RemoveEntity(keyboardEntity.id);
+
+    // payment_container is garbage if entity is deleted and cleanup process started.
+    // Causes error but not crash.
     if (payment_container && payment_container.visual)
     {
         payment_container.visual.deleteLater();
