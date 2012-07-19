@@ -24,7 +24,6 @@ void ColladaExporter::Export(pcl::PolygonMesh::Ptr inputmesh, QString filename)
     fs << "<COLLADA xmlns=\"http://www.collada.org/2005/11/COLLADASchema\" version=\"1.4.1\">\n"; //xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.collada.org/2005/11/COLLADASchema http://www.khronos.org/files/collada_schema_1_4\"
     // fs << "<COLLADA xmlns=\"http://www.collada.org/2008/03/COLLADASchema\" version=\"1.5.0\">";
 
-
     writeAssets();
     writeCameras();
     writeLights();
@@ -35,7 +34,6 @@ void ColladaExporter::Export(pcl::PolygonMesh::Ptr inputmesh, QString filename)
 
     writeVisualScenes();
     writeScene();
-
 
     fs << "</COLLADA>\n";
     file.flush();
@@ -79,16 +77,71 @@ void ColladaExporter::writeImages()
 
 void ColladaExporter::writeEffects()
 {
-    //fs << "   <library_effects>\n";
+    fs << "   <library_effects>\n";
+    fs << "      <effect id=\"CapturedObject-effect\">\n";
+    fs << "         <profile_COMMON>\n";
+    fs << "            <technique sid=\"common\">\n";
+    fs << "               <phong>\n";
+    fs << "                  <emission>\n";
+    fs << "                     <color>0 0 0 1</color>\n";
+    fs << "                  </emission>\n";
+    fs << "                  <ambient>\n";
+    fs << "                     <color>0 0 0 1</color>\n";
+    fs << "                  </ambient>\n";
+    fs << "                  <diffuse>\n";
+    fs << "                     <color>0.64 0.64 0.64 1</color>\n";
+    fs << "                  </diffuse>\n";
+    fs << "                  <specular>\n";
+    fs << "                     <color>0.5 0.5 0.5 1</color>\n";
+    fs << "                  </specular>\n";
 
-    //fs << "   </library_effects>\n";
+//    fs << "                  <shininess>\n";
+//    fs << "                     <float>16</float>\n";
+//    fs << "                  </shininess>\n";
+//    fs << "                  <reflective>\n";
+//    fs << "                     <color>0 0 0 1</color>\n";
+//    fs << "                  </reflective>\n";
+//    fs << "                  <reflectivity>\n";
+//    fs << "                     <float>0.5</float>\n";
+//    fs << "                  </reflectivity>\n";
+//    fs << "                  <transparent>\n";
+//    fs << "                     <color>0 0 0 1</color>\n";
+//    fs << "                  </transparent>\n";
+//    fs << "                  <transparency>\n";
+//    fs << "                     <float>1</float>\n";
+//    fs << "                  </transparency>\n";
+//    fs << "                  <index_of_refraction>\n";
+//    fs << "                     <float>0</float>\n";
+//    fs << "                  </index_of_refraction>\n";
+
+    fs << "               </phong>\n";
+    fs << "            </technique>\n";
+
+    fs << "            <extra>\n";
+    fs << "               <technique profile=\"GOOGLEEARTH\">\n";
+    fs << "                  <double_sided>1</double_sided>\n";
+    fs << "               </technique>\n";
+    fs << "            </extra>\n";
+
+    fs << "         </profile_COMMON>\n";
+
+    fs << "         <extra>\n";
+    fs << "            <technique profile=\"MAX3D\">\n";
+    fs << "               <double_sided>1</double_sided>\n";
+    fs << "            </technique>\n";
+    fs << "         </extra>\n";
+
+    fs << "      </effect>\n";
+    fs << "   </library_effects>\n";
 }
 
 void ColladaExporter::writeMaterials()
 {
-    //fs << "   <library_materials>\n";
-
-    //fs << "   </library_materials>\n";
+    fs << "   <library_materials>\n";
+    fs << "      <material id=\"CapturedObject-material\" name=\"Material\">\n";
+    fs << "         <instance_effect url=\"#CapturedObject-effect\"/>\n";
+    fs << "      </material>\n";
+    fs << "   </library_materials>\n";
 }
 
 void ColladaExporter::writeGeometry()
@@ -104,7 +157,6 @@ void ColladaExporter::writeGeometry()
     fs << "                  <float_array id=\"CapturedObject-positions-array\" count=\"" << nr_points * 3 << "\">\n";
 
     // Export the points
-    /// \todo add spaces in begin of the line
     for (int i = 0; i < nr_points; ++i)
     {
         int xyz = 0;
@@ -182,9 +234,9 @@ void ColladaExporter::writeGeometry()
         fs << "                  </float_array>\n";
         fs << "                  <technique_common>\n";
         fs << "                     <accessor source=\"#CapturedObject-colors-array\" count=\"" << nr_points << "\" stride=\"3\">\n";
-        fs << "                       <param name=\"r\" type=\"float\"/>\n";
-        fs << "                       <param name=\"g\" type=\"float\"/>\n";
-        fs << "                       <param name=\"b\" type=\"float\"/>\n";
+        fs << "                       <param name=\"R\" type=\"float\"/>\n";
+        fs << "                       <param name=\"G\" type=\"float\"/>\n";
+        fs << "                       <param name=\"B\" type=\"float\"/>\n";
         fs << "                     </accessor>\n";
         fs << "                  </technique_common>\n";
         fs << "               </source>\n";
@@ -192,8 +244,6 @@ void ColladaExporter::writeGeometry()
 
     fs << "               <vertices id=\"CapturedObject-vertices\">\n";
     fs << "                  <input semantic=\"POSITION\" source=\"#CapturedObject-positions\"/>\n";
-    if (field_index != -1)
-        fs << "                  <input semantic=\"COLOR\" source=\"#CapturedObject-colors\"/>\n";
     fs << "               </vertices>\n";
 
     // Calculate real value for vertices
@@ -202,15 +252,17 @@ void ColladaExporter::writeGeometry()
                 vertices += input_mesh_->polygons[i].vertices.size();
 
     // Export the faces
-    fs << "               <triangles count=\"" << vertices / 3 << "\">\n"; /// << todo add material
+    fs << "               <triangles count=\"" << vertices / 3 << "\" material=\"Material\">\n";
     fs << "                  <input semantic=\"VERTEX\" source=\"#CapturedObject-vertices\" offset=\"0\"/>\n";
+    if (field_index != -1)
+        fs << "                  <input semantic=\"COLOR\" source=\"#CapturedObject-colors\" offset=\"1\"/>\n";
     fs << "                  <p>\n";
     for (size_t i = 0; i < input_mesh_->polygons.size(); i++)
     {
         fs << "                    ";
         for (size_t j = 0; j < input_mesh_->polygons[i].vertices.size(); j++)
         {
-            fs << " " << input_mesh_->polygons[i].vertices[j];
+            fs << " " << input_mesh_->polygons[i].vertices[j] << " " << input_mesh_->polygons[i].vertices[j];
         }
         fs << "\n";
     }
@@ -218,6 +270,13 @@ void ColladaExporter::writeGeometry()
     fs << "                  </p>\n";
     fs << "               </triangles>\n";
     fs << "            </mesh>\n";
+
+    fs << "            <extra>\n";
+    fs << "               <technique profile=\"MAYA\">\n";
+    fs << "                  <double_sided>1</double_sided>\n";
+    fs << "               </technique>\n";
+    fs << "            </extra>\n";
+
     fs << "         </geometry>\n";
     fs << "      </library_geometries>\n";
 }
@@ -239,14 +298,13 @@ void ColladaExporter::writeVisualScenes()
     fs << "            <rotate sid=\"rotationY\">0 1 0 0</rotate>\n";
     fs << "            <rotate sid=\"rotationX\">1 0 0 0</rotate>\n";
     fs << "            <scale sid=\"scale\">1 1 1</scale>\n";
-
     fs << "            <instance_geometry url=\"#CapturedObject\">\n";
-    /// \todo create materials and fix binding
-//    fs << "               <bind_material>\n";
-//    fs << "                  <technique_common>\n";
-//    fs << "                     <instance_material symbol=\"Material1\" target=\"#CapturedObject-material\"/>\n";
-//    fs << "                  </technique_common>\n";
-//    fs << "               </bind_material>\n";
+
+    fs << "               <bind_material>\n";
+    fs << "                  <technique_common>\n";
+    fs << "                     <instance_material symbol=\"Material\" target=\"#CapturedObject-material\"/>\n";
+    fs << "                  </technique_common>\n";
+    fs << "               </bind_material>\n";
     fs << "            </instance_geometry>\n";
 
     fs << "         </node>\n";
