@@ -57,6 +57,7 @@ if (!framework.IsHeadless())
     ic = input.RegisterInputContextRaw("UiCamera", 102);
     ic.KeyEventReceived.connect(HandleKeyEvent);
     ic.MouseEventReceived.connect(HandleMouseEvent);
+    ui.GraphicsView().DropEvent.connect(HandleDropEvent);
 
     // This is here to stop moving the uicamera if drag'n'drop widget is misplaced in the scene. Hax.
     ui.GraphicsView().DropEvent.connect(HandleDropEvent);
@@ -66,6 +67,7 @@ if (!framework.IsHeadless())
     me.Action("ObjectSelected").Triggered.connect(function(id) {
         selectedObject = scene.EntityById(parseInt(id));
     });
+    me.Action("StopMovement").Triggered.connect(StopMovement);
 }
 
 function OnScriptDestroyed()
@@ -283,7 +285,8 @@ function HandleMouseEvent(e)
 
 function HandleDropEvent()
 {
-    StopMovement();
+    // Stops the movement of uicamera if drag object is misplaced.
+    frame.DelayedExecute(1.0/60).Triggered.connect(StopMovement);
 }
 
 function Zoom(d)

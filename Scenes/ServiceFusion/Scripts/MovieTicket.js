@@ -40,9 +40,9 @@ placeable.SetParent(scene.EntityByName("UiCamera"), 0);
 placeable.SetScale(1, 0.4, 1);
 
 // With ticketCount factor this ticket is placed in slightly different position than previous tickets.
-var y = ticketCount*0.2-6;
-var x = -11-ticketCount*0.2;
-var z = -20+ticketCount*0.1;
+var y = ticketCount*0.1-6;
+var x = -11-ticketCount*0.1;
+var z = -20+ticketCount*0.05;
 placeable.SetPosition(x, y, z);
 
 //placeable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / 1.2));

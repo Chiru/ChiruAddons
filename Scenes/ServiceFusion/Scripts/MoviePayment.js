@@ -513,7 +513,7 @@ function ThankyouClicked()
 
 
     //Create a 3D-ticket
-    if (!scene.EntityByName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace + "_" + movieTime))
+    if (!scene.EntityByName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace + "_" + movieTime + "_" + seatNumber + "_" + rowNumber))
     {
         // todo remove movie rdf data from the cart container.
         if (scene.EntityByName("cart_item"))
@@ -530,7 +530,7 @@ function ThankyouClicked()
         }
         //me.placeable.visible = false;
         var movieTicketEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
-        movieTicketEntity.SetName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace + "_" + movieTime);
+        movieTicketEntity.SetName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace + "_" + movieTime + "_" + seatNumber + "_" + rowNumber);
         var script = movieTicketEntity.GetOrCreateComponent("EC_Script");
         script.scriptRef = new AssetReference("MovieTicket.js");
         script.runOnLoad = true;
@@ -545,7 +545,7 @@ function ThankyouClicked()
 
 function SendTicketData()
 {
-    var movieTicketEntity = scene.EntityByName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace + "_" + movieTime);
+    var movieTicketEntity = scene.EntityByName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace + "_" + movieTime + "_" + seatNumber + "_" + rowNumber);
     movieTicketEntity.Exec(1, "SetTicketInfo", movieName, movieTime, movieDate);
     movieTicketEntity.Exec(1, "SetTicketInfo2", moviePlace, seatNumber, rowNumber);
 }
