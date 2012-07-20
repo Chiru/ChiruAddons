@@ -44,12 +44,13 @@ Ogre::ManualObject* MeshConverter::CreateMesh(pcl::PolygonMesh::Ptr inputMesh, p
     {
         for (size_t i = 0; i < input_cloud->points.size(); i++)
         {
+            ogreManual->position(input_cloud->points[i].x, input_cloud->points[i].y, input_cloud->points[i].z);
+
             Ogre::Real r = (Ogre::Real)input_cloud->points[i].r / (Ogre::Real)255;
             Ogre::Real g = (Ogre::Real)input_cloud->points[i].g / (Ogre::Real)255;
             Ogre::Real b = (Ogre::Real)input_cloud->points[i].b / (Ogre::Real)255;
-
             ogreManual->colour(r, g, b);
-            ogreManual->position(input_cloud->points[i].x, input_cloud->points[i].y, input_cloud->points[i].z);
+
             ogreManual->normal(input_cloud->points[i].data_c[0], input_cloud->points[i].data_c[1], input_cloud->points[i].data_c[2]);
         }
 
@@ -84,12 +85,13 @@ Ogre::ManualObject* MeshConverter::CreatePointMesh(PointCloud::Ptr inputCloud, s
 
     for (size_t i = 0; i < inputCloud->points.size(); i++)
     {
+        ogreManual->position(inputCloud->points[i].x, inputCloud->points[i].y, inputCloud->points[i].z);
+
         Ogre::Real r = (Ogre::Real)inputCloud->points[i].r / (Ogre::Real)255;
         Ogre::Real g = (Ogre::Real)inputCloud->points[i].g / (Ogre::Real)255;
         Ogre::Real b = (Ogre::Real)inputCloud->points[i].b / (Ogre::Real)255;
-
         ogreManual->colour(r, g, b);
-        ogreManual->position(inputCloud->points[i].x, inputCloud->points[i].y, inputCloud->points[i].z);
+
         ogreManual->index(i);
     }
 
