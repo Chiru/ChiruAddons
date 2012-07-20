@@ -531,6 +531,7 @@ function ThankyouClicked()
         //me.placeable.visible = false;
         var movieTicketEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
         movieTicketEntity.SetName("MovieTicket_" + movieName + "_" + movieDate + "_" + moviePlace + "_" + movieTime + "_" + seatNumber + "_" + rowNumber);
+        movieTicketEntity.GetOrCreateComponent("EC_DynamicComponent", "UserItem");
         var script = movieTicketEntity.GetOrCreateComponent("EC_Script");
         script.scriptRef = new AssetReference("MovieTicket.js");
         script.runOnLoad = true;

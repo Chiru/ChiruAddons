@@ -48,6 +48,7 @@ placeable.SetPosition(x, y, z);
 //placeable.SetOrientation(Quat(float3(1,0,0), 2*Math.PI / 1.2));
 var mesh = me.GetOrCreateComponent("EC_Mesh");
 var canvas = me.GetOrCreateComponent("EC_GraphicsViewCanvas");
+
 canvas.submesh = 1;
 
 
@@ -144,4 +145,4 @@ function SetTicketCount(tcount)
     ticketCount = tcount;
 }
 
-me.Action("MousePress").Triggered.connect(function(){me.placeable.visible = false;});
+//me.Action("MousePress").Triggered.connect(function(){me.placeable.visible = false;});
