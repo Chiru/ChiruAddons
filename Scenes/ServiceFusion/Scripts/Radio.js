@@ -30,6 +30,9 @@ script.Invoked.connect(RunScript);
 dummyContainer.eventManager.RegisterScript(new Tag(RdfVocabulary.sourceApplication, "Song"), script);
 dummyContainer.eventManager.RegisterScript(new Tag("test", "test"), script);
 
+me.dynamiccomponent.CreateAttribute("string", "song");
+me.dynamiccomponent.CreateAttribute("string", "state");
+
 function RunScript(tag, rdfStore)
 {
     debug("RunScript called");
@@ -59,10 +62,24 @@ function OnDropEvent(e)
         var r = scene.ogre.Raycast(ray, -1);
         if (r.entity && r.entity.id == me.id)
         {
+            var song = findChild(e.source(), "song_artist")
             debug("radio: call handlemeshdrop");
             dummyContainer.visual.HandleMeshDrop(e.source());
+            ChangeSong(song.text.replace("\n", " - "));
         }
     }
+}
+
+// NOTE: This should be properly implemented with the RDF system
+function ChangeSong(songname)
+{
+    var bar_ent = scene.EntityByName("BarContainer");
+    last_song = bar_ent.dynamiccomponent.GetAttribute("last_song");
+    print("Radio: last_song: " + last_song.title);
+
+    me.dynamiccomponent.SetAttribute("state", "STOPPED");
+    me.dynamiccomponent.SetAttribute("song", songname);
+    me.dynamiccomponent.SetAttribute("state", "PLAYING");
 }
 
 function OnScriptDestroyed()

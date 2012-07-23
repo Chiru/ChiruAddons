@@ -182,6 +182,7 @@ SongContainer.prototype.DisplaySong = function(song)
     // main.layout().addWidget(label, null, null);
 
     label2 = new QLabel(song.artist + "\n" + song.title);
+    label2.objectName = "song_artist";
     var contentCanvas = me.GetComponent("EC_GraphicsViewCanvas", "Content");
     label2.size = new QSize(contentCanvas.width, contentCanvas.height);
     label2.wordWrap = true;
