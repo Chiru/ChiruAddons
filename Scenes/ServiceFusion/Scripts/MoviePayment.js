@@ -249,12 +249,12 @@ function CardReceived(variables)
         var le_username = new QPushButton();
         le_username.objectName = "le_username";
         le_username.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
-        le_username.setStyleSheet("QPushButton {color: black; background-color: white; border: 1px inset grey; text-align: left; }");
+        le_username.setStyleSheet("QPushButton {color: black; background-color: white; border: 1px inset grey; text-align: left; height: 20px; font: 18px; }");
         le_username.clicked.connect(UsernameFocused);
         var le_password = new QPushButton();
         le_password.objectName = "le_password";
         le_password.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
-        le_password.setStyleSheet("QPushButton {color: black; background-color: white; border: 1px inset grey; text-align: left; }");
+        le_password.setStyleSheet("QPushButton {color: black; background-color: white; border: 1px inset grey; text-align: left; height: 20px; font: 18px; }");
         le_password.clicked.connect(PasswordFocused);
 
         var label_shoppingcart = new QLabel("Tuote:");

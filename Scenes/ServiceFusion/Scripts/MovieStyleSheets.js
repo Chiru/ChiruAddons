@@ -15,7 +15,7 @@ var LargeText = "QLabel { font: 18px 'FreeSans'; }";
 
 var NormalText = "QLabel { font: 16px 'FreeSans'; }";
 
-var NormalButton = "QPushButton { font: 16px 'FreeSans'; }";
+var NormalButton = "QPushButton { font: 16px 'FreeSans'; height: 40px; }";
 
 var RadioButton = "QRadioButton { font: 16px 'FreeSans'; }";
 
