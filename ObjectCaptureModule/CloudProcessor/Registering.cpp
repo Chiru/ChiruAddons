@@ -95,9 +95,6 @@ PointCloud::Ptr IncrementalRegister::getCurrentCloud()
 
 void IncrementalRegister::registerPair(PointCloud::Ptr src, PointCloud::Ptr tgt, Eigen::Matrix4f &pair_transformation)
 {
-    pcl::io::savePCDFileASCII("src.pcd", *src);
-    pcl::io::savePCDFileASCII("tgt.pcd", *tgt);
-
     // Compute surface normals and curvature
     PointCloudWithNormals::Ptr points_with_normals_src (new PointCloudWithNormals);
     PointCloudWithNormals::Ptr points_with_normals_tgt (new PointCloudWithNormals);
