@@ -243,7 +243,10 @@ void ObjectCaptureModule::visualizeFinalMesh(pcl::PolygonMesh::Ptr polygonMesh, 
 void ObjectCaptureModule::exportCollada(QString filename)
 {
     if (final_polygon_mesh_.get())
+    {
         collada_exporter_->Export(final_polygon_mesh_, filename);
+        emit colladaExportFinalized(filename);
+    }
     else
         LogError("Couldn't export polygon mesh! Mesh was not available.");
 }
