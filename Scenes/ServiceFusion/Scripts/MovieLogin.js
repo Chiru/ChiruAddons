@@ -129,6 +129,11 @@ StartLogin();
 
 function StartLogin()
 {
+    var movieDim = scene.GetEntityByName("MovieDim");
+    if(movieDim) {
+        frame.DelayedExecute(0.1).Triggered.connect(function() { movieDim.Exec(1, "Show"); });
+    }
+
     frame_login = new QFrame();
     frame_login.objectName = "frame_login";
 

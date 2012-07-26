@@ -393,6 +393,10 @@ function HandleMove(deltaX, deltaY, deltaZ)
     // up/down
     var scroll = deltaZ/30;
     cameraData.move.amount.y = Clamp(scroll, -5, 5);
+
+    var movieDim = scene.GetEntityByName("MovieDim");
+    if(movieDim)
+        movieDim.Exec(1, "Move");
 }
 
 function StopMovement()

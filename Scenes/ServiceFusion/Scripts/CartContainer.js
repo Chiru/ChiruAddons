@@ -113,6 +113,15 @@ function MousePressed()
     if (!movieItem)
         return;
 
+    if (!scene.EntityByName("MovieDim"))
+    {
+        var dimEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);
+        dimEntity.SetName("MovieDim");
+        var script = dimEntity.GetOrCreateComponent("EC_Script");
+        script.scriptRef = new AssetReference("MovieDim.js");
+        script.runOnLoad = true;
+    }
+
     if (!scene.EntityByName("MovieManager"))
     {
         var movieManagerEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name"]);

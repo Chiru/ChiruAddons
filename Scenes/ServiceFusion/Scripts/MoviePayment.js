@@ -330,9 +330,9 @@ function CardReceived(variables)
 
     if(!scene.EntityByName("PaymentKeyboard"))
     {
-        var movieDimEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name", "EC_Placeable"]);
-        movieDimEntity.SetName("PaymentKeyboard");
-        var script = movieDimEntity.GetOrCreateComponent("EC_Script");
+        var keyboardEntity = scene.CreateEntity(scene.NextFreeId(), ["EC_Script", "EC_Name", "EC_Placeable"]);
+        keyboardEntity.SetName("PaymentKeyboard");
+        var script = keyboardEntity.GetOrCreateComponent("EC_Script");
         script.scriptRef = new AssetReference("keyboard.js");
         script.runOnLoad = true;
     }
@@ -543,6 +543,10 @@ function ThankyouClicked()
         frame.DelayedExecute(0.1).Triggered.connect(SendTicketData);
     }
     frame.DelayedExecute(0.2).Triggered.connect(destroyPayment);
+
+    var movieDim = scene.GetEntityByName("MovieDim");
+    if(movieDim)
+        movieDim.Exec(1, "Hide");
 }
 
 function SendTicketData()
