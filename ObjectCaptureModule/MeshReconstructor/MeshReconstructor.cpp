@@ -7,6 +7,7 @@
 #include "MeshReconstructor.h"
 
 #include <pcl/surface/reconstruction.h>
+
 #include <pcl/surface/mls_omp.h>
 
 #include <pcl/io/io.h>
@@ -25,6 +26,7 @@
 #include "LoggingFunctions.h"
 #include "CoreStringUtils.h"
 #include "MemoryLeakCheck.h"
+#include <pcl/impl/instantiate.hpp>
 
 namespace ObjectCapture
 {
@@ -53,8 +55,8 @@ void MeshReconstructor::processCloud(PointCloud::Ptr cloud)
     if (cloud.get())
     {
         // Convert input cloud PointXYZRGBA to PointXYZRGB cloud
-        point_cloud_->points.resize(cloud->points.size());
-        LogInfo("MeshReconstructor::processCloud poinst in cloud:" + ToString(cloud->points.size()));
+        point_cloud_->resize(cloud->size());
+
         for (size_t i = 0; i < cloud->points.size(); i++)
         {
             point_cloud_->points[i].x = cloud->points[i].x;
@@ -66,7 +68,7 @@ void MeshReconstructor::processCloud(PointCloud::Ptr cloud)
         }
 
         MovingLeastSquares();
-        //NormalEstimation();
+        NormalEstimation();
         GreedyProjection_Mesher();
         //convertVtkToMesh();
 
@@ -79,6 +81,7 @@ void MeshReconstructor::processCloud(PointCloud::Ptr cloud)
 
 void MeshReconstructor::convertVtkToMesh()
 {
+    // Debrecated
     if (!polygonMesh_)
         return;
 
@@ -114,12 +117,8 @@ void MeshReconstructor::MovingLeastSquares()
     // Create a KD-Tree
     pcl::search::KdTree<pcl::PointXYZRGB>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZRGB>(false));
 
-    // Init object (second point type is for the normals, even if unused)
-    pcl::MovingLeastSquaresOMP<pcl::PointXYZRGB, pcl::Normal> mls;
-    mls.setNumberOfThreads(4);
-
-    // Optionally, a pointer to a cloud can be provided, to be set by MLS
-    mls.setOutputNormals (normals_);
+    // Init object (second point type is for the output)
+    pcl::MovingLeastSquares<pcl::PointXYZRGB, pcl::PointXYZRGB> mls;
 
     if (point_cloud_->points.size() > 0)
     {
@@ -132,28 +131,40 @@ void MeshReconstructor::MovingLeastSquares()
         mls.setSqrGaussParam(0.009); //0.0009
 
         // Reconstruct
-        mls.reconstruct (*smoothed_cloud_);
+        mls.process (*smoothed_cloud_);
+
+        //Restore color data missed during the smoothing process.
+        for (size_t i = 0; i < point_cloud_->points.size(); i++)
+        {
+            smoothed_cloud_->points[i].r = point_cloud_->points[i].r;
+            smoothed_cloud_->points[i].g = point_cloud_->points[i].g;
+            smoothed_cloud_->points[i].b = point_cloud_->points[i].b;
+        }
     }
 }
 
 void MeshReconstructor::NormalEstimation()
 {
+
     LogInfo("ObjectCapture: Estimating normals..");
-    float normal_search_radius = 0.0025;
+    float normal_search_radius = 0.1; //0.0025;
 
     //initialize normal estimation
     pcl::NormalEstimation<pcl::PointXYZRGB, pcl::Normal> normal_estimation;
-    normal_estimation.setInputCloud (smoothed_cloud_);
+    if (smoothed_cloud_.get())
+    {
+        normal_estimation.setInputCloud (smoothed_cloud_);
 
-    //initialize search tree
-    pcl::search::KdTree<pcl::PointXYZRGB>::Ptr search_tree (new pcl::search::KdTree<pcl::PointXYZRGB>());
-    search_tree->setInputCloud (smoothed_cloud_);
+        //initialize search tree
+        pcl::search::KdTree<pcl::PointXYZRGB>::Ptr search_tree (new pcl::search::KdTree<pcl::PointXYZRGB>());
+        //search_tree->setInputCloud (smoothed_cloud_);
 
-    normal_estimation.setSearchMethod (search_tree);
-    //normal_estimation.setKSearch (20); //if we want more accurate results, re-run with KSearch!
-    normal_estimation.setRadiusSearch (normal_search_radius);
+        normal_estimation.setSearchMethod (search_tree);
+        //normal_estimation.setKSearch (20); //if we want more accurate results, re-run with KSearch!
+        normal_estimation.setRadiusSearch (normal_search_radius);
 
-    normal_estimation.compute (*normals_);
+        normal_estimation.compute (*normals_);
+    }
 }
 
 void MeshReconstructor::GreedyProjection_Mesher()
@@ -164,7 +175,9 @@ void MeshReconstructor::GreedyProjection_Mesher()
     pcl::GreedyProjectionTriangulation<pcl::PointXYZRGBNormal> mesher;
 
     if (smoothed_cloud_.get() && normals_.get())
+    {
         pcl::concatenateFields(*smoothed_cloud_, *normals_, *cloud_with_normals_);
+    }
     else
     {
         LogError("ObjectCaptureModule: Couldn't get input cloud or point normals for reconstruction!");
@@ -180,7 +193,7 @@ void MeshReconstructor::GreedyProjection_Mesher()
     mesher.setConsistentVertexOrdering(true); // Requires PCL-1.5 or higher!
 
     mesher.setMu(5.0); //2.5
-    mesher.setMaximumNearestNeighbors(400);
+    mesher.setMaximumNearestNeighbors(800);
     mesher.setMaximumSurfaceAngle(M_PI); // M_PI/4
     mesher.setMinimumAngle(M_PI/18); // 10 degrees
     mesher.setMaximumAngle(2*M_PI/3); // 120 degrees

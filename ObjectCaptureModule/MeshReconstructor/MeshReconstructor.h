@@ -25,8 +25,10 @@ public slots:
     void processCloud(PointCloud::Ptr cloud);
     void convertVtkToMesh();
 
-private slots:
+private slots:    
+    /// \note This function requires PCL 1.6 or newer!
     void MovingLeastSquares();
+
     void NormalEstimation();
 
     /// Create mesh with greedy projection

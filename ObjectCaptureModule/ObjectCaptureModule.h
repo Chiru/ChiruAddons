@@ -99,6 +99,7 @@ public slots:
 signals:
     void previewFrameUpdated(const QImage &frame);
     void objectCaptured(unsigned int entityId);
+    void colladaExportFinalized(QString relativeFilePath);
 
 private slots:
     void meshReconstructed();
