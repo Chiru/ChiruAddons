@@ -8,6 +8,7 @@ engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
 engine.IncludeFile("Lyrics.js");
 engine.IncludeFile("Log.js");
+engine.IncludeFile("Localisation.js");
 
 function Song()
 {
@@ -70,7 +71,7 @@ function SongContainer(parent)
     titleLabel = new QLabel("Otto.K");
     titleLabel.font = new QFont("SansSerif", 42);
     titleLabel.alignment = 0x0004; // Qt::AlignHCenter
-    openLabel = new QLabel("\nAVOINNA 11-02"); // Could use spacer here, but going with newline for now
+    openLabel = new QLabel(LOC_BAR_OPEN); // Could use spacer here, but going with newline for now
     openLabel.font = new QFont("SansSerif", 16);
     openLabel.alignment = 0x0004;
     titleWidget.layout().addWidget(titleLabel, 0, 0);

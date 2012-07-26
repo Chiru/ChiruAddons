@@ -4,6 +4,7 @@ engine.ImportExtension("qt.network");
 engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
 engine.IncludeFile("Log.js");
+engine.IncludeFile("Localisation.js");
 
 var titleWidget = null;
 
@@ -51,7 +52,7 @@ function MovieContainer(parent)
     titleLabel = new QLabel("FINNKINO");
     titleLabel.font = new QFont("SansSerif", 42);
     titleLabel.alignment = 0x0004; // Qt::AlignHCenter
-    openLabel = new QLabel("\nAVOINNA 11-23"); // Could use spacer here, but going with newline for now
+    openLabel = new QLabel("\n" + LOC_MOVIECONT_OPEN); // Could use spacer here, but going with newline for now
     openLabel.font = new QFont("SansSerif", 16);
     openLabel.alignment = 0x0004;
     titleWidget.layout().addWidget(titleLabel, 0, 0);

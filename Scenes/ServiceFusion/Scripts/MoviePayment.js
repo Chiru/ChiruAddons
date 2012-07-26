@@ -1,6 +1,7 @@
 engine.IncludeFile("MovieStyleSheets.js");
 engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
+engine.IncludeFile("Localisation.js");
 
 me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
 frame.Updated.connect(Update);
@@ -127,22 +128,22 @@ var paymentPlaceable = paymentEnt.GetOrCreateComponent("EC_Placeable");
 var seatPlaceable = seatEnt.GetOrCreateComponent("EC_Placeable");
 var managerEnt = scene.EntityByName("MovieManager");
 
-var movieName = "Elokuvan nimi";
-var moviePlace = "Salinumero";
-var movieTime = "Aika";
-var movieDate = "P‰iv‰m‰‰r‰";
+var movieName = LOC_MOVIEPAY_MOVIENAME;
+var moviePlace = LOC_MOVIEPAY_MOVIEPLACE;
+var movieTime = LOC_MOVIEPAY_MOVIETIME;
+var movieDate = LOC_MOVIEPAY_DATE;
 var seatNumber = 0;
 var rowNumber = 0;
 
 var frame_2_created = false;
 var frame_created = false;
 
-var label_seat = new QLabel("Rivi: " + rowNumber + " Paikka: " + seatNumber);
+var label_seat = new QLabel(LOC_MOVIEPAY_ROW + ": " + rowNumber + " " + LOC_MOVIEPAY_SEAT + ": " + seatNumber);
 
 var label_movieinfo = new QLabel(movieName + " - " + moviePlace + " - " + movieTime + " - " + movieDate);
 label_movieinfo.wordWrap = true;
 
-var label_seat2 = new QLabel("Rivi: " + rowNumber + " Paikka: " + seatNumber);
+var label_seat2 = new QLabel(LOC_MOVIEPAY_ROW + ": " + rowNumber + " " + LOC_MOVIEPAY_SEAT + ": " + seatNumber);
 var label_movieinfo2 = new QLabel(movieName + " - " + moviePlace + " - " + movieTime + " - " + movieDate);
 label_seat.setStyleSheet(NormalText);
 label_movieinfo.setStyleSheet(NormalText);
@@ -154,18 +155,18 @@ function StartPayment()
 {
     if (!frame_created)
     {
-        var buttonCancel = new QPushButton("Peruuta");
+        var buttonCancel = new QPushButton(LOC_COM_CANCEL);
         buttonCancel.clicked.connect(CancelClicked);
         buttonCancel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
-        var label_paymentarea = new QLabel("\n\n\nRaahaa maksukortti t‰lle alueelle\n\n\n");
+        var label_paymentarea = new QLabel("\n\n\n" + LOC_MOVIEPAY_DRAGCARD + "\n\n\n");
         label_paymentarea.setStyleSheet(PaymentArea);
         label_paymentarea.objectName = "label_paymentarea";
         label_paymentarea.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
 
-        var label_shoppingcart = new QLabel("Tuote:");
-        var label_price = new QLabel("Summa: 9.00 euroa");
+        var label_shoppingcart = new QLabel(LOC_MOVIEPAY_ITEM + ":");
+        var label_price = new QLabel(LOC_MOVIEPAY_PRESET_SUM);
 
         buttonCancel.setStyleSheet(NormalButton);
         label_shoppingcart.setStyleSheet(LargeBoldText);
@@ -238,9 +239,9 @@ function CardReceived(variables)
 {
     if (!frame_2_created)
     {
-        var buttonOK = new QPushButton("Maksa");
+        var buttonOK = new QPushButton(LOC_MOVIEPAY_PAY);
         buttonOK.clicked.connect(OKClicked);
-        var buttonCancel = new QPushButton("Peruuta");
+        var buttonCancel = new QPushButton(LOC_COM_CANCEL);
         buttonCancel.clicked.connect(Cancel2Clicked);
 
         buttonOK.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
@@ -257,23 +258,23 @@ function CardReceived(variables)
         le_password.setStyleSheet("QPushButton {color: black; background-color: white; border: 1px inset grey; text-align: left; height: 20px; font: 18px; }");
         le_password.clicked.connect(PasswordFocused);
 
-        var label_shoppingcart = new QLabel("Tuote:");
+        var label_shoppingcart = new QLabel(LOC_MOVIEPAY_ITEM);
 
 
-        var label_price = new QLabel("Summa: 9.00 euroa");
+        var label_price = new QLabel(LOC_MOVIEPAY_PRESET_SUM);
 
         label_shoppingcart.setStyleSheet(LargeBoldText);
         label_movieinfo.setStyleSheet(LargeText);
 
         label_price.setStyleSheet(Price);
 
-        var label_transfer = new QLabel("\nVerkkomaksu");
+        var label_transfer = new QLabel("\n" + LOC_MOVIEPAY_ONLINEPAYMENT);
         label_transfer.setStyleSheet(LargeBoldText);
 
-        var label_info = new QLabel("Anna k‰ytt‰j‰tunnuksesi ja salasanasi alla\noleviin kenttiin ja paina Maksa-painiketta.\n");
+        var label_info = new QLabel(LOC_MOVIEPAY_INSERTCREDENTIALS);
 
-        var label_username = new QLabel("K‰ytt‰j‰tunnus:");
-        var label_password = new QLabel("Salasana:");
+        var label_username = new QLabel(LOC_COM_USERNAME + ":");
+        var label_password = new QLabel(LOC_COM_PASSWORD + ":");
 
         buttonOK.setStyleSheet(NormalButton);
         buttonCancel.setStyleSheet(NormalButton);
@@ -386,8 +387,8 @@ function SetRowAndSeatNumber(row, seat)
 
     rowNumber = row;
     seatNumber = seat;
-    label_seat.setText("Rivi: " + rowNumber + " Paikka: " + seatNumber);
-    label_seat2.setText("Rivi: " + rowNumber + " Paikka: " + seatNumber);
+    label_seat.setText(LOC_MOVIEPAY_ROW + ": " + rowNumber + " " + LOC_MOVIEPAY_SEAT + ": " + seatNumber);
+    label_seat2.setText(LOC_MOVIEPAY_ROW + ": " + rowNumber + " " + LOC_MOVIEPAY_SEAT + ": " + seatNumber);
 }
 
 function OKClicked()
@@ -447,8 +448,8 @@ function ThankYou()
     var label_movietime = new QLabel(movieTime);
     var label_movieplace = new QLabel(moviePlace);
     var label_moviedate = new QLabel(movieDate.toString());
-    var label_row = new QLabel("Rivi: " + rowNumber);
-    var label_seat = new QLabel("Paikka: " + seatNumber + "\n");
+    var label_row = new QLabel(LOC_MOVIEPAY_ROW + ": " + rowNumber);
+    var label_seat = new QLabel(LOC_MOVIEPAY_SEAT + ": " + seatNumber + "\n");
 
     label_thankyou.setStyleSheet(LargeText);
     label_moviename.setStyleSheet(NormalText);

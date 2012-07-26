@@ -2,6 +2,7 @@ engine.IncludeFile("MovieStyleSheets.js");
 engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
 engine.IncludeFile("MovieManager.js");
+engine.IncludeFile("Localisation.js");
 
 me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
 frame.Updated.connect(Update);
@@ -68,7 +69,7 @@ function DisplayIdInfo(variables)
     var date = new Date(variables[4]);
     var birthday = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
     le_birthday.text = birthday;
-    if (variables[5] == "Male")
+    if (variables[5] == LOC_COM_MALE)
         rb_gender_male.checked = true;
     else
         rb_gender_female.checked = true;
@@ -98,10 +99,10 @@ var seatPlaceable = seatEnt.GetOrCreateComponent("EC_Placeable");
 var paymentPlaceable = paymentEnt.GetOrCreateComponent("EC_Placeable");
 var managerEnt = scene.EntityByName("MovieManager");
 
-var movieName = "Elokuvan nimi";
-var moviePlace = "Salinumero";
-var movieTime = "Aika";
-var movieDate = "Päivämäärä";
+var movieName = LOC_MOVIELOG_MOVIENAME;
+var moviePlace = LOC_MOVIELOG_MOVIEPLACE;
+var movieTime = LOC_MOVIELOG_MOVIETIME;
+var movieDate = LOC_MOVIELOG_MOVIEDATE;
 var label_movieinfo = new QLabel(movieName + " - " + moviePlace + " - " + movieTime + " - " + movieDate);
 
 me.Action("SetMovieInfo").Triggered.connect(SetMovieInfo);
@@ -131,9 +132,9 @@ function StartLogin()
     frame_login = new QFrame();
     frame_login.objectName = "frame_login";
 
-    var buttonOK = new QPushButton("OK");
+    var buttonOK = new QPushButton(LOC_COM_OK);
     buttonOK.clicked.connect(OKClicked);
-    var buttonCancel = new QPushButton("Peruuta");
+    var buttonCancel = new QPushButton(LOC_COM_CANCEL);
     buttonCancel.clicked.connect(CancelClicked);
 
     buttonOK.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
@@ -159,20 +160,20 @@ function StartLogin()
     le_birthday.objectName = "le_birthday";
     le_birthday.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed);
 
-    var rb_male = new QRadioButton("Mies");
+    var rb_male = new QRadioButton(LOC_COM_MALE);
     rb_male.objectName = "rb_gender_male";
 
-    var rb_female = new QRadioButton("Nainen");
+    var rb_female = new QRadioButton(LOC_COM_FEMALE);
     rb_female.objectName = "rb_gender_female";
 
-    var label_firstname = new QLabel("Etunimi:");
-    var label_lastname = new QLabel("Sukunimi:");
-    var label_birthday = new QLabel("Syntymäpäivä (pp/kk/vvvv):");
-    var label_gender = new QLabel("Sukupuoli:");
-    var label_email = new QLabel("Sähköpostiosoite:");
-    var label_phone = new QLabel("Matkapuhelinnumero:");
+    var label_firstname = new QLabel(LOC_COM_FIRSTNAME + ":");
+    var label_lastname = new QLabel(LOC_COM_LASTNAME + ":");
+    var label_birthday = new QLabel(LOC_COM_BIRTHDAY + " " + LOC_MOVIELOG_DATEFORMAT + ":");
+    var label_gender = new QLabel(LOC_COM_GENDER + ":");
+    var label_email = new QLabel(LOC_COM_EMAIL + ":");
+    var label_phone = new QLabel(LOC_COM_MOBILE + ":");
 
-    var label_shoppingcart = new QLabel("Ostoskori:");
+    var label_shoppingcart = new QLabel(LOC_COM_SHOPPINGCART + ":");
 
 
     label_shoppingcart.setStyleSheet(LargeBoldText);

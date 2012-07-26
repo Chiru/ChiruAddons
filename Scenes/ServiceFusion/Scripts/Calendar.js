@@ -6,6 +6,7 @@ engine.ImportExtension("qt.gui");
 engine.IncludeFile("CalendarCellWidget.js");
 engine.IncludeFile("VisualContainerUtils.js");
 engine.IncludeFile("RdfVocabulary.js");
+engine.IncludeFile("Localisation.js");
 
 var defaultTransform = me.placeable.transform;
 
@@ -124,10 +125,7 @@ Date.prototype.getWeek = function()
 
 var date = new Date(2012, 6, 25);
 
-var months = ["TAMMIKUU", "HELMIKUU",  "MAALISKUU",
-              "HUHTIKUU", "TOUKOKUU",  "KESÄKUU",
-              "HEINÄKUU", "ELOKUU",    "SYYSKUU",
-              "LOKAKUU",  "MARRASKUU", "JOULUKUU"];
+var months = LOC_CAL_MONTHS;
               
 var month = months[date.getMonth()];
 var year = date.getFullYear();
@@ -287,16 +285,16 @@ eventContainer.container.parent = currentDayCell.container;
 AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "datetime");
 var date = new Date(2012, 6, 25, 8, 30);
 AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, date.toString());
-AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Info");
-AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Kuntosali Raatti");
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, LOC_CAL_PRESET_INFO);
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, LOC_CAL_PRESET_GYM);
             
 eventContainer = new BaseContainer(currentDayCell.container.visual);
 eventContainer.container.parent = currentDayCell.container;
 AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.sourceApplication, "datetime");
 date = new Date(2012, 6, 25, 14, 30);
 AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, date.toString());
-AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Meeting");
-AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Kahville Maijan kanssa Antelli"); 
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, LOC_CAL_PRESET_MEETING);
+AddStatement(eventContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, LOC_CAL_PRESET_COFFEE); 
 
 AddDayCell("26", 5, 4);
 AddDayCell("27", 5, 5);
@@ -349,7 +347,7 @@ for (var i = 0; i < 4; ++i)
 } 
 eventsWidget.cells[0][0].widget.layout().addWidget(new QLabel("25"), 0, 0);
 eventsWidget.cells[0][0].widget.styleSheet = Cell.DayEventStyle;
-eventsWidget.cells[0][1].widget.layout().addWidget(new QLabel("TAPAHTUMAT"), 0, 0);
+eventsWidget.cells[0][1].widget.layout().addWidget(new QLabel(LOC_CAL_EVENTS), 0, 0);
 
 eventLayout.addWidget(eventsWidget, 0, 0);
 eventsEntity.graphicsviewcanvas.width = calEventsContainer.visual.width;

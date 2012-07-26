@@ -2,6 +2,7 @@ engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
 engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
+engine.IncludeFile("Localisation.js");
 
 me.Action("MousePress").Triggered.connect(MousePressed);
 

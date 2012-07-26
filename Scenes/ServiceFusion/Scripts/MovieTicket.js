@@ -1,6 +1,7 @@
 engine.IncludeFile("MovieStyleSheets.js");
 engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
+engine.IncludeFile("Localisation.js");
 
 if (!server.IsRunning() && !framework.IsHeadless())
 {
@@ -84,7 +85,7 @@ frame_ticket.setStyleSheet(TicketStyle);
 var grid = new QGridLayout();
 grid.setContentsMargins(20, 20, 20, 20);
 var ticket_text = "";
-var ticket = new QLabel("Elokuvalippu");
+var ticket = new QLabel(LOC_TICKET_TICKETNAME);
 ticket.setStyleSheet(LargeText);
 ticket.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding);
 
@@ -124,8 +125,8 @@ function SetTicketInfo(name, time, date)
 function SetTicketInfo2(place, row, seat)
 {
     label_place.setText(place);
-    label_row.setText("Rivi " + row);
-    label_seat.setText("Paikka " + seat);
+    label_row.setText(LOC_COM_ROW + " " + row);
+    label_seat.setText(LOC_COM_SEAT + " " + seat);
     //ticket_text = ticket_text + "\n" + place + " Rivi " + row + " Paikka " + seat;
     grid.addWidget(label_place, 3, 0);
     grid.addWidget(label_row, 3, 1);

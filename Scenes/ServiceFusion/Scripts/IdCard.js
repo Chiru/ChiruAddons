@@ -2,6 +2,7 @@ engine.ImportExtension("qt.core");
 engine.ImportExtension("qt.gui");
 engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
+engine.IncludeFile("Localisation.js");
 
 dragObjectName = "movable_id_card";
 
@@ -14,7 +15,7 @@ AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "dta
 AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "0401234567");
 var birthday = new Date("October 13, 1975");
 AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, birthday.toString());
-AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, "Male");
+AddStatement(idContainer.visual, RdfVocabulary.baseUri, RdfVocabulary.data, LOC_COM_MALE);
 
 sceneinteract.EntityClicked.connect(EntityClicked)
 

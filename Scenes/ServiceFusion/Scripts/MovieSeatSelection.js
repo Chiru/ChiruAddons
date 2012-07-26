@@ -1,4 +1,5 @@
 engine.IncludeFile("MovieStyleSheets.js");
+engine.IncludeFile("Localisation.js");
 me.Action("Cleanup").Triggered.connect(OnScriptDestroyed);
 frame.Updated.connect(Update);
 
@@ -161,11 +162,11 @@ function SeatSelection()
     frame_seatselection.setFrameStyle(QFrame.StyledPanel);
     frame_seatselection.setStyleSheet(Seats);
 
-    var buttonOK = new QPushButton("Seuraava");
+    var buttonOK = new QPushButton(LOC_COM_FORWARD);
     buttonOK.setStyleSheet(LargeButton);
     buttonOK.setFixedSize(200, 100);
     buttonOK.clicked.connect(OKClicked);
-    var buttonCancel = new QPushButton("Peruuta");
+    var buttonCancel = new QPushButton(LOC_COM_CANCEL);
     buttonCancel.setStyleSheet(LargeButton);
     buttonCancel.setFixedSize(200,100);
     buttonCancel.clicked.connect(CancelClicked);
