@@ -393,6 +393,11 @@ function SetRowAndSeatNumber(row, seat)
 
 function OKClicked()
 {
+    var username = findChild(frame_payment_2, "le_username");
+    var password = findChild(frame_payment_2, "le_password");
+    if(username.text === "" || password.text === "")
+        return;
+
     if (visa_entity)
         visa_entity.placeable.visible = false;
     ThankYou();
