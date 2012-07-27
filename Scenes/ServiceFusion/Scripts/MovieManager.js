@@ -27,6 +27,9 @@ function destroyMovieLogin()
         var loginEnt = scene.EntityByName("MovieLoginDialog");
         loginEnt.placeable.visible = false;
     }
+    var movieDim = scene.GetEntityByName("MovieDim");
+    if(movieDim)
+        movieDim.Exec(1, "Hide");
 }
 
 function DelayedDestroyMovieLogin()
@@ -62,6 +65,9 @@ function destroyMoviePayment()
         scene.EntityByName("MovieLoginDialog").Exec(1, "Cleanup");
         scene.RemoveEntity(scene.EntityByName("MovieLoginDialog").id);
     }
+    var movieDim = scene.GetEntityByName("MovieDim");
+    if(movieDim)
+        movieDim.Exec(1, "Hide");
 }
 
 function DelayedDestroyMoviePayment()
