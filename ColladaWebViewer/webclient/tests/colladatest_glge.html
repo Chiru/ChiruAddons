@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>GLGE collada test</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            font-family: Monospace;
+            background-color: #000000;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        a { color: skyblue }
+    </style>
+
+    <script src="../js/connection.js"></script>
+    <script src="../js/glge/glge-compiled-min.js"></script>
+    <script src="../js/glge/glge_turntablecamera.js"></script>
+    <script src="../js/glge/glge_flycamera.js"></script>
+
+</head>
+
+
+<body>
+<div style="width:900px;margin:auto;position:relative" id="container">
+    <canvas id="canvas" width="900"
+            height="500"></canvas>
+</div>
+<script type="text/javascript">
+
+</script>
+
+
+<script>
+    //Url parer
+    var colladaUrl = location.hash.substr(1) //".models/seymour/Seymour_anim2.dae"
+    console.log("COLLADA URL: " + colladaUrl)
+
+    var scene, camera, renderer, light, lightGroup, rot
+
+    var collada = new GLGE.Collada()
+    collada.setDocument(colladaUrl, null, function loaded(){
+        collada.setScale(0.6)
+        collada.setLocY(1)
+        console.log(collada.getColladaActions())
+        init()
+        render()
+    })
+    //create the renderer
+    function init(){
+        var canvas = document.getElementById('canvas')
+        renderer = new GLGE.Renderer(canvas, null, {antialias: true} );
+
+        scene=new GLGE.Scene({
+            AmbientColor: "#888",
+            BackgroundColor: "#000"
+
+        });
+
+        var floorMaterial=(new GLGE.Material({
+            Specular: 0
+        }))
+
+        var floorMesh=new GLGE.Mesh({
+            Positions: [1,1,0,-1,1,0,-1,-1,0,1,1,0,-1,-1,0,1,-1,0],
+            Normals: [-0,0,1,-0,0,1,-0,0,1,0,-0,1,0,-0,1,0,-0,1],
+            UV: [0,0,1,0,1,1,0,0,1,1,0,1],
+            Faces: [0,1,2,3,4,5]
+        });
+
+        var floorObject=new GLGE.Object({
+            Mesh: floorMesh,
+            Material: floorMaterial,
+            Scale: 50,
+            RotX:-1.57
+        });
+
+
+
+        camera = new GLGE.FlyCamera({
+            Canvas: canvas,
+            Offset: -5,
+            LatitudeMin: -1.56,
+            LatitudeMax: 0.1,
+            Latitude: 0,
+            Longitude: 0,
+            InitialLatitude: 0.1,
+            InitialOffset: -1000,
+            LocY: 5,
+            LocX: 0,
+            LocZ: 30,
+            speed: 0.1
+        });
+
+        var lightObject=new GLGE.Object({
+            Mesh: new GLGE.Sphere({
+                Scale: 1,
+                Vertical: 20,
+                Horizontal: 20
+            }),
+            Material: new GLGE.Material({
+                Shadeless: true,
+                Color: "#fff"
+            }),
+            CastShadows: false,
+            Scale: 0.3
+        });
+
+
+        light = new GLGE.Light({
+            Type: GLGE.L_SPOT,
+            BufferHeight: 512,
+            BufferWidth: 512,
+            CastShadows: false,
+            AttenuationQuadratic: 0,
+            AttenuationLinear: 0,
+            AttenuationConstant: 1.6
+        });
+
+        lightGroup=(new GLGE.Group({
+            FrameRate: 90
+        })).addObject(lightObject).addLight(light);
+
+
+
+        scene.setCamera(camera)
+                .addGroup(lightGroup)
+                .addObject(collada)
+                .addObject(floorObject)
+
+        renderer.setScene(scene);
+
+
+    }
+
+    function animate(){
+        light.setRotMatrix(GLGE.rotateMatrix(camera.latitude,camera.longitude,0,GLGE.ROT_YXZ))
+        lightGroup.setLoc(camera.getLocX(), camera.getLocY(), camera.getLocZ())
+    }
+
+    function render(){
+        requestAnimationFrame(render)
+        animate()
+        renderer.render()
+
+
+
+
+
+    }
+
+
+
+</script>
+
+
+</body>
+</html>
