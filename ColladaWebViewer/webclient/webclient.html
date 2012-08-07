@@ -259,7 +259,7 @@ function initGUI (){
     f1.open()
 
     var f2 = gui.addFolder('Light settings')
-    f2.add(pointLight, 'intensity', 0.1, 1).step(0.1)
+    f2.add(pointLight, 'intensity', 0.1, 2).step(0.1)
     var f3 = gui.addFolder('Render options')
     f3.add(sceneParams, 'colorMode', { 'No colors': THREE.NoColors, 'Face colors': THREE.FaceColors ,
         'VertexColors': THREE.VertexColors }).name('Color Mode').onFinishChange(function(){

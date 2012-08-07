@@ -18,7 +18,7 @@ WebSocketManager::~WebSocketManager()
 }
 
 
-// Socket events
+/// Socket events
 
 void WebSocketManager::on_validate(connection_ptr con)
 {
@@ -68,7 +68,7 @@ void WebSocketManager::on_message(connection_ptr con, message_ptr msg)
     ptree pt;
 
     //Parses the message as JSON
-    if(parseJSON(msg->get_payload(), pt) != -1) {
+    if(parseJson(msg->get_payload(), pt) != -1) {
 
         //Checking if JSON string has event information and data
         QString event = QString::fromStdString(pt.get<string>("event", "empty"));
@@ -87,7 +87,7 @@ void WebSocketManager::on_message(connection_ptr con, message_ptr msg)
 }
 
 
-//Utility functions
+/// Utility functions
 
 string WebSocketManager::getConId(connection_ptr con)
 {
@@ -103,7 +103,7 @@ map<string, server::connection_ptr>::iterator WebSocketManager::findClient(strin
     return it;
 }
 
-int WebSocketManager::parseJSON(string s, ptree &pt)
+int WebSocketManager::parseJson(string s, ptree &pt)
 {
     try
     {
@@ -164,7 +164,7 @@ void WebSocketManager::startServer()
         cout << "Starting WSServer thread... \n";
         boost::shared_ptr<boost::thread> ptr(new boost::thread(f, endpoint_, port, 1));
         t = ptr;
-        t->detach();
+        //t->detach();
 
 
     } catch (exception& e) {
