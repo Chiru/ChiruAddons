@@ -15,7 +15,6 @@
         a { color: skyblue }
     </style>
 
-    <script type="text/javascript" src="js/connection.js"></script>
     <script type="text/javascript" src="js/gui/dat.gui.min.js"></script>
     <script type="text/javascript" src="js/threejs/raf.js"></script>
     <script type="text/javascript" src="js/threejs/Three.js"></script>
@@ -23,6 +22,7 @@
     <script type="text/javascript" src="js/threejs/ColladaLoader_dev.js"></script>
     <script type="text/javascript" src="js/threejs/Detector.js"></script>
     <script type="text/javascript" src="js/threejs/THREEx.FullScreen.js"></script>
+    <script type="text/javascript" src="js/connection.js"></script>
 </head>
 <body>
 
@@ -42,8 +42,9 @@ var     camera, scene, renderer, container, models = [],
         projector, raycastList = [], objController,
         pointLight,
         controls, gui,
-        sceneParams = {"colorMode": THREE.VertexColors},
-        connection
+        sceneParams = {"colorMode": THREE.VertexColors}
+
+var     connection, colladaList = [];
 
 
 //Function that changes the camera aspect ratio and renderer size when window is resized
@@ -100,10 +101,6 @@ function StringtoXML(string){
     return doc;
 }
 
-function requestColladaFile(colladaName){
-    connection.ws.send(JSON.stringify({event: "requestCollada", filename: colladaName}));
-}
-
 //Initializes the renderer, camera, etc.
 function init() {
 
@@ -120,7 +117,7 @@ function init() {
 
     // Lights
     pointLight = new THREE.PointLight( 0xffffff)
-    pointLight.intensity = 0.6
+    pointLight.intensity = 2
     scene.add( pointLight );
     scene.add(new THREE.AmbientLight(0xffffff))
 
@@ -331,6 +328,19 @@ loop()
 
 //Opening a websocket connection
 connection = new Connection("127.0.0.1", "9002")
+
+
+connection.bind("newCollada", function(colladaName){
+    if(!(colladaName in colladaList)){
+        console.log("A new collada was added in remote storage: " + colladaName)
+        colladaList.push(colladaName)
+
+        if(window.confirm("A new captured model was added to remote storage. Load the model?")){
+            connection.ws.send(JSON.stringify({event:"requestCollada", data:colladaName}))
+        }
+
+    }
+})
 
 //Binding collada loader function to websocket event
 connection.bind("loadCollada", function(colladaData){

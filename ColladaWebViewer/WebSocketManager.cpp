@@ -7,8 +7,6 @@ namespace ColladaViewer
 WebSocketManager::WebSocketManager(unsigned short port)
 {
     this->port = port;
-    server::handler::ptr h(this);
-    endpoint_ = new server(h);
 
 }
 
@@ -140,10 +138,21 @@ void WebSocketManager::sendJsonToClient(string jsonString, string clientId)
     it->second->send(jsonString);
 }
 
+void WebSocketManager::sendJsonToClients(string jsonString)
+{
+    for ( std::map<string, server::connection_ptr>::const_iterator iter = connections.begin();
+          iter != connections.end(); ++iter )
+        iter->second->send(jsonString);
+
+}
+
 void WebSocketManager::startServer()
 {
     cout << "Boost version used: " << BOOST_LIB_VERSION << endl;
     cout << "Starting WebSocket server on port " << port << endl;
+
+    server::handler::ptr h(this);
+    endpoint_ = new server(h);
 
     try {
 
@@ -190,7 +199,7 @@ void WebSocketManager::stopServer()
 
 }
 
-}
+} //End of namespace ColladaViewer
 
 
 

@@ -1,5 +1,4 @@
 /*
- Author: Toni Dahl
 
  A function for handling the WebSocket communication between Tundra server and a Web client.
 
@@ -24,10 +23,8 @@ var Connection = function (host, port){
 
     this.ws.onopen = function() {
         console.log("Connected")
+        //this.send(JSON.stringify({event:"requestCollada", data:"/var/lib/CapturedChair.dae"}))
 
-        //Requesting a test collada file
-        var data = {"event":"requestCollada", "data": "CapturedHorse.dae"};
-        this.send(JSON.stringify(data));
     }
 
     this.ws.onmessage = function (evt) {
@@ -52,17 +49,16 @@ Connection.prototype.parseMessage = function (message) {
 Connection.prototype.processEvent = function (json) {
     if(json['event']){
         console.log("Got event: "+json['event'])
-        switch(json['event'])
-        {
-            case "loadCollada":
-                if(json['data']){
-                    console.log("Beginning of collada file: " + json['data'].substring(0,300)+ "...")
-                    console.log("End of collada file: ..."+json['data'].substring(json['data'].length-300,json['data'].length))
-                    this.triggerEvent(json['event'], json['data'])
-                }
-                break
-            default:
-                console.log("Error: Received an unknown event: " + json['event'])
+        if(json['data']){
+
+            // For testing collada data loading
+            if(json['event'] == "loadCollada"){
+                console.log("Beginning of collada file: " + json['data'].substring(0,300)+ "...")
+                console.log("End of collada file: ..."+json['data'].substring(json['data'].length-300,json['data'].length))
+            }
+
+            // Triggering the event
+            this.triggerEvent(json['event'], json['data'])
         }
     }
 }
@@ -77,7 +73,9 @@ Connection.prototype.bind = function(eventName, callback){
 //Triggers the bound event and gives it some data as argument if it has a callback function
 Connection.prototype.triggerEvent = function(eventName, message){
     var eventChain = this.callbacks[eventName];
-    if(typeof eventChain == 'undefined') return; //Event had no callback function
+    if(typeof eventChain == 'undefined'){
+        console.log("Error: Received an unknown event: " + eventName);
+    }
     for(var i = 0; i < eventChain.length; i++){
         eventChain[i](message)
     }

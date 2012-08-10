@@ -15,7 +15,6 @@
 
 #include "StableHeaders.h"
 
-//#include "ObjectCaptureModule.h"
 
 namespace ColladaViewer
 {
@@ -42,6 +41,7 @@ public:
     void stopServer();
 
 
+
     /// Utility functions
 
     // Creates a client id from an unique connection pointer
@@ -59,6 +59,9 @@ public:
     // Sends a JSON message to a spesific connected client
     void sendJsonToClient(string jsonString, string clientId);
 
+    // Sends a JSON message to all connected clients
+    void sendJsonToClients(string jsonString);
+
 
 private:
     unsigned short port;
@@ -70,6 +73,7 @@ private:
 
     /// WebSocketServer endpoint ptr
     websocketpp::server *endpoint_;
+
 
     /// Socket events
 
@@ -92,4 +96,5 @@ signals:
 
 };
 
-}
+
+} //End of namespace ColladaViewer
