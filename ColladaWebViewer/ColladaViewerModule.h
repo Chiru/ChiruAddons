@@ -6,12 +6,69 @@
 #include "AssetAPI.h"
 #include "AssetModule.h"
 #include "IAssetUploadTransfer.h"
+#include "IAssetTransfer.h"
+#include "HttpAssetProvider.h"
 
+#include <kNet.h>
 #include <QObject>
 
 
 namespace ColladaViewer
 {
+
+using namespace std;
+
+/// Network message for requesting collada storage refresh
+struct MsgRequestRefresh
+{
+        MsgRequestRefresh()
+        {
+            InitToDefault();
+        }
+
+        MsgRequestRefresh(const char *data, size_t numBytes)
+        {
+            InitToDefault();
+            kNet::DataDeserializer dd(data, numBytes);
+            DeserializeFrom(dd);
+        }
+
+        void InitToDefault()
+        {
+            reliable = defaultReliable;
+            inOrder = defaultInOrder;
+            priority = defaultPriority;
+        }
+
+        enum { messageID = 200 };
+        static inline const char * const Name() { return "RefreshRequest"; }
+
+        static const bool defaultReliable = true;
+        static const bool defaultInOrder = true;
+        static const u32 defaultPriority = 100;
+
+        bool reliable;
+        bool inOrder;
+        u32 priority;
+
+        u8 userID;
+
+        inline size_t Size() const
+        {
+            return 1;
+        }
+
+        inline void SerializeTo(kNet::DataSerializer &dst) const
+        {
+            dst.Add<u8>(userID);
+        }
+
+        inline void DeserializeFrom(kNet::DataDeserializer &src)
+        {
+            userID = src.Read<u8>();
+        }
+
+};
 
 class ColladaViewerModule : public IModule
 {
@@ -41,7 +98,8 @@ public:
 public slots:
 
     // Sends a collada file to an asset server
-    void sendColladaToServer(QString path);
+    void sendFileToRemoteStorage(QString path);
+    void sendFileToLocalStorage(QString fileRef);
 
     // Starts a server side process
     void serverProcess();
@@ -52,11 +110,16 @@ public slots:
     // Processes events and data that came from websocket manager
     void processEvent(QString event, QString data, QString clientId);
 
-    void transferCompleted(IAssetUploadTransfer *transfer);
-    void transferFailed(IAssetUploadTransfer *transfer);
+    void uploadCompleted(QString assetRef);
+    void uploadFailed(IAssetUploadTransfer * transfer);
+    void downloadCompleted(IAssetTransfer *transfer);
+    void downloadFailed(IAssetTransfer *transfer, QString reason);
 
     void remoteAssetChanged(QString localName, QString diskSource, IAssetStorage::ChangeType change);
+    void localAssetChanged(QString localName, QString diskSource, IAssetStorage::ChangeType change);
     void storageAdded(AssetStoragePtr storage);
+
+    void parseKnetMessage(UserConnection *connection, kNet::packet_id_t, kNet::message_id_t id, const char* data, size_t numBytes);
 
 
 private:
@@ -66,11 +129,12 @@ private:
     /// Pointer to assetAPI
     AssetAPI *assetAPI_;
 
-    /// Pointer to assetModule
-    AssetModule *assetModule_;
-
-    /// Pointer to collada storage
+    /// Pointers to collada storages
     AssetStoragePtr storage_;
+    AssetStoragePtr localStorage_;
+
+    TundraLogic::Client *client_;
+    TundraLogic::Server *server_;
 
     bool isServer;
     unsigned short websocketPort;
@@ -78,7 +142,7 @@ private:
     string remoteStorageUrl;
     string localStorageUrl;
 
-    QStringList remoteAssets;
+    //QStringList remoteAssets;
 
 };
 
