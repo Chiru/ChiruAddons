@@ -342,6 +342,10 @@ connection.bind("newCollada", function(colladaName){
     }
 })
 
+connection.bind("colladaList", function(colladaList){
+    console.log(colladaList)
+})
+
 //Binding collada loader function to websocket event
 connection.bind("loadCollada", function(colladaData){
 
