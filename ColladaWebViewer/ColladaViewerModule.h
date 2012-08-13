@@ -142,6 +142,10 @@ private:
     string remoteStorageUrl;
     string localStorageUrl;
 
+    /// A List for keeping track of collada files that are stored in the local storage
+    // This list is send to web clients when they connect so they know what assets they can currently request
+    QStringList assetList;
+
     //QStringList remoteAssets;
 
 };

@@ -33,6 +33,9 @@ void WebSocketManager::on_open(connection_ptr con)
     connections.insert(pair<string, connection_ptr>(getConId(con), con));
     cout << "Web clients connected: " << connections.size() << endl;
 
+    //Emitting "connected" event signal
+    emit gotEvent("connected", "", QString::fromStdString(getConId(con)));
+
     /*
     for ( std::map<connection_ptr,std::string>::const_iterator iter = connections.begin();
        iter != connections.end(); ++iter )
@@ -117,7 +120,6 @@ int WebSocketManager::parseJson(string s, ptree &pt)
     }
 
 }
-
 
 string WebSocketManager::createEventMsg(string event, string data)
 {
