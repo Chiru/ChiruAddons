@@ -11,11 +11,27 @@
             margin: 0;
             overflow: hidden;
         }
+        #leftGui
+        {
+            position:absolute;
+            padding-right: 20px;
+            width: auto;
+            top: 10px;
+            left: 10px;
+        }
+
+        #rightGui
+        {
+            position:absolute;
+            width: 220px;
+            top: 10px;
+            right: 40px;
+        }
 
         a { color: skyblue }
     </style>
 
-    <script type="text/javascript" src="js/gui/dat.gui.min.js"></script>
+    <script type="text/javascript" src="js/gui/dat.gui.js"></script>
     <script type="text/javascript" src="js/threejs/raf.js"></script>
     <script type="text/javascript" src="js/threejs/Three.js"></script>
     <script type="text/javascript" src="js/threejs/ThreeExtras.js"></script>
@@ -26,6 +42,11 @@
 </head>
 <body>
 
+<div id="leftGui"></div>
+<div id="rightGui"></div>
+<div id="container"></div>
+
+
 <script>
 
 
@@ -33,18 +54,17 @@
 var colladaUrl = location.hash.substr(1)
 console.log("COLLADA URL: " + colladaUrl)
 
+if (!Detector.webgl)
+    Detector.addGetWebGLMessage()
 
 
-
-if (!Detector.webgl) Detector.addGetWebGLMessage();
-
-var     camera, scene, renderer, container, models = [],
+var     camera, scene, renderer, container, loadedObjects = [],
         projector, raycastList = [], objController,
         pointLight,
-        controls, gui,
+        controls, gui = {},
         sceneParams = {"colorMode": THREE.VertexColors}
 
-var     connection, colladaList = [];
+var     connection, serverFiles = [];
 
 
 //Function that changes the camera aspect ratio and renderer size when window is resized
@@ -83,9 +103,8 @@ function setColorMode (o3d, colorMode) {
         o3d.material.vertexColors = parseInt(mode)
         o3d.doubleSided = true
         o3d.material.needsUpdate = true
-        console.log(o3d)
+        //console.log(o3d)
     }
-
 }
 
 //Converts the XML data from string to XML object
@@ -101,11 +120,38 @@ function StringtoXML(string){
     return doc;
 }
 
+function requestCollada(colladaName){
+        for (var i=0; i < loadedObjects.length; i++){
+            if(loadedObjects[i].name == colladaName){
+                toggleVisibility(objController.current)
+                toggleVisibility(loadedObjects[i])
+                console.log(colladaName + " is loaded alredy.")
+                console.log(objController.current)
+                return;
+            }
+        }
+        connection.ws.send(JSON.stringify({event:"requestCollada", data:colladaName}))
+
+}
+
+function toggleVisibility(object){
+    object['visible'] = !object['visible'];
+
+    THREE.SceneUtils.traverseHierarchy(object, function ( object ) {
+        if (object.children === null || object.children.length == 0)
+            object['visible'] = !object['visible'];
+    });
+
+    if (object['visible'])
+        objController.setCurrent(object)
+
+}
+
 //Initializes the renderer, camera, etc.
 function init() {
 
     //Creates the container and scene
-    container = document.createElement( 'div' );
+    container = document.getElementById('container')
     document.body.appendChild( container );
 
     scene = new THREE.Scene();
@@ -122,7 +168,6 @@ function init() {
     scene.add(new THREE.AmbientLight(0xffffff))
 
     // Scene objects
-
     var floorMaterial = new THREE.MeshBasicMaterial( { color :0x110000, wireframe: true, wireframeLinewidth: 1} )
     var floorGeometry = new THREE.PlaneGeometry(30, 30, 20, 20);
     var floor = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -154,32 +199,14 @@ function init() {
             this.rotation.x = current.rotation.x;
             this.rotation.y = current.rotation.y;
             this.rotation.z = current.rotation.z;
+            this.rotation.degrees.x = current.rotation.x / (Math.PI / 180)
+            this.rotation.degrees.y = current.rotation.y / (Math.PI / 180);
+            this.rotation.degrees.z = current.rotation.z / (Math.PI / 180);
         }
     };
 
-    //Raycast event listener
-    projector = new THREE.Projector();
-    renderer.domElement.addEventListener('mousedown', function (ev){
-        if (ev.target == renderer.domElement && ev.which == 1) {
-            var x = ev.clientX;
-            var y = ev.clientY;
-            var v = new THREE.Vector3((x/window.innerWidth)*2-1, -(y/window.innerHeight)*2+1, 0.5);
-            projector.unprojectVector(v, camera);
-            var ray = new THREE.Ray(camera.position,
-                    v.subSelf(camera.position).normalize());
-            var intersects = ray.intersectObjects(raycastList);
-            if (intersects.length > 0) {
-                console.log("hit object:")
-                while(models.indexOf(intersects[0].object) == -1){
-                    if(intersects[0].object.parent !== null){
-                        console.log("Object: " +intersects[0].object.name + " parent: " + intersects[0].object.parent.name)
-                        intersects[0].object = intersects[0].object.parent
-                    }
-                }
-                objController.setCurrent(intersects[0].object);
-            }
-        }
-    }, false);
+    objController.loadNext = "";
+    objController.loading = false;
 
 
     // TRACKBALL CAMERA CONTROLS
@@ -203,79 +230,82 @@ function init() {
 // GUI
 
 function initGUI (){
-    gui = new dat.GUI()
+    gui.leftGui = new dat.GUI({autoPlace: false})
+    var leftContainer = document.getElementById('leftGui');
+    leftContainer.appendChild(gui.leftGui.domElement);
     var modelScale = objController.scale
     var modelPos = objController.position
     var modelRot = objController.rotation
     modelRot.degrees = new THREE.Vector3(0.0, 0.0, 0.0);
     objController.scaleFactor = 1.0;
 
-    var f1 = gui.addFolder('Object controls');
-    f1.add(modelPos, 'x', -15, 15, 0.1).name('X Pos').listen().onChange(function(val){
+
+    var f11 = gui.leftGui.addFolder('File controls');
+    gui.leftGui.fileList = f11.add(objController, 'loadNext').options(serverFiles).onFinishChange(function(){
+        if(objController.loadNext != "" && !objController.loading)
+            requestCollada(objController.loadNext)
+    })
+    var select = gui.leftGui.fileList.domElement.children[0]
+    select.options[select.options.length] = new Option('Choose collada', '');
+
+    f11.open()
+
+    var f12 = gui.leftGui.objectControls = gui.leftGui.addFolder('Object controls');
+    f12.add(modelPos, 'x', -15, 15, 0.1).name('X Pos').listen().onChange(function(val){
         objController.current.position.x = val
     })
-    f1.add(modelPos, 'y', -10.0, 10, 0.05).name('Y Pos').listen().onChange(function(val){
+    f12.add(modelPos, 'y', -10.0, 10, 0.05).name('Y Pos').listen().onChange(function(val){
         objController.current.position.y = val
     })
-    f1.add(modelPos, 'z', -15, 15, 0.1).name('Z Pos').listen().onChange(function(val){
+    f12.add(modelPos, 'z', -15, 15, 0.1).name('Z Pos').listen().onChange(function(val){
         objController.current.position.z = val
     })
-    f1.add(modelRot.degrees, 'x', -180.0, 180.0, 0.1).name('X Rot').listen().onChange(function(){
+    f12.add(modelRot.degrees, 'x', -180.0, 180.0, 0.1).name('X Rot').listen().onChange(function(){
         objController.current.rotation.x = modelRot.degrees.x * Math.PI / 180
     })
-    f1.add(modelRot.degrees, 'y', -180.0, 180, 0.1).name('Y Rot').listen().onChange(function(){
+    f12.add(modelRot.degrees, 'y', -180.0, 180, 0.1).name('Y Rot').listen().onChange(function(){
         objController.current.rotation.y = modelRot.degrees.y * Math.PI / 180
     })
-    f1.add(modelRot.degrees, 'z', -180.0, 180, 0.1).name('Z Rot').listen().onChange(function(){
+    f12.add(modelRot.degrees, 'z', -180.0, 180, 0.1).name('Z Rot').listen().onChange(function(){
         objController.current.rotation.z = modelRot.degrees.z * Math.PI / 180
     })
-    f1.add(modelScale, 'x', 0.01, 15.0, 0.05).name('Scale x').listen().onChange(function(val){
+    f12.add(modelScale, 'x', 0.01, 15.0, 0.05).name('Scale x').listen().onChange(function(val){
         objController.current.scale.x = val
     })
-    f1.add(modelScale, 'y', 0.01, 15.0, 0.05).name('Scale y').listen().onChange(function(val){
+    f12.add(modelScale, 'y', 0.01, 15.0, 0.05).name('Scale y').listen().onChange(function(val){
         objController.current.scale.y = val
     })
-    f1.add(modelScale, 'z', 0.01, 15.0, 0.05).name('Scale z').listen().onChange(function(val){
+    f12.add(modelScale, 'z', 0.01, 15.0, 0.05).name('Scale z').listen().onChange(function(val){
         objController.current.scale.z = val
     })
 
-    /*
-     var sTmp = controller.scaleFactor
-     f1.add(controller, 'scaleFactor', 0.1, 15.0, 0.1).name('Scale xyz').listen().onChange(function(val) {
-     if((modelScale.x < 15 && modelScale.y < 15 && modelScale.z < 15) &&
-     (modelScale.x > 0 && modelScale.y > 0 && modelScale.z > 0)){
-     modelScale.addScalar(val-sTmp)
-     controller.current.scale.copy(modelScale)
-     sTmp = val
-     }else{
-     controller.scaleFactor = sTmp
-     }
-     })
-     */
+    gui.rightGui = new dat.GUI({autoPlace: false});
+    var rightContainer = document.getElementById('rightGui');
+    rightContainer.appendChild(gui.rightGui.domElement)
 
-    f1.open()
+    var f21 = gui.rightGui.addFolder('Light settings')
+    f21.add(pointLight, 'intensity', 0.1, 2).step(0.1)
+    f21.open()
 
-    var f2 = gui.addFolder('Light settings')
-    f2.add(pointLight, 'intensity', 0.1, 2).step(0.1)
-    var f3 = gui.addFolder('Render options')
-    f3.add(sceneParams, 'colorMode', { 'No colors': THREE.NoColors, 'Face colors': THREE.FaceColors ,
+    var f22 = gui.rightGui.addFolder('Render options')
+    f22.add(sceneParams, 'colorMode', { 'No colors': THREE.NoColors, 'Face colors': THREE.FaceColors ,
         'VertexColors': THREE.VertexColors }).name('Color Mode').onFinishChange(function(){
                 console.log(sceneParams.colorMode)
                 setColorMode(objController.current, sceneParams.colorMode)
 
             })
-    var f4 = gui.addFolder('Camera controls')
-    f4.add(camera.position, 'x', -50,50,0.1).name('X Pos').listen().onChange(function(){
+    f22.open()
+    var f23 = gui.rightGui.addFolder('Camera controls')
+    f23.add(camera.position, 'x', -50,50,0.1).name('X Pos').listen().onChange(function(){
         camera.lookAt(objController.current.position)
     })
-    f4.add(camera.position, 'y', -50,50,0.1).name('Y Pos').listen().onChange(function(){
+    f23.add(camera.position, 'y', -50,50,0.1).name('Y Pos').listen().onChange(function(){
         camera.lookAt(objController.current.position)
     })
-    f4.add(camera.position, 'z', -50,50,0.1).name('Z Pos').listen().onChange(function(){
+    f23.add(camera.position, 'z', -50,50,0.1).name('Z Pos').listen().onChange(function(){
         camera.lookAt(objController.current.position)
     })
-
-    gui.close()
+    f23.open()
 
     //Fullscreen activation key
     if(THREEx.FullScreen.available()){
@@ -298,13 +328,6 @@ function loop() {
 //The render function
 function render() {
 
-    //var timer = Date.now() * 0.0005
-
-    //camera.position.x = Math.cos(timer)*10
-    //camera.position.y = 2
-    //camera.position.z = Math.sin(timer)*10
-
-
     pointLight.position.x = camera.position.x
     pointLight.position.y = camera.position.y
     pointLight.position.z = camera.position.z
@@ -320,8 +343,10 @@ function render() {
 
 //Initialize the WebGL renderer and scene
 init()
+
 //Initializes the GUI for modifying objects
 initGUI()
+
 //Start the animation loop
 loop()
 
@@ -331,30 +356,49 @@ connection = new Connection("127.0.0.1", "9002")
 
 
 connection.bind("newCollada", function(colladaName){
-    if(!(colladaName in colladaList)){
+    if(!(colladaName in serverFiles)){
         console.log("A new collada was added in remote storage: " + colladaName)
-        colladaList.push(colladaName)
+        serverFiles.push(colladaName)
 
         if(window.confirm("A new captured model was added to remote storage. Load the model?")){
-            connection.ws.send(JSON.stringify({event:"requestCollada", data:colladaName}))
+
+           requestCollada(colladaName)
         }
 
+        var select = gui.leftGui.fileList.domElement.children[0]
+        select.options[select.options.length] = new Option(colladaName, colladaName)
+        console.log(serverFiles)
     }
 })
 
-connection.bind("colladaList", function(colladaList){
-    console.log(colladaList)
+connection.bind("colladaList", function(list){
+    serverFiles =  list.split(", ");
+
+    serverFiles.forEach(function(name){
+        var select = gui.leftGui.fileList.domElement.children[0]
+        select.options[select.options.length] = new Option(name, name)
+    })
+    console.log(serverFiles);
+
 })
 
 //Binding collada loader function to websocket event
-connection.bind("loadCollada", function(colladaData){
+connection.bind("loadCollada", function(data){
+    console.log("loading collada")
+    objController.loading = true;
+
+    if(!data['collada'])
+        return;
+
+    if(!data['fileName'])
+        return;
 
     var loader = new THREE.ColladaLoader()
 
     loader.options.convertUpAxis = true
 
     //Parsing the COLLADA
-    loader.parse( StringtoXML(colladaData), function colladaReady( collada ) {
+    loader.parse( StringtoXML(data['collada']), function colladaReady( collada ) {
         var skin = collada.skins[0],
                 dae = collada.dae,
                 model = collada.scene
@@ -364,65 +408,29 @@ connection.bind("loadCollada", function(colladaData){
         //Changing colormode of the collada model
         setColorMode(model, sceneParams.colorMode)
 
-
-        /*
-         var materials = [
-
-         new THREE.MeshLambertMaterial( {shading: THREE.FlatShading, vertexColors: THREE.VertexColors }  )
-
-         ];
-
-         var mesh = THREE.SceneUtils.createMultiMaterialObject( model.children[0].geometry, materials )
-         mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.5
-         object = mesh
-         */
-
         //console.log(collada)
         model.scale.set(5,5,5)
-        model.position.set(models.length*2, 0, models.length*2)
-        model.name = models.length.toString()
-        models.push(model)
+        model.name = data['fileName']
 
-        THREE.SceneUtils.traverseHierarchy( model, function ( object ) {
+        objController.loading = false
+        objController.loadNext = ""
 
-            if ( object.children === null || object.children.length == 0 ) raycastList.push( object );
+        if(loadedObjects.length > 0){
+            toggleVisibility(loadedObjects[loadedObjects.length -1])
+        }
 
-        } );
+        loadedObjects.push(model)
 
-        console.log(raycastList)
 
         scene.add(model)
+        console.log(scene)
         objController.setCurrent(model)
-        gui.open()
-        /*
-         var cube = new THREE.Mesh(
-         new THREE.CubeGeometry(20,20,20),
-         new THREE.MeshPhongMaterial({color: 0xFFFFFF})
-         );
-         cube.scale.set(0.1,0.1,0.1)
-         cube.position.set(models.length*4, 0, models.length*4)
-         cube.name = "kuutio"
-         scene.add(cube);
-         models.push(cube)
-         */
-        console.log(models)
+        gui.leftGui.objectControls.open()
 
-        //alternative way of adding the collada
-        /*
-         var material = new THREE.MeshFaceMaterial()
-         var object = new THREE.SkinnedMesh(skin.geometry, material )
-         object.scale.x = object.scale.y = object.scale.z = 0.4
-         object.translateY(-2)
-         scene.add(object)
-         */
-
-
+        console.log(loadedObjects)
 
     });
 })
-
-
-
 
 
 </script>

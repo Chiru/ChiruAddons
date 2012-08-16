@@ -51,12 +51,6 @@ Connection.prototype.processEvent = function (json) {
         console.log("Got event: "+json['event'])
         if(json['data']){
 
-            // For testing collada data loading
-            if(json['event'] == "loadCollada"){
-                console.log("Beginning of collada file: " + json['data'].substring(0,300)+ "...")
-                console.log("End of collada file: ..."+json['data'].substring(json['data'].length-300,json['data'].length))
-            }
-
             // Triggering the event
             this.triggerEvent(json['event'], json['data'])
         }
