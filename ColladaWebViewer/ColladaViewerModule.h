@@ -97,7 +97,7 @@ public:
 
 public slots:
 
-    // Sends a collada file to an asset server
+    // Sends a collada file to alocal/remote storage
     void sendFileToRemoteStorage(QString path);
     void sendFileToLocalStorage(QString fileRef);
 
@@ -110,10 +110,15 @@ public slots:
     // Processes events and data that came from websocket manager
     void processEvent(QString event, QString data, QString clientId);
 
+    /// Transfer handlers
+
     void uploadCompleted(QString assetRef);
     void uploadFailed(IAssetUploadTransfer * transfer);
     void downloadCompleted(IAssetTransfer *transfer);
     void downloadFailed(IAssetTransfer *transfer, QString reason);
+
+
+    /// Storage event handlers
 
     void remoteAssetChanged(QString localName, QString diskSource, IAssetStorage::ChangeType change);
     void localAssetChanged(QString localName, QString diskSource, IAssetStorage::ChangeType change);
@@ -145,8 +150,6 @@ private:
     /// A List for keeping track of collada files that are stored in the local storage
     // This list is send to web clients when they connect so they know what assets they can currently request
     QStringList assetList;
-
-    //QStringList remoteAssets;
 
 };
 

@@ -20,18 +20,18 @@ WebSocketManager::~WebSocketManager()
 
 void WebSocketManager::on_validate(connection_ptr con)
 {
-    cout << "Request for resource: " << con->get_resource() << endl;
-    cout << "origin: " << con->get_origin() << endl;
+    LogInfo("Request for resource: " + con->get_resource());
+    //cout << "origin: " << con->get_origin() << endl;
 
 }
 
 void WebSocketManager::on_open(connection_ptr con)
 {
-    cout << "Web Client " << con << " connected." << endl;
+    LogInfo("Web Client " + getConId(con) + " connected.");
 
     //Adding the new connection to the list of connections
     connections.insert(pair<string, connection_ptr>(getConId(con), con));
-    cout << "Web clients connected: " << connections.size() << endl;
+    LogDebug("Web clients connected: " + QString::number(connections.size()));
 
     //Emitting "connected" event signal
     emit gotEvent("connected", "", QString::fromStdString(getConId(con)));
@@ -48,7 +48,7 @@ void WebSocketManager::on_open(connection_ptr con)
 
 void WebSocketManager::on_close(connection_ptr con)
 {
-    cout << "Web Client " << con << " disconnected." << endl;
+    LogInfo("Web Client " + getConId(con) + " disconnected.");
 
     map<string, connection_ptr>::iterator it = connections.find(getConId(con));
 
@@ -65,7 +65,7 @@ void WebSocketManager::on_close(connection_ptr con)
 
 void WebSocketManager::on_message(connection_ptr con, message_ptr msg)
 {
-    cout << "Got message: " << msg->get_payload() << endl;
+    LogDebug("Got message: " + msg->get_payload());
     ptree pt;
 
     //Parses the message as JSON
@@ -115,17 +115,21 @@ int WebSocketManager::parseJson(string s, ptree &pt)
     }
     catch(const boost::property_tree::json_parser::json_parser_error& e)
     {
-        cerr << "WSManager JSON parse error: " << e.what() << endl;
+        LogError("WSManager JSON parse error: " + QString::fromLocal8Bit(e.what()));
         return -1;
     }
 
 }
 
-string WebSocketManager::createEventMsg(string event, string data)
+string WebSocketManager::createEventMsg(string event, ptree &data)
 {
     ptree json;
     json.put<string>("event", event);
-    json.put<string>("data", data);
+
+    if(data.size() > 1)
+        json.put_child("data", data);
+    else
+        json.add("data", data.front().second.data());
 
     stringstream buffer;
     write_json(buffer, json);
@@ -150,8 +154,8 @@ void WebSocketManager::sendJsonToClients(string jsonString)
 
 void WebSocketManager::startServer()
 {
-    cout << "Boost version used: " << BOOST_LIB_VERSION << endl;
-    cout << "Starting WebSocket server on port " << port << endl;
+    LogDebug("Boost version used: " + QString::fromLocal8Bit(BOOST_LIB_VERSION));
+    LogInfo("Starting WebSocket server on port " + QString::number(port));
 
     server::handler::ptr h(this);
     endpoint_ = new server(h);
@@ -186,7 +190,7 @@ void WebSocketManager::startServer()
 
 void WebSocketManager::stopServer()
 {
-    cout << "Stopping WebSocket server on port " << port << endl;
+    LogInfo("Stopping WebSocket server on port " + QString::number(port));
 
     try {
         endpoint_->stop();

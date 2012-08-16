@@ -54,7 +54,7 @@ public:
     int parseJson(string s, ptree&pt);
 
     // Creates an event message and converts it to a JSON string
-    string createEventMsg(string event, string data);
+    string createEventMsg(string event, ptree &data);
 
     // Sends a JSON message to a spesific connected client
     void sendJsonToClient(string jsonString, string clientId);
