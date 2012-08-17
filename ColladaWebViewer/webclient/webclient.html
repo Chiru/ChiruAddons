@@ -27,6 +27,32 @@
             top: 10px;
             right: 40px;
         }
+        #horizon
+        {
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 0px;
+            width: 100%;
+            height: 1px;
+            overflow: visible;
+            visibility: visible;
+            display: block
+        }
+        #loading
+        {
+            font-family: Impact, Charcoal, sans-serif;
+            font-size: 50px;
+            font-weight:bold;
+            text-shadow: 0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 10px rgba(0, 0, 0, 0.1), 0 8px 9px rgba(0, 0, 0, 0.1);
+            margin-left: -225px;
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            width: 450px;
+            display: none;
+
+        }
 
         a { color: skyblue }
     </style>
@@ -39,11 +65,15 @@
     <script type="text/javascript" src="js/threejs/Detector.js"></script>
     <script type="text/javascript" src="js/threejs/THREEx.FullScreen.js"></script>
     <script type="text/javascript" src="js/connection.js"></script>
+    <script type="text/javascript" src="js/helvetiker_bold.typeface.js"></script>
 </head>
 <body>
 
 <div id="leftGui"></div>
 <div id="rightGui"></div>
+<div id="horizon">
+    <div id="loading">Loading collada...</div>
+</div>
 <div id="container"></div>
 
 
@@ -51,15 +81,15 @@
 
 
 //Url parser
-var colladaUrl = location.hash.substr(1)
-console.log("COLLADA URL: " + colladaUrl)
+var ip = location.hash.substr(1)
+console.log("ip: " + ip)
 
 if (!Detector.webgl)
     Detector.addGetWebGLMessage()
 
 
 var     camera, scene, renderer, container, loadedObjects = [],
-        projector, raycastList = [], objController,
+        projector, objController,
         pointLight,
         controls, gui = {},
         sceneParams = {"colorMode": THREE.VertexColors}
@@ -73,6 +103,7 @@ function windowResize (renderer, camera){
         renderer.setSize(window.innerWidth, window.innerHeight);
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
+        controls.handleResize();
     }
     window.addEventListener('resize', callback, false);
 
@@ -82,6 +113,7 @@ function windowResize (renderer, camera){
         }
     }
 }
+
 
 function setColorMode (o3d, colorMode) {
 
@@ -159,12 +191,14 @@ function init() {
     // Camera
     camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.position.set( 8, 6, 14);
-    scene.add( camera );
+    camera.lookAt(scene.position)
+
+    scene.add( camera )
 
     // Lights
     pointLight = new THREE.PointLight( 0xffffff)
     pointLight.intensity = 2
-    scene.add( pointLight );
+    scene.add( pointLight )
     scene.add(new THREE.AmbientLight(0xffffff))
 
     // Scene objects
@@ -208,21 +242,20 @@ function init() {
     objController.loadNext = "";
     objController.loading = false;
 
-
     // TRACKBALL CAMERA CONTROLS
 
     //passing renderer.context will pass WebGL canvas to the controls and stop them interfering with GUI
     controls = new THREE.TrackballControls(camera, renderer.domElement)
-    controls.rotateSpeed = 1.0
-    controls.zoomSpeed = 1.2
-    controls.panSpeed = 0.5
+    controls.rotateSpeed = 0.8
+    controls.zoomSpeed = 0.9
+    controls.panSpeed = 0.4
     controls.staticMoving = false
     controls.keys = [65, 83, 68]
+    controls.maxDistance = 50
 
 
     //Windows resize listener
     windowResize(renderer, camera)
-
 
 }
 
@@ -331,10 +364,10 @@ function render() {
     pointLight.position.x = camera.position.x
     pointLight.position.y = camera.position.y
     pointLight.position.z = camera.position.z
+
     if(objController.current){
         pointLight.lookAt(objController.current.position)
     }
-
 
     renderer.render(scene, camera)
 
@@ -352,7 +385,10 @@ loop()
 
 
 //Opening a websocket connection
-connection = new Connection("127.0.0.1", "9002")
+if(!ip)
+    ip = "127.0.0.1"
+
+connection = new Connection(ip, "9002")
 
 
 connection.bind("newCollada", function(colladaName){
@@ -385,14 +421,12 @@ connection.bind("colladaList", function(list){
 //Binding collada loader function to websocket event
 connection.bind("loadCollada", function(data){
     console.log("loading collada")
-    objController.loading = true;
 
     if(!data['collada'])
         return;
 
     if(!data['fileName'])
         return;
-
     var loader = new THREE.ColladaLoader()
 
     loader.options.convertUpAxis = true
@@ -412,7 +446,7 @@ connection.bind("loadCollada", function(data){
         model.scale.set(5,5,5)
         model.name = data['fileName']
 
-        objController.loading = false
+
         objController.loadNext = ""
 
         if(loadedObjects.length > 0){
@@ -421,15 +455,15 @@ connection.bind("loadCollada", function(data){
 
         loadedObjects.push(model)
 
-
         scene.add(model)
         console.log(scene)
         objController.setCurrent(model)
         gui.leftGui.objectControls.open()
-
         console.log(loadedObjects)
 
-    });
+   });
+
+
 })
 
 
