@@ -15,6 +15,7 @@
 #include "Entity.h"
 #include "OgreModuleFwd.h"
 #include "OgreMaterial.h"
+#include "IAssetTransfer.h"
 
 #include "ObjectCaptureModuleDefines.h"
 #include "pcl/PolygonMesh.h"
@@ -86,12 +87,17 @@ public slots:
     /// Stops capturing and processes the clouds to a mesh
     void finalizeCapturing();
 
+    /// Converts and saves the latest captured object in collada format
+    /// \param filename filename for the collada file
     void exportCollada(QString filename);
 
+    /// Sets the inworld transformation of the live point cloud
     void setLiveCloudPosition(Quat orientation, float3 position, float3 scale);
 
+    /// Sets the inworld transformation of the global model
     void setGlobalModelPosition(Quat orientation, float3 position, float3 scale);
 
+    /// Sets the inworld transformation of the final captured object
     void setFinalMeshPosition(Quat orientation, float3 position, float3 scale);
 
     void updatePointSize();
@@ -107,6 +113,9 @@ private slots:
     void visualizeLiveCloud(PointCloud::Ptr cloud);
     void visualizeGlobalModel(PointCloud::Ptr cloud);
     void visualizeFinalMesh(pcl::PolygonMesh::Ptr polygonMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud);
+    void uploadAsset(QString remoteStoragePath, QString localAssetPath);
+    void assetUploadComplete(QString assetRef);
+    void assetUploadFailed(IAssetUploadTransfer *transfer);
     Ogre::MaterialPtr createMaterial(QString materialName);
 
 private:

@@ -25,10 +25,19 @@ public:
     PointCloud::Ptr finalCloud() const;
 
 public slots:
+    /// Starts the capturing interface
     void startCapture();
+
+    /// Stops the capturing interface
     void stopCapture();
+
+    /// Captures a point cloud and passes it for registration
     void captureCloud();
+
+    /// Removes latest cloud from the global model
     void rewindCloud();
+
+    /// Stops the capturing interface and passes the cloud for surface reconstruction
     void finalizeCapturing();
 
 signals:

@@ -26,12 +26,14 @@ public:
     KinectCapture();
     ~KinectCapture();
 
+    /// Returns wheter kinect interface is running
     bool isRunning();
 
     /// Returns wether object extraction is in use or not
     bool getExtractObject();
 
     /// Set object extraction on or off
+    /// \param value
     void setExtractObject(bool value);
 
     void kinect_callback_ (const PointCloud::ConstPtr &cloud);

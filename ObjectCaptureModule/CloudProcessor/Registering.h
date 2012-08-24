@@ -37,24 +37,6 @@ public:
     }
 };
 
-// unused ?
-struct PCD
-{
-  PointCloud::Ptr cloud;
-  std::string f_name;
-
-  PCD() : cloud (new PointCloud) {}
-};
-
-// unused ?
-struct PCDComparator
-{
-  bool operator () (const PCD& p1, const PCD& p2)
-  {
-    return (p1.f_name < p2.f_name);
-  }
-};
-
 class IncrementalRegister : public QObject
 {
     Q_OBJECT
