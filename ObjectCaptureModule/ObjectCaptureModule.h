@@ -134,6 +134,8 @@ private:
     struct CloudPosition live_cloud_position_;
     struct CloudPosition global_model_position_;
     struct CloudPosition final_mesh_position_;
+
+    QStringList assetUploads_;
 };
 
 } // end of namespace: ObjectCapture
