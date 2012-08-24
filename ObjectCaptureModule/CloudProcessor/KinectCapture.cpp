@@ -29,13 +29,16 @@ KinectCapture::KinectCapture() :
     catch(pcl::PCLException e)
     {
         LogInfo("ObjectCaptureModule: Caught PCL exception: " + QString::fromUtf8(e.what()));
+        kinect_interface_ = NULL;
     }
 }
 
 KinectCapture::~KinectCapture()
 {
-    kinect_interface_->stop();
-    delete kinect_interface_;
+    if(kinect_interface_) {
+        kinect_interface_->stop();
+        delete kinect_interface_;
+    }
 }
 
 bool KinectCapture::getExtractObject()
