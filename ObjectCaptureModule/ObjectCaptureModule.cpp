@@ -56,6 +56,8 @@ ObjectCaptureModule::ObjectCaptureModule() :
     qRegisterMetaType<pcl::PolygonMesh::Ptr>("pcl::PolygonMesh::Ptr");
     qRegisterMetaType<pcl::PointCloud<pcl::PointXYZRGBNormal> >("pcl::PointCloud<pcl::PointXYZRGBNormal>");
     qRegisterMetaType<pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr>("pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr");
+
+    remoteColladaStorageURL_ = "http://chiru.cie.fi/colladaStorage";
 }
 
 ObjectCaptureModule::~ObjectCaptureModule()
@@ -75,6 +77,8 @@ void ObjectCaptureModule::Load()
 
 void ObjectCaptureModule::Initialize()
 {
+    AssetAPI *assetApi = framework_->Asset();
+
     mesh_converter_ = new MeshConverter(framework_);
 
     mesh_reconstructor_->moveToThread(worker_thread_);
@@ -94,6 +98,17 @@ void ObjectCaptureModule::Initialize()
 
     Q_ASSERT(check);
 
+    if(remoteColladaStorageURL_ != ""){
+        QString storageString = "type=HttpAssetStorage;name=colladaStorage;src={0};trusted=true;autodiscoverable=false;replicated=false;readonly=false;default=false;";
+        remoteColladaStorage_ = assetApi->DeserializeAssetStorageFromString(storageString.replace("{0}", remoteColladaStorageURL_), true);
+        if(!remoteColladaStorage_)
+            LogError("ObjectCapture: Couldn't add remote storage.");
+        else {
+            check = connect(assetApi, SIGNAL(AssetStorageAdded(AssetStoragePtr)), this, SLOT(storageAdded(AssetStoragePtr)), Qt::QueuedConnection);
+            Q_ASSERT(check);
+        }
+    }
+
     // Uggly
     live_cloud_position_.orientation = Quat(1,0,0,0);
     live_cloud_position_.position = float3(0,0,0);
@@ -106,6 +121,11 @@ void ObjectCaptureModule::Initialize()
     final_mesh_position_.orientation = Quat(1,0,0,0);
     final_mesh_position_.position = float3(0,0,0);
     final_mesh_position_.scale = float3(0,0,0);
+}
+
+void ObjectCaptureModule::storageAdded(AssetStoragePtr storage)
+{
+    LogInfo("Storage added:" + storage->BaseURL());
 }
 
 void ObjectCaptureModule::Uninitialize()
@@ -252,21 +272,26 @@ void ObjectCaptureModule::exportCollada(QString filename)
     if (final_polygon_mesh_.get())
     {
         collada_exporter_->Export(final_polygon_mesh_, filename);
-        uploadAsset("http://chiru.cie.fi/colladaStorage" /*CHANGE ME*/, filename);
+        uploadAsset(filename);
     }
     else
         LogError("Couldn't export polygon mesh! Mesh was not available.");
 }
 
-void ObjectCaptureModule::uploadAsset(QString remoteStoragePath, QString localAssetPath)
+void ObjectCaptureModule::uploadAsset(QString localAssetPath)
 {
+    if(!remoteColladaStorage_) {
+        LogError("ObjectCapture: Cannot upload asset: No remote storage set!");
+        return;
+    }
+
     AssetAPI *assetApi = framework_->Asset();
 
-    QString remoteName = "object_"+ QDateTime::currentDateTime().toString("ssmmhh-ddMMyy") + ".dae";
+    QString remoteName = "capture-"+ QDateTime::currentDateTime().toString("ddMMyy-hhmmss") + ".dae";
     AssetUploadTransferPtr transfer;
 
     try {
-        transfer = assetApi->UploadAssetFromFile(localAssetPath, remoteStoragePath, remoteName);
+        transfer = assetApi->UploadAssetFromFile(localAssetPath, remoteColladaStorage_, remoteName);
 
     }
     catch(Exception e) {
@@ -287,7 +312,7 @@ void ObjectCaptureModule::uploadAsset(QString remoteStoragePath, QString localAs
                         SLOT(assetUploadFailed(IAssetUploadTransfer *)), Qt::QueuedConnection);
         Q_ASSERT(check);
 
-        LogInfo("Uploading exported collada file to a remote storage...");
+        LogInfo("ObjectCapture: Uploading exported collada file to a remote storage...");
     }
 }
 
@@ -298,6 +323,8 @@ void ObjectCaptureModule::assetUploadComplete(QString assetRef)
         assetUploads_.removeAll(assetRef);
     else
         return;
+
+    LogInfo("Upload of asset \"" + assetRef + "\" complete!");
 
     // Create new synchronized Entity
     Scene *scene = framework_->Scene()->MainCameraScene();

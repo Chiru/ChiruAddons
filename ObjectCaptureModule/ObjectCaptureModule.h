@@ -19,6 +19,7 @@
 
 #include "ObjectCaptureModuleDefines.h"
 #include "pcl/PolygonMesh.h"
+#include "AssetFwd.h"
 
 #include <QObject>
 #include <QImage>
@@ -113,10 +114,11 @@ private slots:
     void visualizeLiveCloud(PointCloud::Ptr cloud);
     void visualizeGlobalModel(PointCloud::Ptr cloud);
     void visualizeFinalMesh(pcl::PolygonMesh::Ptr polygonMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud);
-    void uploadAsset(QString remoteStoragePath, QString localAssetPath);
+    void uploadAsset(QString localAssetPath);
     void assetUploadComplete(QString assetRef);
     void assetUploadFailed(IAssetUploadTransfer *transfer);
     Ogre::MaterialPtr createMaterial(QString materialName);
+    void storageAdded(AssetStoragePtr storage);
 
 private:
     CloudProcessor *cloud_processor_;
@@ -136,6 +138,8 @@ private:
     struct CloudPosition final_mesh_position_;
 
     QStringList assetUploads_;
+    QString remoteColladaStorageURL_;
+    AssetStoragePtr remoteColladaStorage_;
 };
 
 } // end of namespace: ObjectCapture
