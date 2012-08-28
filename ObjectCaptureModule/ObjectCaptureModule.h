@@ -107,6 +107,7 @@ signals:
     void previewFrameUpdated(const QImage &frame);
     void objectCaptured(unsigned int entityId);
     void colladaExportFinalized(QString relativeFilePath);
+    void assetUploaded(QString assetRef);
 
 private slots:
     void meshReconstructed();

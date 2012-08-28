@@ -325,17 +325,7 @@ void ObjectCaptureModule::assetUploadComplete(QString assetRef)
         return;
 
     LogInfo("Upload of asset \"" + assetRef + "\" complete!");
-
-    // Create new synchronized Entity
-    Scene *scene = framework_->Scene()->MainCameraScene();
-    EntityPtr entity = scene->CreateEntity(scene->NextFreeId(), QStringList("EC_Name"), AttributeChange::Default, true);
-    entity->SetName("CapturedObject"); /// \todo add id to name
-
-    EC_Placeable *placeable = dynamic_cast<EC_Placeable*>(entity->GetOrCreateComponent("EC_Placeable", AttributeChange::Default, true).get());
-    // where do we wan't it?
-
-    EC_Mesh *mesh = dynamic_cast<EC_Mesh*>(entity->GetOrCreateComponent("EC_Mesh", AttributeChange::Default, true).get());
-    mesh->SetMeshRef(assetRef);
+    emit assetUploaded(assetRef);
 }
 
 void ObjectCaptureModule::assetUploadFailed(IAssetUploadTransfer *transfer)

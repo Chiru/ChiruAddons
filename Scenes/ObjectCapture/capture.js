@@ -36,13 +36,37 @@ function ObjectCapture()
     me.Action("Finalize").Triggered.connect(finalizeCloud);
     me.Action("startCapturing").Triggered.connect(startCapturing);
     me.Action("stopCapturing").Triggered.connect(stopCapturing);
+    data.module.assetUploaded.connect(assetUploaded);
 
     var timer = new QTimer();
     timer.timeout.connect(this, updatePointSize);
     timer.start(250);
     data.timer = timer;
 
+    initializePlaceholders(10);
     initializeUi();
+}
+
+function initializePlaceholders(numberOfPlacehorders)
+{
+    //print("Initializing placeholders");
+
+    data.placeholders = new Array(numberOfPlacehorders);
+    data.placeholderIndex = 0;
+
+    for (i = 0; i < data.placeholders.length; i++)
+    {
+        var placeholder = scene.CreateEntity();
+        placeholder.GetOrCreateComponent("EC_Name");
+        placeholder.SetName("CapturedObject"); // todo add id to name
+
+        placeholder.GetOrCreateComponent("EC_Mesh");
+
+        var placeable = placeholder.GetOrCreateComponent("EC_Placeable");
+        placeable.SetPosition(10 * i * Math.pow(-1, i), 0, 30); // todo change this to something reasonable
+
+        data.placeholders[i] = placeholder;
+    }
 }
 
 function initializeUi()
@@ -149,7 +173,7 @@ function exportMesh()
     print ("Exporting mesh to collada.")
     if (data.module != null)
         data.module.exportCollada("CapturedObject.dae"); // todo ask filename from user
-    print ("Export finished!");
+    //print ("Export finished!");
 }
 
 function OnScriptDestroyed()
@@ -176,6 +200,45 @@ function OnScriptDestroyed()
     }
 
     data.module = null;
+}
+
+function getNextPlaceholder()
+{
+    var tmpvar;
+    if (data.placeholders != null)
+    {
+        if (data.placeholderIndex < data.placeholders.length)
+        {
+            print ("Placeholder index is: " +data.placeholderIndex);
+            tmpvar = data.placeholders[data.placeholderIndex];
+        }
+        else
+        {
+            data.placeholderIndex = 0;
+            tmpvar = data.placeholders[data.placeholderIndex];
+        }
+        data.placeholderIndex++;
+        return tmpvar;
+    }
+    else
+    {
+        print("placeholders object is null!");
+    }
+}
+
+function assetUploaded(assetRef)
+{
+    var placeholder = getNextPlaceholder();
+    if (placeholder != null)
+    {
+        var mesh = placeholder.GetComponent("EC_Mesh");
+        mesh.SetMeshRef(assetRef);
+    }
+
+    else
+    {
+        print("ObjectCaptureScript: Error: placeholder is null!");
+    }
 }
 
 if(!server.IsRunning()) {
