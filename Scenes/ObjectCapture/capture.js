@@ -54,6 +54,7 @@ function initializePlaceholders(numberOfPlacehorders)
     data.placeholders = new Array(numberOfPlacehorders);
     data.placeholderIndex = 0;
 
+    var dist = 0;
     for (i = 0; i < data.placeholders.length; i++)
     {
         var placeholder = scene.CreateEntity();
@@ -63,9 +64,13 @@ function initializePlaceholders(numberOfPlacehorders)
         placeholder.GetOrCreateComponent("EC_Mesh");
 
         var placeable = placeholder.GetOrCreateComponent("EC_Placeable");
-        placeable.SetPosition(10 * i * Math.pow(-1, i), 0, 30); // todo change this to something reasonable
+        placeable.SetPosition(dist * Math.pow(-1, i), 0, 30);
+        placeable.SetScale(10.0, 10.0, 10.0);
 
         data.placeholders[i] = placeholder;
+        
+        if(i % 2 == 0)
+            dist += 10;
     }
 }
 
@@ -242,5 +247,12 @@ function assetUploaded(assetRef)
 }
 
 if(!server.IsRunning()) {
+    var menu = ui.MainWindow().menuBar();
+    var captureMenu = menu.addMenu("&Capture");
+    captureMenu.addAction("Start ObjectCapture").triggered.connect(InitializeObjectCapture);
+}
+
+function InitializeObjectCapture()
+{
     ObjectCapture();
 }
