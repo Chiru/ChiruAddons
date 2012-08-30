@@ -238,6 +238,10 @@ function assetUploaded(assetRef)
     {
         var mesh = placeholder.GetComponent("EC_Mesh");
         mesh.SetMeshRef(assetRef);
+
+        var assetRef = mesh.meshMaterial;
+        assetRef[0] = "local://CapturedObject.material";
+        mesh.meshMaterial = assetRef;
     }
 
     else
