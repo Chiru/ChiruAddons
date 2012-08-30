@@ -56,8 +56,6 @@ ObjectCaptureModule::ObjectCaptureModule() :
     qRegisterMetaType<pcl::PolygonMesh::Ptr>("pcl::PolygonMesh::Ptr");
     qRegisterMetaType<pcl::PointCloud<pcl::PointXYZRGBNormal> >("pcl::PointCloud<pcl::PointXYZRGBNormal>");
     qRegisterMetaType<pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr>("pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr");
-
-    remoteColladaStorageURL_ = "http://chiru.cie.fi/colladaStorage";
 }
 
 ObjectCaptureModule::~ObjectCaptureModule()
@@ -98,17 +96,6 @@ void ObjectCaptureModule::Initialize()
 
     Q_ASSERT(check);
 
-    if(remoteColladaStorageURL_ != ""){
-        QString storageString = "type=HttpAssetStorage;name=colladaStorage;src={0};trusted=true;autodiscoverable=false;replicated=false;readonly=false;default=false;";
-        remoteColladaStorage_ = assetApi->DeserializeAssetStorageFromString(storageString.replace("{0}", remoteColladaStorageURL_), true);
-        if(!remoteColladaStorage_)
-            LogError("ObjectCapture: Couldn't add remote storage.");
-        else {
-            check = connect(assetApi, SIGNAL(AssetStorageAdded(AssetStoragePtr)), this, SLOT(storageAdded(AssetStoragePtr)), Qt::QueuedConnection);
-            Q_ASSERT(check);
-        }
-    }
-
     // Uggly
     live_cloud_position_.orientation = Quat(1,0,0,0);
     live_cloud_position_.position = float3(0,0,0);
@@ -121,6 +108,28 @@ void ObjectCaptureModule::Initialize()
     final_mesh_position_.orientation = Quat(1,0,0,0);
     final_mesh_position_.position = float3(0,0,0);
     final_mesh_position_.scale = float3(0,0,0);
+}
+
+void ObjectCaptureModule::setRemoteStorageURL(QString remoteStorageURL)
+{
+    AssetAPI *assetApi = framework_->Asset();
+
+    bool check = connect(assetApi, SIGNAL(AssetUploaded(QString)),
+                         SLOT(assetUploadComplete(QString)), Qt::QueuedConnection);
+    Q_ASSERT(check);
+
+    if(remoteStorageURL != "")
+    {
+        QString storageString = "type=HttpAssetStorage;name=colladaStorage;src={0};trusted=true;autodiscoverable=false;replicated=false;readonly=false;default=false;";
+        remoteColladaStorage_ = assetApi->DeserializeAssetStorageFromString(storageString.replace("{0}", remoteStorageURL), true);
+        if(!remoteColladaStorage_)
+            LogError("ObjectCapture: Couldn't add remote storage.");
+        else
+        {
+            check = connect(assetApi, SIGNAL(AssetStorageAdded(AssetStoragePtr)), this, SLOT(storageAdded(AssetStoragePtr)), Qt::QueuedConnection);
+            Q_ASSERT(check);
+        }
+    }
 }
 
 void ObjectCaptureModule::storageAdded(AssetStoragePtr storage)
@@ -292,7 +301,6 @@ void ObjectCaptureModule::uploadAsset(QString localAssetPath)
 
     try {
         transfer = assetApi->UploadAssetFromFile(localAssetPath, remoteColladaStorage_, remoteName);
-
     }
     catch(Exception e) {
         LogError("ObjectCaptureModule: Caught exception while trying to upload asset to remote storage: " + QString(e.what()));
@@ -303,12 +311,7 @@ void ObjectCaptureModule::uploadAsset(QString localAssetPath)
     {
         assetUploads_.push_back(transfer->AssetRef());
 
-        /// \todo move these to initialization so no double connections occur!
-        bool check = connect(assetApi, SIGNAL(AssetUploaded(QString)),
-                             SLOT(assetUploadComplete(QString)), Qt::QueuedConnection);
-        Q_ASSERT(check);
-
-        check = connect(transfer.get(), SIGNAL(Failed(IAssetUploadTransfer *)),
+        bool check = connect(transfer.get(), SIGNAL(Failed(IAssetUploadTransfer *)),
                         SLOT(assetUploadFailed(IAssetUploadTransfer *)), Qt::QueuedConnection);
         Q_ASSERT(check);
 

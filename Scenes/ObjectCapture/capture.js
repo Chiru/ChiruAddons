@@ -8,7 +8,7 @@ function ObjectCapture()
 {
     print("\nStarting object capture script");
     data.module = framework.GetModuleByName("ObjectCapture");
-
+    data.module.setRemoteStorageURL("http://chiru.cie.fi/colladaStorage");
 
     data.module.startCapturing();
     //Set default positions

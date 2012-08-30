@@ -101,7 +101,11 @@ public slots:
     /// Sets the inworld transformation of the final captured object
     void setFinalMeshPosition(Quat orientation, float3 position, float3 scale);
 
+    /// Update point size for point meshes created from Kinect live feed and captured global model
     void updatePointSize();
+
+    /// Sets URL used as a remote storage for collada files and add it to AssetStorage
+    void setRemoteStorageURL(QString remoteStorageURL);
 
 signals:
     void previewFrameUpdated(const QImage &frame);
@@ -139,7 +143,6 @@ private:
     struct CloudPosition final_mesh_position_;
 
     QStringList assetUploads_;
-    QString remoteColladaStorageURL_;
     AssetStoragePtr remoteColladaStorage_;
 };
 
