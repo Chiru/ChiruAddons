@@ -53,7 +53,7 @@ function setColorMode (o3d, colorMode) {
         }
         console.log("gotMode: " + colorMode + "set mode: " +mode)
         o3d.material.vertexColors = parseInt(mode)
-        o3d.doubleSided = true
+        //o3d.material.side = THREE.DoubleSide
         o3d.material.needsUpdate = true
         //console.log(o3d)
     }
@@ -99,6 +99,7 @@ function toggleVisibility(object){
 
 }
 
+
 //Initializes the renderer, camera, etc.
 function init() {
 
@@ -110,7 +111,7 @@ function init() {
 
     // Camera
     camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 )
-    camera.position.set( 8, 6, 14)
+    camera.position.set(17, 10, 15)
     camera.lookAt(scene.position)
 
     scene.add( camera )
@@ -126,6 +127,7 @@ function init() {
     var floorGeometry = new THREE.PlaneGeometry(30, 30, 20, 20)
     var floor = new THREE.Mesh(floorGeometry, floorMaterial)
     floor.position.y = -2
+    floor.rotation.x = Math.PI/2
     scene.add(floor)
 
     // RENDERER
@@ -173,6 +175,7 @@ function init() {
     controls.keys = [65, 83, 68]
     controls.maxDistance = 50
 
+    console.log(controls)
 
     //Windows resize listener
     windowResize(renderer, camera)
@@ -249,15 +252,9 @@ function initGUI (){
         })
     f22.open()
     var f23 = gui.rightGui.addFolder('Camera controls')
-    f23.add(camera.position, 'x', -50,50,0.1).name('X Pos').listen().onChange(function(){
-        camera.lookAt(objController.current.position)
-    })
-    f23.add(camera.position, 'y', -50,50,0.1).name('Y Pos').listen().onChange(function(){
-        camera.lookAt(objController.current.position)
-    })
-    f23.add(camera.position, 'z', -50,50,0.1).name('Z Pos').listen().onChange(function(){
-        camera.lookAt(objController.current.position)
-    })
+    f23.add(camera.position, 'x', -50,50,0.1).name('X Pos').listen()
+    f23.add(camera.position, 'y', -50,50,0.1).name('Y Pos').listen()
+    f23.add(camera.position, 'z', -50,50,0.1).name('Z Pos').listen()
     f23.open()
 
     //Fullscreen activation key
