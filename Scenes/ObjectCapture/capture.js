@@ -65,7 +65,7 @@ function initializePlaceholders(numberOfPlacehorders)
 
         var placeable = placeholder.GetOrCreateComponent("EC_Placeable");
         placeable.SetPosition(dist * Math.pow(-1, i), 0, 30);
-        placeable.SetScale(10.0, 10.0, 10.0);
+        placeable.SetScale(1.0, 1.0, 1.0);
 
         data.placeholders[i] = placeholder;
         
