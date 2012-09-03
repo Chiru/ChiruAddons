@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Tundra ColladaViewer Client</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            font-family: Monospace;
+            background-color: #000000;
+            margin: 0;
+            overflow: hidden;
+        }
+        #leftGui
+        {
+            position:absolute;
+            padding-right: 20px;
+            width: auto;
+            top: 10px;
+            left: 10px;
+        }
+
+        #rightGui
+        {
+            position:absolute;
+            width: 220px;
+            top: 10px;
+            right: 40px;
+        }
+        #horizon
+        {
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 0px;
+            width: 100%;
+            height: 1px;
+            overflow: visible;
+            visibility: visible;
+            display: block
+        }
+        #loading
+        {
+            font-family: Impact, Charcoal, sans-serif;
+            font-size: 50px;
+            font-weight:bold;
+            text-shadow: 0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 10px rgba(0, 0, 0, 0.1), 0 8px 9px rgba(0, 0, 0, 0.1);
+            margin-left: -225px;
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            width: 450px;
+            display: none;
+
+        }
+
+        a { color: skyblue }
+    </style>
+
+    <script type="text/javascript" src="js/gui/dat.gui.js"></script>
+    <script type="text/javascript" src="js/threejs/raf.js"></script>
+    <script type="text/javascript" src="js/threejs/three.js"></script>
+    <script type="text/javascript" src="js/threejs/TrackballControls.js"></script>
+    <script type="text/javascript" src="js/threejs/ColladaLoader_dev.js"></script>
+    <script type="text/javascript" src="js/threejs/Detector.js"></script>
+    <script type="text/javascript" src="js/threejs/THREEx.FullScreen.js"></script>
+    <script type="text/javascript" src="js/connection.js"></script>
+</head>
+<body>
+
+<div id="leftGui"></div>
+<div id="rightGui"></div>
+<div id="horizon">
+    <div id="loading">Loading collada...</div>
+</div>
+<div id="container"></div>
+
+<script type="text/javascript" src="js/main.js"></script>
+
+</body>
+</html>
