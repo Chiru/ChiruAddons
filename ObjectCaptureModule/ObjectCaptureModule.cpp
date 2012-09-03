@@ -16,8 +16,13 @@
 #include "SceneAPI.h"
 #include "Scene.h"
 #include "IComponent.h"
+#include "AssetAPI.h"
 #include "AssetReference.h"
+#include "IAssetUploadTransfer.h"
+#include "IAssetTransfer.h"
 #include "EC_OgreCustomObject.h"
+#include "EC_Name.h"
+#include "CoreException.h"
 
 #include "OgreManualObject.h"
 #include "OgreMaterialManager.h"
@@ -28,6 +33,8 @@
 
 #include "EC_Mesh.h"
 #include "EC_Placeable.h"
+
+#include <QDateTime>
 
 #include "LoggingFunctions.h"
 
@@ -68,6 +75,8 @@ void ObjectCaptureModule::Load()
 
 void ObjectCaptureModule::Initialize()
 {
+    AssetAPI *assetApi = framework_->Asset();
+
     mesh_converter_ = new MeshConverter(framework_);
 
     mesh_reconstructor_->moveToThread(worker_thread_);
@@ -99,6 +108,33 @@ void ObjectCaptureModule::Initialize()
     final_mesh_position_.orientation = Quat(1,0,0,0);
     final_mesh_position_.position = float3(0,0,0);
     final_mesh_position_.scale = float3(0,0,0);
+}
+
+void ObjectCaptureModule::setRemoteStorageURL(QString remoteStorageURL)
+{
+    AssetAPI *assetApi = framework_->Asset();
+
+    bool check = connect(assetApi, SIGNAL(AssetUploaded(QString)),
+                         SLOT(assetUploadComplete(QString)), Qt::QueuedConnection);
+    Q_ASSERT(check);
+
+    if(remoteStorageURL != "")
+    {
+        QString storageString = "type=HttpAssetStorage;name=colladaStorage;src={0};trusted=true;autodiscoverable=false;replicated=false;readonly=false;default=false;";
+        remoteColladaStorage_ = assetApi->DeserializeAssetStorageFromString(storageString.replace("{0}", remoteStorageURL), true);
+        if(!remoteColladaStorage_)
+            LogError("ObjectCapture: Couldn't add remote storage.");
+        else
+        {
+            check = connect(assetApi, SIGNAL(AssetStorageAdded(AssetStoragePtr)), this, SLOT(storageAdded(AssetStoragePtr)), Qt::QueuedConnection);
+            Q_ASSERT(check);
+        }
+    }
+}
+
+void ObjectCaptureModule::storageAdded(AssetStoragePtr storage)
+{
+    LogInfo("Storage added:" + storage->BaseURL());
 }
 
 void ObjectCaptureModule::Uninitialize()
@@ -245,10 +281,67 @@ void ObjectCaptureModule::exportCollada(QString filename)
     if (final_polygon_mesh_.get())
     {
         collada_exporter_->Export(final_polygon_mesh_, filename);
-        emit colladaExportFinalized(filename);
+        uploadAsset(filename);
     }
     else
         LogError("Couldn't export polygon mesh! Mesh was not available.");
+}
+
+void ObjectCaptureModule::uploadAsset(QString localAssetPath)
+{
+    if(!remoteColladaStorage_) {
+        LogError("ObjectCapture: Cannot upload asset: No remote storage set!");
+        return;
+    }
+
+    AssetAPI *assetApi = framework_->Asset();
+
+    QString remoteName = "capture-"+ QDateTime::currentDateTime().toString("ddMMyy-hhmmss") + ".dae";
+    AssetUploadTransferPtr transfer;
+
+    try {
+        transfer = assetApi->UploadAssetFromFile(localAssetPath, remoteColladaStorage_, remoteName);
+    }
+    catch(Exception e) {
+        LogError("ObjectCaptureModule: Caught exception while trying to upload asset to remote storage: " + QString(e.what()));
+        return;
+    }
+
+    if(transfer)
+    {
+        assetUploads_.push_back(transfer->AssetRef());
+
+        bool check = connect(transfer.get(), SIGNAL(Failed(IAssetUploadTransfer *)),
+                        SLOT(assetUploadFailed(IAssetUploadTransfer *)), Qt::QueuedConnection);
+        Q_ASSERT(check);
+
+        LogInfo("ObjectCapture: Uploading exported collada file to a remote storage...");
+    }
+}
+
+void ObjectCaptureModule::assetUploadComplete(QString assetRef)
+{
+    // check if this is one of our assets
+    if(assetUploads_.contains(assetRef))
+        assetUploads_.removeAll(assetRef);
+    else
+        return;
+
+    LogInfo("Upload of asset \"" + assetRef + "\" complete!");
+    emit assetUploaded(assetRef);
+}
+
+void ObjectCaptureModule::assetUploadFailed(IAssetUploadTransfer *transfer)
+{
+    QStringList::iterator it;
+    for(it = assetUploads_.begin(); it != assetUploads_.end(); ++it)
+    {
+        if((*it).compare(transfer->AssetRef()) == 0) {
+            assetUploads_.erase(it);
+            LogError("ObjectCaptureModule: Upload of asset \"" + transfer->destinationName + "\" failed.");
+            return;
+        }
+    }
 }
 
 void ObjectCaptureModule::updatePointSize()
@@ -276,8 +369,6 @@ void ObjectCaptureModule::updatePointSize()
         Ogre::MaterialPtr m_pMtrl = Ogre::MaterialManager::getSingleton().load("LiveCloud", "General");
         m_pMtrl->getTechnique(0)->getPass(0)->setPointSize(point_size);
     }
-
-
 }
 
 void ObjectCaptureModule::addObjectToScene(EntityPtr entity, Ogre::ManualObject *mesh, Quat orientation, float3 position, float3 scale)
