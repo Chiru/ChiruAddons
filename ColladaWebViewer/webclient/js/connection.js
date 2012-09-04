@@ -4,42 +4,94 @@
 
  */
 
-
-var Connection = function (host, port){
-    var url = "ws://" + host + ":" + port;
-
-    if ("WebSocket" in window) {
-        this.ws = new WebSocket(url);
-    } else if ("MozWebSocket" in window) {
-        this.ws = new MozWebSocket(url);
-    } else {
-        document.innerHTML += "This Browser does not support WebSockets<br />";
-        return;
+function alertBox(msg) {
+    var div = document.getElementById('conAlert')
+    if(msg){
+        if(div){
+            div.innerHTML = msg
+        }else{
+            var newDiv = document.createElement('div');
+            newDiv.setAttribute('id','conAlert');
+            newDiv.innerHTML = msg;
+            newDiv.style.position = 'absolute'
+            newDiv.style.width = '400px'
+            newDiv.style.top = '10px'
+            newDiv.style.left = '50%'
+            newDiv.style.marginLeft = '-200px'
+            newDiv.style.fontFamily = 'Impact, Charcoal, sans-serif'
+            newDiv.style.fontSize = '25px'
+            newDiv.style.fontWeight = 'bold'
+            newDiv.style.textAlign = 'center'
+            newDiv.style.textShadow = '0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 10px rgba(0, 0, 0, 0.1), 0 8px 9px rgba(0, 0, 0, 0.1)'
+            newDiv.style.cursor ='pointer'
+            newDiv.onclick = function(){newDiv.parentNode.removeChild(newDiv)}
+            document.body.appendChild(newDiv)
+        }
+    }else{
+        if(div)
+            document.body.removeChild(div)
     }
+
+}
+
+var Connection = function (host, port, reconnectInterval){
+    this.url = "ws://" + host + ":" + port
+    this.ws = null
+    this.reconnecting = false
+
+    //Reconnection interval time (milliseconds)
+    if(typeof(reconnectInterval)==='undefined') reconnectInterval = 4000
+
+    this.reconnectInterval = reconnectInterval
+    console.log(this.reconnectInterval)
 
     //Storage for bound callback events
     this.callbacks = {};
 
+    var connect = function (url) {
 
-    this.ws.onopen = function() {
-        console.log("Connected")
-        //this.send(JSON.stringify({event:"requestCollada", data:"/var/lib/CapturedChair.dae"}))
+        if ("WebSocket" in window) {
+            this.ws = new WebSocket(url)
+        } else if ("MozWebSocket" in window) {
+            this.ws = new MozWebSocket(url)
+        } else {
+            alert("This Browser does not support WebSockets.  Use newest version of Google Chrome, FireFox or Opera. ")
+            return
+        }
 
-    }
+        this.ws.onopen = function() {
+            alertBox("Connected to server!")
+            setTimeout(function() {alertBox()}, 2000)
 
-    this.ws.onmessage = function (evt) {
-        //console.log("Got msg: " + evt.data)
-        this.parseMessage(evt.data)
+            this.reconnecting = false
+
+            //this.send(JSON.stringify({event:"requestCollada", data:"/var/lib/CapturedChair.dae"}))
+        }.bind(this)
+
+        this.ws.onmessage = function (evt) {
+            //console.log("Got msg: " + evt.data)
+            this.parseMessage(evt.data)
+        }.bind(this)
+
+        this.ws.onclose = function(evt) {
+            if(!this.reconnecting)
+                alertBox("WebSocket connection closed. Attempting to reconnect...")
+            console.log("Reconnecting in " + this.reconnectInterval/1000 + " seconds...")
+            this.reconnecting = true
+            this.ws = null
+            setTimeout(function() {
+                connect(url)
+            }, this.reconnectInterval)
+        }.bind(this)
+
+        this.ws.onerror = function(e) {
+            console.log("Error:"+ e)
+        }
     }.bind(this)
 
-    this.ws.onclose = function(evt) {
-        console.log("Connection closed.")
-    }
-
-    this.ws.onerror = function(e) {
-        console.log("Error:"+ e)
-    }
+    connect(this.url)
 }
+
 
 Connection.prototype.parseMessage = function (message) {
     var parsed = JSON.parse(message)

@@ -126,7 +126,7 @@ function init() {
     var floorMaterial = new THREE.MeshBasicMaterial({ color :0x110000, wireframe: true, wireframeLinewidth: 1})
     var floorGeometry = new THREE.PlaneGeometry(30, 30, 20, 20)
     var floor = new THREE.Mesh(floorGeometry, floorMaterial)
-    floor.position.y = -2
+    floor.position.y = -3
     floor.rotation.x = Math.PI/2
     scene.add(floor)
 
@@ -225,13 +225,13 @@ function initGUI (){
     f12.add(modelRot.degrees, 'z', -180.0, 180, 0.1).name('Z Rot').listen().onChange(function(){
         objController.current.rotation.z = modelRot.degrees.z * Math.PI / 180
     })
-    f12.add(modelScale, 'x', 0.01, 15.0, 0.05).name('Scale x').listen().onChange(function(val){
+    f12.add(modelScale, 'x', 0.01, 4.00, 0.01).name('Scale x').listen().onChange(function(val){
         objController.current.scale.x = val
     })
-    f12.add(modelScale, 'y', 0.01, 15.0, 0.05).name('Scale y').listen().onChange(function(val){
+    f12.add(modelScale, 'y', 0.01, 4.00, 0.01).name('Scale y').listen().onChange(function(val){
         objController.current.scale.y = val
     })
-    f12.add(modelScale, 'z', 0.01, 15.0, 0.05).name('Scale z').listen().onChange(function(val){
+    f12.add(modelScale, 'z', 0.01, 4.00, 0.01).name('Scale z').listen().onChange(function(val){
         objController.current.scale.z = val
     })
 
@@ -244,8 +244,8 @@ function initGUI (){
     f21.open()
 
     var f22 = gui.rightGui.addFolder('Render options')
-    f22.add(sceneParams, 'colorMode', { 'No colors': THREE.NoColors, 'Face colors': THREE.FaceColors ,
-        'VertexColors': THREE.VertexColors }).name('Color Mode').onFinishChange(function(){
+    f22.add(sceneParams, 'colorMode', { 'No colors': THREE.NoColors, 'VertexColors': THREE.VertexColors })
+        .name('Color Mode').onFinishChange(function(){
             console.log(sceneParams.colorMode)
             setColorMode(objController.current, sceneParams.colorMode)
 
@@ -312,6 +312,7 @@ connection.bind("newCollada", function(colladaName){
     if(!(colladaName in serverFiles)){
         console.log("A new collada was added in remote storage: " + colladaName)
         serverFiles.push(colladaName)
+        serverFiles.sort()
 
         if(window.confirm("A new captured model was added to remote storage. Load the model?")){
 
@@ -326,6 +327,7 @@ connection.bind("newCollada", function(colladaName){
 
 connection.bind("colladaList", function(list){
     serverFiles =  list.split(", ")
+    serverFiles.sort()
 
     serverFiles.forEach(function(name){
         var select = gui.leftGui.fileList.domElement.children[0]
@@ -360,7 +362,6 @@ connection.bind("loadCollada", function(data){
         setColorMode(model, sceneParams.colorMode)
 
         //console.log(collada)
-        model.scale.set(5,5,5)
         model.name = data['fileName']
 
 
