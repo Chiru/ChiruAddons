@@ -98,7 +98,6 @@ public:
 public slots:
 
     // Sends a collada file to alocal/remote storage
-    void sendFileToRemoteStorage(QString path);
     void sendFileToLocalStorage(QString fileRef);
 
     // Starts a server side process

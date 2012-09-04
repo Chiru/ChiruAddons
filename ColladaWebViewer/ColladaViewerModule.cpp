@@ -3,6 +3,7 @@
 #include "TundraLogicModule.h"
 #include "Server.h"
 #include "Client.h"
+#include "Framework.h"
 
 #include <QFileInfo>
 
@@ -209,8 +210,8 @@ void ColladaViewerModule::clientProcess()
 
     // Listening collada export signal from ObjectCapture module
     bool check = QObject::connect(framework_->GetModuleByName(QString("ObjectCapture")),
-                                  SIGNAL(colladaExportFinalized(QString)), this,
-                    SLOT(sendFileToRemoteStorage(QString)), Qt::QueuedConnection);
+                                  SIGNAL(assetUploaded(QString)), this,
+                    SLOT(uploadCompleted(QString)), Qt::QueuedConnection);
 
     Q_ASSERT(check);
 
@@ -363,38 +364,6 @@ int ColladaViewerModule::loadColladaToString(string path, string &data)
     return -1;
 }
 
-
-void ColladaViewerModule::sendFileToRemoteStorage(QString path)
-{
-    if(path.isEmpty())
-        return;
-
-    if(storage_)
-    {
-        LogDebug("Captured collada was saved temporarily to: " + path);
-
-        QFileInfo pathInfo(path);
-        time_t now;
-        QString remoteName = "object_"+ QString::number(time(&now)) + ".dae";
-
-        AssetUploadTransferPtr con = assetAPI_->UploadAssetFromFile(path, QString("colladaStorage"), remoteName);
-
-        if(con)
-        {
-            bool check = connect(assetAPI_, SIGNAL(AssetUploaded(QString)),
-                                 SLOT(uploadCompleted(QString)), Qt::QueuedConnection);
-            Q_ASSERT(check);
-            check = connect(con.get(), SIGNAL(Failed(IAssetUploadTransfer *)),
-                            SLOT(uploadFailed(IAssetUploadTransfer *)), Qt::QueuedConnection);
-            Q_ASSERT(check);
-
-            LogInfo("Uploading exported collada file to a remote storage...");
-        }
-    }
-
-}
-
-
 void ColladaViewerModule::sendFileToLocalStorage(QString fileRef)
 {
     if(fileRef.isEmpty())
@@ -436,7 +405,11 @@ void ColladaViewerModule::uploadCompleted(QString assetRef)
         MsgRequestRefresh knetMsg;
         knetMsg.userID = client_->ConnectionId();
 
+#ifdef TUNDRA_MULTICONNECTION
         Ptr(kNet::MessageConnection) connection = client_->GetConnection(client_->getActiveScenename());
+#else
+        Ptr(kNet::MessageConnection) connection = client_->GetConnection();
+#endif
 
         connection.ptr()->Send(knetMsg);
     }
