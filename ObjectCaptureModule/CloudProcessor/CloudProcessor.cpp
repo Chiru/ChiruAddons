@@ -35,6 +35,8 @@ CloudProcessor::CloudProcessor() :
 CloudProcessor::~CloudProcessor()
 {
     SAFE_DELETE(kinect_capture_);
+    SAFE_DELETE(cloud_filter_);
+    SAFE_DELETE(register_);
 }
 
 void CloudProcessor::startCapture()
