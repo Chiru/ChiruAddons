@@ -17,7 +17,8 @@ namespace ObjectCapture
 
 KinectCapture::KinectCapture() :
     cloud_filter_(new CloudFilter()),
-    extract_object_(false)
+    extract_object_(false),
+    filter_planar_(true)
 {
     try
     {
@@ -49,6 +50,16 @@ bool KinectCapture::getExtractObject()
 void KinectCapture::setExtractObject(bool value)
 {
     extract_object_ = value;
+}
+
+bool KinectCapture::getFilterPlanar()
+{
+    return filter_planar_;
+}
+
+void KinectCapture::setFilterPlanar(bool value)
+{
+    filter_planar_ = value;
 }
 
 void KinectCapture::startCapture()
@@ -93,7 +104,12 @@ void KinectCapture::kinect_callback_(const PointCloud::ConstPtr &cloud)
             PointCloud::Ptr depth_filtered = cloud_filter_->filterDepth(cloud, 0.0f, 1.5f); // Move params to class members
             PointCloud::Ptr downsampled = cloud_filter_->filterDensity(depth_filtered, 0.01f); // --*--
 
-            PointCloud::Ptr clustered = cloud_filter_->segmentCloud(downsampled, 0.08);
+            PointCloud::Ptr clustered;
+            if(filter_planar_)
+                clustered = cloud_filter_->segmentCloud(downsampled, 0.08);
+            else
+                clustered = cloud_filter_->extractLargestCluster(downsampled, 0.08);
+
             if(clustered->points.size() <= 0) // Segmentation failed, skip this frame.
             {
                 cloud_mutex_.unlock();

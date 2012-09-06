@@ -36,6 +36,14 @@ public:
     /// \param value
     void setExtractObject(bool value);
 
+    /// Set planar filter on or off
+    /// \param value
+    /// \note has no effect if object extraction is turned off
+    void setFilterPlanar(bool value);
+
+    /// Returns wether planar filtering is on or off
+    bool getFilterPlanar();
+
     void kinect_callback_ (const PointCloud::ConstPtr &cloud);
 
 public slots:
@@ -55,6 +63,7 @@ private:
     CloudFilter *cloud_filter_;
 
     bool extract_object_;
+    bool filter_planar_;
 };
 
 }

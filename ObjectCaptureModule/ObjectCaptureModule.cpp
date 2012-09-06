@@ -192,6 +192,12 @@ void ObjectCaptureModule::setFinalMeshPosition(Quat orientation, float3 position
     final_mesh_position_.scale = scale;
 }
 
+void ObjectCaptureModule::setFilterPlanar(bool value)
+{
+    if(cloud_processor_)
+        cloud_processor_->setFilterPlanar(value);
+}
+
 Ogre::MaterialPtr ObjectCaptureModule::createMaterial(QString materialName)
 {
     // add the true as the last parameter to make it a manual material

@@ -90,6 +90,12 @@ void CloudProcessor::finalizeCapturing()
     kinect_capture_->stopCapture();
 }
 
+void CloudProcessor::setFilterPlanar(bool value)
+{
+    if(kinect_capture_)
+        kinect_capture_->setFilterPlanar(value);
+}
+
 void CloudProcessor::moveToOrigo(PointCloud::Ptr cloud)
 {
     if(!cloud.get())

@@ -40,6 +40,8 @@ public slots:
     /// Stops the capturing interface and passes the cloud for surface reconstruction
     void finalizeCapturing();
 
+    void setFilterPlanar(bool value);
+
 signals:
     void liveFeedUpdated(const QImage &frame);
     void globalModelUpdated(PointCloud::Ptr cloud);

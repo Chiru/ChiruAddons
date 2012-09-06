@@ -107,6 +107,8 @@ public slots:
     /// Sets URL used as a remote storage for collada files and add it to AssetStorage
     void setRemoteStorageURL(QString remoteStorageURL);
 
+    void setFilterPlanar(bool value);
+
 signals:
     void previewFrameUpdated(const QImage &frame);
     void objectCaptured(unsigned int entityId);
