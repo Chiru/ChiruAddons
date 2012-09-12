@@ -15,7 +15,7 @@
         a { color: skyblue }
     </style>
 
-    <script type="text/javascript" src="../js/connection.js"></script>
+    <script type="text/javascript" src="../js/util/wsmanager.js"></script>
     <script type="text/javascript" src="../js/ecmodel.js"></script>
     <script type="text/javascript" src="../js/gui/dat.gui.min.js"></script>
     <script type="text/javascript" src="../js/threejs/raf.js"></script>
@@ -331,7 +331,7 @@ loop()
 
 
 //Opening a websocket connection
-connection = new Connection("127.0.0.1", "9002")
+connection = new WSManager("127.0.0.1", "9002")
 
 //Binding collada loader function to websocket event
 connection.bind("loadCollada", function(colladaData){

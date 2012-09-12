@@ -42,7 +42,7 @@
         #loading
         {
             font-family: Impact, Charcoal, sans-serif;
-            font-size: 50px;
+            font-size: 40px;
             font-weight:bold;
             text-shadow: 0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 10px rgba(0, 0, 0, 0.1), 0 8px 9px rgba(0, 0, 0, 0.1);
             margin-left: -225px;
@@ -51,6 +51,7 @@
             left: 50%;
             width: 450px;
             display: none;
+            color: #FFFFFF;
 
         }
 
@@ -63,14 +64,16 @@
     <script type="text/javascript" src="js/threejs/ColladaLoader_dev.js"></script>
     <script type="text/javascript" src="js/threejs/Detector.js"></script>
     <script type="text/javascript" src="js/threejs/THREEx.FullScreen.js"></script>
-    <script type="text/javascript" src="js/connection.js"></script>
+    <script type="text/javascript" src="js/util/wsmanager.js"></script>
+    <script type="text/javascript" src="js/util/detectmobilebrowser.js"></script>
+    <script type="text/javascript" src="js/util/parseUri.js"></script>
 </head>
 <body>
 
 <div id="leftGui"></div>
 <div id="rightGui"></div>
 <div id="horizon">
-    <div id="loading">Loading collada...</div>
+    <div id="loading"></div>
 </div>
 <div id="container"></div>
 

@@ -10,9 +10,9 @@ function alertBox(msg) {
         if(div){
             div.innerHTML = msg
         }else{
-            var newDiv = document.createElement('div');
-            newDiv.setAttribute('id','conAlert');
-            newDiv.innerHTML = msg;
+            var newDiv = document.createElement('div')
+            newDiv.setAttribute('id','conAlert')
+            newDiv.innerHTML = msg
             newDiv.style.position = 'absolute'
             newDiv.style.width = '400px'
             newDiv.style.top = '10px'
@@ -29,12 +29,12 @@ function alertBox(msg) {
         }
     }else{
         if(div)
-            document.body.removeChild(div)
+            div.parentNode.removeChild(div)
     }
 
 }
 
-var Connection = function (host, port, reconnectInterval){
+var WSManager = function (host, port, reconnectInterval){
     this.url = "ws://" + host + ":" + port
     this.ws = null
     this.reconnecting = false
@@ -43,10 +43,9 @@ var Connection = function (host, port, reconnectInterval){
     if(typeof(reconnectInterval)==='undefined') reconnectInterval = 4000
 
     this.reconnectInterval = reconnectInterval
-    console.log(this.reconnectInterval)
 
     //Storage for bound callback events
-    this.callbacks = {};
+    this.callbacks = {}
 
     var connect = function (url) {
 
@@ -93,12 +92,12 @@ var Connection = function (host, port, reconnectInterval){
 }
 
 
-Connection.prototype.parseMessage = function (message) {
+WSManager.prototype.parseMessage = function (message) {
     var parsed = JSON.parse(message)
     this.processEvent(parsed)
 }
 
-Connection.prototype.processEvent = function (json) {
+WSManager.prototype.processEvent = function (json) {
     if(json['event']){
         console.log("Got event: "+json['event'])
         if(json['data']){
@@ -110,17 +109,17 @@ Connection.prototype.processEvent = function (json) {
 }
 
 //A function for binding custom event callbacks for Connection
-Connection.prototype.bind = function(eventName, callback){
-    this.callbacks[eventName] = this.callbacks[eventName] || [];
-    this.callbacks[eventName].push(callback);
+WSManager.prototype.bind = function(eventName, callback){
+    this.callbacks[eventName] = this.callbacks[eventName] || []
+    this.callbacks[eventName].push(callback)
     return this;
 };
 
 //Triggers the bound event and gives it some data as argument if it has a callback function
-Connection.prototype.triggerEvent = function(eventName, message){
+WSManager.prototype.triggerEvent = function(eventName, message){
     var eventChain = this.callbacks[eventName];
     if(typeof eventChain == 'undefined'){
-        console.log("Error: Received an unknown event: " + eventName);
+        console.log("Error: Received an unknown event: " + eventName)
     }
     for(var i = 0; i < eventChain.length; i++){
         eventChain[i](message)

@@ -1,5 +1,4 @@
 
-
 //Url parser
 var ip = location.hash.substr(1)
 console.log("ip: " + ip)
@@ -8,13 +7,46 @@ if (!Detector.webgl)
     Detector.addGetWebGLMessage()
 
 
-var     camera, scene, renderer, container, loadedObjects = [],
-    projector, objController,
+var camera, scene, renderer, container, loadedObjects = [], objController,
     pointLight,
     controls, gui = {},
     sceneParams = {"colorMode": THREE.VertexColors}
 
-var     connection, serverFiles = []
+var connection, storageUrl = "", serverFiles = []
+
+
+//Parsing remote storage url
+function setStorageUrl(url){
+    var parsed = parseUri(url)
+
+    //Adding trailing slash to directory path if it is missing
+    if(parsed['directory'].indexOf('/', parsed['directory'].length - 1) == -1)
+        parsed['directory'] += '/'
+
+    //Hardcoded proxy url for mobile device demos
+    var proxy = "chiru.cie.fi:8000/"
+    if(window.mobile)
+        parsed['host'] =  proxy + "?" + parsed['host']
+
+    return "http://" + parsed['host'] + parsed['directory']
+
+}
+
+function showInfoMsg(msg) {
+    var msgElement = document.getElementById("loading")
+
+    if(msgElement){
+        if(msg){
+            msgElement.innerHTML = msg
+
+            if(msgElement.style.display = "none")
+                msgElement.style.display = "block"
+        }else{
+            msgElement.innerHTML = ""
+            msgElement.style.display = "none"
+        }
+    }
+}
 
 
 //Function that changes the camera aspect ratio and renderer size when window is resized
@@ -59,6 +91,7 @@ function setColorMode (o3d, colorMode) {
     }
 }
 
+/*
 //Converts the XML data from string to XML object
 function StringtoXML(string){
     if (window.ActiveXObject){
@@ -71,7 +104,105 @@ function StringtoXML(string){
     }
     return doc
 }
+*/
 
+function initWSConnection() {
+//Opening a websocket connection
+    if(!ip)
+        ip = "127.0.0.1"
+
+    connection = new WSManager(ip, "9002")
+
+
+    connection.bind("newCollada", function(colladaName){
+        if(!(colladaName in serverFiles)){
+            console.log("A new collada was added in remote storage: " + colladaName)
+            serverFiles.push(colladaName)
+            serverFiles.sort()
+
+            if(window.confirm("A new captured model was added to remote storage. Load the model?")){
+
+                requestCollada(colladaName)
+            }
+
+            var select = gui.leftGui.fileList.domElement.children[0]
+            select.options[select.options.length] = new Option(colladaName, colladaName)
+            console.log(serverFiles)
+        }
+    })
+
+    connection.bind("colladaList", function(data){
+        serverFiles =  data['list'].split(", ")
+        serverFiles.sort()
+
+        serverFiles.forEach(function(name){
+            var select = gui.leftGui.fileList.domElement.children[0]
+            select.options[select.options.length] = new Option(name, name)
+        })
+        console.log(serverFiles)
+
+        storageUrl = setStorageUrl(data['storageUrl'])
+        console.log(storageUrl)
+
+    })
+
+    /*
+     //Binding collada loader function to websocket event
+     connection.bind("loadCollada", function(data){
+     console.log("loading collada")
+
+     if(!data['collada'])
+     return
+
+     if(!data['fileName'])
+     return
+     var loader = new THREE.ColladaLoader()
+
+     loader.options.convertUpAxis = true
+
+     //Parsing the COLLADA
+     loader.parse( StringtoXML(data['collada']), function colladaReady( collada ) {
+     var skin = collada.skins[0],
+     dae = collada.dae,
+     model = collada.scene
+
+     console.log(collada)
+
+     //Changing colormode of the collada model
+     setColorMode(model, sceneParams.colorMode)
+
+     //console.log(collada)
+     model.name = data['fileName']
+
+
+     objController.loadNext = ""
+
+     if(loadedObjects.length > 0){
+     toggleVisibility(loadedObjects[loadedObjects.length -1])
+     }
+
+     loadedObjects.push(model)
+
+     scene.add(model)
+
+     console.log(scene)
+     objController.setCurrent(model)
+
+     gui.leftGui.objectControls.open()
+
+     console.log(loadedObjects)
+
+     })
+
+
+     })
+
+     */
+
+}
+
+/*
+// Request collada through webSocket
 function requestCollada(colladaName){
     for (var i=0; i < loadedObjects.length; i++){
         if(loadedObjects[i].name == colladaName){
@@ -83,6 +214,66 @@ function requestCollada(colladaName){
         }
     }
     connection.ws.send(JSON.stringify({event:"requestCollada", data:colladaName}))
+
+}
+*/
+
+// Request collada through http
+function requestCollada(colladaName){
+    for (var i=0; i < loadedObjects.length; i++){
+        if(loadedObjects[i].name == colladaName){
+            toggleVisibility(objController.current)
+            toggleVisibility(loadedObjects[i])
+            console.log(colladaName + " is loaded alredy.")
+            console.log(objController.current)
+            return
+        }
+    }
+
+    var loader = new THREE.ColladaLoader()
+
+    loader.options.convertUpAxis = true
+
+    loader.load(storageUrl + colladaName, function colladaReady(collada) {
+        var skin = collada.skins[0],
+            dae = collada.dae,
+            model = collada.scene
+
+        console.log(collada)
+
+        //Changing colormode of the collada model
+        setColorMode(model, sceneParams.colorMode)
+
+        //console.log(collada)
+        model.name = colladaName
+
+
+        objController.loadNext = ""
+
+        if(loadedObjects.length > 0){
+            toggleVisibility(loadedObjects[loadedObjects.length -1])
+        }
+
+        loadedObjects.push(model)
+
+        scene.add(model)
+
+        console.log(scene)
+        objController.setCurrent(model)
+
+        gui.leftGui.objectControls.open()
+
+        console.log(loadedObjects)
+
+        showInfoMsg()
+
+    }, function progress(data){
+        showInfoMsg("Downloading model... " + " Loaded: " + Math.ceil((data.loaded / 1000000)*100)/100 + " MB")
+    })
+
+
+    showInfoMsg("Downloading model...")
+    console.log("Requested file: " + storageUrl + colladaName)
 
 }
 
@@ -105,7 +296,7 @@ function init() {
 
     //Creates the container and scene
     container = document.getElementById('container')
-    document.body.appendChild( container )
+    //document.body.appendChild( container )
 
     scene = new THREE.Scene()
 
@@ -291,6 +482,9 @@ function render() {
 }
 
 
+//Initialize WebSocket connection
+initWSConnection()
+
 //Initialize the WebGL renderer and scene
 init()
 
@@ -300,89 +494,3 @@ initGUI()
 //Start the animation loop
 loop()
 
-
-//Opening a websocket connection
-if(!ip)
-    ip = "127.0.0.1"
-
-connection = new Connection(ip, "9002")
-
-
-connection.bind("newCollada", function(colladaName){
-    if(!(colladaName in serverFiles)){
-        console.log("A new collada was added in remote storage: " + colladaName)
-        serverFiles.push(colladaName)
-        serverFiles.sort()
-
-        if(window.confirm("A new captured model was added to remote storage. Load the model?")){
-
-            requestCollada(colladaName)
-        }
-
-        var select = gui.leftGui.fileList.domElement.children[0]
-        select.options[select.options.length] = new Option(colladaName, colladaName)
-        console.log(serverFiles)
-    }
-})
-
-connection.bind("colladaList", function(list){
-    serverFiles =  list.split(", ")
-    serverFiles.sort()
-
-    serverFiles.forEach(function(name){
-        var select = gui.leftGui.fileList.domElement.children[0]
-        select.options[select.options.length] = new Option(name, name)
-    })
-    console.log(serverFiles)
-
-})
-
-//Binding collada loader function to websocket event
-connection.bind("loadCollada", function(data){
-    console.log("loading collada")
-
-    if(!data['collada'])
-        return
-
-    if(!data['fileName'])
-        return
-    var loader = new THREE.ColladaLoader()
-
-    loader.options.convertUpAxis = true
-
-    //Parsing the COLLADA
-    loader.parse( StringtoXML(data['collada']), function colladaReady( collada ) {
-        var skin = collada.skins[0],
-            dae = collada.dae,
-            model = collada.scene
-
-        console.log(collada)
-
-        //Changing colormode of the collada model
-        setColorMode(model, sceneParams.colorMode)
-
-        //console.log(collada)
-        model.name = data['fileName']
-
-
-        objController.loadNext = ""
-
-        if(loadedObjects.length > 0){
-            toggleVisibility(loadedObjects[loadedObjects.length -1])
-        }
-
-        loadedObjects.push(model)
-
-        scene.add(model)
-
-        console.log(scene)
-        objController.setCurrent(model)
-
-        gui.leftGui.objectControls.open()
-
-        console.log(loadedObjects)
-
-    })
-
-
-})
