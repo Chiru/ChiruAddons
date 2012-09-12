@@ -62,10 +62,10 @@ function OnDropEvent(e)
         var r = scene.ogre.Raycast(ray, -1);
         if (r.entity && r.entity.id == me.id)
         {
-            var song = findChild(e.source(), "song_artist")
+            var song_label = findChild(e.source(), "song_artist")
             debug("radio: call handlemeshdrop");
             dummyContainer.visual.HandleMeshDrop(e.source());
-            ChangeSong(song.text.replace("\n", " - "));
+            ChangeSong(song_label.text.replace("\n\n", " - "));
         }
     }
 }
@@ -73,10 +73,10 @@ function OnDropEvent(e)
 // NOTE: This should be properly implemented with the RDF system
 function ChangeSong(songname)
 {
-    var bar_ent = scene.EntityByName("BarContainer");
-    last_song = bar_ent.dynamiccomponent.GetAttribute("last_song");
-    print("Radio: last_song: " + last_song.title);
-
+    //var bar_ent = scene.EntityByName("BarContainer");
+    //last_song = bar_ent.dynamiccomponent.GetAttribute("last_song");
+    //print("Radio: last_song: " + last_song.title);
+    print("Radio: ChangeSong songname=" + songname);
     me.dynamiccomponent.SetAttribute("state", "STOPPED");
     me.dynamiccomponent.SetAttribute("song", songname);
     me.dynamiccomponent.SetAttribute("state", "PLAYING");
