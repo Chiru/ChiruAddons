@@ -26,7 +26,6 @@
 #include "LoggingFunctions.h"
 #include "CoreStringUtils.h"
 #include "MemoryLeakCheck.h"
-#include <pcl/impl/instantiate.hpp>
 
 namespace ObjectCapture
 {

@@ -19,6 +19,7 @@
 
 #include "ObjectCaptureModuleDefines.h"
 #include "pcl/PolygonMesh.h"
+#include "AssetFwd.h"
 
 #include <QObject>
 #include <QImage>
@@ -100,12 +101,19 @@ public slots:
     /// Sets the inworld transformation of the final captured object
     void setFinalMeshPosition(Quat orientation, float3 position, float3 scale);
 
+    /// Update point size for point meshes created from Kinect live feed and captured global model
     void updatePointSize();
+
+    /// Sets URL used as a remote storage for collada files and add it to AssetStorage
+    void setRemoteStorageURL(QString remoteStorageURL);
+
+    void setFilterPlanar(bool value);
 
 signals:
     void previewFrameUpdated(const QImage &frame);
     void objectCaptured(unsigned int entityId);
     void colladaExportFinalized(QString relativeFilePath);
+    void assetUploaded(QString assetRef);
 
 private slots:
     void meshReconstructed();
@@ -113,10 +121,11 @@ private slots:
     void visualizeLiveCloud(PointCloud::Ptr cloud);
     void visualizeGlobalModel(PointCloud::Ptr cloud);
     void visualizeFinalMesh(pcl::PolygonMesh::Ptr polygonMesh, pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud);
-    void uploadAsset(QString remoteStoragePath, QString localAssetPath);
+    void uploadAsset(QString localAssetPath);
     void assetUploadComplete(QString assetRef);
     void assetUploadFailed(IAssetUploadTransfer *transfer);
     Ogre::MaterialPtr createMaterial(QString materialName);
+    void storageAdded(AssetStoragePtr storage);
 
 private:
     CloudProcessor *cloud_processor_;
@@ -136,6 +145,7 @@ private:
     struct CloudPosition final_mesh_position_;
 
     QStringList assetUploads_;
+    AssetStoragePtr remoteColladaStorage_;
 };
 
 } // end of namespace: ObjectCapture

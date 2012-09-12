@@ -297,7 +297,7 @@ void ColladaExporter::writeVisualScenes()
     fs << "            <rotate sid=\"rotationZ\">0 0 1 0</rotate>\n";
     fs << "            <rotate sid=\"rotationY\">0 1 0 0</rotate>\n";
     fs << "            <rotate sid=\"rotationX\">1 0 0 0</rotate>\n";
-    fs << "            <scale sid=\"scale\">1 1 1</scale>\n";
+    fs << "            <scale sid=\"scale\">10 10 10</scale>\n";
     fs << "            <instance_geometry url=\"#CapturedObject\">\n";
 
     fs << "               <bind_material>\n";

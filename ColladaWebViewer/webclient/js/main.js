@@ -1,82 +1,3 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <title>Tundra ColladaViewer Client</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <style>
-        body {
-            font-family: Monospace;
-            background-color: #000000;
-            margin: 0;
-            overflow: hidden;
-        }
-        #leftGui
-        {
-            position:absolute;
-            padding-right: 20px;
-            width: auto;
-            top: 10px;
-            left: 10px;
-        }
-
-        #rightGui
-        {
-            position:absolute;
-            width: 220px;
-            top: 10px;
-            right: 40px;
-        }
-        #horizon
-        {
-            text-align: center;
-            position: absolute;
-            top: 50%;
-            left: 0px;
-            width: 100%;
-            height: 1px;
-            overflow: visible;
-            visibility: visible;
-            display: block
-        }
-        #loading
-        {
-            font-family: Impact, Charcoal, sans-serif;
-            font-size: 50px;
-            font-weight:bold;
-            text-shadow: 0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 10px rgba(0, 0, 0, 0.1), 0 8px 9px rgba(0, 0, 0, 0.1);
-            margin-left: -225px;
-            position: absolute;
-            top: -35px;
-            left: 50%;
-            width: 450px;
-            display: none;
-
-        }
-
-        a { color: skyblue }
-    </style>
-
-    <script type="text/javascript" src="js/gui/dat.gui.js"></script>
-    <script type="text/javascript" src="js/threejs/raf.js"></script>
-    <script type="text/javascript" src="js/threejs/Three.js"></script>
-    <script type="text/javascript" src="js/threejs/ThreeExtras.js"></script>
-    <script type="text/javascript" src="js/threejs/ColladaLoader_dev.js"></script>
-    <script type="text/javascript" src="js/threejs/Detector.js"></script>
-    <script type="text/javascript" src="js/threejs/THREEx.FullScreen.js"></script>
-    <script type="text/javascript" src="js/connection.js"></script>
-</head>
-<body>
-
-<div id="leftGui"></div>
-<div id="rightGui"></div>
-<div id="horizon">
-    <div id="loading">Loading collada...</div>
-</div>
-<div id="container"></div>
-
-
-<script>
 
 
 //Url parser
@@ -88,10 +9,10 @@ if (!Detector.webgl)
 
 
 var     camera, scene, renderer, container, loadedObjects = [],
-        projector, objController,
-        pointLight,
-        controls, gui = {},
-        sceneParams = {"colorMode": THREE.VertexColors}
+    projector, objController,
+    pointLight,
+    controls, gui = {},
+    sceneParams = {"colorMode": THREE.VertexColors}
 
 var     connection, serverFiles = []
 
@@ -126,13 +47,13 @@ function setColorMode (o3d, colorMode) {
         //o3d.material.shading = THREE.FlatShading
         var mode = THREE.VertexColors
         if(colorMode == THREE.NoColors||
-                colorMode == THREE.FaceColors||
-                colorMode == THREE.VertexColors){
+            colorMode == THREE.FaceColors||
+            colorMode == THREE.VertexColors){
             mode = colorMode
         }
         console.log("gotMode: " + colorMode + "set mode: " +mode)
         o3d.material.vertexColors = parseInt(mode)
-        o3d.doubleSided = true
+        //o3d.material.side = THREE.DoubleSide
         o3d.material.needsUpdate = true
         //console.log(o3d)
     }
@@ -152,16 +73,16 @@ function StringtoXML(string){
 }
 
 function requestCollada(colladaName){
-        for (var i=0; i < loadedObjects.length; i++){
-            if(loadedObjects[i].name == colladaName){
-                toggleVisibility(objController.current)
-                toggleVisibility(loadedObjects[i])
-                console.log(colladaName + " is loaded alredy.")
-                console.log(objController.current)
-                return
-            }
+    for (var i=0; i < loadedObjects.length; i++){
+        if(loadedObjects[i].name == colladaName){
+            toggleVisibility(objController.current)
+            toggleVisibility(loadedObjects[i])
+            console.log(colladaName + " is loaded alredy.")
+            console.log(objController.current)
+            return
         }
-        connection.ws.send(JSON.stringify({event:"requestCollada", data:colladaName}))
+    }
+    connection.ws.send(JSON.stringify({event:"requestCollada", data:colladaName}))
 
 }
 
@@ -178,6 +99,7 @@ function toggleVisibility(object){
 
 }
 
+
 //Initializes the renderer, camera, etc.
 function init() {
 
@@ -189,22 +111,23 @@ function init() {
 
     // Camera
     camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 )
-    camera.position.set( 8, 6, 14)
+    camera.position.set(17, 10, 15)
     camera.lookAt(scene.position)
 
     scene.add( camera )
 
     // Lights
-    pointLight = new THREE.PointLight( 0xffffff)
+    pointLight = new THREE.PointLight(0xffffff)
     pointLight.intensity = 2
-    scene.add( pointLight )
+    scene.add(pointLight)
     scene.add(new THREE.AmbientLight(0xffffff))
 
     // Scene objects
-    var floorMaterial = new THREE.MeshBasicMaterial( { color :0x110000, wireframe: true, wireframeLinewidth: 1} )
+    var floorMaterial = new THREE.MeshBasicMaterial({ color :0x110000, wireframe: true, wireframeLinewidth: 1})
     var floorGeometry = new THREE.PlaneGeometry(30, 30, 20, 20)
     var floor = new THREE.Mesh(floorGeometry, floorMaterial)
-    floor.position.y = -2
+    floor.position.y = -3
+    floor.rotation.x = Math.PI/2
     scene.add(floor)
 
     // RENDERER
@@ -252,6 +175,7 @@ function init() {
     controls.keys = [65, 83, 68]
     controls.maxDistance = 50
 
+    console.log(controls)
 
     //Windows resize listener
     windowResize(renderer, camera)
@@ -301,13 +225,13 @@ function initGUI (){
     f12.add(modelRot.degrees, 'z', -180.0, 180, 0.1).name('Z Rot').listen().onChange(function(){
         objController.current.rotation.z = modelRot.degrees.z * Math.PI / 180
     })
-    f12.add(modelScale, 'x', 0.01, 15.0, 0.05).name('Scale x').listen().onChange(function(val){
+    f12.add(modelScale, 'x', 0.01, 4.00, 0.01).name('Scale x').listen().onChange(function(val){
         objController.current.scale.x = val
     })
-    f12.add(modelScale, 'y', 0.01, 15.0, 0.05).name('Scale y').listen().onChange(function(val){
+    f12.add(modelScale, 'y', 0.01, 4.00, 0.01).name('Scale y').listen().onChange(function(val){
         objController.current.scale.y = val
     })
-    f12.add(modelScale, 'z', 0.01, 15.0, 0.05).name('Scale z').listen().onChange(function(val){
+    f12.add(modelScale, 'z', 0.01, 4.00, 0.01).name('Scale z').listen().onChange(function(val){
         objController.current.scale.z = val
     })
 
@@ -320,23 +244,17 @@ function initGUI (){
     f21.open()
 
     var f22 = gui.rightGui.addFolder('Render options')
-    f22.add(sceneParams, 'colorMode', { 'No colors': THREE.NoColors, 'Face colors': THREE.FaceColors ,
-        'VertexColors': THREE.VertexColors }).name('Color Mode').onFinishChange(function(){
-                console.log(sceneParams.colorMode)
-                setColorMode(objController.current, sceneParams.colorMode)
+    f22.add(sceneParams, 'colorMode', { 'No colors': THREE.NoColors, 'VertexColors': THREE.VertexColors })
+        .name('Color Mode').onFinishChange(function(){
+            console.log(sceneParams.colorMode)
+            setColorMode(objController.current, sceneParams.colorMode)
 
-            })
+        })
     f22.open()
     var f23 = gui.rightGui.addFolder('Camera controls')
-    f23.add(camera.position, 'x', -50,50,0.1).name('X Pos').listen().onChange(function(){
-        camera.lookAt(objController.current.position)
-    })
-    f23.add(camera.position, 'y', -50,50,0.1).name('Y Pos').listen().onChange(function(){
-        camera.lookAt(objController.current.position)
-    })
-    f23.add(camera.position, 'z', -50,50,0.1).name('Z Pos').listen().onChange(function(){
-        camera.lookAt(objController.current.position)
-    })
+    f23.add(camera.position, 'x', -50,50,0.1).name('X Pos').listen()
+    f23.add(camera.position, 'y', -50,50,0.1).name('Y Pos').listen()
+    f23.add(camera.position, 'z', -50,50,0.1).name('Z Pos').listen()
     f23.open()
 
     //Fullscreen activation key
@@ -394,10 +312,11 @@ connection.bind("newCollada", function(colladaName){
     if(!(colladaName in serverFiles)){
         console.log("A new collada was added in remote storage: " + colladaName)
         serverFiles.push(colladaName)
+        serverFiles.sort()
 
         if(window.confirm("A new captured model was added to remote storage. Load the model?")){
 
-           requestCollada(colladaName)
+            requestCollada(colladaName)
         }
 
         var select = gui.leftGui.fileList.domElement.children[0]
@@ -408,6 +327,7 @@ connection.bind("newCollada", function(colladaName){
 
 connection.bind("colladaList", function(list){
     serverFiles =  list.split(", ")
+    serverFiles.sort()
 
     serverFiles.forEach(function(name){
         var select = gui.leftGui.fileList.domElement.children[0]
@@ -433,8 +353,8 @@ connection.bind("loadCollada", function(data){
     //Parsing the COLLADA
     loader.parse( StringtoXML(data['collada']), function colladaReady( collada ) {
         var skin = collada.skins[0],
-                dae = collada.dae,
-                model = collada.scene
+            dae = collada.dae,
+            model = collada.scene
 
         console.log(collada)
 
@@ -442,7 +362,6 @@ connection.bind("loadCollada", function(data){
         setColorMode(model, sceneParams.colorMode)
 
         //console.log(collada)
-        model.scale.set(5,5,5)
         model.name = data['fileName']
 
 
@@ -455,18 +374,15 @@ connection.bind("loadCollada", function(data){
         loadedObjects.push(model)
 
         scene.add(model)
+
         console.log(scene)
         objController.setCurrent(model)
+
         gui.leftGui.objectControls.open()
+
         console.log(loadedObjects)
 
-   })
+    })
 
 
 })
-
-
-</script>
-
-</body>
-</html>

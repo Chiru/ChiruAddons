@@ -35,6 +35,8 @@ CloudProcessor::CloudProcessor() :
 CloudProcessor::~CloudProcessor()
 {
     SAFE_DELETE(kinect_capture_);
+    SAFE_DELETE(cloud_filter_);
+    SAFE_DELETE(register_);
 }
 
 void CloudProcessor::startCapture()
@@ -86,6 +88,12 @@ void CloudProcessor::handleLiveCloudUpdated(PointCloud::Ptr cloud)
 void CloudProcessor::finalizeCapturing()
 {
     kinect_capture_->stopCapture();
+}
+
+void CloudProcessor::setFilterPlanar(bool value)
+{
+    if(kinect_capture_)
+        kinect_capture_->setFilterPlanar(value);
 }
 
 void CloudProcessor::moveToOrigo(PointCloud::Ptr cloud)
