@@ -1,6 +1,7 @@
 #include "ColladaExporter.h"
 #include <pcl/point_types.h>
 #include <QFile>
+#include <QDate>
 
 namespace ObjectCapture
 {
@@ -17,6 +18,9 @@ void ColladaExporter::Export(pcl::PolygonMesh::Ptr inputmesh, QString filename)
 {
     input_mesh_ = inputmesh;
     QFile file(filename);
+    if (file.exists())
+        QFile::remove(filename);
+
     file.open(QIODevice::ReadWrite | QIODevice::Text);
 
     fs.setDevice(&file);
@@ -51,8 +55,8 @@ void ColladaExporter::writeAssets()
     //fs << "           <comments> </comments>\n";
     fs << "           <copyright>Copyright</copyright>\n";
     fs << "       </contributor>\n";
-    fs << "       <created>2012-07-15T11:41:05Z</created>\n";
-    fs << "       <modified>2012-07-16T11:41:05Z</modified>\n";
+    fs << "       <created>" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "</created>\n";
+    //fs << "       <modified>2012-07-16T11:41:05Z</modified>\n";
     fs << "       <unit meter=\"1\" name=\"meter\"/>\n";
     fs << "       <up_axis>Y_UP</up_axis>\n";
     fs << "   </asset>\n";
