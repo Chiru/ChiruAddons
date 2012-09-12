@@ -134,7 +134,7 @@ private:
     AssetAPI *assetAPI_;
 
     /// Pointers to collada storages
-    AssetStoragePtr storage_;
+    AssetStoragePtr remoteStorage_;
     AssetStoragePtr localStorage_;
 
     TundraLogic::Client *client_;

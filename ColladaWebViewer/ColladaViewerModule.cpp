@@ -6,6 +6,7 @@
 #include "Framework.h"
 
 #include <QFileInfo>
+#include <QFile>
 
 namespace ColladaViewer
 {
@@ -74,7 +75,6 @@ void ColladaViewerModule::Uninitialize()
 
 void ColladaViewerModule::Update(f64 frametime)
 {
-
 
 }
 
@@ -178,6 +178,7 @@ void ColladaViewerModule::processEvent(QString event, QString data, QString clie
 
             ptree data;
             data.put<string>("list", assetList.join(", ").toStdString());
+            data.put<string>("storageUrl", remoteStorageUrl);
 
             json = websocketManager_->createEventMsg("colladaList", data);
             websocketManager_->sendJsonToClient(json, clientId.toStdString());
@@ -189,8 +190,8 @@ void ColladaViewerModule::parseKnetMessage(UserConnection *connection, kNet::pac
 {
     if (id == 200){
         LogDebug("Got a remote collada storage refresh request");
-        if(storage_)
-           storage_->RefreshAssetRefs();
+        if(remoteStorage_)
+           remoteStorage_->RefreshAssetRefs();
     }
 }
 
@@ -224,17 +225,17 @@ void ColladaViewerModule::clientProcess()
 void ColladaViewerModule::storageAdded(AssetStoragePtr storage)
 {
     if(storage->Type() == "HttpAssetStorage" && storage->Name() == "colladaStorage"){
-        storage_ = storage;
-        LogInfo("Added a remote collada storage: " + storage_->ToString());
+        remoteStorage_ = storage;
+        LogInfo("Added a remote collada storage: " + remoteStorage_->ToString());
 
         // Listening for assets changes in the remote storage
-        bool check = connect(storage_.get(), SIGNAL(AssetChanged(QString,QString,IAssetStorage::ChangeType)),
+        bool check = connect(remoteStorage_.get(), SIGNAL(AssetChanged(QString,QString,IAssetStorage::ChangeType)),
                              this, SLOT(remoteAssetChanged(QString,QString,IAssetStorage::ChangeType)), Qt::QueuedConnection);
         Q_ASSERT(check);
 
 
         //Getting all the asset refs from remote storage
-        storage_->RefreshAssetRefs();
+        remoteStorage_->RefreshAssetRefs();
 
     }else if(storage->Type() == "LocalAssetStorage" && storage->Name() == "localColladaStorage"){
         localStorage_ = storage;
@@ -259,60 +260,7 @@ void ColladaViewerModule::remoteAssetChanged(QString localName, QString diskSour
     switch(change)
     {
     case 0: {
-        LogInfo("A new file was found at: " + storage_->ToString() + " " + localName);
-
-        //Checking if the file has been already stored in local storage
-        if (localStorage_){
-            LogDebug("Checking if file: " + localName + " is in local storage...");
-            if(assetAPI_->GetAsset(localName)){
-                LogDebug("The file is in local storage: "+ assetAPI_->GetAsset(localName)->DiskSource());
-            }else{
-                LogDebug("The file is not in local storage.");
-            }
-        }
-
-        if(isServer && !assetAPI_->GetAsset(localName)){
-            LogInfo("Requesting captured collada from the remote storage...");
-
-            QString fullUrl = storage_->GetFullAssetURL(localName);
-
-            //Requesting the collada file for download in a hackyish way
-            AssetTransferPtr con = assetAPI_->GetProviderForAssetRef(fullUrl, "Binary")->RequestAsset(fullUrl, "Binary");
-
-            // This call tries to download the collada files as ogre meshes even when forcing the type to binary
-            // and crashes :|
-            //AssetTransferPtr con = assetAPI_->RequestAsset(storage_->GetFullAssetURL(localName), "Binary");
-
-            if(con)
-            {
-                bool check = connect(con.get(), SIGNAL(Downloaded(IAssetTransfer *)), this,
-                                     SLOT(downloadCompleted(IAssetTransfer *)), Qt::QueuedConnection);
-                Q_ASSERT(check);
-                check = connect(con.get(), SIGNAL(Failed(IAssetTransfer *, QString)), this,
-                                SLOT(downloadFailed(IAssetTransfer *, QString)), Qt::QueuedConnection);
-                Q_ASSERT(check);
-            }
-        }
-
-
-        break;
-    }
-    case 1:
-        LogInfo("A file was modified at: " + storage_->ToString() + localName);
-        break;
-    case 2:
-        LogInfo("A file was deleted from: " + storage_->ToString() + localName);
-        break;
-    }
-}
-
-
-void ColladaViewerModule::localAssetChanged(QString localName, QString diskSource, IAssetStorage::ChangeType change)
-{
-    switch(change)
-    {
-    case 0: {
-        LogInfo("A new file was added to: " + localStorage_->ToString() + " " + localName);
+        LogInfo("A new file was found at: " + remoteStorage_->ToString() + " " + localName);
 
         if(isServer){
 
@@ -331,6 +279,70 @@ void ColladaViewerModule::localAssetChanged(QString localName, QString diskSourc
             json = websocketManager_->createEventMsg("newCollada", data);
             websocketManager_->sendJsonToClients(json);
         }
+
+        //Checking if the file has been already stored in local storage
+        if (localStorage_){
+            LogDebug("Checking if file: " + localName + " is in local storage...");
+            if(assetAPI_->GetAsset(localName)){
+                LogDebug("The file is in local storage: "+ assetAPI_->GetAsset(localName)->DiskSource());
+            }else{
+                LogDebug("The file is not in local storage.");
+            }
+        }
+
+        if(isServer && !assetAPI_->GetAsset(localName)){
+            LogInfo("Requesting captured collada from the remote storage...");
+
+            QString fullUrl = remoteStorage_->GetFullAssetURL(localName);
+
+            //Requesting the collada file for download in a hackyish way
+            AssetTransferPtr con = assetAPI_->GetProviderForAssetRef(fullUrl, "Binary")->RequestAsset(fullUrl, "Binary");
+
+            // This call tries to download the collada files as ogre meshes even when forcing the type to binary
+            // and crashes :|
+            //AssetTransferPtr con = assetAPI_->RequestAsset(remoteStorage_->GetFullAssetURL(localName), "Binary");
+
+            if(con)
+            {
+                bool check = connect(con.get(), SIGNAL(Downloaded(IAssetTransfer *)), this,
+                                     SLOT(downloadCompleted(IAssetTransfer *)), Qt::QueuedConnection);
+                Q_ASSERT(check);
+                check = connect(con.get(), SIGNAL(Failed(IAssetTransfer *, QString)), this,
+                                SLOT(downloadFailed(IAssetTransfer *, QString)), Qt::QueuedConnection);
+                Q_ASSERT(check);
+            }
+        }
+
+
+        break;
+    }
+    case 1:
+        LogInfo("A file was modified at: " + remoteStorage_->ToString() + localName);
+        break;
+    case 2:
+        LogInfo("A file was deleted from: " + remoteStorage_->ToString() + localName);
+
+        assetList.removeOne(localName);
+
+        string json;
+
+        ptree data;
+        data.put<string>("fileName", localName.toStdString());
+
+        json = websocketManager_->createEventMsg("removeCollada", data);
+        websocketManager_->sendJsonToClients(json);
+
+        break;
+    }
+}
+
+
+void ColladaViewerModule::localAssetChanged(QString localName, QString diskSource, IAssetStorage::ChangeType change)
+{
+    switch(change)
+    {
+    case 0: {
+        LogInfo("A new file was added to: " + localStorage_->ToString() + " " + localName);
         break;
     }
     case 1:
@@ -338,8 +350,6 @@ void ColladaViewerModule::localAssetChanged(QString localName, QString diskSourc
         break;
     case 2:
         LogInfo("A file was deleted from: " + localStorage_->ToString() + localName);
-
-        assetList.removeOne(localName);
 
         break;
     }
@@ -371,9 +381,11 @@ void ColladaViewerModule::sendFileToLocalStorage(QString fileRef)
 
     if(localStorage_)
     {
+
         LogDebug("Local collada path: " + fileRef);
 
         QFileInfo pathInfo(assetAPI_->DesanitateAssetRef(fileRef));
+        /*
         AssetUploadTransferPtr con =  assetAPI_->UploadAssetFromFile(fileRef,
                                          QString("localColladaStorage"), pathInfo.fileName());
 
@@ -388,6 +400,22 @@ void ColladaViewerModule::sendFileToLocalStorage(QString fileRef)
 
             LogInfo("Saving collada file to a local storage...");
         }
+        */
+
+        //Checking if the downloaded file exists in tmp storage
+        QFile tmpFile(fileRef);
+        if (!tmpFile.exists()){
+            LogDebug("The downloaded COLLADA file was not found at: " + fileRef);
+            return;
+        }
+
+        LogInfo("Saving collada file to a local storage...");
+
+        //Moving downloaded files from tmp location to local storage
+        if(!tmpFile.rename(fileRef, QString::fromStdString(localStorageUrl) + pathInfo.fileName())) {
+            LogInfo("Failed to move file " + pathInfo.fileName() + " to local storage");
+        }
+
     }
 }
 
@@ -424,13 +452,15 @@ void ColladaViewerModule::uploadFailed(IAssetUploadTransfer *transfer)
 
 void ColladaViewerModule::downloadCompleted(IAssetTransfer *transfer)
 {
-    LogInfo("Downloaded a collada-file: " +transfer->SourceUrl());
+    if(transfer){
+        LogInfo("Downloaded a collada-file: " + transfer->SourceUrl());
 
-    //Moving the downloaded file from cache to local storage
-    if(localStorage_ && transfer){
-        AssetPtr asset = transfer->Asset();
-        if(asset && !asset->DiskSource().isEmpty())
-            sendFileToLocalStorage(asset->DiskSource());
+        //Moving the downloaded file from cache to local storage
+        if(localStorage_){
+            AssetPtr asset = transfer->Asset();
+            if(asset && !asset->DiskSource().isEmpty())
+                sendFileToLocalStorage(asset->DiskSource());
+        }
     }
 }
 
