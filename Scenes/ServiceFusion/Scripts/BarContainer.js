@@ -91,6 +91,7 @@ SongContainer.prototype.DisplaySong = function(song)
 
     label2 = new QLabel(song.artist + "\n\n" + song.song);
     debugmsg("setting label texts");
+    label2.objectName = "song_artist";
     label2.alignment = 0x1 | 0x20
     label2.font = new QFont("FreeSans", 24);
     label2.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);

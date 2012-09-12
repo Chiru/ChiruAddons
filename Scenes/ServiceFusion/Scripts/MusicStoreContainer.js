@@ -5,6 +5,7 @@ engine.IncludeFile("RdfVocabulary.js");
 engine.IncludeFile("VisualContainerUtils.js");
 engine.IncludeFile("Log.js");
 engine.IncludeFile("Localisation.js");
+engine.IncludeFile("DjOnlineClient.js")
 
 var titleWidget = null;
 
@@ -146,14 +147,17 @@ MusicStoreContainer.prototype.DisplaySong = function(song)
     AddStatement(musicVisual, RdfVocabulary.baseUri, RdfVocabulary.data, song.artist);
 
     // Initialize title/artist Label
-    var label2 = new QLabel(song.title + "\n" + song.artist.toUpperCase());
+    var label2 = new QLabel(song.song + "\n" + song.artist.toUpperCase());
     label2.font = new QFont("FreeSans", 12);
     label2.setSizePolicy (QSizePolicy.Expanding, QSizePolicy.Preffered);
     label2.styleSheet = "margin-right:20px;";
     main.layout().addWidget(label2, null, null);
 
     // Initalize price label
+    if (song.price === undefined)
+	song.price = 0.99
     var label = new QLabel(song.price.toString() + "e");
+    print("set price in label to " + label.text);
     label.font = new QFont("FreeSans", 18, 75);
     label.alignment = 0x0002 | 0x0020; // Qt::AlignLeft | Qt::AlignTop
     main.layout().addWidget(label, null, null);
@@ -188,8 +192,10 @@ MusicStoreContainer.prototype.OnDropEvent = function(e)
             if(entityVisible === undefined || entityVisible === false)
                 sceneinteract.EntityClicked(iconEntity, 0x00000001, r);
 
-            var song = Song.FromString(songLabel.text);
+            // var song = Song.FromString(songLabel.text);
+            var song = parse_description("00:00:00 " + songLabel.text.replace("\n\n", " - "));
             song.price = Math.floor(Math.random() * 5 + 1); // Random price since this is fake search
+	    print("random price: " + song.price);
             if(song)
                 this.DisplaySong(song);
         }
