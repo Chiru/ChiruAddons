@@ -3,8 +3,12 @@
 <head>
     <title>Tundra ColladaViewer Client</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <style>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=0.5, maximum-scale=1.0 target-densitydpi=device-dpi" />
+    <style type="text/css">
+        html {
+            -webkit-text-size-adjust: 50%;
+            -moz-text-size-adjust: 50%;
+        }
         body {
             font-family: Monospace;
             background-color: #000000;
@@ -72,9 +76,11 @@
 
 <div id="leftGui"></div>
 <div id="rightGui"></div>
+
 <div id="horizon">
     <div id="loading"></div>
 </div>
+
 <div id="container"></div>
 
 <script type="text/javascript" src="js/main.js"></script>

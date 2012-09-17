@@ -1,18 +1,25 @@
 
-//Url parser
-var ip = location.hash.substr(1)
-console.log("ip: " + ip)
-
 if (!Detector.webgl)
     Detector.addGetWebGLMessage()
 
 
-var camera, scene, renderer, container, loadedObjects = [], objController,
-    pointLight,
-    controls, gui = {},
-    sceneParams = {"colorMode": THREE.VertexColors}
+var _container,  _objController,
+    _sceneController = {
+        loadedObjects: [],
+        renderer: {},
+        camera: {},
+        pointLight: {},
+        scene: {},
+        sceneParams: {'colorMode': THREE.VertexColors},
+        controls: {}
+    },
+    _gui = {}
 
-var connection, storageUrl = "", serverFiles = []
+var _connection = {
+    serverFiles: [],
+    storageUrl: "",
+    wsManager: {}
+}
 
 
 //Parsing remote storage url
@@ -55,7 +62,7 @@ function windowResize (renderer, camera){
         renderer.setSize(window.innerWidth, window.innerHeight)
         camera.aspect = window.innerWidth / window.innerHeight
         camera.updateProjectionMatrix()
-        controls.handleResize()
+        _sceneController.controls.handleResize()
     }
     window.addEventListener('resize', callback, false)
 
@@ -107,125 +114,82 @@ function StringtoXML(string){
 */
 
 function initWSConnection() {
-//Opening a websocket connection
-    if(!ip)
-        ip = "127.0.0.1"
+    var ip = "", port = ""
+    var parsedAddress = parseUri(location)
 
-    connection = new WSManager(ip, "9002")
+    //Parsing ip and port from address bar (uses ?ip=IP&port=PORT)
+    if(parsedAddress.queryKey){
+       var keys = parsedAddress.queryKey
+        if(keys.ip){
+            ip = keys.ip
+        }else{
+            ip = "127.0.0.1"
+        }
+        if(keys.port){
+            port = keys.port
+        }else{
+            port = "9002"
+        }
+    }
 
+    console.log("Websocket ip: " + ip + " and port: " + port)
 
-    connection.bind("newCollada", function(colladaName){
-        if(!(colladaName in serverFiles)){
+    //Opening a websocket connection
+    _connection.wsManager = new WSManager(ip, port)
+
+    _connection.wsManager.bind("newCollada", function(colladaName){
+        if(!(colladaName in _connection.serverFiles)){
             console.log("A new collada was added in remote storage: " + colladaName)
-            serverFiles.push(colladaName)
-            serverFiles.sort()
+            _connection.serverFiles.push(colladaName)
+            _connection.serverFiles.sort()
 
             if(window.confirm("A new captured model was added to remote storage. Load the model?")){
 
                 requestCollada(colladaName)
             }
 
-            var select = gui.leftGui.fileList.domElement.children[0]
+            var select = _gui.leftGui.fileList.domElement.children[0]
             select.options[select.options.length] = new Option(colladaName, colladaName)
-            console.log(serverFiles)
+            console.log(_connection.serverFiles)
         }
     })
 
-    connection.bind("colladaList", function(data){
-        serverFiles =  data['list'].split(", ")
-        serverFiles.sort()
+    _connection.wsManager.bind("colladaList", function(data){
+        _connection.serverFiles =  data['list'].split(", ")
+        _connection.serverFiles.sort()
 
-        serverFiles.forEach(function(name){
-            var select = gui.leftGui.fileList.domElement.children[0]
-            select.options[select.options.length] = new Option(name, name)
+        var select = _gui.leftGui.fileList.domElement.children[0]
+        _connection.serverFiles.forEach(function(name){
+            select.options.add(new Option(name, name))
         })
-        console.log(serverFiles)
 
-        storageUrl = setStorageUrl(data['storageUrl'])
-        console.log(storageUrl)
+        _connection.storageUrl = setStorageUrl(data['storageUrl'])
 
     })
 
-    /*
-     //Binding collada loader function to websocket event
-     connection.bind("loadCollada", function(data){
-     console.log("loading collada")
+    _connection.wsManager.bind("disconnected", function() {
+        console.log("WebSocket closed.")
 
-     if(!data['collada'])
-     return
-
-     if(!data['fileName'])
-     return
-     var loader = new THREE.ColladaLoader()
-
-     loader.options.convertUpAxis = true
-
-     //Parsing the COLLADA
-     loader.parse( StringtoXML(data['collada']), function colladaReady( collada ) {
-     var skin = collada.skins[0],
-     dae = collada.dae,
-     model = collada.scene
-
-     console.log(collada)
-
-     //Changing colormode of the collada model
-     setColorMode(model, sceneParams.colorMode)
-
-     //console.log(collada)
-     model.name = data['fileName']
-
-
-     objController.loadNext = ""
-
-     if(loadedObjects.length > 0){
-     toggleVisibility(loadedObjects[loadedObjects.length -1])
-     }
-
-     loadedObjects.push(model)
-
-     scene.add(model)
-
-     console.log(scene)
-     objController.setCurrent(model)
-
-     gui.leftGui.objectControls.open()
-
-     console.log(loadedObjects)
-
-     })
-
-
-     })
-
-     */
-
-}
-
-/*
-// Request collada through webSocket
-function requestCollada(colladaName){
-    for (var i=0; i < loadedObjects.length; i++){
-        if(loadedObjects[i].name == colladaName){
-            toggleVisibility(objController.current)
-            toggleVisibility(loadedObjects[i])
-            console.log(colladaName + " is loaded alredy.")
-            console.log(objController.current)
-            return
+        //Removing all the references to the assets
+        _connection.serverFiles.length = 0
+        var select = _gui.leftGui.fileList.domElement.children[0]
+        while(select.options.length > 1) {
+            select.options[1] = null
         }
-    }
-    connection.ws.send(JSON.stringify({event:"requestCollada", data:colladaName}))
-
+    })
 }
-*/
+
 
 // Request collada through http
 function requestCollada(colladaName){
+    var loadedObjects = _sceneController.loadedObjects
     for (var i=0; i < loadedObjects.length; i++){
         if(loadedObjects[i].name == colladaName){
-            toggleVisibility(objController.current)
-            toggleVisibility(loadedObjects[i])
             console.log(colladaName + " is loaded alredy.")
-            console.log(objController.current)
+            removeFromScene(_objController.current)
+            addToScene(loadedObjects[i])
+            _objController.setCurrent(loadedObjects[i])
+
             return
         }
     }
@@ -234,60 +198,89 @@ function requestCollada(colladaName){
 
     loader.options.convertUpAxis = true
 
-    loader.load(storageUrl + colladaName, function colladaReady(collada) {
-        var skin = collada.skins[0],
-            dae = collada.dae,
-            model = collada.scene
-
-        console.log(collada)
+    loader.load(_connection.storageUrl + colladaName, function colladaReady(collada) {
+        var model = collada.scene
 
         //Changing colormode of the collada model
-        setColorMode(model, sceneParams.colorMode)
+        setColorMode(model, _sceneController.sceneParams.colorMode)
 
         //console.log(collada)
         model.name = colladaName
 
 
-        objController.loadNext = ""
+        _objController.loadNext = ""
 
         if(loadedObjects.length > 0){
-            toggleVisibility(loadedObjects[loadedObjects.length -1])
+            //removeFromScene(loadedObjects[loadedObjects.length-1])
+            clearScene()
+            console.log("removed earlier object from scene")
         }
 
         loadedObjects.push(model)
+        addToScene(model)
 
-        scene.add(model)
+        //Freeing memory by removing objects
+        cleanScene()
 
-        console.log(scene)
-        objController.setCurrent(model)
+        _objController.setCurrent(model)
 
-        gui.leftGui.objectControls.open()
+        _gui.leftGui.objectControls.open()
 
-        console.log(loadedObjects)
 
+        //debugging
+        var names = []
+        loadedObjects.forEach(function(object){
+            names.push(object.name)
+        })
+        console.log(names)
+
+        console.log(_sceneController.renderer.info.memory)
+        console.log(model)
         showInfoMsg()
+        console.log(_sceneController.scene)
 
     }, function progress(data){
         showInfoMsg("Downloading model... " + " Loaded: " + Math.ceil((data.loaded / 1000000)*100)/100 + " MB")
     })
 
 
-    showInfoMsg("Downloading model...")
-    console.log("Requested file: " + storageUrl + colladaName)
+    showInfoMsg("Requesting model...")
+    console.log("Requested file: " + _connection.storageUrl + colladaName)
+
+
 
 }
 
-function toggleVisibility(object){
-    object['visible'] = !object['visible']
+function addToScene(object) {
+    _sceneController.scene.add(object)
+}
 
-    THREE.SceneUtils.traverseHierarchy(object, function ( object ) {
-        if (object.children === null || object.children.length == 0)
-            object['visible'] = !object['visible']
-    })
+function removeFromScene(object) {
+    _sceneController.scene.remove(object)
+    _sceneController.renderer.deallocateObject(object)
+}
 
-    if (object['visible'])
-        objController.setCurrent(object)
+function clearScene() {
+    var obj, i
+    var scene = _sceneController.scene
 
+    //Removes all objects (but not the floor/camera
+    for (i = scene.children.length - 1; i >= 0 ; i --) {
+        obj = scene.children[i]
+        if(!(obj instanceof THREE.Camera || obj instanceof THREE.Mesh || obj instanceof THREE.Light) )
+            scene.remove(obj)
+    }
+}
+
+function cleanScene() {
+    var objects = _sceneController.loadedObjects
+    if(objects.length > 4){
+        while(objects.length > 4){
+            console.log("removing object: " +objects[0].name)
+            removeFromScene(objects[0])
+            objects.splice(0,1)
+        }
+    }
 }
 
 
@@ -295,20 +288,20 @@ function toggleVisibility(object){
 function init() {
 
     //Creates the container and scene
-    container = document.getElementById('container')
+    _container = document.getElementById('container')
     //document.body.appendChild( container )
 
-    scene = new THREE.Scene()
+    var scene = _sceneController.scene = new THREE.Scene()
 
     // Camera
-    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 )
+    var camera = _sceneController.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 )
     camera.position.set(17, 10, 15)
     camera.lookAt(scene.position)
 
     scene.add( camera )
 
     // Lights
-    pointLight = new THREE.PointLight(0xffffff)
+    var pointLight = _sceneController.pointLight = new THREE.PointLight(0xffffff)
     pointLight.intensity = 2
     scene.add(pointLight)
     scene.add(new THREE.AmbientLight(0xffffff))
@@ -322,19 +315,19 @@ function init() {
     scene.add(floor)
 
     // RENDERER
-    renderer = new THREE.WebGLRenderer({
+    var renderer = _sceneController.renderer = new THREE.WebGLRenderer({
         antialias: true,	// to get smoother output
         preserveDrawingBuffer: false	// true to allow screenshot
     })
     renderer.setClearColorHex( 0xBBBBBB, 1 )
     renderer.setSize(window.innerWidth, window.innerHeight)
-    container.appendChild(renderer.domElement)
+    _container.appendChild(renderer.domElement)
 
 
     //Initializes object focus change controller
-    objController = new THREE.Object3D()
+    _objController = new THREE.Object3D()
 
-    objController.setCurrent = function(current) {
+    _objController.setCurrent = function(current) {
         this.current = current
         if (this.current) {
             this.position.x = current.position.x
@@ -352,14 +345,14 @@ function init() {
         }
     }
 
-    objController.loadNext = ""
-    objController.loading = false
+    _objController.loadNext = ""
+    _objController.loading = false
 
     // TRACKBALL CAMERA CONTROLS
 
     //passing renderer.context will pass WebGL canvas to the controls and stop them interfering with GUI
-    controls = new THREE.TrackballControls(camera, renderer.domElement)
-    controls.rotateSpeed = 0.8
+    var controls = _sceneController.controls = new THREE.TrackballControls(camera, renderer.domElement)
+    controls.rotateSpeed = 0.7
     controls.zoomSpeed = 0.9
     controls.panSpeed = 0.4
     controls.staticMoving = false
@@ -369,7 +362,7 @@ function init() {
     console.log(controls)
 
     //Windows resize listener
-    windowResize(renderer, camera)
+    windowResize(_sceneController.renderer, _sceneController.camera)
 
 }
 
@@ -377,72 +370,76 @@ function init() {
 // GUI
 
 function initGUI (){
-    gui.leftGui = new dat.GUI({autoPlace: false})
-    var leftContainer = document.getElementById('leftGui')
-    leftContainer.appendChild(gui.leftGui.domElement)
-    var modelScale = objController.scale
-    var modelPos = objController.position
-    var modelRot = objController.rotation
+    _gui.leftGui = new dat.GUI({autoPlace: false})
+    var leftContainer = document.getElementById('leftGui');
+    leftContainer.appendChild(_gui.leftGui.domElement)
+    var modelScale = _objController.scale
+    var modelPos = _objController.position
+    var modelRot = _objController.rotation
+    var sceneParams = _sceneController.sceneParams
+    var pointLight = _sceneController.pointLight
+    var camera = _sceneController.camera
+
     modelRot.degrees = new THREE.Vector3(0.0, 0.0, 0.0)
-    objController.scaleFactor = 1.0
+    _objController.scaleFactor = 1.0
 
 
-    var f11 = gui.leftGui.addFolder('File controls')
-    gui.leftGui.fileList = f11.add(objController, 'loadNext').options(serverFiles).onFinishChange(function(){
-        if(objController.loadNext != "" && !objController.loading)
-            requestCollada(objController.loadNext)
+    var f11 = _gui.leftGui.addFolder('File controls')
+    _gui.leftGui.fileList = f11.add(_objController, 'loadNext').options(_connection.serverFiles).onFinishChange(function(){
+        if(_objController.loadNext != "" && !_objController.loading)
+            requestCollada(_objController.loadNext)
     })
-    var select = gui.leftGui.fileList.domElement.children[0]
+    var select = _gui.leftGui.fileList.domElement.children[0]
     select.options[select.options.length] = new Option('Choose collada', '')
 
     f11.open()
 
-    var f12 = gui.leftGui.objectControls = gui.leftGui.addFolder('Object controls')
+    var f12 = _gui.leftGui.objectControls = _gui.leftGui.addFolder('Object controls')
     f12.add(modelPos, 'x', -15, 15, 0.1).name('X Pos').listen().onChange(function(val){
-        objController.current.position.x = val
+        _objController.current.position.x = val
     })
     f12.add(modelPos, 'y', -10.0, 10, 0.05).name('Y Pos').listen().onChange(function(val){
-        objController.current.position.y = val
+        _objController.current.position.y = val
     })
     f12.add(modelPos, 'z', -15, 15, 0.1).name('Z Pos').listen().onChange(function(val){
-        objController.current.position.z = val
+        _objController.current.position.z = val
     })
     f12.add(modelRot.degrees, 'x', -180.0, 180.0, 0.1).name('X Rot').listen().onChange(function(){
-        objController.current.rotation.x = modelRot.degrees.x * Math.PI / 180
+        _objController.current.rotation.x = modelRot.degrees.x * Math.PI / 180
     })
     f12.add(modelRot.degrees, 'y', -180.0, 180, 0.1).name('Y Rot').listen().onChange(function(){
-        objController.current.rotation.y = modelRot.degrees.y * Math.PI / 180
+        _objController.current.rotation.y = modelRot.degrees.y * Math.PI / 180
     })
     f12.add(modelRot.degrees, 'z', -180.0, 180, 0.1).name('Z Rot').listen().onChange(function(){
-        objController.current.rotation.z = modelRot.degrees.z * Math.PI / 180
+        _objController.current.rotation.z = modelRot.degrees.z * Math.PI / 180
     })
     f12.add(modelScale, 'x', 0.01, 4.00, 0.01).name('Scale x').listen().onChange(function(val){
-        objController.current.scale.x = val
+        _objController.current.scale.x = val
     })
     f12.add(modelScale, 'y', 0.01, 4.00, 0.01).name('Scale y').listen().onChange(function(val){
-        objController.current.scale.y = val
+        _objController.current.scale.y = val
     })
     f12.add(modelScale, 'z', 0.01, 4.00, 0.01).name('Scale z').listen().onChange(function(val){
-        objController.current.scale.z = val
+        _objController.current.scale.z = val
     })
 
-    gui.rightGui = new dat.GUI({autoPlace: false})
+    _gui.rightGui = new dat.GUI({autoPlace: false})
     var rightContainer = document.getElementById('rightGui')
-    rightContainer.appendChild(gui.rightGui.domElement)
+    rightContainer.appendChild(_gui.rightGui.domElement)
 
-    var f21 = gui.rightGui.addFolder('Light settings')
+    var f21 = _gui.rightGui.addFolder('Light settings')
     f21.add(pointLight, 'intensity', 0.1, 2).step(0.1)
     f21.open()
 
-    var f22 = gui.rightGui.addFolder('Render options')
+    var f22 = _gui.rightGui.addFolder('Render options')
     f22.add(sceneParams, 'colorMode', { 'No colors': THREE.NoColors, 'VertexColors': THREE.VertexColors })
         .name('Color Mode').onFinishChange(function(){
             console.log(sceneParams.colorMode)
-            setColorMode(objController.current, sceneParams.colorMode)
+            setColorMode(_objController.current, sceneParams.colorMode)
 
         })
     f22.open()
-    var f23 = gui.rightGui.addFolder('Camera controls')
+    var f23 = _gui.rightGui.addFolder('Camera controls')
     f23.add(camera.position, 'x', -50,50,0.1).name('X Pos').listen()
     f23.add(camera.position, 'y', -50,50,0.1).name('Y Pos').listen()
     f23.add(camera.position, 'z', -50,50,0.1).name('Z Pos').listen()
@@ -459,7 +456,7 @@ function initGUI (){
 function loop() {
 
     requestAnimationFrame(loop)
-    controls.update()
+    _sceneController.controls.update()
 
     render()
 
@@ -468,16 +465,17 @@ function loop() {
 
 //The render function
 function render() {
-
+    var pointLight = _sceneController.pointLight
+    var camera = _sceneController.camera
     pointLight.position.x = camera.position.x
     pointLight.position.y = camera.position.y
     pointLight.position.z = camera.position.z
 
-    if(objController.current){
-        pointLight.lookAt(objController.current.position)
+    if(_objController.current){
+        pointLight.lookAt(_objController.current.position)
     }
 
-    renderer.render(scene, camera)
+    _sceneController.renderer.render(_sceneController.scene, camera)
 
 }
 

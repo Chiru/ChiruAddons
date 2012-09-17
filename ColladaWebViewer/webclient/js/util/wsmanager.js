@@ -19,7 +19,7 @@ function alertBox(msg) {
             newDiv.style.left = '50%'
             newDiv.style.marginLeft = '-200px'
             newDiv.style.fontFamily = 'Impact, Charcoal, sans-serif'
-            newDiv.style.fontSize = '25px'
+            newDiv.style.fontSize = '1.5em'
             newDiv.style.fontWeight = 'bold'
             newDiv.style.textAlign = 'center'
             newDiv.style.textShadow = '0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 10px rgba(0, 0, 0, 0.1), 0 8px 9px rgba(0, 0, 0, 0.1)'
@@ -34,15 +34,28 @@ function alertBox(msg) {
 
 }
 
-var WSManager = function (host, port, reconnectInterval){
+var WSManager = function (host, port, options){
     this.url = "ws://" + host + ":" + port
     this.ws = null
     this.reconnecting = false
+    this.connectTimer = null
+
+    var defaultOpt = {
+        reconnectInterval: 4000,
+        timeout: 5000
+    }
+    if(typeof(options === 'undefined'))
+        options = defaultOpt
 
     //Reconnection interval time (milliseconds)
-    if(typeof(reconnectInterval)==='undefined') reconnectInterval = 4000
+    if(typeof(options.reconnectInterval)==='undefined') options.reconnectInterval = defaultOpt.reconnectInterval
 
-    this.reconnectInterval = reconnectInterval
+    this.reconnectInterval = options.reconnectInterval
+
+    //Connection attempt timeout (milliseconds)
+    if(typeof(options.timeout)==='undefined') options.timeout = defaultOpt.timeout
+
+    this.timeout = options.timeout
 
     //Storage for bound callback events
     this.callbacks = {}
@@ -58,10 +71,15 @@ var WSManager = function (host, port, reconnectInterval){
             return
         }
 
+
         this.ws.onopen = function() {
+            if(this.connectTimer != null){
+                clearTimeout(this.connectTimer)
+                this.connectTimer = null
+            }
+            console.log("WebSocket connection opened.")
             alertBox("Connected to server!")
             setTimeout(function() {alertBox()}, 2000)
-
             this.reconnecting = false
 
             //this.send(JSON.stringify({event:"requestCollada", data:"/var/lib/CapturedChair.dae"}))
@@ -73,19 +91,37 @@ var WSManager = function (host, port, reconnectInterval){
         }.bind(this)
 
         this.ws.onclose = function(evt) {
-            if(!this.reconnecting)
-                alertBox("WebSocket connection closed. Attempting to reconnect...")
+            if(this.connectTimer != null){
+                clearTimeout(this.connectTimer)
+                this.connectTimer = null
+            }
+
+            if(!this.reconnecting){
+                alertBox("WebSocket connection failed. Attempting to reconnect...")
+                this.triggerEvent("disconnected")
+            }
             console.log("Reconnecting in " + this.reconnectInterval/1000 + " seconds...")
             this.reconnecting = true
             this.ws = null
+
             setTimeout(function() {
                 connect(url)
             }, this.reconnectInterval)
         }.bind(this)
 
         this.ws.onerror = function(e) {
-            console.log("Error:"+ e)
+            console.log(e)
+            alertBox("WebSocket error: " + e.message)
         }
+
+
+        //Timeout for connection attempt
+        this.connectTimer = setTimeout(function() {
+            this.ws.readyState = this.ws.CLOSED
+            this.ws.onclose()
+            this.connectTimer = null
+        }.bind(this), this.timeout)
+
     }.bind(this)
 
     connect(this.url)
@@ -120,6 +156,7 @@ WSManager.prototype.triggerEvent = function(eventName, message){
     var eventChain = this.callbacks[eventName];
     if(typeof eventChain == 'undefined'){
         console.log("Error: Received an unknown event: " + eventName)
+        return;
     }
     for(var i = 0; i < eventChain.length; i++){
         eventChain[i](message)
