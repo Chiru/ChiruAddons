@@ -5,8 +5,6 @@
 #include "StableHeaders.h"
 #include "AssetAPI.h"
 #include "AssetModule.h"
-#include "IAssetUploadTransfer.h"
-#include "IAssetTransfer.h"
 #include "HttpAssetProvider.h"
 
 #include <kNet.h>
@@ -90,15 +88,7 @@ public:
     /// IModule override.
     void Update(f64 frametime);
 
-    /// Utility functions
-
-    // Loads a collada file to a string
-    int loadColladaToString(string path, string &data);
-
 public slots:
-
-    // Sends a collada file to alocal/remote storage
-    void sendFileToLocalStorage(QString fileRef);
 
     // Starts a server side process
     void serverProcess();
@@ -109,18 +99,12 @@ public slots:
     // Processes events and data that came from websocket manager
     void processEvent(QString event, QString data, QString clientId);
 
-    /// Transfer handlers
-
     void uploadCompleted(QString assetRef);
-    void uploadFailed(IAssetUploadTransfer * transfer);
-    void downloadCompleted(IAssetTransfer *transfer);
-    void downloadFailed(IAssetTransfer *transfer, QString reason);
 
 
     /// Storage event handlers
 
     void remoteAssetChanged(QString localName, QString diskSource, IAssetStorage::ChangeType change);
-    void localAssetChanged(QString localName, QString diskSource, IAssetStorage::ChangeType change);
     void storageAdded(AssetStoragePtr storage);
 
     void parseKnetMessage(UserConnection *connection, kNet::packet_id_t, kNet::message_id_t id, const char* data, size_t numBytes);
@@ -135,7 +119,6 @@ private:
 
     /// Pointers to collada storages
     AssetStoragePtr remoteStorage_;
-    AssetStoragePtr localStorage_;
 
     TundraLogic::Client *client_;
     TundraLogic::Server *server_;
@@ -144,9 +127,8 @@ private:
     unsigned short websocketPort;
 
     string remoteStorageUrl;
-    string localStorageUrl;
 
-    /// A List for keeping track of collada files that are stored in the local storage
+    /// A List for keeping track of collada files that are stored in the remote storage
     // This list is send to web clients when they connect so they know what assets they can currently request
     QStringList assetList;
 
