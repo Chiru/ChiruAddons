@@ -22,8 +22,6 @@ public:
     CloudProcessor();
     ~CloudProcessor();
 
-    PointCloud::Ptr finalCloud() const;
-
 public slots:
     /// Starts the capturing interface
     void startCapture();
@@ -41,6 +39,9 @@ public slots:
     void finalizeCapturing();
 
     void setFilterPlanar(bool value);
+
+    /// Returns boost shared pointer to final point cloud
+    PointCloud::Ptr finalCloud() const;
 
 signals:
     void liveFeedUpdated(const QImage &frame);
