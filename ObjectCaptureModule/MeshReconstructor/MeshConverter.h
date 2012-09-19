@@ -7,7 +7,6 @@
 #include "pcl/PolygonMesh.h"
 #include "OgreModuleFwd.h"
 #include "OgreRenderOperation.h"
-#include "Entity.h"
 
 class Framework;
 class Scene;

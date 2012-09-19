@@ -6,5 +6,8 @@ cmake_install.cmake
 *.o
 *.so
 
+#Ignore backup save files
+*~
+
 #Ignore generated folders
 CMakeFiles/
