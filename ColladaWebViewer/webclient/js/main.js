@@ -5,20 +5,21 @@ if (!Detector.webgl)
 
 var _container,  _objController,
     _sceneController = {
-        loadedObjects: [],
-        renderer: {},
+        loadedObjects: [], // List of downloaded collada files
+        renderer: {}, // WebGL render
         camera: {},
         pointLight: {},
-        scene: {},
-        sceneParams: {'colorMode': THREE.VertexColors},
-        controls: {}
+        scene: {}, // Scene hierarchy
+        sceneParams: {'colorMode': THREE.VertexColors}, // Parameters related to scene rendering
+        controls: {}, // Camera controls
+        loader: {} // Collada loader/parser
     },
     _gui = {}
 
 var _connection = {
-    serverFiles: [],
-    storageUrl: "",
-    wsManager: {}
+    serverFiles: [], // List of collada files stored in remote storage
+    storageUrl: "", //  Url of the remote storage folder
+    wsManager: {} // WebSocket connection manager object
 }
 
 
@@ -194,6 +195,8 @@ function requestCollada(colladaName){
         }
     }
 
+    // Collada loader/parser
+
     var loader = new THREE.ColladaLoader()
 
     loader.options.convertUpAxis = true
@@ -218,30 +221,43 @@ function requestCollada(colladaName){
 
         loadedObjects.push(model)
         addToScene(model)
+        _objController.setCurrent(model)
 
+
+        var select = _gui.leftGui.fileList.domElement.children[0].options
+        for (var i = 0; i < select.length; i++) {
+            if(select[i].label == model.name){
+                select[i].style.backgroundColor = "lightGreen"
+                break
+            }
+        }
+
+        model = null
         //Freeing memory by removing objects
         cleanScene()
-
-        _objController.setCurrent(model)
 
         _gui.leftGui.objectControls.open()
 
 
         //debugging
+        /*
         var names = []
         loadedObjects.forEach(function(object){
             names.push(object.name)
         })
         console.log(names)
+        */
 
         console.log(_sceneController.renderer.info.memory)
-        console.log(model)
+        //console.log(model)
         showInfoMsg()
-        console.log(_sceneController.scene)
+        //console.log(_sceneController.scene)
+        loader = null
 
     }, function progress(data){
         showInfoMsg("Downloading model... " + " Loaded: " + Math.ceil((data.loaded / 1000000)*100)/100 + " MB")
     })
+
 
 
     showInfoMsg("Requesting model...")
@@ -277,8 +293,19 @@ function cleanScene() {
     if(objects.length > 4){
         while(objects.length > 4){
             console.log("removing object: " +objects[0].name)
+
+            var select = _gui.leftGui.fileList.domElement.children[0].options
+            for (var i = 0; i < select.length; i++) {
+                if(select[i].label == objects[0].name){
+                    select[i].style.backgroundColor = null
+                    console.log(select[i].label)
+                    break
+                }
+            }
+
             removeFromScene(objects[0])
             objects.splice(0,1)
+
         }
     }
 }
@@ -348,6 +375,7 @@ function init() {
     _objController.loadNext = ""
     _objController.loading = false
 
+
     // TRACKBALL CAMERA CONTROLS
 
     //passing renderer.context will pass WebGL canvas to the controls and stop them interfering with GUI
@@ -358,8 +386,6 @@ function init() {
     controls.staticMoving = false
     controls.keys = [65, 83, 68]
     controls.maxDistance = 50
-
-    console.log(controls)
 
     //Windows resize listener
     windowResize(_sceneController.renderer, _sceneController.camera)
