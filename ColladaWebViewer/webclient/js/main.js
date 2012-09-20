@@ -6,22 +6,27 @@ if (!Detector.webgl)
 var _container,  _objController,
     _sceneController = {
         loadedObjects: [], // List of downloaded collada files
-        renderer: {}, // WebGL render
-        camera: {},
-        pointLight: {},
-        scene: {}, // Scene hierarchy
-        sceneParams: {'colorMode': THREE.VertexColors}, // Parameters related to scene rendering
-        controls: {}, // Camera controls
-        loader: {} // Collada loader/parser
+        renderer: null, // WebGL render
+        camera: null,
+        pointLight: null,
+        scene: null, // Scene hierarchy
+        sceneParams: {'colorMode': THREE.VertexColors, resolution: 1}, // Parameters related to scene rendering
+        controls: null, // Camera controls
+        loader: null // Collada loader/parser
     },
     _gui = {}
 
 var _connection = {
     serverFiles: [], // List of collada files stored in remote storage
     storageUrl: "", //  Url of the remote storage folder
-    wsManager: {} // WebSocket connection manager object
+    wsManager: null // WebSocket connection manager object
 }
 
+function isMobileBrowser() {
+    if(typeof(window.mobile) !== 'undefined')
+        return window.mobile
+    return false
+}
 
 //Parsing remote storage url
 function setStorageUrl(url){
@@ -32,8 +37,15 @@ function setStorageUrl(url){
         parsed['directory'] += '/'
 
     //Hardcoded proxy url for mobile device demos
+    var useProxy = false
+    if(typeof(_connection.useProxy) === 'undefined'){
+        useProxy = isMobileBrowser()
+    }else{
+        useProxy = _connection.useProxy
+    }
+
     var proxy = "chiru.cie.fi:8000/"
-    if(window.mobile)
+    if(useProxy)
         parsed['host'] =  proxy + "?" + parsed['host']
 
     return "http://" + parsed['host'] + parsed['directory']
@@ -60,8 +72,9 @@ function showInfoMsg(msg) {
 //Function that changes the camera aspect ratio and renderer size when window is resized
 function windowResize (renderer, camera){
     var callback = function(){
-        renderer.setSize(window.innerWidth, window.innerHeight)
-        camera.aspect = window.innerWidth / window.innerHeight
+        var factor = _sceneController.sceneParams.resolution
+        renderer.setSize(window.innerWidth*factor, window.innerHeight*factor)
+        camera.aspect = (window.innerWidth*factor) / (window.innerHeight*factor)
         camera.updateProjectionMatrix()
         _sceneController.controls.handleResize()
     }
@@ -93,7 +106,6 @@ function setColorMode (o3d, colorMode) {
         }
         console.log("gotMode: " + colorMode + "set mode: " +mode)
         o3d.material.vertexColors = parseInt(mode)
-        //o3d.material.side = THREE.DoubleSide
         o3d.material.needsUpdate = true
         //console.log(o3d)
     }
@@ -131,6 +143,13 @@ function initWSConnection() {
         }else{
             port = "9002"
         }
+
+        //For testing
+        if(keys.mobile)
+            window.mobile = keys.mobile === '1'
+        if(keys.useProxy)
+            _connection.useProxy = keys.useProxy === '1'
+
     }
 
     console.log("Websocket ip: " + ip + " and port: " + port)
@@ -196,22 +215,28 @@ function requestCollada(colladaName){
     }
 
     // Collada loader/parser
+    showInfoMsg("Requesting model...")
 
     var loader = new THREE.ColladaLoader()
 
     loader.options.convertUpAxis = true
 
+    _objController.loading = true
     loader.load(_connection.storageUrl + colladaName, function colladaReady(collada) {
         var model = collada.scene
 
         //Changing colormode of the collada model
         setColorMode(model, _sceneController.sceneParams.colorMode)
 
-        //console.log(collada)
         model.name = colladaName
 
+        //Forcing double-sideness
+        THREE.SceneUtils.traverseHierarchy(model, function(child) {
+            child.material.side = THREE.DoubleSide
+        })
 
         _objController.loadNext = ""
+        _objController.loading = false
 
         if(loadedObjects.length > 0){
             //removeFromScene(loadedObjects[loadedObjects.length-1])
@@ -233,25 +258,15 @@ function requestCollada(colladaName){
         }
 
         model = null
+
         //Freeing memory by removing objects
         cleanScene()
 
         _gui.leftGui.objectControls.open()
 
-
-        //debugging
-        /*
-        var names = []
-        loadedObjects.forEach(function(object){
-            names.push(object.name)
-        })
-        console.log(names)
-        */
-
-        console.log(_sceneController.renderer.info.memory)
-        //console.log(model)
+        //console.log(_sceneController.renderer.info.memory)
         showInfoMsg()
-        //console.log(_sceneController.scene)
+
         loader = null
 
     }, function progress(data){
@@ -260,7 +275,6 @@ function requestCollada(colladaName){
 
 
 
-    showInfoMsg("Requesting model...")
     console.log("Requested file: " + _connection.storageUrl + colladaName)
 
 
@@ -273,7 +287,6 @@ function addToScene(object) {
 
 function removeFromScene(object) {
     _sceneController.scene.remove(object)
-    _sceneController.renderer.deallocateObject(object)
 }
 
 function clearScene() {
@@ -304,6 +317,8 @@ function cleanScene() {
             }
 
             removeFromScene(objects[0])
+            _sceneController.renderer.deallocateObject(objects[0])
+            _sceneController.renderer.clear()
             objects.splice(0,1)
 
         }
@@ -313,15 +328,16 @@ function cleanScene() {
 
 //Initializes the renderer, camera, etc.
 function init() {
+    var isMobile = isMobileBrowser()
 
     //Creates the container and scene
     _container = document.getElementById('container')
-    //document.body.appendChild( container )
 
     var scene = _sceneController.scene = new THREE.Scene()
+    var scale = isMobile ? 0.5 : 1
 
     // Camera
-    var camera = _sceneController.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 )
+    var camera = _sceneController.camera = new THREE.PerspectiveCamera( 45, (window.innerWidth * scale) / (window.innerHeight * scale), 1,70 )
     camera.position.set(17, 10, 15)
     camera.lookAt(scene.position)
 
@@ -334,20 +350,42 @@ function init() {
     scene.add(new THREE.AmbientLight(0xffffff))
 
     // Scene objects
+    /*
     var floorMaterial = new THREE.MeshBasicMaterial({ color :0x110000, wireframe: true, wireframeLinewidth: 1})
     var floorGeometry = new THREE.PlaneGeometry(30, 30, 20, 20)
     var floor = new THREE.Mesh(floorGeometry, floorMaterial)
     floor.position.y = -3
     floor.rotation.x = Math.PI/2
+    console.log(floor)
+    floor.matrixAutoUpdate = false
+    floor.updateMatrix()
     scene.add(floor)
-
+    */
     // RENDERER
+
+    var antiAlias = isMobile ? false : true
+    var precision = isMobile ? 'lowp' : 'highp'
+
+    _sceneController.sceneParams.resolution = scale
+    var canvas = document.getElementById("glCanvas")
+
+    if(isMobile)
+       canvas.id = "mobileCanvas"
+
+    canvas.width = window.innerWidth * scale
+    canvas.height = window.innerHeight * scale
+
+    //console.log("alias: " + antiAlias + " precision: " +precision + " scale: " + scale + " canvas: " + canvas.id + " w: " + canvas.width + " h: " +canvas.height)
+
     var renderer = _sceneController.renderer = new THREE.WebGLRenderer({
-        antialias: true,	// to get smoother output
-        preserveDrawingBuffer: false	// true to allow screenshot
+        antiAlias: antiAlias,	// to get smoother output
+        preserveDrawingBuffer: false,	// true to allow screen shot
+        precision: precision,
+        canvas: canvas
     })
+
     renderer.setClearColorHex( 0xBBBBBB, 1 )
-    renderer.setSize(window.innerWidth, window.innerHeight)
+
     _container.appendChild(renderer.domElement)
 
 
@@ -421,31 +459,31 @@ function initGUI (){
     f11.open()
 
     var f12 = _gui.leftGui.objectControls = _gui.leftGui.addFolder('Object controls')
-    f12.add(modelPos, 'x', -15, 15, 0.1).name('X Pos').listen().onChange(function(val){
+    f12.add(modelPos, 'x', -15, 15, 0.1).name('X Pos').onChange(function(val){
         _objController.current.position.x = val
     })
-    f12.add(modelPos, 'y', -10.0, 10, 0.05).name('Y Pos').listen().onChange(function(val){
+    f12.add(modelPos, 'y', -10.0, 10, 0.1).name('Y Pos').onChange(function(val){
         _objController.current.position.y = val
     })
-    f12.add(modelPos, 'z', -15, 15, 0.1).name('Z Pos').listen().onChange(function(val){
+    f12.add(modelPos, 'z', -15, 15, 0.1).name('Z Pos').onChange(function(val){
         _objController.current.position.z = val
     })
-    f12.add(modelRot.degrees, 'x', -180.0, 180.0, 0.1).name('X Rot').listen().onChange(function(){
+    f12.add(modelRot.degrees, 'x', -180.0, 180.0, 0.1).name('X Rot').onChange(function(){
         _objController.current.rotation.x = modelRot.degrees.x * Math.PI / 180
     })
-    f12.add(modelRot.degrees, 'y', -180.0, 180, 0.1).name('Y Rot').listen().onChange(function(){
+    f12.add(modelRot.degrees, 'y', -180.0, 180, 0.1).name('Y Rot').onChange(function(){
         _objController.current.rotation.y = modelRot.degrees.y * Math.PI / 180
     })
-    f12.add(modelRot.degrees, 'z', -180.0, 180, 0.1).name('Z Rot').listen().onChange(function(){
+    f12.add(modelRot.degrees, 'z', -180.0, 180, 0.1).name('Z Rot').onChange(function(){
         _objController.current.rotation.z = modelRot.degrees.z * Math.PI / 180
     })
-    f12.add(modelScale, 'x', 0.01, 4.00, 0.01).name('Scale x').listen().onChange(function(val){
+    f12.add(modelScale, 'x', 0.1, 4, 0.1).name('Scale x').onChange(function(val){
         _objController.current.scale.x = val
     })
-    f12.add(modelScale, 'y', 0.01, 4.00, 0.01).name('Scale y').listen().onChange(function(val){
+    f12.add(modelScale, 'y', 0.1, 4, 0.1).name('Scale y').onChange(function(val){
         _objController.current.scale.y = val
     })
-    f12.add(modelScale, 'z', 0.01, 4.00, 0.01).name('Scale z').listen().onChange(function(val){
+    f12.add(modelScale, 'z', 0.1, 4, 0.1).name('Scale z').onChange(function(val){
         _objController.current.scale.z = val
     })
 
@@ -481,7 +519,7 @@ function initGUI (){
 //The animation loop
 function loop() {
 
-    requestAnimationFrame(loop)
+    window.requestAnimationFrame(loop)
     _sceneController.controls.update()
 
     render()
