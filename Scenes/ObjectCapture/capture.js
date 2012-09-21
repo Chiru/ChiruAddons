@@ -14,7 +14,7 @@ function ObjectCapture()
     //Set default positions
     data.module.setLiveCloudPosition(Quat(1,0,0,0), float3(0,0,-30), float3(10,10,10));
     data.module.setGlobalModelPosition(Quat(1,0,0,0), float3(20,0,-30), float3(10,10,10));
-    data.module.setFinalMeshPosition(Quat(1,0,0,0), float3(-20,0,-30), float3(10,10,10));
+    data.module.setFinalMeshPosition(Quat(0,0,0,0), float3(-20,0,-30), float3(10,10,10));
     
     var me = scene.GetEntityByName("ObjectCaptureApplication");
     var inputmapper = me.GetOrCreateComponent("EC_InputMapper", 2, false);

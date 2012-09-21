@@ -17,6 +17,7 @@
 
 #include "pcl/features/normal_3d.h"
 #include <pcl/point_traits.h>
+#include <pcl/registration/transforms.h>
 
 #include <boost/thread/thread.hpp>
 
@@ -53,18 +54,24 @@ void MeshReconstructor::processCloud(PointCloud::Ptr cloud)
 {
     if (cloud.get())
     {
-        // Convert input cloud PointXYZRGBA to PointXYZRGB cloud
-        point_cloud_->resize(cloud->size());
+        pcl::PointCloud<pcl::PointXYZRGB> tmp_cloud;
 
+        // Convert input cloud PointXYZRGBA to PointXYZRGB cloud and rotate it 180 degrees by the x-axis
+        tmp_cloud.resize(cloud->size());
         for (size_t i = 0; i < cloud->points.size(); i++)
         {
-            point_cloud_->points[i].x = cloud->points[i].x;
-            point_cloud_->points[i].y = cloud->points[i].y;
-            point_cloud_->points[i].z = cloud->points[i].z;
-            point_cloud_->points[i].r = cloud->points[i].r;
-            point_cloud_->points[i].g = cloud->points[i].g;
-            point_cloud_->points[i].b = cloud->points[i].b;
+            tmp_cloud.points[i].x = cloud->points[i].x;
+            tmp_cloud.points[i].y = cloud->points[i].y;
+            tmp_cloud.points[i].z = cloud->points[i].z;
+            tmp_cloud.points[i].r = cloud->points[i].r;
+            tmp_cloud.points[i].g = cloud->points[i].g;
+            tmp_cloud.points[i].b = cloud->points[i].b;
         }
+
+        Eigen::Quaternionf RotQuat(0.0, 1.0, 0.0, 0.0);
+        Eigen::Vector3f vect(0.0, 0.0, 0.0);
+
+        pcl::transformPointCloud(tmp_cloud, *point_cloud_, vect, RotQuat);
 
         MovingLeastSquares();
         NormalEstimation();
