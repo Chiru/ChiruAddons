@@ -1,0 +1,7 @@
+# Editor files #
+################
+.idea/
+models/
+app.js
+*.pyc
+*_old*

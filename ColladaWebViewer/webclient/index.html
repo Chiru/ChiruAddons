@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <title>Tundra ColladaViewer Client</title>
-    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
 
     <style type="text/css">
@@ -77,16 +77,18 @@
 
         a { color: skyblue }
     </style>
+<!--
+    <script type="text/javascript" src="src/gui/dat.gui.js"></script>
+    <script type="text/javascript" src="src/libs/three.js"></script>
+    <script type="text/javascript" src="src/util/TrackballControls.js"></script>
+    <script type="text/javascript" src="src/util/ColladaLoader.js"></script>
+    <script type="text/javascript" src="src/util/Detector.js"></script>
+    <script type="text/javascript" src="src/util/THREEx.FullScreen.js"></script>
+    <script type="text/javascript" src="src/util/wsmanager.js"></script>
+    <script type="text/javascript" src="src/util/detectmobilebrowser.js"></script>
+    <script type="text/javascript" src="src/util/parseUri.js"></script>
+    -->
 
-    <script type="text/javascript" src="js/gui/dat.gui.min.js"></script>
-    <script type="text/javascript" src="js/threejs/three.min.js"></script>
-    <script type="text/javascript" src="js/threejs/TrackballControls.js"></script>
-    <script type="text/javascript" src="js/threejs/ColladaLoader_dev.js"></script>
-    <script type="text/javascript" src="js/threejs/Detector.js"></script>
-    <script type="text/javascript" src="js/threejs/THREEx.FullScreen.js"></script>
-    <script type="text/javascript" src="js/util/wsmanager.js"></script>
-    <script type="text/javascript" src="js/util/detectmobilebrowser.js"></script>
-    <script type="text/javascript" src="js/util/parseUri.js"></script>
 </head>
 <body>
 
@@ -101,7 +103,7 @@
     <canvas id="glCanvas"></canvas>
 </div>
 
-<script type="text/javascript" src="js/main.js"></script>
-
+<!-- <script type="text/javascript" src="src/main.js"></script> -->
+<script type="text/javascript" src="app.min.js"></script>
 </body>
 </html>

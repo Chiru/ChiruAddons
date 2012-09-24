@@ -10,7 +10,7 @@ var _container,  _objController,
         camera: null,
         pointLight: null,
         scene: null, // Scene hierarchy
-        sceneParams: {'colorMode': THREE.VertexColors, resolution: 1}, // Parameters related to scene rendering
+        sceneParams: {'colorMode': THREE.VertexColors, resolution: 1, antiAlias: true, precision: 'highp' }, // Parameters related to scene rendering
         controls: null, // Camera controls
         loader: null // Collada loader/parser
     },
@@ -19,7 +19,9 @@ var _container,  _objController,
 var _connection = {
     serverFiles: [], // List of collada files stored in remote storage
     storageUrl: "", //  Url of the remote storage folder
-    wsManager: null // WebSocket connection manager object
+    wsManager: null, // WebSocket connection manager object
+    ip: "",
+    port: ""
 }
 
 function isMobileBrowser() {
@@ -28,8 +30,34 @@ function isMobileBrowser() {
     return false
 }
 
+
+function parseUrl(url) {
+    var parsed = parseUri(url)
+
+    //Parsing ip and port from address bar (uses ?ip=IP&port=PORT)
+    if(parsed.queryKey){
+        var keys = parsed.queryKey
+        if(keys.ip)
+            _connection.ip = keys.ip
+        else
+            _connection.ip = "127.0.0.1"
+
+        if(keys.port)
+            _connection.port = keys.port
+        else
+            _connection.port = "9002"
+
+        //For testing
+        if(keys.mobile)
+            window.mobile = keys.mobile === '1'
+        if(keys.useProxy)
+            _connection.useProxy = keys.useProxy === '1'
+
+    }
+}
+
 //Parsing remote storage url
-function setStorageUrl(url){
+function parseStorageUrl(url){
     var parsed = parseUri(url)
 
     //Adding trailing slash to directory path if it is missing
@@ -38,17 +66,16 @@ function setStorageUrl(url){
 
     //Hardcoded proxy url for mobile device demos
     var useProxy = false
-    if(typeof(_connection.useProxy) === 'undefined'){
+    if(typeof(_connection.useProxy) === 'undefined')
         useProxy = isMobileBrowser()
-    }else{
+    else
         useProxy = _connection.useProxy
-    }
 
     var proxy = "chiru.cie.fi:8000/"
     if(useProxy)
         parsed['host'] =  proxy + "?" + parsed['host']
 
-    return "http://" + parsed['host'] + parsed['directory']
+    _connection.storageUrl =  "http://" + parsed['host'] + parsed['directory']
 
 }
 
@@ -104,58 +131,33 @@ function setColorMode (o3d, colorMode) {
             colorMode == THREE.VertexColors){
             mode = colorMode
         }
-        console.log("gotMode: " + colorMode + "set mode: " +mode)
         o3d.material.vertexColors = parseInt(mode)
         o3d.material.needsUpdate = true
-        //console.log(o3d)
     }
 }
 
 /*
-//Converts the XML data from string to XML object
-function StringtoXML(string){
-    if (window.ActiveXObject){
-        var doc = new ActiveXObject('Microsoft.XMLDOM')
-        doc.async = 'false'
-        doc.loadXML(string)
-    } else {
-        var parser = new DOMParser()
-        var doc = parser.parseFromString(string,'text/xml')
-    }
-    return doc
-}
-*/
+ //Converts the XML data from string to XML object
+ function StringtoXML(string){
+ if (window.ActiveXObject){
+ var doc = new ActiveXObject('Microsoft.XMLDOM')
+ doc.async = 'false'
+ doc.loadXML(string)
+ } else {
+ var parser = new DOMParser()
+ var doc = parser.parseFromString(string,'text/xml')
+ }
+ return doc
+ }
+ */
 
 function initWSConnection() {
-    var ip = "", port = ""
-    var parsedAddress = parseUri(location)
+    parseUrl(location)
 
-    //Parsing ip and port from address bar (uses ?ip=IP&port=PORT)
-    if(parsedAddress.queryKey){
-       var keys = parsedAddress.queryKey
-        if(keys.ip){
-            ip = keys.ip
-        }else{
-            ip = "127.0.0.1"
-        }
-        if(keys.port){
-            port = keys.port
-        }else{
-            port = "9002"
-        }
-
-        //For testing
-        if(keys.mobile)
-            window.mobile = keys.mobile === '1'
-        if(keys.useProxy)
-            _connection.useProxy = keys.useProxy === '1'
-
-    }
-
-    console.log("Websocket ip: " + ip + " and port: " + port)
+    console.log("Websocket ip: " + _connection.ip + " and port: " + _connection.port)
 
     //Opening a websocket connection
-    _connection.wsManager = new WSManager(ip, port)
+    _connection.wsManager = new WSManager(_connection.ip, _connection.port)
 
     _connection.wsManager.bind("newCollada", function(colladaName){
         if(!(colladaName in _connection.serverFiles)){
@@ -183,7 +185,7 @@ function initWSConnection() {
             select.options.add(new Option(name, name))
         })
 
-        _connection.storageUrl = setStorageUrl(data['storageUrl'])
+        parseStorageUrl(data['storageUrl'])
 
     })
 
@@ -193,10 +195,10 @@ function initWSConnection() {
         //Removing all the references to the assets
         _connection.serverFiles.length = 0
         var select = _gui.leftGui.fileList.domElement.children[0]
-        while(select.options.length > 1) {
+        while(select.options.length > 1)
             select.options[1] = null
-        }
     })
+
 }
 
 
@@ -311,7 +313,6 @@ function cleanScene() {
             for (var i = 0; i < select.length; i++) {
                 if(select[i].label == objects[0].name){
                     select[i].style.backgroundColor = null
-                    console.log(select[i].label)
                     break
                 }
             }
@@ -351,16 +352,16 @@ function init() {
 
     // Scene objects
     /*
-    var floorMaterial = new THREE.MeshBasicMaterial({ color :0x110000, wireframe: true, wireframeLinewidth: 1})
-    var floorGeometry = new THREE.PlaneGeometry(30, 30, 20, 20)
-    var floor = new THREE.Mesh(floorGeometry, floorMaterial)
-    floor.position.y = -3
-    floor.rotation.x = Math.PI/2
-    console.log(floor)
-    floor.matrixAutoUpdate = false
-    floor.updateMatrix()
-    scene.add(floor)
-    */
+     var floorMaterial = new THREE.MeshBasicMaterial({ color :0x110000, wireframe: true, wireframeLinewidth: 1})
+     var floorGeometry = new THREE.PlaneGeometry(30, 30, 20, 20)
+     var floor = new THREE.Mesh(floorGeometry, floorMaterial)
+     floor.position.y = -3
+     floor.rotation.x = Math.PI/2
+     console.log(floor)
+     floor.matrixAutoUpdate = false
+     floor.updateMatrix()
+     scene.add(floor)
+     */
     // RENDERER
 
     var antiAlias = isMobile ? false : true
@@ -370,7 +371,7 @@ function init() {
     var canvas = document.getElementById("glCanvas")
 
     if(isMobile)
-       canvas.id = "mobileCanvas"
+        canvas.id = "mobileCanvas"
 
     canvas.width = window.innerWidth * scale
     canvas.height = window.innerHeight * scale
@@ -418,12 +419,14 @@ function init() {
 
     //passing renderer.context will pass WebGL canvas to the controls and stop them interfering with GUI
     var controls = _sceneController.controls = new THREE.TrackballControls(camera, renderer.domElement)
+    controls.staticMoving = false
+    controls.maxDistance = 50
+    controls.minDistance = 5
     controls.rotateSpeed = 0.7
     controls.zoomSpeed = 0.9
     controls.panSpeed = 0.4
-    controls.staticMoving = false
     controls.keys = [65, 83, 68]
-    controls.maxDistance = 50
+
 
     //Windows resize listener
     windowResize(_sceneController.renderer, _sceneController.camera)
@@ -454,29 +457,31 @@ function initGUI (){
             requestCollada(_objController.loadNext)
     })
     var select = _gui.leftGui.fileList.domElement.children[0]
-    select.options[select.options.length] = new Option('Choose collada', '')
+    select.options.add(new Option('Choose collada', ''))
 
     f11.open()
 
     var f12 = _gui.leftGui.objectControls = _gui.leftGui.addFolder('Object controls')
-    f12.add(modelPos, 'x', -15, 15, 0.1).name('X Pos').onChange(function(val){
-        _objController.current.position.x = val
-    })
-    f12.add(modelPos, 'y', -10.0, 10, 0.1).name('Y Pos').onChange(function(val){
-        _objController.current.position.y = val
-    })
-    f12.add(modelPos, 'z', -15, 15, 0.1).name('Z Pos').onChange(function(val){
-        _objController.current.position.z = val
-    })
-    f12.add(modelRot.degrees, 'x', -180.0, 180.0, 0.1).name('X Rot').onChange(function(){
-        _objController.current.rotation.x = modelRot.degrees.x * Math.PI / 180
-    })
-    f12.add(modelRot.degrees, 'y', -180.0, 180, 0.1).name('Y Rot').onChange(function(){
-        _objController.current.rotation.y = modelRot.degrees.y * Math.PI / 180
-    })
-    f12.add(modelRot.degrees, 'z', -180.0, 180, 0.1).name('Z Rot').onChange(function(){
-        _objController.current.rotation.z = modelRot.degrees.z * Math.PI / 180
-    })
+    /*
+     f12.add(modelPos, 'x', -15, 15, 0.1).name('X Pos').onChange(function(val){
+     _objController.current.position.x = val
+     })
+     f12.add(modelPos, 'y', -10.0, 10, 0.1).name('Y Pos').onChange(function(val){
+     _objController.current.position.y = val
+     })
+     f12.add(modelPos, 'z', -15, 15, 0.1).name('Z Pos').onChange(function(val){
+     _objController.current.position.z = val
+     })
+     f12.add(modelRot.degrees, 'x', -180.0, 180.0, 0.1).name('X Rot').onChange(function(){
+     _objController.current.rotation.x = modelRot.degrees.x * Math.PI / 180
+     })
+     f12.add(modelRot.degrees, 'y', -180.0, 180, 0.1).name('Y Rot').onChange(function(){
+     _objController.current.rotation.y = modelRot.degrees.y * Math.PI / 180
+     })
+     f12.add(modelRot.degrees, 'z', -180.0, 180, 0.1).name('Z Rot').onChange(function(){
+     _objController.current.rotation.z = modelRot.degrees.z * Math.PI / 180
+     })
+     */
     f12.add(modelScale, 'x', 0.1, 4, 0.1).name('Scale x').onChange(function(val){
         _objController.current.scale.x = val
     })
@@ -503,12 +508,13 @@ function initGUI (){
 
         })
     f22.open()
-    var f23 = _gui.rightGui.addFolder('Camera controls')
-    f23.add(camera.position, 'x', -50,50,0.1).name('X Pos').listen()
-    f23.add(camera.position, 'y', -50,50,0.1).name('Y Pos').listen()
-    f23.add(camera.position, 'z', -50,50,0.1).name('Z Pos').listen()
-    f23.open()
-
+    /*
+     var f23 = _gui.rightGui.addFolder('Camera controls')
+     f23.add(camera.position, 'x', -50,50,0.1).name('X Pos').listen()
+     f23.add(camera.position, 'y', -50,50,0.1).name('Y Pos').listen()
+     f23.add(camera.position, 'z', -50,50,0.1).name('Z Pos').listen()
+     f23.open()
+     */
     //Fullscreen activation key
     if(THREEx.FullScreen.available()){
         THREEx.FullScreen.bindKey({ charCode : 'f'.charCodeAt(0)})
@@ -519,16 +525,9 @@ function initGUI (){
 //The animation loop
 function loop() {
 
-    window.requestAnimationFrame(loop)
+    requestAnimationFrame(loop)
     _sceneController.controls.update()
 
-    render()
-
-}
-
-
-//The render function
-function render() {
     var pointLight = _sceneController.pointLight
     var camera = _sceneController.camera
     pointLight.position.x = camera.position.x
