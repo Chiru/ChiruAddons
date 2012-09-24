@@ -168,7 +168,14 @@ void ObjectCaptureModule::rewindCloud()
 void ObjectCaptureModule::finalizeCapturing()
 {
     QMetaObject::invokeMethod(cloud_processor_, "finalizeCapturing", Qt::QueuedConnection);
-    mesh_reconstructor_->processCloud(cloud_processor_->finalCloud());
+
+    PointCloud::Ptr cloud;
+    if (QMetaObject::invokeMethod(cloud_processor_, "finalCloud", Qt::BlockingQueuedConnection, Q_RETURN_ARG(PointCloud::Ptr, cloud)))
+    {
+        PointCloud::Ptr cloud_to_reconstruction(new PointCloud());
+        pcl::copyPointCloud(*cloud, *cloud_to_reconstruction);
+        QMetaObject::invokeMethod(mesh_reconstructor_, "processCloud", Qt::QueuedConnection, Q_ARG(PointCloud::Ptr, cloud_to_reconstruction));
+    }
 }
 
 void ObjectCaptureModule::setLiveCloudPosition(Quat orientation, float3 position, float3 scale)
@@ -295,7 +302,8 @@ void ObjectCaptureModule::exportCollada(QString filename)
 
 void ObjectCaptureModule::uploadAsset(QString localAssetPath)
 {
-    if(!remoteColladaStorage_) {
+    if(!remoteColladaStorage_)
+    {
         LogError("ObjectCapture: Cannot upload asset: No remote storage set!");
         return;
     }
@@ -305,10 +313,12 @@ void ObjectCaptureModule::uploadAsset(QString localAssetPath)
     QString remoteName = "capture-"+ QDateTime::currentDateTime().toString("ddMMyy-hhmmss") + ".dae";
     AssetUploadTransferPtr transfer;
 
-    try {
+    try
+    {
         transfer = assetApi->UploadAssetFromFile(localAssetPath, remoteColladaStorage_, remoteName);
     }
-    catch(Exception e) {
+    catch(Exception e)
+    {
         LogError("ObjectCaptureModule: Caught exception while trying to upload asset to remote storage: " + QString(e.what()));
         return;
     }
@@ -342,7 +352,8 @@ void ObjectCaptureModule::assetUploadFailed(IAssetUploadTransfer *transfer)
     QStringList::iterator it;
     for(it = assetUploads_.begin(); it != assetUploads_.end(); ++it)
     {
-        if((*it).compare(transfer->AssetRef()) == 0) {
+        if((*it).compare(transfer->AssetRef()) == 0)
+        {
             assetUploads_.erase(it);
             LogError("ObjectCaptureModule: Upload of asset \"" + transfer->destinationName + "\" failed.");
             return;
