@@ -20,7 +20,7 @@ out = '../app.min.js'
 
 def main():
     print 'Compressing JavaScript files into %s' % out
-    compress(scripts, out, 'js', False, out_uncompressed)
+    compress(scripts, out, False, out_uncompressed)
 
 if __name__ == '__main__':
     main()

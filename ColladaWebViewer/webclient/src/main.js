@@ -10,7 +10,13 @@ var _container,  _objController,
         camera: null,
         pointLight: null,
         scene: null, // Scene hierarchy
-        sceneParams: {'colorMode': THREE.VertexColors, resolution: 1, antiAlias: true, precision: 'highp' }, // Parameters related to scene rendering
+        sceneParams: { // Parameters related to scene rendering
+            'colorMode': THREE.VertexColors,
+            resolution: 1,
+            antiAlias: true,
+            precision: 'highp',
+            canvas: 'glCanvas'
+        },
         controls: null, // Camera controls
         loader: null // Collada loader/parser
     },
@@ -25,9 +31,28 @@ var _connection = {
 }
 
 function isMobileBrowser() {
-    if(typeof(window.mobile) !== 'undefined')
+    if (typeof(window.mobile) !== 'undefined')
         return window.mobile
     return false
+}
+
+function performanceMode(highQuality) {
+    if (typeof(highQuality) === 'undefined')
+        highQuality = true
+
+    var sceneParams = _sceneController.sceneParams
+
+    if (highQuality) {
+        sceneParams.resolution = 1
+        sceneParams.antiAlias = true
+        sceneParams.precision = 'highp'
+        sceneParams.canvas = 'glCanvas'
+    }else{
+        sceneParams.resolution = 0.5
+        sceneParams.antiAlias = false
+        sceneParams.precision = 'lowp'
+        sceneParams.canvas = 'mobileCanvas'
+    }
 }
 
 
@@ -243,7 +268,6 @@ function requestCollada(colladaName){
         if(loadedObjects.length > 0){
             //removeFromScene(loadedObjects[loadedObjects.length-1])
             clearScene()
-            console.log("removed earlier object from scene")
         }
 
         loadedObjects.push(model)

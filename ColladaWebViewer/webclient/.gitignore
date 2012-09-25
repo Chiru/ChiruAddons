@@ -5,3 +5,4 @@ models/
 app.js
 *.pyc
 *_old*
+*.zip
