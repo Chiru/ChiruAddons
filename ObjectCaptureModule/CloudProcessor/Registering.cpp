@@ -15,11 +15,11 @@
 namespace ObjectCapture
 {
 
-IncrementalRegister::IncrementalRegister() :
+IncrementalRegister::IncrementalRegister(float leafsize) :
     cloud_filter_(new CloudFilter),
     icp_corr_distance_(0.07f),
     ransac_outlier_threshold_(0.05f),
-    uniform_leafsize_(0.01f)
+    uniform_leafsize_(leafsize)
 {
 }
 

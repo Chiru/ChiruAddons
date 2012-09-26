@@ -23,7 +23,7 @@ class KinectCapture : public QObject
     Q_OBJECT
 
 public:
-    KinectCapture();
+    KinectCapture(float leafsize);
     ~KinectCapture();
 
     /// Returns wheter kinect interface is running
@@ -61,6 +61,7 @@ private:
     PointCloud::Ptr current_cloud_;
     QMutex cloud_mutex_;
     CloudFilter *cloud_filter_;
+    float uniform_leafsize_;
 
     bool extract_object_;
     bool filter_planar_;
