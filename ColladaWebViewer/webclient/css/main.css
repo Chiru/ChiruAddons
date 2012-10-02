@@ -1,0 +1,200 @@
+html {
+    -webkit-text-size-adjust: 50%;
+    -moz-text-size-adjust: 50%;
+}
+body, html {
+    font-family: Monospace;
+    background-color: #000000;
+    height:100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+/*
+        #leftGui
+        {
+            position:absolute;
+            padding-right: 20px;
+            width: auto;
+            top: 10px;
+            left: 10px;
+        }
+
+        #rightGui
+        {
+            position:absolute;
+            width: 220px;
+            top: 10px;
+            right: 40px;
+        }
+*/
+.menu
+{
+    position:absolute;
+    background: #F9F9F9;
+    border: solid black 1px;
+    width: 25em;
+    height: 40em;
+}
+.leftMenu
+{
+    left:0;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+
+}
+.rightMenu
+{
+    right:0;
+    padding: 10px 0 10px 10px;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+.trigger
+{
+    background-color: #000;
+    height: 125px;
+    width: 22px;
+}
+.trigger-left
+{
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+.trigger-right
+{
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+/*
+#horizon
+{
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    width: 100%;
+    height: 1px;
+    overflow: visible;
+    visibility: visible;
+    display: block
+}
+#loading
+{
+    font-family: Impact, Charcoal, sans-serif;
+    font-size: 40px;
+    font-weight:bold;
+    text-shadow: 0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 10px rgba(0, 0, 0, 0.1), 0 8px 9px rgba(0, 0, 0, 0.1);
+    margin-left: -225px;
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    width: 450px;
+    display: none;
+    color: #FFFFFF;
+
+}
+*/
+
+div#container {
+    height:auto !important; /* real browsers */
+    height : 100%;
+    background:#f0f0f0;
+}
+
+div#header {
+
+    text-align: center;
+    padding: 5px;
+    font-family: Impact, Charcoal, sans-serif;
+    font-size: 2em;
+    font-weight:bold;
+    text-shadow: 0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 10px rgba(0, 0, 0, 0.1), 0 8px 9px rgba(0, 0, 0, 0.1);
+    color: #FFFFFF;
+    width: 100%;
+    height: 50px;
+    border-bottom: solid 1px #000;
+    background-color: #2F2727;
+    background-image: -webkit-linear-gradient(top, #2F2727, #929293);
+    background-image:    -moz-linear-gradient(top, #2F2727, #929293);
+    background-image:     -ms-linear-gradient(top, #2F2727, #929293);
+    background-image:      -o-linear-gradient(top, #2F2727, #929293);
+}
+
+div#content {
+    position : absolute;
+    top      : 50px;
+    right    : 0;
+    bottom   : 50px;
+    left     : 0;
+}
+
+div#content .alerts {
+    position: absolute;
+    width: auto;
+    height: auto;
+    z-index: 150;
+}
+div#content .help {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    z-index: 200;
+}
+div#footer {
+    position : absolute;
+    bottom   : 0;
+    left     : 0;
+    width    : 100%;
+    height   : 50px;
+    border-top: solid 1px #000;
+    background-color: #2F2727;
+    background-image: -webkit-linear-gradient(bottom, #2F2727, #929293);
+    background-image:    -moz-linear-gradient(bottom, #2F2727, #929293);
+    background-image:     -ms-linear-gradient(bottom, #2F2727, #929293);
+    background-image:      -o-linear-gradient(bottom, #2F2727, #929293);
+}
+
+#cieLogo
+{
+    float: right;
+    margin: 5px;
+}
+
+#glCanvas
+{
+    /* Anchor to the upper left */
+    /*
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: -20;
+    */
+}
+
+
+a { color: skyblue }
+.sliders {
+    display: table;
+    width: 100%;
+}
+.sliders .row {
+    display: table-row;
+}
+.sliders .cell1, .cell2, .cell3 {
+    display: table-cell;
+    padding: 5px;
+}
+.sliders .cell1 {width: 70%;}
+.sliders .cell2 {width: 15%;}
+.sliders .cell3 {width: 15%;}
+.sliders .amount {border:0; color:#f6931f; font-weight:bold; max-width:3em; width:auto;}
+
+
+#rightMenu h3 { height: 5%; font-size: 1.5em; margin:0; padding: 0;}
+#fileList { list-style-type: none; margin: 0; padding: 0; width: 100%; height: 95%; overflow-y: auto;}
+#fileList .ui-selecting { background: #FECA40; }
+#fileList .ui-selected { background: #F39814; color: white; }
+#fileList .loaded { background: #90EE90; color: black; }
+#fileList li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; }
