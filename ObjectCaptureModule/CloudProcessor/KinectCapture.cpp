@@ -15,10 +15,11 @@
 namespace ObjectCapture
 {
 
-KinectCapture::KinectCapture() :
+KinectCapture::KinectCapture(float leafsize) :
     cloud_filter_(new CloudFilter()),
     extract_object_(false),
-    filter_planar_(true)
+    filter_planar_(true),
+    uniform_leafsize_(leafsize)
 {
     try
     {
@@ -102,7 +103,7 @@ void KinectCapture::kinect_callback_(const PointCloud::ConstPtr &cloud)
         if(extract_object_)
         {
             PointCloud::Ptr depth_filtered = cloud_filter_->filterDepth(cloud, 0.0f, 1.5f); // Move params to class members
-            PointCloud::Ptr downsampled = cloud_filter_->filterDensity(depth_filtered, 0.01f); // --*--
+            PointCloud::Ptr downsampled = cloud_filter_->filterDensity(depth_filtered, uniform_leafsize_); // --*--
 
             PointCloud::Ptr clustered;
             if(filter_planar_)

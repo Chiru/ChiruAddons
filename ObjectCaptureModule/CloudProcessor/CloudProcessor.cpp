@@ -18,9 +18,9 @@ namespace ObjectCapture
 {
 
 CloudProcessor::CloudProcessor() :
-    kinect_capture_(new KinectCapture()),
+    kinect_capture_(new KinectCapture(0.007f)),
     cloud_filter_(new CloudFilter()),
-    register_(new IncrementalRegister())
+    register_(new IncrementalRegister(0.005f))
 {
     kinect_capture_->setExtractObject(true);
 

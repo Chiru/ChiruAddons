@@ -42,7 +42,7 @@ class IncrementalRegister : public QObject
     Q_OBJECT
 
 public:
-    IncrementalRegister();
+    IncrementalRegister(float leafsize);
     ~IncrementalRegister();
 
     void registerCloud(PointCloud::ConstPtr cloud);
