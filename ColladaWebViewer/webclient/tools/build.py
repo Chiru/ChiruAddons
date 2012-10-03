@@ -6,7 +6,7 @@ scripts = [
     '../src/util/detectmobilebrowser.js', # Has to be the first file in compiled file!
     '../src/libs/three.min.js', # Libraries must be also placed before the js-files that utilize them
     '../src/libs/jquery-1.8.2.min.js',
-    '../src/gui/jquery-ui-1.8.23.min.js',
+    '../src/gui/jquery-ui-1.8.24.min.js',
     '../src/gui/gui.js',
     '../src/util/Detector.js',
     '../src/util/ColladaLoader.js',

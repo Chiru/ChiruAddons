@@ -4,19 +4,12 @@
     <title>Tundra ObjectCapture Client</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1">
-    <link type="text/css" href="css/black-tie/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
+    <link type="text/css" href="css/black-tie/jquery-ui-1.8.24.custom.css" rel="stylesheet" />
     <link type="text/css" href="css/main.css" rel="stylesheet" />
 </head>
 
 
 <body>
-
-
-<!--
-<div id="horizon">
-    <div id="loading"></div>
-</div>
--->
 
 <div id="container">
 
@@ -71,9 +64,22 @@
     </div>
 
     <div id="footer">
-        <a href="#help" style="position:relative; left: 10px; top:15px; vertical-align:middle;">Help</a>
+        <a href="" id="helpLink" style="position:relative; left: 10px; top:15px; vertical-align:middle;">Help</a>
         <div id="cieLogo"><a href="http://cie.fi" target="_blank"><img src="css/cie_40.png"></a></div>
     </div>
+
+
+</div>
+
+<div id="loading">
+    <p><span class="ui-icon ui-icon-transferthick-e-w" style="float:left; margin:0 7px 20px 0;"></span>Loaded:
+        <span id="progress"></span> MB</p>
+</div>
+
+<div id="help" title="Help">
+    <p>Captured objects are shown in the right menu. You can load a model by clicking the file name in the right menu.
+        Models that have been loaded in memory have their filename background colored in green.</p>
+    <p>When you have loaded a model from the asset server you can control its scale etc. from the left-side menu.</p>
 </div>
 
 <script type="text/javascript" src="app.min.js"></script>

@@ -1,38 +1,18 @@
-html {
-    -webkit-text-size-adjust: 50%;
-    -moz-text-size-adjust: 50%;
-}
 body, html {
-    font-family: Monospace;
     background-color: #000000;
     height:100%;
     padding: 0;
     margin: 0;
     overflow: hidden;
+    font-size:1em;
 }
-/*
-        #leftGui
-        {
-            position:absolute;
-            padding-right: 20px;
-            width: auto;
-            top: 10px;
-            left: 10px;
-        }
 
-        #rightGui
-        {
-            position:absolute;
-            width: 220px;
-            top: 10px;
-            right: 40px;
-        }
-*/
 .menu
 {
     position:absolute;
     background: #F9F9F9;
     border: solid black 1px;
+    font-size: 0.8em;
     width: 25em;
     height: 40em;
 }
@@ -99,7 +79,7 @@ body, html {
 
 div#container {
     height:auto !important; /* real browsers */
-    height : 100%;
+    height: 100%;
     background:#f0f0f0;
 }
 
@@ -107,7 +87,7 @@ div#header {
 
     text-align: center;
     padding: 5px;
-    font-family: Impact, Charcoal, sans-serif;
+    font-family: Charcoal, sans-serif;
     font-size: 2em;
     font-weight:bold;
     text-shadow: 0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 10px rgba(0, 0, 0, 0.1), 0 8px 9px rgba(0, 0, 0, 0.1);

@@ -100,22 +100,6 @@ $(function(){
 
     }
 
-    function showInfoMsg(msg) {
-        var msgElement = document.getElementById("loading")
-
-        if(msgElement){
-            if(msg){
-                msgElement.innerHTML = msg
-
-                if(msgElement.style.display = "none")
-                    msgElement.style.display = "block"
-            }else{
-                msgElement.innerHTML = ""
-                msgElement.style.display = "none"
-            }
-        }
-    }
-
 
 //Function that changes the camera aspect ratio and renderer size when window is resized
     function windowResize (renderer, camera){
@@ -219,7 +203,7 @@ $(function(){
         }
 
         // Collada loader/parser
-        showInfoMsg("Requesting model...")
+        _gui.loadDiag.changeState("request")
 
         var loader = new THREE.ColladaLoader()
 
@@ -260,12 +244,12 @@ $(function(){
             cleanScene()
 
             //console.log(_sceneController.renderer.info.memory)
-            showInfoMsg()
+            _gui.loadDiag.changeState('ready')
 
             loader = null
 
         }, function progress(data){
-            showInfoMsg("Downloading model... " + " Loaded: " + Math.ceil((data.loaded / 1000000)*100)/100 + " MB")
+            _gui.loadDiag.updateProgress(Math.ceil((data.loaded / 1000000)*100)/100)
         })
 
         console.log("Requested file: " + _connection.storageUrl + colladaName)
@@ -461,6 +445,5 @@ $(function(){
 
 //Start the animation loop
     loop()
-
 
 })

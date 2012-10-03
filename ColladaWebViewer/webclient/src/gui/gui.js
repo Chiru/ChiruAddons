@@ -393,13 +393,76 @@
             $(this).remove("li[value='"+name+"']")
         }
 
+        var _loadDiag = $( "#loading" ).dialog({
+            resizable: false,
+            autoOpen: false,
+            height:200,
+            modal: true,
+            open: function(){
+                $('.ui-widget-overlay').hide().fadeIn();
+            },
+            buttons: {
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
+
+        _loadDiag.progress = _loadDiag.find("#progress")
+
+
+        _loadDiag.changeState = function (event) {
+
+            if(event == 'request'){
+                this.dialog('option','title', 'Requesting model...')
+                this.progress.text("-")
+                this.dialog( 'open' )
+            }else if(event == 'loading'){
+                this.dialog('option','title', 'Downloading model...')
+            }else if(event == 'ready'){
+                this.dialog( 'close' )
+                this.dialog('option','title', "Download ready!")
+                this.progress.text("")
+            }
+
+        }
+
+        _loadDiag.updateProgress = function(progress) {
+            this.progress.text(progress)
+        }
+
+        $( "#help" ).dialog({
+            resizable: true,
+            autoOpen: false,
+            height: 300,
+            width: 500,
+            modal: true,
+            open: function(){
+                $('.ui-widget-overlay').hide().fadeIn();
+            },
+            buttons: {
+                Ok: function() {
+                    $( this ).dialog( "close" );
+                }
+            },
+            show: "fade"
+        });
+
+        $("#helpLink").bind('click touch', function() {
+            $( "#help" ).dialog( "open" );
+            return false;
+        });
+
+
+
 
         // *** Saving GUI configuration ***
 
         $.gui = {
             'objectScale' : _scale,
             'sceneParams' : _sceneParams,
-            'fileList' : _fileList
+            'fileList' : _fileList,
+            'loadDiag' : _loadDiag
         }
     })
 
