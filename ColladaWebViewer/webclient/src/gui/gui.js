@@ -215,16 +215,16 @@
         _leftMenu.css('left', -_leftMenu.outerWidth())
         _leftMenu.center({horizontal: false, inside: $("#content")});
         $(window).bind('resize', function() {
-            $("#leftMenu").center({transition:300, horizontal: false, inside: $("#content")});
+            $("#leftMenu").center({transition:0, horizontal: false, inside: $("#content")});
         });
 
 
         // Adding accordion-style menu
-        $( "#accordion" ).accordion({
+        _leftMenu.find("#accordion").accordion({
             fillSpace: true
         })
 
-        _leftMenu.triggerBar = $("#trigger1")
+        _leftMenu.triggerBar = _leftMenu.find("#trigger1")
         _leftMenu.triggerBar.position({
             of: _leftMenu,
             at: "right center",
@@ -299,13 +299,16 @@
 
         _sceneParams.lightIntensity = initSlider({min: 0, max: 5, step: 0.1}, "#light", "#intensity")
 
+        _sceneParams.useProxy = _leftMenu.find("#check1").button()
+        _sceneParams.renderQuality = _leftMenu.find("#check2").button()
+
         // *** Initializing right menu ***
 
         var _rightMenu = $("#rightMenu");
         _rightMenu.css('right', -_rightMenu.outerWidth())
         _rightMenu.center({horizontal: false, inside: $("#content")});
         $(window).bind('resize', function() {
-            $("#rightMenu").center({transition:300, horizontal: false, inside: $("#content")});
+            $("#rightMenu").center({transition:0, horizontal: false, inside: $("#content")});
         });
 
 
@@ -393,10 +396,13 @@
             $(this).remove("li[value='"+name+"']")
         }
 
+
+        // Initializing the asset loading dialog
         var _loadDiag = $( "#loading" ).dialog({
             resizable: false,
             autoOpen: false,
-            height:200,
+            width: 350,
+            minHeight:200,
             modal: true,
             open: function(){
                 $('.ui-widget-overlay').hide().fadeIn();
@@ -409,28 +415,60 @@
         });
 
         _loadDiag.progress = _loadDiag.find("#progress")
+        _loadDiag.msg = _loadDiag.find("#msg")
 
-
-        _loadDiag.changeState = function (event) {
+        _loadDiag.changeState = function (event, msg) {
+            var _self = this
 
             if(event == 'request'){
-                this.dialog('option','title', 'Requesting model...')
+                this.dialog('option','title', 'Requesting asset')
+                this.dialog('option', 'buttons', { "Cancel": function() {
+                    _self.abort()
+                    $(this).dialog("close");
+                }})
+                this.msg.text("Waiting for response from: "+ msg)
                 this.progress.text("-")
                 this.dialog( 'open' )
             }else if(event == 'loading'){
-                this.dialog('option','title', 'Downloading model...')
+                this.dialog('option','title', 'Downloading asset')
+                this.dialog('option', 'buttons', { "Cancel": function() {
+                    _self.abort();
+                    $(this).dialog("close");
+                }})
+                this.msg.text("Press 'cancel' to abort the download.")
+            }else if(event == 'downloaded'){
+                this.dialog('option','title', "Download ready! Processing...")
+                this.dialog('option', 'buttons', { "Close": function() { $(this).dialog("close"); }})
+                this.msg.text("Processing asset, please wait...")
             }else if(event == 'ready'){
-                this.dialog( 'close' )
-                this.dialog('option','title', "Download ready!")
-                this.progress.text("")
+                var timer = setTimeout(function(){this.dialog( 'close' )}.bind(this), 1000)
+                this.dialog('option','title', "Asset added to scene")
+                this.msg.text("Processing completed!")
+                this.dialog('option', 'buttons', { "Close": function() { clearTimeout(timer); $(this).dialog("close"); }})
+            }else if(event == 'error') {
+                this.dialog('option','title', "Error!")
+                this.msg.text(msg)
+                this.dialog('option', 'buttons', { "Close": function() { $(this).dialog("close"); }})
+
             }
 
+        }
+
+        // Hooking the XHR abort function to the load dialog
+        _loadDiag.xhr = null
+        _loadDiag.abort = function() {
+            if(typeof(this.xhr) === 'object'){
+                this.xhr.abort()
+                this.xhr = null
+            }
         }
 
         _loadDiag.updateProgress = function(progress) {
             this.progress.text(progress)
         }
 
+
+        // Initializing the help dialog
         $( "#help" ).dialog({
             resizable: true,
             autoOpen: false,
@@ -466,4 +504,4 @@
         }
     })
 
-})( jQuery );
+})(jQuery);

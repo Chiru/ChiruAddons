@@ -49,7 +49,14 @@
                             <div class="cell2"><label for="intensity">Amount:</label></div>
                             <div class="cell3"><div id="intensity" class="amount"></div></div>
                         </div>
+
+
                     </div>
+                    <input type="checkbox" id="check1" name="check1" />
+                    <label for="check1" style="width:15em;">Use AssetProxy</label>
+
+                    <input type="checkbox" id="check2" name="check2" />
+                    <label for="check2" style="width:15em;">Low Render Quality</label>
                 </div>
             </div>
             <div id="trigger1" class="trigger trigger-left"></div>
@@ -72,6 +79,7 @@
 </div>
 
 <div id="loading">
+    <p><span id="msg"></span></p>
     <p><span class="ui-icon ui-icon-transferthick-e-w" style="float:left; margin:0 7px 20px 0;"></span>Loaded:
         <span id="progress"></span> MB</p>
 </div>

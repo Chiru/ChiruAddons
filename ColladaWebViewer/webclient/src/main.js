@@ -150,7 +150,7 @@ $(function(){
 
         _connection.wsManager.bind("newCollada", function(colladaName){
             if(!(colladaName in _connection.serverFiles)){
-                console.log("A new collada was added in remote storage: " + colladaName)
+                //console.log("A new collada was added in remote storage: " + colladaName)
                 _connection.serverFiles.push(colladaName)
 
                 _gui.fileList.addItem(colladaName)
@@ -159,8 +159,6 @@ $(function(){
 
                     requestCollada(colladaName)
                 }
-
-
             }
         })
 
@@ -193,7 +191,7 @@ $(function(){
         var loadedObjects = _sceneController.loadedObjects
         for (var i=0; i < loadedObjects.length; i++){
             if(loadedObjects[i].name == colladaName){
-                console.log(colladaName + " is loaded alredy.")
+                //console.log(colladaName + " is loaded alredy.")
                 removeFromScene(_objController.current)
                 addToScene(loadedObjects[i])
                 _objController.setCurrent(loadedObjects[i])
@@ -203,28 +201,96 @@ $(function(){
         }
 
         // Collada loader/parser
-        _gui.loadDiag.changeState("request")
+        var url = _connection.storageUrl + colladaName
 
+        _gui.loadDiag.changeState('request', _connection.storageUrl)
+
+        var trigger;
+
+        if ( document.implementation && document.implementation.createDocument ) {
+
+            var request = new XMLHttpRequest();
+            // Linking request with gui, so it can be aborted
+            _gui.loadDiag.xhr = request
+
+            request.onreadystatechange = function() {
+
+                if( request.readyState == 4 ) {
+                    clearInterval (trigger);
+                    trigger = null
+                    _objController.loading = false
+
+                    if( request.status == 200 ) {
+
+                        if ( request.responseXML ) {
+                            _gui.loadDiag.changeState('downloaded')
+
+                            //The final download progress update
+                            _gui.loadDiag.updateProgress(Math.ceil((request.responseText.length / 1000000)*100)/100)
+
+                            //Gives the program some time to breath after download so it has time to update the viewport
+                            setTimeout(function(){processCollada(request.responseXML, colladaName)}, 500)
+
+                        } else {
+                            _gui.loadDiag.changeState('error', "Empty XML received!")
+                            request = null
+                        }
+                    }
+
+                } else if( request.readyState == 2) {
+                    _gui.loadDiag.changeState('loading')
+                    _objController.loading = true
+                    trigger = setInterval (function ()
+                    {
+                        if (request.readyState == 3)
+                        {
+                            _gui.loadDiag.updateProgress(Math.ceil((request.responseText.length / 1000000)*100)/100)
+                        }
+                    }, 200)
+                }
+            }
+
+            request.onabort = function () {
+                clearInterval (trigger);
+                trigger = null
+                request = null
+            }
+
+            request.onerror = function (e) {
+                clearInterval (trigger);
+                trigger = null
+                request = null
+                _gui.loadDiag.changeState('error', "Failed to download: " +url)
+            }
+
+            request.open( "GET", url, true );
+            try{
+                request.send( null );
+            }catch (e){
+                _gui.loadDiag.changeState('error', e.message+", when requesting: " +url)
+            }
+
+        } else {
+            _gui.loadDiag.changeState('error', "Your browser can't handle XML.")
+        }
+    }
+
+    function processCollada (xml, name) {
+        var loadedObjects = _sceneController.loadedObjects
         var loader = new THREE.ColladaLoader()
 
         loader.options.convertUpAxis = true
-
-        _objController.loading = true
-        loader.load(_connection.storageUrl + colladaName, function colladaReady(collada) {
+        loader.parse(xml, function colladaReady(collada) {
             var model = collada.scene
-
             //Changing colormode of the collada model
             setColorMode(model, _sceneController.sceneParams.colorMode)
 
-            model.name = colladaName
+            model.name = name
 
             //Forcing double-sideness
             THREE.SceneUtils.traverseHierarchy(model, function(child) {
                 child.material.side = THREE.DoubleSide
             })
-
-            _objController.loadNext = ""
-            _objController.loading = false
 
             if(loadedObjects.length > 0){
                 //removeFromScene(loadedObjects[loadedObjects.length-1])
@@ -235,26 +301,22 @@ $(function(){
             addToScene(model)
             _objController.setCurrent(model)
 
-
             _gui.fileList.toggleLoaded(model.name)
-
             model = null
 
             //Freeing memory by removing objects
             cleanScene()
 
             //console.log(_sceneController.renderer.info.memory)
-            _gui.loadDiag.changeState('ready')
-
             loader = null
 
-        }, function progress(data){
-            _gui.loadDiag.updateProgress(Math.ceil((data.loaded / 1000000)*100)/100)
-        })
+            _gui.loadDiag.changeState('ready')
 
-        console.log("Requested file: " + _connection.storageUrl + colladaName)
+        }, _connection.storageUrl)
+
 
     }
+
 
     function addToScene(object) {
         _sceneController.scene.add(object)
@@ -280,7 +342,7 @@ $(function(){
         var objects = _sceneController.loadedObjects
         if(objects.length > 4){
             while(objects.length > 4){
-                console.log("removing object: " + objects[0].name)
+                //console.log("removing object: " + objects[0].name)
 
                 _gui.fileList.toggleLoaded(objects[0].name)
 
@@ -349,7 +411,6 @@ $(function(){
             }
         }
 
-        _objController.loadNext = ""
         _objController.loading = false
 
 
