@@ -16,7 +16,7 @@ def compress(in_files, out_file, verbose=False, temp_file='.temp'):
 
         temp.write(data)
 
-        print ' + %s' % f
+        print ' + %s, %.2f kB' % (f, (os.path.getsize(f)/1024.0))
 
     temp.close()
 

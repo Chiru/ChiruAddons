@@ -32,7 +32,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
     this.minDistance = 0;
     this.maxDistance = Infinity;
-    this.pinchZoomTriggerDist = 0.05;
+    this.pinchZoomTriggerDist = 0.03;
 
     this.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
 
@@ -46,6 +46,11 @@ THREE.TrackballControls = function ( object, domElement ) {
         _state = STATE.NONE,
         _initialTouchDist = 0,
         _touchDist = 0,
+        _twoFingers = false,
+        _touchStart = [],
+        _touchEnd = [],
+        _startDistance,
+
 
         _eye = new THREE.Vector3(),
 
@@ -180,6 +185,26 @@ THREE.TrackballControls = function ( object, domElement ) {
 
     };
 
+    this.pinchToZoomCamera = function()
+    {
+        if (_startDistance == 0)
+            return;
+
+        var endDistance = _touchEnd[0].distanceTo(_touchEnd[1]);
+
+        var scale = endDistance / _startDistance;
+
+        var delta = (1-scale);
+
+        var factor = 1 + delta * _this.zoomSpeed/3;
+        if ( factor !== 1.0 && factor > 0.0 && factor < 1.5)
+        {
+            _eye.multiplyScalar(factor);
+            _startDistance += ( endDistance - _startDistance ) * this.dynamicDampingFactor;
+        }
+
+    };
+
     this.panCamera = function () {
 
         var mouseChange = _panEnd.clone().subSelf( _panStart );
@@ -238,10 +263,12 @@ THREE.TrackballControls = function ( object, domElement ) {
 
         }
 
-        if ( !_this.noZoom ) {
-
-            _this.zoomCamera();
-
+        if ( !_this.noZoom )
+        {
+            if (!_twoFingers)
+                _this.zoomCamera();
+            else
+                _this.pinchToZoomCamera();
         }
 
         if ( !_this.noPan ) {
@@ -383,7 +410,6 @@ THREE.TrackballControls = function ( object, domElement ) {
         event.stopPropagation();
 
         _state = STATE.NONE;
-        _initialTouchDist = _touchDist = 0
 
     }
 
@@ -442,6 +468,7 @@ THREE.TrackballControls = function ( object, domElement ) {
             mousedown( event );
 
         }else if ( event.touches.length === 2) {
+            _twoFingers = true;
             var touch1 = event.touches[0];
             var touch2 = event.touches[1];
             _state = STATE.PAN;
@@ -452,6 +479,8 @@ THREE.TrackballControls = function ( object, domElement ) {
 
             _initialTouchDist =  calcFingerDistance(_this.getMouseOnScreen(touch1.clientX, touch1.clientY), _this.getMouseOnScreen(touch2.clientX, touch2.clientY))
 
+        }else {
+            _twoFingers = false;
         }
     }
 
@@ -464,6 +493,7 @@ THREE.TrackballControls = function ( object, domElement ) {
             mousemove( event );
 
         }else if( event.touches.length === 2) {
+            _twoFingers = true;
             var touch1 = event.touches[0];
             var touch2 = event.touches[1];
 
@@ -471,7 +501,10 @@ THREE.TrackballControls = function ( object, domElement ) {
                 _touchDist = calcFingerDistance(_this.getMouseOnScreen(touch1.clientX, touch1.clientY), _this.getMouseOnScreen(touch2.clientX, touch2.clientY))
                 if((Math.abs(_initialTouchDist - _touchDist)) > _this.pinchZoomTriggerDist){
                     _state = STATE.ZOOM
-                    _zoomStart = _zoomEnd = _this.getMouseOnScreen( Math.abs(touch1.clientX - touch2.clientX)/2  , Math.abs(touch1.clientY - touch2.clientY)/2 );
+                    _touchStart[0] = _this.getMouseOnScreen( touch1.clientX, touch1.clientY );
+                    _touchStart[1] = _this.getMouseOnScreen( touch2.clientX, touch2.clientY );
+                    _startDistance = _touchStart[0].distanceTo(_touchStart[1]);
+                    _touchEnd = _touchStart;
                 }else {
                     if ( _state === STATE.PAN && !_this.noPan ) {
                         var coords = averageTouchLocation( event.touches );
@@ -482,10 +515,21 @@ THREE.TrackballControls = function ( object, domElement ) {
             }
 
             if ( _state === STATE.ZOOM && !_this.noZoom ) {
-                _zoomEnd = _this.getMouseOnScreen( Math.abs(touch1.clientX - touch2.clientX)/2  , Math.abs(touch1.clientY - touch2.clientY)/2 );
+                _touchEnd[0] = _this.getMouseOnScreen( touch1.clientX, touch1.clientY );
+                _touchEnd[1] = _this.getMouseOnScreen( touch2.clientX, touch2.clientY );
 
             }
+        }else{
+            _twoFingers = false;
         }
+    }
+
+    function touchend(event)
+    {
+        _twoFingers = false;
+        _startDistance = 0;
+        _initialTouchDist = _touchDist = 0
+        mouseup( event );
     }
 
 
@@ -497,7 +541,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
     this.domElement.addEventListener( 'touchmove', touchmove, false );
     this.domElement.addEventListener( 'touchstart', touchstart, false );
-    this.domElement.addEventListener( 'touchend', mouseup, false );
+    this.domElement.addEventListener( 'touchend', touchend, false );
 
     this.domElement.addEventListener( 'DOMMouseScroll', mousewheel, false );
     this.domElement.addEventListener( 'mousewheel', mousewheel, false );
