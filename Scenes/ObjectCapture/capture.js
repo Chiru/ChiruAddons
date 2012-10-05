@@ -204,6 +204,18 @@ function OnScriptDestroyed()
         data.timer = null;
     }
 
+    if (data.placeholders != null)
+    {
+        // Prevent multiple placeholders creation if script is reloaded.
+        /// \todo Move creation of placeholders to server side so that capturing client can be restarted without placeholder spamming.
+        for (i = 0; i < data.placeholders.length; i++)
+        {
+            scene.RemoveEntity(data.placeholders[i].Id());
+        }
+        data.placeholders = null;
+    }
+
+    stopCapturing();
     data.module = null;
 }
 
@@ -250,7 +262,9 @@ function assetUploaded(assetRef)
     }
 }
 
-if(!server.IsRunning()) {
+if (!server.IsRunning())
+{
+    // Add Capture menu to the client Ui
     var menu = ui.MainWindow().menuBar();
     var captureMenu = menu.addMenu("&Capture");
     captureMenu.addAction("Start ObjectCapture").triggered.connect(InitializeObjectCapture);
