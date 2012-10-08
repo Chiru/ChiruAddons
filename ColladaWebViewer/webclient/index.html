@@ -13,45 +13,42 @@
 
 <div id="container">
 
-    <div id="header">Capture Viewer</div>
+    <div id="header"><span style="display: table-cell; vertical-align: middle;">Capture Viewer</span></div>
     <div id="content">
         <canvas id="glCanvas"></canvas>
 
         <div id="leftMenu" class="menu leftMenu">
-            <div id="accordion">
-                <h3><a href="#">Object Controls</a></h3>
-                <div>
-                    <div class="sliders">
-                        <b>Object Scale</b>
-                        <div class="row">
-                            <div class="cell1"><div id="scaleX"></div></div>
-                            <div class="cell2"><label for="amount1">X:</label></div>
-                            <div class="cell3"><div id="amount1" class="amount"></div></div>
-                        </div>
-                        <div class="row">
-                            <div class="cell1"><div id="scaleY"></div></div>
-                            <div class="cell2"><label for="amount2">Y:</label></div>
-                            <div class="cell3"><div id="amount2" class="amount"></div></div>
-                        </div>
-                        <div class="row">
-                            <div class="cell1"><div id="scaleZ"></div></div>
-                            <div class="cell2"><label for="amount3">Z:</label></div>
-                            <div class="cell3"><div id="amount3" class="amount"></div></div>
-                        </div>
+            <h1>Settings</h1>
+            <!--<div id="accordion"></div>-->
+            <div class="content">
+                <h2>Object Controls</h2>
+                <div class="sliders">
+                    <div class="row"><h3>Object Scale</h3></div>
+                    <div class="row">
+                        <div class="cell1"><div id="scaleX"></div></div>
+                        <div class="cell2"><label for="amount1">X:</label></div>
+                        <div class="cell3"><div id="amount1" class="amount"></div></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell1"><div id="scaleY"></div></div>
+                        <div class="cell2"><label for="amount2">Y:</label></div>
+                        <div class="cell3"><div id="amount2" class="amount"></div></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell1"><div id="scaleZ"></div></div>
+                        <div class="cell2"><label for="amount3">Z:</label></div>
+                        <div class="cell3"><div id="amount3" class="amount"></div></div>
                     </div>
                 </div>
-                <h3><a href="#">Scene Settings</a></h3>
-                <div>
-                    <div class="sliders">
-                        <b>Light Intensity</b>
-                        <div class="row">
-                            <div class="cell1"><div id="light"></div></div>
-                            <div class="cell2"><label for="intensity">Amount:</label></div>
-                            <div class="cell3"><div id="intensity" class="amount"></div></div>
-                        </div>
-
-
+                <h2>Scene Settings</h2>
+                <div class="sliders">
+                    <div class="row"><h3>Light Intensity</h3></div>
+                    <div class="row">
+                        <div class="cell1"><div id="light"></div></div>
+                        <div class="cell2"><label for="intensity">Amount:</label></div>
+                        <div class="cell3"><div id="intensity" class="amount"></div></div>
                     </div>
+                    <br>
                     <input type="checkbox" id="check1" name="check1" />
                     <label for="check1" style="width:15em;">Use AssetProxy</label>
 
@@ -71,11 +68,9 @@
     </div>
 
     <div id="footer">
-        <a href="" id="helpLink" style="position:relative; left: 10px; top:15px; vertical-align:middle;">Help</a>
+        <a href="" id="helpLink" style="text-align:left">Help</a>
         <div id="cieLogo"><a href="http://cie.fi" target="_blank"><img src="css/cie_40.png"></a></div>
     </div>
-
-
 </div>
 
 <div id="loading">
@@ -95,6 +90,7 @@
 <script type="text/javascript" src="src/gui/gui.js"></script>
 <script type="text/javascript" src="src/main.js"></script>
 -->
+
 
 </body>
 </html>

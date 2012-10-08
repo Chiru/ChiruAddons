@@ -220,9 +220,9 @@
 
 
         // Adding accordion-style menu
-        _leftMenu.find("#accordion").accordion({
+       /* _leftMenu.find("#accordion").accordion({
             fillSpace: true
-        })
+        })*/
 
         _leftMenu.triggerBar = _leftMenu.find("#trigger1")
         _leftMenu.triggerBar.position({
@@ -270,17 +270,26 @@
 
         // Initializing sliders in the left menu
         var initSlider = function(options, el, resultEl){
-            var slider = $(el).slider({
+
+            var slider = $(el)
+            slider.slider({
                 range: "max",
                 min: options.min,
                 max: options.max,
                 step: options.step,
                 value: 1,
                 slide: function( event, ui ) {
-                    $( resultEl ).text( ui.value )
+                    $(resultEl).text( ui.value )
                     $(this).trigger('changed', ui.value)
+                },
+                change: function(event, ui) {
+                    $(resultEl).text( ui.value)
                 }
             }).css({width:"100%"})
+
+            slider.setValue = function(val){
+                this.slider('value', val)
+            }
 
             $(resultEl).text( $(slider).slider( "value" ))
 
@@ -299,6 +308,8 @@
 
         _sceneParams.lightIntensity = initSlider({min: 0, max: 5, step: 0.1}, "#light", "#intensity")
 
+
+        //Initializing left menu buttons
         _sceneParams.useProxy = _leftMenu.find("#check1").button()
         _sceneParams.renderQuality = _leftMenu.find("#check2").button()
 
@@ -490,8 +501,6 @@
             $( "#help" ).dialog( "open" );
             return false;
         });
-
-
 
 
         // *** Saving GUI configuration ***

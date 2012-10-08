@@ -14,8 +14,7 @@ $(function(){
             scene: null, // Scene hierarchy
             sceneParams: { // Parameters related to scene rendering
                 'colorMode': THREE.VertexColors,
-                antiAlias: true,
-                precision: 'highp'
+                'resolution': 1
             },
             controls: null, // Camera controls
             loader: null // Collada loader/parser
@@ -24,6 +23,7 @@ $(function(){
 
     var _connection = {
         serverFiles: [], // List of collada files stored in remote storage
+        origStorageUrl: "",
         storageUrl: "", //  Url of the remote storage folder
         wsManager: null, // WebSocket connection manager object
         ip: "",
@@ -36,19 +36,25 @@ $(function(){
         return false
     }
 
-    function performanceMode(highQuality) {
-        if (typeof(highQuality) === 'undefined')
-            highQuality = true
+    function setRenderQuality(quality) {
+        if (typeof(quality) === 'undefined')
+            quality = 'high'
 
-        var sceneParams = _sceneController.sceneParams
+        var renderer = _sceneController.renderer
 
-        if (highQuality) {
-            sceneParams.antiAlias = true
-            sceneParams.precision = 'highp'
+        if (quality == 'high') {
+            renderer.setSize( _container.innerWidth() , _container.innerHeight() )
+            renderer.domElement.style.width = null
+            renderer.domElement.style.height = null
+            _sceneController.sceneParams.resolution = 1
         }else{
-            sceneParams.antiAlias = false
-            sceneParams.precision = 'lowp'
+            renderer.setSize( _container.innerWidth() / 2, _container.innerHeight() / 2 )
+            renderer.domElement.style.width = _container.innerWidth() + 'px'
+            renderer.domElement.style.height = _container.innerHeight() + 'px'
+            _sceneController.sceneParams.resolution = 0.5
         }
+
+
     }
 
 
@@ -71,9 +77,37 @@ $(function(){
             //For testing
             if(keys.mobile)
                 window.mobile = keys.mobile === '1'
-            if(keys.useProxy)
+            if(keys.useProxy){
                 _connection.useProxy = keys.useProxy === '1'
+            }else{
+                _connection.useProxy = isMobileBrowser()
+            }
 
+        }
+    }
+
+    function insertToUrl(key, value) {
+        key = encodeURIComponent(key); value = encodeURIComponent(value);
+
+        var kvp = window.location.search.substr(1).split('&');
+        if (kvp == ''){
+            window.history.replaceState('Object', 'Title', '?' + key + '=' + value)
+        }
+        else{
+
+            var i = kvp.length; var x; while (i--){
+                x = kvp[i].split('=');
+
+                if (x[0] == key) {
+                    x[1] = value;
+                    kvp[i] = x.join('=');
+                    break;
+                }
+            }
+
+            if (i < 0) { kvp[kvp.length] = [key, value].join('='); }
+
+            window.history.replaceState('Object', 'Title', '?'+kvp.join('&'))
         }
     }
 
@@ -85,15 +119,8 @@ $(function(){
         if(parsed['directory'].indexOf('/', parsed['directory'].length - 1) == -1)
             parsed['directory'] += '/'
 
-        //Hardcoded proxy url for mobile device demos
-        var useProxy = false
-        if(typeof(_connection.useProxy) === 'undefined')
-            useProxy = isMobileBrowser()
-        else
-            useProxy = _connection.useProxy
-
         var proxy = "chiru.cie.fi:8000/"
-        if(useProxy)
+        if(_connection.useProxy)
             parsed['host'] =  proxy + "?" + parsed['host']
 
         _connection.storageUrl =  "http://" + parsed['host'] + parsed['directory']
@@ -104,8 +131,13 @@ $(function(){
 //Function that changes the camera aspect ratio and renderer size when window is resized
     function windowResize (renderer, camera){
         var callback = function(){
-            renderer.setSize(_container.innerWidth(), _container.innerHeight())
-            camera.aspect = (_container.innerWidth() / _container.innerHeight())
+            var res = _sceneController.sceneParams.resolution
+            renderer.setSize(_container.innerWidth()*res, _container.innerHeight()*res)
+            if(renderer.domElement.style.width || renderer.domElement.style.height){
+                renderer.domElement.style.width = _container.innerWidth() + 'px'
+                renderer.domElement.style.height = _container.innerHeight() + 'px'
+            }
+            camera.aspect = ((_container.innerWidth()*res) / (_container.innerHeight()*res))
             camera.updateProjectionMatrix()
             _sceneController.controls.handleResize()
         }
@@ -141,7 +173,6 @@ $(function(){
     }
 
     function initWSConnection() {
-        parseUrl(location)
 
         console.log("Websocket ip: " + _connection.ip + " and port: " + _connection.port)
 
@@ -169,8 +200,8 @@ $(function(){
             _connection.serverFiles.forEach(function(name) {
                 _gui.fileList.addItem(name)
             })
-
-            parseStorageUrl(data['storageUrl'])
+            _connection.origStorageUrl = data['storageUrl']
+            parseStorageUrl(_connection.origStorageUrl)
 
         })
 
@@ -226,7 +257,7 @@ $(function(){
                             _gui.loadDiag.changeState('downloaded')
 
                             //The final download progress update
-                            _gui.loadDiag.updateProgress(Math.ceil((request.responseText.length / 1000000)*100)/100)
+                            _gui.loadDiag.updateProgress(Math.ceil((request.responseText.length / 1000024)*100)/100)
 
                             //Gives the program some time to breath after download so it has time to update the viewport
                             setTimeout(function(){processCollada(request.responseXML, colladaName)}, 500)
@@ -244,7 +275,7 @@ $(function(){
                     {
                         if (request.readyState == 3)
                         {
-                            _gui.loadDiag.updateProgress(Math.ceil((request.responseText.length / 1000000)*100)/100)
+                            _gui.loadDiag.updateProgress(Math.ceil((request.responseText.length / 1000024)*100)/100)
                         }
                     }, 200)
                 }
@@ -358,6 +389,7 @@ $(function(){
 
 //Initializes the renderer, camera, etc.
     function init() {
+        parseUrl(location)
         var isMobile = isMobileBrowser()
 
         //Creates the container and scene
@@ -380,23 +412,24 @@ $(function(){
 
         // RENDERER
 
-        var antiAlias = isMobile ? false : true
-        var precision = isMobile ? 'lowp' : 'highp'
-
         var canvas = $("#glCanvas")
 
         canvas.attr({ width: _container.innerWidth(), height: _container.innerHeight()})
 
+
         //console.log("alias: " + antiAlias + " precision: " +precision + " scale: " + scale + " canvas: " + canvas.id + " w: " + canvas.width + " h: " +canvas.height)
 
         var renderer = _sceneController.renderer = new THREE.WebGLRenderer({
-            antiAlias: antiAlias,	// to get smoother output
+            antiAlias: true,	// to get smoother output
             preserveDrawingBuffer: false,	// true to allow screen shot
-            precision: precision,
+            precision: 'highp',
             canvas: canvas.get(0)
         })
         //renderer.setSize($("#content").width(), $("#content").height())
         renderer.setClearColorHex( 0xBBBBBB, 1 )
+
+        if(isMobile)
+            setRenderQuality('low')
 
 
         //Initializes object focus change controller
@@ -438,7 +471,6 @@ $(function(){
     function guiBindings (){
         var sceneParams = _sceneController.sceneParams
         var pointLight = _sceneController.pointLight
-        var camera = _sceneController.camera
 
         _gui.fileList.setCallback(function(name) {
             if(!_objController.loading)
@@ -455,8 +487,44 @@ $(function(){
             _objController.current.scale.z = value
         })
 
+        _gui.sceneParams.lightIntensity.setValue(pointLight.intensity)
         _gui.sceneParams.lightIntensity.bind('changed', function(event, value){
             pointLight.intensity = value
+        })
+
+        if(_connection.useProxy){
+            _gui.sceneParams.useProxy.attr('checked','checked');
+            _gui.sceneParams.useProxy.button("refresh")
+        }
+
+        _gui.sceneParams.useProxy.bind('click', function(){
+            if(!_connection.useProxy)
+                insertToUrl('useProxy', 1)
+            else
+                insertToUrl('useProxy', 0)
+
+            parseUrl(location)
+            if(_connection.origStorageUrl.length !=0)
+                parseStorageUrl(_connection.origStorageUrl)
+        })
+
+        if(isMobileBrowser()){
+            _gui.sceneParams.renderQuality.attr('checked','checked');
+            _gui.sceneParams.renderQuality.button('refresh')
+        }
+        _gui.sceneParams.renderQuality.bind('click', function(){
+            if(!window.mobile)
+                insertToUrl('mobile', 1)
+            else
+                insertToUrl('mobile', 0)
+
+            parseUrl(location)
+
+            if(isMobileBrowser())
+                setRenderQuality('low')
+            else
+                setRenderQuality('high')
+
         })
 
         /*
