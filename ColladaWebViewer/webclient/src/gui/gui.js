@@ -206,67 +206,23 @@
 
 (function($) {
 
-    $(document).ready(function(){
+    $(window).load(function(){
+        $("#pageLoader").fadeOut(600);
+        $("#content").css({visibility:'visible'})/*.css({opacity: 0.0, visibility: "visible"}).
+            animate({opacity:1.0})*/
 
+    })
+
+    $(window).ready(function(){
 
         // *** Initilizing the left menu ***
 
-        var _leftMenu = $("#leftMenu");
+        var _leftMenu = $("#leftMenu")
         _leftMenu.css('left', -_leftMenu.outerWidth())
         _leftMenu.center({horizontal: false, inside: $("#content")});
         $(window).bind('resize', function() {
             $("#leftMenu").center({transition:0, horizontal: false, inside: $("#content")});
         });
-
-
-        // Adding accordion-style menu
-       /* _leftMenu.find("#accordion").accordion({
-            fillSpace: true
-        })*/
-
-        _leftMenu.triggerBar = _leftMenu.find("#trigger1")
-        _leftMenu.triggerBar.position({
-            of: _leftMenu,
-            at: "right center",
-            my: "right center",
-            offset: "22px 0"
-        })
-
-        var iconArea = $("<div/>", {
-            class: "ui-state-blank",
-            css: {height: "20px"}
-        }).appendTo(_leftMenu.triggerBar)
-        iconArea.position({
-            of: _leftMenu.triggerBar,
-            my: "center",
-            at: "center"
-        })
-
-        var icon = _leftMenu.triggerBar.arrow = $("<div/>", {
-            class: "ui-icon ui-icon-triangle-1-e"
-        }).appendTo(iconArea)
-        icon.position({
-            of: iconArea,
-            my: "center",
-            at: "center"
-        })
-
-        _leftMenu.triggerBar.bind('click',function(){
-            var parent = $(this).parent()
-            parent.animate({
-                left: parseInt(parent.css('left'),10) == 0 ?
-                    - parent.outerWidth() :
-                    0
-            });
-            if (!_leftMenu.attr("isOpened")){
-                _leftMenu.triggerBar.arrow[0].className = "ui-icon ui-icon-triangle-1-w"
-                _leftMenu.attr("isOpened",true);
-            }else{
-                _leftMenu.triggerBar.arrow[0].className = "ui-icon ui-icon-triangle-1-e"
-                _leftMenu.removeAttr("isOpened");
-            }
-        })
-
 
         // Initializing sliders in the left menu
         var initSlider = function(options, el, resultEl){
@@ -313,6 +269,33 @@
         _sceneParams.useProxy = _leftMenu.find("#check1").button()
         _sceneParams.renderQuality = _leftMenu.find("#check2").button()
 
+        var leftClose = $("#leftClose")
+        leftClose.position({
+            of: _leftMenu,
+            at: "right center",
+            my: "right center",
+            offset: "22px 0"
+        })
+        leftClose.bind('click',function(){
+            var parent = $("#leftMenu")
+            parent.animate({left: -parent.outerWidth() },function(){parent.hide()})
+        })
+        _leftMenu.hide()
+
+
+        var leftOpen = $("#leftOpen").css({left:0})
+        leftOpen.center({horizontal: false, inside: $("#content")});
+        $(window).bind('resize', function() {
+            $("#leftOpen").center({transition:0, horizontal: false, inside: $("#content")});
+        });
+
+        leftOpen.bind('click',function(){
+            var parent = $("#leftMenu")
+            parent.show()
+            parent.animate({left: 0 })
+        })
+
+
         // *** Initializing right menu ***
 
         var _rightMenu = $("#rightMenu");
@@ -322,53 +305,32 @@
             $("#rightMenu").center({transition:0, horizontal: false, inside: $("#content")});
         });
 
-
-        _rightMenu.triggerBar = $("#trigger2")
-        _rightMenu.triggerBar.position({
+        var rightClose = $("#rightClose")
+        rightClose.position({
             of: _rightMenu,
             at: "left center",
             my: "left center",
             offset: "-22px 0"
         })
+        rightClose.bind('click',function(){
+            var parent = $("#rightMenu")
+            parent.animate({right: -parent.outerWidth() },function(){parent.hide()})
+        })
+        _rightMenu.hide()
 
-        _rightMenu.open = false
 
-        iconArea = $("<div/>", {
-            class: "ui-state-blank",
-            css: {height: "20px"}
-        }).appendTo(_rightMenu.triggerBar)
-        iconArea.position({
-            of: _rightMenu.triggerBar,
-            my: "center",
-            at: "center"
+        var rightOpen = $("#rightOpen").css({right:0})
+        rightOpen.center({horizontal: false, inside: $("#content")});
+        $(window).bind('resize', function() {
+            $("#rightOpen").center({transition:0, horizontal: false, inside: $("#content")});
+        });
+
+        rightOpen.bind('click',function(){
+            var parent = $("#rightMenu")
+            parent.show()
+            parent.animate({right: 0 })
         })
 
-        icon = _rightMenu.triggerBar.arrow = $("<div/>", {
-            class: "ui-icon ui-icon-triangle-1-w"
-        }).appendTo(iconArea)
-        icon.position({
-            of: iconArea,
-            my: "center",
-            at: "center"
-        })
-
-        _rightMenu.triggerBar.bind('click',function(){
-            var parent = $(this).parent()
-            parent.animate({
-                right: parseInt(parent.css('right'),10) == 0 ?
-                    -parent.outerWidth():
-                    0
-            })
-
-            if (!_rightMenu.attr("isOpened")){
-                _rightMenu.triggerBar.arrow[0].className = "ui-icon ui-icon-triangle-1-e"
-                _rightMenu.attr("isOpened",true);
-            }else{
-                _rightMenu.triggerBar.arrow[0].className = "ui-icon ui-icon-triangle-1-w"
-                _rightMenu.removeAttr("isOpened");
-            }
-
-        })
 
 
         // Adding file listing into the right menu

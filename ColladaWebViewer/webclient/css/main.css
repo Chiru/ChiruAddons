@@ -1,5 +1,5 @@
 body, html {
-    background-color: #f0f0f0;
+    background-color: #BBBBBB;
     height:100%;
     padding: 0;
     margin: 0;
@@ -8,6 +8,20 @@ body, html {
 }
 a { color: skyblue }
 
+div#pageLoader {
+    position: absolute;
+    float:left;
+    height:50px;
+    width:250px;
+    top:50%;
+    left:50%;
+    text-align: center;
+    margin-left:-125px;
+    margin-top:-25px;
+    font-family: Charcoal, sans-serif;
+    font-size: 2em;
+    font-weight:bold;
+}
 div#container {
     height:auto !important; /* real browsers */
     height: 100%;
@@ -31,6 +45,7 @@ div#header {
     background-image:    -moz-linear-gradient(top, #2F2727, #929293);
     background-image:     -ms-linear-gradient(top, #2F2727, #929293);
     background-image:      -o-linear-gradient(top, #2F2727, #929293);
+    z-index: 150;
 }
 
 div#content {
@@ -39,19 +54,7 @@ div#content {
     right    : 0;
     bottom   : 49px;
     left     : 0;
-}
-
-div#content .alerts {
-    position: absolute;
-    width: auto;
-    height: auto;
-    z-index: 150;
-}
-div#content .help {
-    position: absolute;
-    width: 50%;
-    height: 50%;
-    z-index: 200;
+    visibility:hidden;
 }
 div#footer {
     position : absolute;
@@ -60,13 +63,13 @@ div#footer {
     width    : 100%;
     height   : 50px;
     display: table; /* to center the header text */
-    padding: 0 5px 0 10px;
     border-top: solid 1px #000;
     background-color: #2F2727;
     background-image: -webkit-linear-gradient(bottom, #2F2727, #929293);
     background-image:    -moz-linear-gradient(bottom, #2F2727, #929293);
     background-image:     -ms-linear-gradient(bottom, #2F2727, #929293);
     background-image:      -o-linear-gradient(bottom, #2F2727, #929293);
+    z-index: 150;
 }
 
 div#footer > a {
@@ -79,6 +82,7 @@ div#cieLogo {
     position:relative;
     float:right;
     margin-top:5px;
+    margin-right:5px;
 }
 
 .menu
@@ -89,10 +93,28 @@ div#cieLogo {
     font-size: 0.8em;
     width: 25em;
     height: 40em;
+    z-index: 100;
 }
+
+.trigger
+{
+    background-color: #000;
+    height: 125px;
+    width: 22px;
+}
+.trigger-left
+{
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+.trigger-right
+{
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
 .leftMenu
 {
-    left:0;
     padding:  1em;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
@@ -133,7 +155,6 @@ div#cieLogo {
 
 .rightMenu
 {
-    right:0;
     padding: 10px 0 10px 15px;
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
@@ -146,19 +167,3 @@ div#cieLogo {
 #fileList .loaded { background: #90EE90; color: black; }
 #fileList li { margin-bottom: 2px; padding: 0.5em; font-size: 1.4em;  }
 
-.trigger
-{
-    background-color: #000;
-    height: 125px;
-    width: 22px;
-}
-.trigger-left
-{
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-}
-.trigger-right
-{
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-}
