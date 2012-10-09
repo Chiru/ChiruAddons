@@ -209,11 +209,13 @@
     $(window).load(function(){
         $("#pageLoader").fadeOut(600);
         $("#content").css({visibility:'visible'})/*.css({opacity: 0.0, visibility: "visible"}).
-            animate({opacity:1.0})*/
+         animate({opacity:1.0})*/
 
     })
 
     $(window).ready(function(){
+
+        var _isMobile = typeof(window.mobile) !== 'undefined'
 
         // *** Initilizing the left menu ***
 
@@ -276,6 +278,18 @@
             my: "right center",
             offset: "22px 0"
         })
+
+        if(_isMobile){
+            leftClose.draggable({
+                axis: "x",
+                drag: function(){
+                    $("#leftClose").trigger('click')
+                    return false;
+                },
+                revert:true
+            })
+        }
+
         leftClose.bind('click',function(){
             var parent = $("#leftMenu")
             parent.animate({left: -parent.outerWidth() },function(){parent.hide()})
@@ -295,6 +309,16 @@
             parent.animate({left: 0 })
         })
 
+        if(_isMobile){
+            leftOpen.draggable({
+                axis: "x",
+                drag: function(){
+                    $("#leftOpen").trigger('click')
+                    return false;
+                },
+                revert:true
+            })
+        }
 
         // *** Initializing right menu ***
 
@@ -312,6 +336,16 @@
             my: "left center",
             offset: "-22px 0"
         })
+        if(_isMobile){
+            rightClose.draggable({
+                axis: "x",
+                drag: function(){
+                    $("#rightClose").trigger('click')
+                    return false;
+                },
+                revert:true
+            })
+        }
         rightClose.bind('click',function(){
             var parent = $("#rightMenu")
             parent.animate({right: -parent.outerWidth() },function(){parent.hide()})
@@ -330,8 +364,16 @@
             parent.show()
             parent.animate({right: 0 })
         })
-
-
+        if(_isMobile){
+            rightOpen.draggable({
+                axis: "x",
+                drag: function(){
+                    $("#rightOpen").trigger('click')
+                    return false;
+                },
+                revert:true
+            })
+        }
 
         // Adding file listing into the right menu
 
@@ -459,7 +501,7 @@
             show: "fade"
         });
 
-        $("#helpLink").bind('click touch', function() {
+        $("#helpLink").bind('click', function() {
             $( "#help" ).dialog( "open" );
             return false;
         });
