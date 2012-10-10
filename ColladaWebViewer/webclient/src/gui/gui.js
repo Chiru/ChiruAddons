@@ -279,6 +279,7 @@
             offset: "22px 0"
         })
 
+        // Flickable menu closing for touch devices
         if(_isMobile){
             leftClose.draggable({
                 axis: "x",
@@ -309,6 +310,7 @@
             parent.animate({left: 0 })
         })
 
+        // Flickable menu opening for touch devices
         if(_isMobile){
             leftOpen.draggable({
                 axis: "x",
@@ -336,6 +338,7 @@
             my: "left center",
             offset: "-22px 0"
         })
+        // Flickable menu closing for touch devices
         if(_isMobile){
             rightClose.draggable({
                 axis: "x",
@@ -364,6 +367,8 @@
             parent.show()
             parent.animate({right: 0 })
         })
+
+        // Flickable menu opening for touch devices
         if(_isMobile){
             rightOpen.draggable({
                 axis: "x",
@@ -429,6 +434,8 @@
             }
         });
 
+
+        // Initializing the download dialog
         _loadDiag.progress = _loadDiag.find("#progress")
         _loadDiag.msg = _loadDiag.find("#msg")
 
@@ -507,13 +514,77 @@
         });
 
 
-        // *** Saving GUI configuration ***
+        // Initializing the confirmation dialog for incoming captures
+        var _confirmDiag = $("#confirmDialog").dialog({
+            resizable: false,
+            autoOpen: false,
+            height: 'auto',
+            width: 'auto',
+            modal: true,
+            open: function(){
+                $('.ui-widget-overlay').hide().fadeIn();
+            },
+            buttons: {
+                Ok: function() {
+                    $(this).trigger('ok');
+                    $( this ).dialog( "close" );
+                },
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                }
+            },
+            show: "fade"
+        });
+
+        _confirmDiag.fileName = $("#captureName")
+
+
+        // Initializing the message area for displaying general messages/warnings/errors
+        var _warnings = $("#warnings")
+        _warnings.displayMsg = function(msg, options) {
+            var _self = this
+            var defaultOpts = {
+                showTime: 0,
+                type: 'msg'
+            }
+
+            if(typeof(options) === 'object')
+                options = $.extend(defaultOpts, options)
+            else
+                options = defaultOpts
+
+            var _prefix = ''
+            if (options.type == 'msg'){
+                this.css('color', '#000000')
+            }else if (options.type == 'warning'){
+                this.css('color', "#FF0000")
+            }else if(options.type == 'error'){
+                _prefix = 'Error: '
+                this.css('color', "#FF0000")
+            }
+
+            this.text(_prefix + msg)
+
+            if(options.showTime != 0)
+                setTimeout(function(){_self.hideMsg()}, options.showTime )
+        }
+
+        _warnings.hideMsg = function() {
+            this.text("")
+            this.css('color', "#000000")
+        }
+
+
+
+        // *** Saving the GUI configuration ***
 
         $.gui = {
             'objectScale' : _scale,
             'sceneParams' : _sceneParams,
             'fileList' : _fileList,
-            'loadDiag' : _loadDiag
+            'loadDiag' : _loadDiag,
+            'confirmDiag': _confirmDiag,
+            'warnings' : _warnings
         }
     })
 

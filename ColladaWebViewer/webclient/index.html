@@ -89,6 +89,7 @@
 
     <div id="footer">
         <a href="" id="helpLink" style="text-align:left; width:50px; padding-left:5px;">Help</a>
+        <span id="warnings" style="text-align:center; width: 100%;"></span>
         <div id="cieLogo"><a href="http://cie.fi" target="_blank"><img src="css/cie_40.png"></a></div>
     </div>
 </div>
@@ -105,9 +106,15 @@
     <p>When you have loaded a model from the asset server you can control its scale etc. from the left-side menu.</p>
 </div>
 
+<div id="confirmDialog" title="New object in remote storage" style="display: none;">
+    <p>A new object was added to remote storage: <span id="captureName"></span></p>
+    <p>Download the object?</p>
+</div>
+
 <script type="text/javascript" src="app.min.js"></script>
 <!--
 <script type="text/javascript" src="src/gui/gui.js"></script>
+<script type="text/javascript" src="src/util/wsmanager.js"></script>
 <script type="text/javascript" src="src/main.js"></script>
 -->
 

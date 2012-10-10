@@ -72,7 +72,7 @@ div#footer {
     z-index: 150;
 }
 
-div#footer > a {
+div#footer > a, div#footer > span {
     position:relative;
     display: table-cell;
     vertical-align:middle;
@@ -90,7 +90,7 @@ div#cieLogo {
     position:absolute;
     background: #ffffff;
     border: solid black 1px;
-    font-size: 0.8em;
+    font-size: 0.75em;
     width: 25em;
     height: 40em;
     z-index: 100;
@@ -165,5 +165,5 @@ div#cieLogo {
 #fileList .ui-selecting { background: #FECA40; }
 #fileList .ui-selected { background: #F39814; color: white; }
 #fileList .loaded { background: #90EE90; color: black; }
-#fileList li { margin-bottom: 2px; padding: 0.5em; font-size: 1.4em;  }
+#fileList li { margin-bottom: 2px; padding: 0.5em; font-size: 1.5em;  }
 

@@ -53,8 +53,6 @@ $(function(){
             renderer.domElement.style.height = _container.innerHeight() + 'px'
             _sceneController.sceneParams.resolution = 0.5
         }
-
-
     }
 
 
@@ -177,8 +175,10 @@ $(function(){
         console.log("Websocket ip: " + _connection.ip + " and port: " + _connection.port)
 
         //Opening a websocket connection
-        _connection.wsManager = new WSManager(_connection.ip, _connection.port)
+        _connection.wsManager = new WSManager(_connection.ip, _connection.port, {reconnectInterval: 6000})
 
+
+        // Binding functionalities for the important WebSocket events
         _connection.wsManager.bind("newCollada", function(colladaName){
             if(!(colladaName in _connection.serverFiles)){
                 //console.log("A new collada was added in remote storage: " + colladaName)
@@ -186,14 +186,15 @@ $(function(){
 
                 _gui.fileList.addItem(colladaName)
 
-                if(window.confirm("A new captured model was added to remote storage. Load the model?")){
-
-                    requestCollada(colladaName)
-                }
+                _gui.confirmDiag.dialog( "open" )
+                _gui.confirmDiag.fileName.text(colladaName)
             }
         })
 
         _connection.wsManager.bind("colladaList", function(data){
+            _connection.serverFiles.length = 0
+            _gui.fileList.empty()
+
             _connection.serverFiles =  data['list'].split(", ")
             _connection.serverFiles.sort()
 
@@ -205,19 +206,34 @@ $(function(){
 
         })
 
-        _connection.wsManager.bind("disconnected", function() {
-            console.log("WebSocket closed.")
+        _connection.wsManager.bind("connected", function(url) {
+            console.log("WebSocket connection opened.")
+            _gui.warnings.displayMsg("WebSocket connection opened to: " + url, {showTime: 5000})
+        })
 
-            //Removing all the references to the assets
-            _connection.serverFiles.length = 0
-            _gui.fileList.empty()
+        _connection.wsManager.bind("disconnected", function(url) {
+            console.log("WebSocket closed.")
+            _gui.warnings.displayMsg("WebSocket connection to " + url + " failed.", {type:'warning'})
 
         })
+
+        _connection.wsManager.bind("reconnecting", function(e) {
+            _gui.warnings.displayMsg("Attempting to reconnect to " + e.host + " (Attempt: " + e.attempt + ")", {type:'warning'})
+
+        })
+
+        _connection.wsManager.bind("error", function(e) {
+            _gui.warnings.displayMsg("WebSocket error: " + e.data,  {type:'error'})
+        })
+
+
+        // Opening the WebSocket connection
+        _connection.wsManager.open()
 
     }
 
 
-// Request collada through http
+    // Request collada through http
     function requestCollada(colladaName){
         var loadedObjects = _sceneController.loadedObjects
         for (var i=0; i < loadedObjects.length; i++){
@@ -266,6 +282,9 @@ $(function(){
                             _gui.loadDiag.changeState('error', "Empty XML received!")
                             request = null
                         }
+                    }else if( request.status == 404 ) {
+                        _gui.loadDiag.changeState('error', "File not found from: " + url)
+                        request = null
                     }
 
                 } else if( request.readyState == 2) {
@@ -527,15 +546,10 @@ $(function(){
 
         })
 
-        /*
-         var f22 = _gui.rightGui.addFolder('Render options')
-         f22.add(sceneParams, 'colorMode', { 'No colors': THREE.NoColors, 'VertexColors': THREE.VertexColors })
-         .name('Color Mode').onFinishChange(function(){
-         console.log(sceneParams.colorMode)
-         setColorMode(_objController.current, sceneParams.colorMode)
+        _gui.confirmDiag.bind('ok', function(){
+            requestCollada(_gui.confirmDiag.fileName.text())
+        })
 
-         })
-         */
         //Fullscreen activation key
         if(THREEx.FullScreen.available()){
             THREEx.FullScreen.bindKey({ charCode : 'f'.charCodeAt(0)})
@@ -546,7 +560,7 @@ $(function(){
 //The animation loop
     function loop() {
 
-        requestAnimationFrame(loop)
+
         _sceneController.controls.update()
 
         var pointLight = _sceneController.pointLight
@@ -560,7 +574,7 @@ $(function(){
         }
 
         _sceneController.renderer.render(_sceneController.scene, camera)
-
+        requestAnimationFrame(loop)
     }
 
 //Initialize the WebGL renderer and scene

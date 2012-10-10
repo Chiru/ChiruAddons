@@ -4,85 +4,52 @@
 
  */
 
-function alertBox(msg) {
-    var div = document.getElementById('conAlert')
-    if(msg){
-        if(div){
-            div.innerHTML = msg
-        }else{
-            var newDiv = document.createElement('div')
-            newDiv.setAttribute('id','conAlert')
-            newDiv.innerHTML = msg
-            newDiv.style.position = 'absolute'
-            newDiv.style.width = '400px'
-            newDiv.style.top = '10px'
-            newDiv.style.left = '50%'
-            newDiv.style.marginLeft = '-200px'
-            newDiv.style.fontFamily = 'Impact, Charcoal, sans-serif'
-            newDiv.style.fontSize = '1.5em'
-            newDiv.style.fontWeight = 'bold'
-            newDiv.style.textAlign = 'center'
-            newDiv.style.textShadow = '0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 10px rgba(0, 0, 0, 0.1), 0 8px 9px rgba(0, 0, 0, 0.1)'
-            newDiv.style.cursor ='pointer'
-            newDiv.onclick = function(){newDiv.parentNode.removeChild(newDiv)}
-            document.body.appendChild(newDiv)
-        }
-    }else{
-        if(div)
-            div.parentNode.removeChild(div)
-    }
-
-}
-
 var WSManager = function (host, port, options){
-    this.url = "ws://" + host + ":" + port
-    this.ws = null
-    this.reconnecting = false
-    this.connectTimer = null
-
     var defaultOpt = {
         reconnectInterval: 4000,
         timeout: 5000
     }
-    if(typeof(options === 'undefined'))
+
+    this.url = "ws://" + host + ":" + port
+    this.ws = null
+    this.reconnecting = false
+    this.connectTimer = null
+    this.reconnectTimer = null
+    this.reconnAttempt = 0
+
+    if(typeof(options) === 'object')
+        options = $.extend(defaultOpt, options)
+    else
         options = defaultOpt
 
     //Reconnection interval time (milliseconds)
-    if(typeof(options.reconnectInterval)==='undefined') options.reconnectInterval = defaultOpt.reconnectInterval
-
     this.reconnectInterval = options.reconnectInterval
 
     //Connection attempt timeout (milliseconds)
-    if(typeof(options.timeout)==='undefined') options.timeout = defaultOpt.timeout
-
     this.timeout = options.timeout
 
     //Storage for bound callback events
     this.callbacks = {}
 
-    var connect = function (url) {
-
-        if ("WebSocket" in window) {
-            this.ws = new WebSocket(url)
-        } else if ("MozWebSocket" in window) {
-            this.ws = new MozWebSocket(url)
+    this.connect = function () {
+        if ("MozWebSocket" in window) {
+            this.ws = new MozWebSocket(this.url)
+        } else if ("WebSocket" in window) {
+            this.ws = new WebSocket(this.url)
         } else {
             alert("This Browser does not support WebSockets.  Use newest version of Google Chrome, FireFox or Opera. ")
             return
         }
 
-
         this.ws.onopen = function() {
             if(this.connectTimer != null){
                 clearTimeout(this.connectTimer)
                 this.connectTimer = null
+                this.reconnAttempt = 0
             }
-            console.log("WebSocket connection opened.")
-            alertBox("Connected to server!")
-            setTimeout(function() {alertBox()}, 2000)
+            this.triggerEvent("connected", host+":"+port)
             this.reconnecting = false
-
-            //this.send(JSON.stringify({event:"requestCollada", data:"/var/lib/CapturedChair.dae"}))
+            this.reconnectTimer = null
         }.bind(this)
 
         this.ws.onmessage = function (evt) {
@@ -91,29 +58,32 @@ var WSManager = function (host, port, options){
         }.bind(this)
 
         this.ws.onclose = function(evt) {
+
             if(this.connectTimer != null){
                 clearTimeout(this.connectTimer)
                 this.connectTimer = null
             }
 
             if(!this.reconnecting){
-                alertBox("WebSocket connection failed. Attempting to reconnect...")
-                this.triggerEvent("disconnected")
+                this.triggerEvent("disconnected", host+":"+port)
             }
+
             console.log("Reconnecting in " + this.reconnectInterval/1000 + " seconds...")
             this.reconnecting = true
             this.ws = null
 
-            setTimeout(function() {
-                connect(url)
-            }, this.reconnectInterval)
+            this.reconnectTimer = setTimeout(function() {
+                this.reconnAttempt = this.reconnAttempt + 1
+                this.triggerEvent("reconnecting", {host: host+":"+port, attempt: this.reconnAttempt})
+                this.connect(this.url)
+            }.bind(this), this.reconnectInterval)
+
         }.bind(this)
 
         this.ws.onerror = function(e) {
-            console.log(e)
-            alertBox("WebSocket error: " + e.message)
+            console.log(e.data)
+            this.triggerEvent("error", e.data)
         }
-
 
         //Timeout for connection attempt
         this.connectTimer = setTimeout(function() {
@@ -122,11 +92,20 @@ var WSManager = function (host, port, options){
             this.connectTimer = null
         }.bind(this), this.timeout)
 
+        return false;
+
     }.bind(this)
 
-    connect(this.url)
 }
 
+WSManager.prototype.open = function() {
+    this.connect(this.url)
+}
+
+WSManager.prototype.stopReconnect = function() {
+    clearTimeout(this.reconnectTimer)
+    this.reconnecting = false
+}
 
 WSManager.prototype.parseMessage = function (message) {
     var parsed = JSON.parse(message)
