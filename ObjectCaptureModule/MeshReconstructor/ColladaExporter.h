@@ -33,6 +33,7 @@ private:
     void writeScene();
 
     pcl::PolygonMesh::Ptr input_mesh_;
+    QString filename_;
     QTextStream fs;
 
 };
