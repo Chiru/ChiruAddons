@@ -64,12 +64,17 @@ public:
 
 
 private:
+    // WebSocket port
     unsigned short port;
+
     /// List of current connections
     map<string, connection_ptr> connections;
 
     /// Thread for socket connection handler
-    boost::shared_ptr<boost::thread> t;
+    boost::shared_ptr<boost::thread> listener;
+
+    /// Thread for running dead WebSocket remover
+    boost::shared_ptr<boost::thread> cleaner;
 
     /// WebSocketServer endpoint ptr
     websocketpp::server *endpoint_;
@@ -86,8 +91,17 @@ private:
     // Triggers when a client disconnects
     void on_close(connection_ptr con);
 
+    // Triggers when whenever a session is terminated or failed before it was successfully established
+    void on_fail(connection_ptr con);
+
     // Triggers when a message is received
     void on_message(connection_ptr con, message_ptr msg);
+
+
+    /// Utility functions
+    void removeConnection(connection_ptr con);
+
+    void cleanConnections();
 
 signals:
 

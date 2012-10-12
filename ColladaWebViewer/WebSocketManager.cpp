@@ -36,30 +36,21 @@ void WebSocketManager::on_open(connection_ptr con)
     //Emitting "connected" event signal
     emit gotEvent("connected", "", QString::fromStdString(getConId(con)));
 
-    /*
-    for ( std::map<connection_ptr,std::string>::const_iterator iter = connections.begin();
-       iter != connections.end(); ++iter )
-       std::cout << iter->first << '\t' << iter->second << '\n';
-
-    std::cout << std::endl;
-    */
-
 }
 
 void WebSocketManager::on_close(connection_ptr con)
 {
     LogInfo("Web Client " + getConId(con) + " disconnected.");
 
-    map<string, connection_ptr>::iterator it = connections.find(getConId(con));
+    removeConnection(con);
 
-    if (it == connections.end()) {
-        /* This client has already disconnected, we can ignore this.
-        This happens when there is a deliberate "soft" disconnection
-        preceeding the "hard" socket read fail or disconnect ack message. */
-        return;
-    }
+}
 
-    connections.erase(it);
+void WebSocketManager::on_fail(connection_ptr con)
+{
+    LogInfo("Connection to Web Client: " + getConId(con) + " failed.");
+
+    removeConnection(con);
 
 }
 
@@ -102,6 +93,45 @@ map<string, server::connection_ptr>::iterator WebSocketManager::findClient(strin
 {
     map<string, server::connection_ptr>::iterator it = connections.find(clientId);
     return it;
+}
+
+void WebSocketManager::removeConnection(connection_ptr con)
+{
+    map<string, connection_ptr>::iterator it = connections.find(getConId(con));
+
+    if (it == connections.end()) {
+        /* This client has already disconnected, we can ignore this.
+        This happens when there is a deliberate "soft" disconnection
+        preceeding the "hard" socket read fail or disconnect ack message. */
+        return;
+    }
+
+    connections.erase(it);
+
+    LogDebug("Web clients connected: " + QString::number(connections.size()));
+}
+
+void WebSocketManager::cleanConnections()
+{
+    boost::posix_time::seconds sleepTime(320);
+
+    while(true)
+    {
+
+        if(connections.size() > 0) {
+            LogDebug("Checking for dead WebSockets...");
+
+            for (map<string, server::connection_ptr>::const_iterator iter = connections.begin();
+                 iter != connections.end(); ++iter )
+            {
+                // Sending ping to the web clients. The connection should terminate if there is no response.
+                iter->second->ping("ping");
+                //cout << iter->first << ", state: " << iter->second->get_state() << endl;
+            }
+        }
+
+        boost::this_thread::sleep(sleepTime);
+    }
 }
 
 int WebSocketManager::parseJson(string s, ptree &pt)
@@ -172,14 +202,17 @@ void WebSocketManager::startServer()
         endpoint_->elog().set_level(elevel::RERROR);
         endpoint_->elog().set_level(elevel::FATAL);
 
-        //Getting pointer to the right function
+        //Getting pointer to the right server listen function
         void(websocketpp::role::server<websocketpp::server>::*f)(uint16_t,size_t) =
                 &websocketpp::role::server<websocketpp::server>::listen;
 
-        cout << "Starting WSServer thread... \n";
-        boost::shared_ptr<boost::thread> ptr(new boost::thread(f, endpoint_, port, 1));
-        t = ptr;
-        //t->detach();
+        LogDebug("Starting WSServer thread...");
+        boost::shared_ptr<boost::thread> serverThread(new boost::thread(f, endpoint_, port, 1));
+        listener = serverThread;
+
+        LogDebug("Starting WS cleaning thread...");
+        boost::shared_ptr<boost::thread> cleanerThread(new boost::thread(&WebSocketManager::cleanConnections, this));
+        cleaner = cleanerThread;
 
 
     } catch (exception& e) {
@@ -194,9 +227,15 @@ void WebSocketManager::stopServer()
 
     try {
         endpoint_->stop();
-        if(t->joinable()){
-            t->join();
-            t.reset();
+
+        if(listener->joinable()){
+            listener->join();
+            listener.reset();
+        }
+
+        if(cleaner->joinable()){
+            cleaner->join();
+            cleaner.reset();
         }
 
     } catch (exception& e) {
