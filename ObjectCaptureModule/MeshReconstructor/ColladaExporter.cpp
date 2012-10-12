@@ -17,9 +17,11 @@ ColladaExporter::~ColladaExporter()
 void ColladaExporter::Export(pcl::PolygonMesh::Ptr inputmesh, QString filename)
 {
     input_mesh_ = inputmesh;
-    QFile file(filename);
+    filename_ = filename;
+
+    QFile file(filename_);
     if (file.exists())
-        QFile::remove(filename);
+        QFile::remove(filename_);
 
     file.open(QIODevice::ReadWrite | QIODevice::Text);
 
@@ -296,7 +298,7 @@ void ColladaExporter::writeVisualScenes()
 {
     fs << "   <library_visual_scenes>\n";
     fs << "      <visual_scene id=\"Scene\" name=\"Scene\">\n";
-    fs << "         <node id=\"CapturedObject-node\" type=\"NODE\">\n";
+    fs << "         <node id=\"" << filename_ << "\" type=\"NODE\">\n";
     fs << "            <translate sid=\"location\">0 0 0</translate>\n";
     fs << "            <rotate sid=\"rotationZ\">0 0 1 0</rotate>\n";
     fs << "            <rotate sid=\"rotationY\">0 1 0 0</rotate>\n";
