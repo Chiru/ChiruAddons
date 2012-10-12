@@ -223,7 +223,7 @@ $(function(){
         })
 
         _connection.wsManager.bind("error", function(e) {
-            _gui.warnings.displayMsg("WebSocket error: " + e.data,  {type:'error'})
+            _gui.warnings.displayMsg("WebSocket error: " + e,  {type:'error'})
         })
 
 
@@ -559,7 +559,7 @@ $(function(){
 
 //The animation loop
     function loop() {
-
+        requestAnimationFrame(loop)
 
         _sceneController.controls.update()
 
@@ -574,7 +574,7 @@ $(function(){
         }
 
         _sceneController.renderer.render(_sceneController.scene, camera)
-        requestAnimationFrame(loop)
+
     }
 
 //Initialize the WebGL renderer and scene

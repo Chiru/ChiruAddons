@@ -32,24 +32,31 @@ var WSManager = function (host, port, options){
     this.callbacks = {}
 
     this.connect = function () {
-        if ("MozWebSocket" in window) {
-            this.ws = new MozWebSocket(this.url)
-        } else if ("WebSocket" in window) {
+
+        if ("WebSocket" in window) {
             this.ws = new WebSocket(this.url)
+        }else if ("MozWebSocket" in window) {
+            this.ws = new MozWebSocket(this.url)
         } else {
             alert("This Browser does not support WebSockets.  Use newest version of Google Chrome, FireFox or Opera. ")
             return
         }
 
         this.ws.onopen = function() {
+
             if(this.connectTimer != null){
                 clearTimeout(this.connectTimer)
                 this.connectTimer = null
-                this.reconnAttempt = 0
             }
-            this.triggerEvent("connected", host+":"+port)
+
+            this.reconnAttempt = 0
             this.reconnecting = false
+
+            this.triggerEvent("connected", host+":"+port)
+
+            clearTimeout(this.reconnectTimer)
             this.reconnectTimer = null
+
         }.bind(this)
 
         this.ws.onmessage = function (evt) {
@@ -68,9 +75,11 @@ var WSManager = function (host, port, options){
                 this.triggerEvent("disconnected", host+":"+port)
             }
 
-            console.log("Reconnecting in " + this.reconnectInterval/1000 + " seconds...")
+
             this.reconnecting = true
             this.ws = null
+
+            console.log("Reconnecting in " + this.reconnectInterval/1000 + " seconds...")
 
             this.reconnectTimer = setTimeout(function() {
                 this.reconnAttempt = this.reconnAttempt + 1
@@ -87,9 +96,9 @@ var WSManager = function (host, port, options){
 
         //Timeout for connection attempt
         this.connectTimer = setTimeout(function() {
+            console.log("WebSocket connection timed out.")
             this.ws.readyState = this.ws.CLOSED
-            this.ws.onclose()
-            this.connectTimer = null
+            this.ws.close()
         }.bind(this), this.timeout)
 
         return false;
@@ -103,7 +112,12 @@ WSManager.prototype.open = function() {
 }
 
 WSManager.prototype.stopReconnect = function() {
-    clearTimeout(this.reconnectTimer)
+    if(this.reconnectTimer != null)
+        clearTimeout(this.reconnectTimer)
+
+    if(this.connectTimer != null)
+        clearTimeout(this.connectTimer)
+
     this.reconnecting = false
 }
 
