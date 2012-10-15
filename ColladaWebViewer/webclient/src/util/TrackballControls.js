@@ -49,7 +49,7 @@ THREE.TrackballControls = function ( object, domElement ) {
         _twoFingers = false,
         _touchStart = [],
         _touchEnd = [],
-        _startDistance,
+        _startDistance = 0,
 
 
         _eye = new THREE.Vector3(),
