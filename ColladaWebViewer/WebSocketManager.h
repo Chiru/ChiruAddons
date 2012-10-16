@@ -103,6 +103,8 @@ private:
 
     void cleanConnections();
 
+    void closeConnections();
+
 signals:
 
     // Emitted if we get a proper event message with data

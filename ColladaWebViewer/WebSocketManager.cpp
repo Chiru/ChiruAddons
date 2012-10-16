@@ -111,6 +111,20 @@ void WebSocketManager::removeConnection(connection_ptr con)
     LogDebug("Web clients connected: " + QString::number(connections.size()));
 }
 
+void WebSocketManager::closeConnections()
+{
+    // Closing all connections
+    if(connections.size() > 0) {
+        for (map<string, server::connection_ptr>::const_iterator iter = connections.begin();
+             iter != connections.end(); ++iter )
+        {
+
+            iter->second->close(websocketpp::close::status::GOING_AWAY);
+
+        }
+    }
+}
+
 void WebSocketManager::cleanConnections()
 {
     boost::posix_time::seconds sleepTime(320);
@@ -226,17 +240,26 @@ void WebSocketManager::stopServer()
     LogInfo("Stopping WebSocket server on port " + QString::number(port));
 
     try {
+
+        // Closing all connections cleanly
+        this->closeConnections();
+
         endpoint_->stop();
 
         if(listener->joinable()){
             listener->join();
             listener.reset();
+            LogDebug("Removed WS listener thread");
         }
+
+        cleaner->interrupt();
 
         if(cleaner->joinable()){
             cleaner->join();
             cleaner.reset();
+            LogDebug("Removed WS cleaner thread");
         }
+
 
     } catch (exception& e) {
         cerr << "WebSocketManager Exception: " << e.what() << endl;
