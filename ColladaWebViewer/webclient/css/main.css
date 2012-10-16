@@ -1,5 +1,5 @@
 body, html {
-    background: url('noise.gif') repeat;
+    background-color: #3a3a3a;
     height:100%;
     padding: 0;
     margin: 0;
@@ -9,6 +9,7 @@ body, html {
 a { color: skyblue }
 
 div#pageLoader {
+    color: #FFFFFF;
     position: absolute;
     float:left;
     height:50px;
