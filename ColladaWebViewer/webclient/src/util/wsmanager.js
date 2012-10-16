@@ -6,12 +6,14 @@
 
 var WSManager = function (host, port, options){
     var defaultOpt = {
-        reconnectInterval: 4000,
-        timeout: 5000
+        reconnectInterval: 8000,
+        timeout: 8000
     }
-
-    this.url = "ws://" + host + ":" + port
     this.ws = null
+    this.url = "ws://" + host + ":" + port
+    this.host = host
+    this.port = port
+
     this.reconnecting = false
     this.connectTimer = null
     this.reconnectTimer = null
@@ -31,84 +33,94 @@ var WSManager = function (host, port, options){
     //Storage for bound callback events
     this.callbacks = {}
 
-    this.connect = function () {
+    // Hack for firefox
+    window.addEventListener("beforeunload", function() {
+        this.ws.onclose = function () {} // disable onclose handler
+        this.ws.close()
+        this.ws = null
+    }.bind(this), false)
 
-        if ("WebSocket" in window) {
-            this.ws = new WebSocket(this.url)
-        }else if ("MozWebSocket" in window) {
-            this.ws = new MozWebSocket(this.url)
-        } else {
-            alert("This Browser does not support WebSockets.  Use newest version of Google Chrome, FireFox or Opera. ")
-            return
+}
+
+
+WSManager.prototype.connect = function () {
+    this.ws = null
+
+    if ("WebSocket" in window) {
+        this.ws = new WebSocket(this.url)
+    }else if ("MozWebSocket" in window) {
+        this.ws = new MozWebSocket(this.url)
+    } else {
+        alert("This Browser does not support WebSockets.  Use newest version of Google Chrome, FireFox or Opera. ")
+        return
+    }
+
+    //Timeout for connection attempt NOTE: Disabled due abnormal behaviour with Firefox on Android
+    /*
+     this.connectTimer = setTimeout(function() {
+     if(this.ws != null)
+     if(this.ws.readyState != this.ws.OPEN)
+     this.ws.close()
+     }.bind(this), this.timeout)
+     */
+
+    this.ws.onopen = function() {
+        //clearTimeout(this.connectTimer)
+        //this.connectTimer = null
+
+        clearTimeout(this.reconnectTimer)
+        this.reconnectTimer = null
+
+        this.reconnAttempt = 0
+        this.reconnecting = false
+
+        this.triggerEvent("connected", this.host+":" + this.port)
+
+    }.bind(this)
+
+    this.ws.onmessage = function (evt) {
+        //console.log("Got msg: " + evt.data)
+        this.parseMessage(evt.data)
+    }.bind(this)
+
+    this.ws.onclose = function(evt) {
+        //clearTimeout(this.connectTimer)
+        //this.connectTimer = null
+
+        clearTimeout(this.reconnectTimer)
+        this.reconnectTimer = null
+
+        if(!this.reconnecting){
+            var reason = "failed"
+            if(evt.wasClean)
+                reason = "closed"
+
+            this.triggerEvent("disconnected", {url: this.host + ":" + this.port, reason: reason, code: evt.code})
         }
 
-        this.ws.onopen = function() {
-
-            if(this.connectTimer != null){
-                clearTimeout(this.connectTimer)
-                this.connectTimer = null
-            }
-
-            this.reconnAttempt = 0
-            this.reconnecting = false
-
-            this.triggerEvent("connected", host+":"+port)
-
-            clearTimeout(this.reconnectTimer)
-            this.reconnectTimer = null
-
-        }.bind(this)
-
-        this.ws.onmessage = function (evt) {
-            //console.log("Got msg: " + evt.data)
-            this.parseMessage(evt.data)
-        }.bind(this)
-
-        this.ws.onclose = function(evt) {
-
-            if(this.connectTimer != null){
-                clearTimeout(this.connectTimer)
-                this.connectTimer = null
-            }
-
-            if(!this.reconnecting){
-                this.triggerEvent("disconnected", host+":"+port)
-            }
-
-
+        // Reconnect if the  connection was not closed cleanly (network error/abnormal server close etc.)
+        if(!evt.wasClean){
             this.reconnecting = true
-            this.ws = null
 
             console.log("Reconnecting in " + this.reconnectInterval/1000 + " seconds...")
 
             this.reconnectTimer = setTimeout(function() {
-                this.reconnAttempt = this.reconnAttempt + 1
-                this.triggerEvent("reconnecting", {host: host+":"+port, attempt: this.reconnAttempt})
-                this.connect(this.url)
+                if(this.ws != null){
+                    if(this.ws.readyState != this.ws.OPEN || this.ws.readyState != this.ws.CONNECTING){
+                        this.reconnAttempt = this.reconnAttempt + 1
+                        this.triggerEvent("reconnecting", {host: this.url, attempt: this.reconnAttempt})
+
+                        this.connect(this.url)
+                    }
+                }
             }.bind(this), this.reconnectInterval)
-
-        }.bind(this)
-
-        this.ws.onerror = function(e) {
-            console.log(e.data)
-            this.triggerEvent("error", e.data)
         }
-
-        //Timeout for connection attempt
-        this.connectTimer = setTimeout(function() {
-            console.log("WebSocket connection timed out.")
-            this.ws.readyState = this.ws.CLOSED
-            this.ws.close()
-        }.bind(this), this.timeout)
-
-        return false;
 
     }.bind(this)
 
-}
-
-WSManager.prototype.open = function() {
-    this.connect(this.url)
+    this.ws.onerror = function(e) {
+        this.triggerEvent("error", e)
+    }
 }
 
 WSManager.prototype.stopReconnect = function() {
@@ -128,7 +140,7 @@ WSManager.prototype.parseMessage = function (message) {
 
 WSManager.prototype.processEvent = function (json) {
     if(json['event']){
-        console.log("Got event: "+json['event'])
+        //console.log("Got event: "+json['event'])
         if(json['data']){
 
             // Triggering the event

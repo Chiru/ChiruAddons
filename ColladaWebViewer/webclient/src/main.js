@@ -4,38 +4,38 @@ $(function(){
     if (!Detector.webgl)
         Detector.addGetWebGLMessage()
 
-
-    var _container,  _objController,
+    var _container,  _objController = new THREE.Object3D(),
         _sceneController = {
             loadedObjects: [], // List of downloaded collada files
-            renderer: null, // WebGL render
+            renderer: null, // WebGL renderer
             camera: null,
             pointLight: null,
-            scene: null, // Scene hierarchy
+            scene: null, // ThreeJS Scene
             sceneParams: { // Parameters related to scene rendering
-                'colorMode': THREE.VertexColors,
-                'resolution': 1
+                'colorMode': THREE.VertexColors, // Default color mode for loaded collada files
+                'resolution': 1 // Default WebGL canvas resolution
             },
-            controls: null, // Camera controls
-            loader: null // Collada loader/parser
+            controls: null // Camera controls
         },
         _gui = $.gui
 
     var _connection = {
         serverFiles: [], // List of collada files stored in remote storage
-        origStorageUrl: "",
-        storageUrl: "", //  Url of the remote storage folder
+        origStorageUrl: "", // Original & unchanged storage url
+        storageUrl: "", //  Url of the remote storage folder (this will change depending if we use proxy or not)
         wsManager: null, // WebSocket connection manager object
-        ip: "",
-        port: ""
+        ip: "127.0.0.1", // WebSocket server ip
+        port: "9002" // WebSocket server port
     }
 
+    // Checks if the browser is running on mobile device (the real checking is done in detectmobilebrowser.js)
     function isMobileBrowser() {
         if (typeof(window.mobile) !== 'undefined')
             return window.mobile
         return false
     }
 
+    // Sets the WebGL canvas resolution (5-10 fps render speed increase with lower resolution)
     function setRenderQuality(quality) {
         if (typeof(quality) === 'undefined')
             quality = 'high'
@@ -56,43 +56,39 @@ $(function(){
     }
 
 
+    // Gets the url from browser's address-bar and parses it
     function parseUrl(url) {
         var parsed = parseUri(url)
 
         //Parsing ip and port from address bar (uses ?ip=IP&port=PORT)
-        if(parsed.queryKey){
+        if (parsed.queryKey){
             var keys = parsed.queryKey
-            if(keys.ip)
+            if (keys.ip)
                 _connection.ip = keys.ip
-            else
-                _connection.ip = "127.0.0.1"
 
-            if(keys.port)
+            if (keys.port)
                 _connection.port = keys.port
-            else
-                _connection.port = "9002"
 
             //For testing
-            if(keys.mobile)
+            if (keys.mobile)
                 window.mobile = keys.mobile === '1'
-            if(keys.useProxy){
+            if (keys.useProxy){
                 _connection.useProxy = keys.useProxy === '1'
             }else{
                 _connection.useProxy = isMobileBrowser()
             }
-
         }
     }
 
+    // Does changes to url in browser address bar
     function insertToUrl(key, value) {
         key = encodeURIComponent(key); value = encodeURIComponent(value);
 
         var kvp = window.location.search.substr(1).split('&');
         if (kvp == ''){
             window.history.replaceState('Object', 'Title', '?' + key + '=' + value)
-        }
-        else{
 
+        }else{
             var i = kvp.length; var x; while (i--){
                 x = kvp[i].split('=');
 
@@ -109,16 +105,17 @@ $(function(){
         }
     }
 
-    //Parsing remote storage url
+    // Parses remote storage url
     function parseStorageUrl(url){
         var parsed = parseUri(url)
 
         //Adding trailing slash to directory path if it is missing
-        if(parsed['directory'].indexOf('/', parsed['directory'].length - 1) == -1)
+        if (parsed['directory'].indexOf('/', parsed['directory'].length - 1) == -1)
             parsed['directory'] += '/'
 
+        // Setting up hardcoded proxy for demo stuff
         var proxy = "chiru.cie.fi:8000/"
-        if(_connection.useProxy)
+        if (_connection.useProxy)
             parsed['host'] =  proxy + "?" + parsed['host']
 
         _connection.storageUrl =  "http://" + parsed['host'] + parsed['directory']
@@ -126,15 +123,16 @@ $(function(){
     }
 
 
-//Function that changes the camera aspect ratio and renderer size when window is resized
+    //Function that changes the camera aspect ratio and renderer size when window is resized
     function windowResize (renderer, camera){
         var callback = function(){
             var res = _sceneController.sceneParams.resolution
             renderer.setSize(_container.innerWidth()*res, _container.innerHeight()*res)
-            if(renderer.domElement.style.width || renderer.domElement.style.height){
+            if (renderer.domElement.style.width || renderer.domElement.style.height){
                 renderer.domElement.style.width = _container.innerWidth() + 'px'
                 renderer.domElement.style.height = _container.innerHeight() + 'px'
             }
+
             camera.aspect = ((_container.innerWidth()*res) / (_container.innerHeight()*res))
             camera.updateProjectionMatrix()
             _sceneController.controls.handleResize()
@@ -148,19 +146,18 @@ $(function(){
         }
     }
 
-
     function setColorMode (o3d, colorMode) {
 
         var children = o3d.children, geometry = o3d.geometry
 
-        for ( var i = 0, il = children.length; i < il; i++ ) {
+        for (var i = 0, il = children.length; i < il; i++) {
             setColorMode( children[ i ], colorMode  )
         }
 
-        if ( geometry ) {
+        if (geometry) {
             //o3d.material.shading = THREE.FlatShading
             var mode = THREE.VertexColors
-            if(colorMode == THREE.NoColors||
+            if (colorMode == THREE.NoColors||
                 colorMode == THREE.FaceColors||
                 colorMode == THREE.VertexColors){
                 mode = colorMode
@@ -170,17 +167,16 @@ $(function(){
         }
     }
 
+    // Initializing the WebSocket and WebSocket events
     function initWSConnection() {
-
         console.log("Websocket ip: " + _connection.ip + " and port: " + _connection.port)
 
         //Opening a websocket connection
-        _connection.wsManager = new WSManager(_connection.ip, _connection.port, {reconnectInterval: 6000})
+        _connection.wsManager = new WSManager(_connection.ip, _connection.port)
 
-
-        // Binding functionalities for the important WebSocket events
+        // Binding events
         _connection.wsManager.bind("newCollada", function(colladaName){
-            if(!(colladaName in _connection.serverFiles)){
+            if (!(colladaName in _connection.serverFiles)){
                 //console.log("A new collada was added in remote storage: " + colladaName)
                 _connection.serverFiles.push(colladaName)
 
@@ -211,9 +207,9 @@ $(function(){
             _gui.warnings.displayMsg("WebSocket connection opened to: " + url, {showTime: 5000})
         })
 
-        _connection.wsManager.bind("disconnected", function(url) {
+        _connection.wsManager.bind("disconnected", function(e) {
             console.log("WebSocket closed.")
-            _gui.warnings.displayMsg("WebSocket connection to " + url + " failed.", {type:'warning'})
+            _gui.warnings.displayMsg("WebSocket connection to " + e.url + " " + e.reason + ".", {type:'warning'})
 
         })
 
@@ -226,18 +222,17 @@ $(function(){
             _gui.warnings.displayMsg("WebSocket error: " + e,  {type:'error'})
         })
 
-
         // Opening the WebSocket connection
-        _connection.wsManager.open()
+        _connection.wsManager.connect()
 
     }
 
 
-    // Request collada through http
+    // Requests a collada using XMLHTTPRequest
     function requestCollada(colladaName){
         var loadedObjects = _sceneController.loadedObjects
         for (var i=0; i < loadedObjects.length; i++){
-            if(loadedObjects[i].name == colladaName){
+            if (loadedObjects[i].name == colladaName){
                 //console.log(colladaName + " is loaded alredy.")
                 removeFromScene(_objController.current)
                 addToScene(loadedObjects[i])
@@ -262,12 +257,12 @@ $(function(){
 
             request.onreadystatechange = function() {
 
-                if( request.readyState == 4 ) {
+                if ( request.readyState == 4 ) {
                     clearInterval (trigger);
                     trigger = null
                     _objController.loading = false
 
-                    if( request.status == 200 ) {
+                    if ( request.status == 200 ) {
 
                         if ( request.responseXML ) {
                             _gui.loadDiag.changeState('downloaded')
@@ -282,12 +277,12 @@ $(function(){
                             _gui.loadDiag.changeState('error', "Empty XML received!")
                             request = null
                         }
-                    }else if( request.status == 404 ) {
+                    } else if ( request.status == 404 ) {
                         _gui.loadDiag.changeState('error', "File not found from: " + url)
                         request = null
                     }
 
-                } else if( request.readyState == 2) {
+                } else if ( request.readyState == 2) {
                     _gui.loadDiag.changeState('loading')
                     _objController.loading = true
                     trigger = setInterval (function ()
@@ -325,6 +320,7 @@ $(function(){
         }
     }
 
+    // Parses the collada file and adds it to the scene
     function processCollada (xml, name) {
         var loadedObjects = _sceneController.loadedObjects
         var loader = new THREE.ColladaLoader()
@@ -342,20 +338,20 @@ $(function(){
                 child.material.side = THREE.DoubleSide
             })
 
-            if(loadedObjects.length > 0){
-                //removeFromScene(loadedObjects[loadedObjects.length-1])
+            // Removing earlier object from scene
+            if (loadedObjects.length > 0){
                 clearScene()
             }
 
+            // Adding the new object to memory and in scene
             loadedObjects.push(model)
             addToScene(model)
             _objController.setCurrent(model)
-
             _gui.fileList.toggleLoaded(model.name)
             model = null
 
-            //Freeing memory by removing objects
-            cleanScene()
+            //Freeing memory by removing and de-allocating unneeded objects
+            cleanMemory()
 
             //console.log(_sceneController.renderer.info.memory)
             loader = null
@@ -367,77 +363,121 @@ $(function(){
 
     }
 
-
+    // Adds a ThreeJS object to the scene
     function addToScene(object) {
         _sceneController.scene.add(object)
     }
 
+    // Removes a ThreeJS object from the scene
     function removeFromScene(object) {
         _sceneController.scene.remove(object)
     }
 
+
+    // Removes all the objects from the scene (but does not de-allocate)
     function clearScene() {
         var obj, i
         var scene = _sceneController.scene
 
-        //Removes all objects (but not the floor/camera
+        //Removes all objects (but not the floor/camera)
         for (i = scene.children.length - 1; i >= 0 ; i --) {
             obj = scene.children[i]
-            if(!(obj instanceof THREE.Camera || obj instanceof THREE.Mesh || obj instanceof THREE.Light) )
+            if (!(obj instanceof THREE.Camera || obj instanceof THREE.Mesh || obj instanceof THREE.Light) )
                 scene.remove(obj)
         }
     }
 
-    function cleanScene() {
+    // Removes unneeded objects from scene and de-allocates them
+    function cleanMemory(freeMemory, cleanAll) {
+        if (typeof(freeMemory) === 'undefined')
+            freeMemory = true
+        if (typeof(cleanAll) === 'undefined')
+            cleanAll = false
+
         var objects = _sceneController.loadedObjects
-        if(objects.length > 4){
-            while(objects.length > 4){
-                //console.log("removing object: " + objects[0].name)
 
-                _gui.fileList.toggleLoaded(objects[0].name)
+        if (freeMemory) {
 
-                removeFromScene(objects[0])
-                _sceneController.renderer.deallocateObject(objects[0])
-                _sceneController.renderer.clear()
-                objects.splice(0,1)
+            var len = 4
+            if (cleanAll)
+                len = 0
 
+            if (objects.length > len){
+                while(objects.length > len){
+                    //console.log("removing object: " + objects[0].name)
+
+                    removeFromScene(objects[0])
+
+                    _sceneController.renderer.deallocateObject(objects[0])
+
+                    _gui.fileList.toggleLoaded(objects[0].name)
+                    objects.splice(0,1)
+
+                }
             }
+            _sceneController.renderer.clear()
+
+        }else{
+            objects.forEach(function(object) {
+                _sceneController.renderer.deallocateObject(object)
+            })
+            _sceneController.renderer.clear()
         }
     }
 
 
-//Initializes the renderer, camera, etc.
-    function init() {
+    //Initializes the renderer, camera, etc.
+    function init(reInit) {
+        if (typeof(reInit) === 'undefined')
+            reInit = false
+
+        if (reInit){
+            _gui.warnings.displayMsg("Reinitialing lost WebGL context...", {type:'warning', showTime: 2000})
+            // Deallocating all objects from GPU and freeing loaded objects
+            cleanMemory(true, true)
+            _sceneController.renderer = null
+        }
+
         parseUrl(location)
         var isMobile = isMobileBrowser()
 
-        //Creates the container and scene
-        _container = $("#content")
-
-        var scene = _sceneController.scene = new THREE.Scene()
-
-        // Camera
-        var camera = _sceneController.camera = new THREE.PerspectiveCamera( 45, (_container.innerWidth() / _container.innerHeight()), 1,70 )
-        camera.position.set(17, 10, 15)
-        camera.lookAt(scene.position)
-
-        scene.add( camera )
-
-        // Lights
-        var pointLight = _sceneController.pointLight = new THREE.PointLight(0xffffff)
-        pointLight.intensity = 2
-        scene.add(pointLight)
-        scene.add(new THREE.AmbientLight(0xffffff))
-
-        // RENDERER
-
         var canvas = $("#glCanvas")
 
-        canvas.attr({ width: _container.innerWidth(), height: _container.innerHeight()})
+        // Initializing scene, camera and light (init only once)
+        if (!reInit){
+            // Inits the canvas
+            _container = $("#content")
+            canvas.attr({ width: _container.innerWidth(), height: _container.innerHeight()})
+
+            var scene = _sceneController.scene = new THREE.Scene()
+
+            // Camera
+            var camera = _sceneController.camera = new THREE.PerspectiveCamera( 45, (_container.innerWidth() / _container.innerHeight()), 1,70 )
+            camera.position.set(17, 10, 15)
+            camera.lookAt(scene.position)
+
+            scene.add( camera )
+
+            // Lights
+            var pointLight = _sceneController.pointLight = new THREE.PointLight(0xffffff)
+            pointLight.intensity = 2
+            scene.add(pointLight)
+            scene.add(new THREE.AmbientLight(0xffffff))
 
 
-        //console.log("alias: " + antiAlias + " precision: " +precision + " scale: " + scale + " canvas: " + canvas.id + " w: " + canvas.width + " h: " +canvas.height)
+            // WebGL context-change listeners
+            canvas.get(0).addEventListener("webglcontextlost", function(event) {
+                event.preventDefault()
+            }, false)
 
+            canvas.get(0).addEventListener(
+                // Reinitializing the WebGL stuff if context is restored
+                "webglcontextrestored", function(){init(true)}, false)
+
+        }
+
+
+        // Init RENDERER
         var renderer = _sceneController.renderer = new THREE.WebGLRenderer({
             antiAlias: true,	// to get smoother output
             preserveDrawingBuffer: false,	// true to allow screen shot
@@ -447,48 +487,45 @@ $(function(){
         //renderer.setSize($("#content").width(), $("#content").height())
         renderer.setClearColorHex( 0xBBBBBB, 1 )
 
-        if(isMobile)
+        if (isMobile)
             setRenderQuality('low')
 
+        // Initializes controls and controllers (init only once)
+        if (!reInit){
+            //Initializes object focus change controller
 
-        //Initializes object focus change controller
-        _objController = new THREE.Object3D()
-
-        _objController.setCurrent = function(current) {
-            this.current = current
-            if (this.current) {
-                this.scale.x = current.scale.x
-                this.scale.y = current.scale.y
-                this.scale.z = current.scale.z
+            _objController.setCurrent = function(current) {
+                this.current = current
+                if (this.current) {
+                    this.scale.x = current.scale.x
+                    this.scale.y = current.scale.y
+                    this.scale.z = current.scale.z
+                }
             }
+
+            _objController.loading = false
+
+
+            // TRACKBALL CAMERA CONTROLS
+
+            //passing renderer.context will pass WebGL canvas to the controls and stop them interfering with GUI
+            var controls = _sceneController.controls = new THREE.TrackballControls(camera, renderer.domElement)
+            controls.staticMoving = false
+            controls.maxDistance = 50
+            controls.minDistance = 5
+            controls.rotateSpeed = 0.7
+            controls.zoomSpeed = 0.9
+            controls.panSpeed = 0.4
+            controls.keys = [65, 83, 68]
+
+            //Windows resize listener
+            windowResize(_sceneController.renderer, _sceneController.camera)
         }
-
-        _objController.loading = false
-
-
-        // TRACKBALL CAMERA CONTROLS
-
-        //passing renderer.context will pass WebGL canvas to the controls and stop them interfering with GUI
-        var controls = _sceneController.controls = new THREE.TrackballControls(camera, renderer.domElement)
-        controls.staticMoving = false
-        controls.maxDistance = 50
-        controls.minDistance = 5
-        controls.rotateSpeed = 0.7
-        controls.zoomSpeed = 0.9
-        controls.panSpeed = 0.4
-        controls.keys = [65, 83, 68]
-
-
-        //Windows resize listener
-        windowResize(_sceneController.renderer, _sceneController.camera)
-
     }
 
 
-// GUI
-
+    // GUI BINDINGS (Binds webgl stuff to gui controls)
     function guiBindings (){
-        var sceneParams = _sceneController.sceneParams
         var pointLight = _sceneController.pointLight
 
         _gui.fileList.setCallback(function(name) {
@@ -557,10 +594,8 @@ $(function(){
 
     }
 
-//The animation loop
+    //The animation loop
     function loop() {
-        requestAnimationFrame(loop)
-
         _sceneController.controls.update()
 
         var pointLight = _sceneController.pointLight
@@ -575,6 +610,7 @@ $(function(){
 
         _sceneController.renderer.render(_sceneController.scene, camera)
 
+        requestAnimationFrame(loop)
     }
 
 //Initialize the WebGL renderer and scene
