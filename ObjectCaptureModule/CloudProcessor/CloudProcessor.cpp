@@ -51,6 +51,14 @@ void CloudProcessor::stopCapture()
         kinect_capture_->stopCapture();
 }
 
+void CloudProcessor::restartCapturing()
+{
+    if(!kinect_capture_->isRunning())
+        kinect_capture_->startCapture();
+
+    register_->reset();
+}
+
 void CloudProcessor::captureCloud()
 {
     if(kinect_capture_->isRunning() && kinect_capture_->currentCloud().get())

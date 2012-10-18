@@ -29,6 +29,9 @@ public slots:
     /// Stops the capturing interface
     void stopCapture();
 
+    /// Rewind all captured clouds and restart capturing interface
+    void restartCapturing();
+
     /// Captures a point cloud and passes it for registration
     void captureCloud();
 

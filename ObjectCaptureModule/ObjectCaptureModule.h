@@ -79,6 +79,9 @@ public slots:
     /// Stops the Kinect capturing interface without processing the clouds
     void stopCapturing();
 
+    /// Rewind all captured clouds and starts the Kinect capturing interface
+    void restartCapturing();
+
     /// Saves current cloud
     void captureCloud();
 

@@ -155,6 +155,18 @@ void ObjectCaptureModule::stopCapturing()
     QMetaObject::invokeMethod(cloud_processor_, "stopCapture", Qt::QueuedConnection);
 }
 
+void ObjectCaptureModule::restartCapturing()
+{
+    PointCloud::Ptr empty_cloud(new PointCloud());
+    visualizeGlobalModel(empty_cloud);
+    visualizeLiveCloud(empty_cloud);
+
+    if (final_mesh_entity.get())
+        final_mesh_entity->RemoveComponent("EC_OgreCustomObject");
+
+    QMetaObject::invokeMethod(cloud_processor_, "restartCapturing", Qt::QueuedConnection);
+}
+
 void ObjectCaptureModule::captureCloud()
 {
     QMetaObject::invokeMethod(cloud_processor_, "captureCloud", Qt::QueuedConnection);

@@ -13,8 +13,8 @@ function ObjectCapture()
     data.module.startCapturing();
     //Set default positions
     data.module.setLiveCloudPosition(Quat(1,0,0,0), float3(0,0,-30), float3(10,10,10));
-    data.module.setGlobalModelPosition(Quat(1,0,0,0), float3(20,0,-30), float3(10,10,10));
-    data.module.setFinalMeshPosition(Quat(0,0,0,0), float3(-20,0,-30), float3(10,10,10));
+    data.module.setGlobalModelPosition(Quat(1,0,0,0), float3(15,0,-30), float3(10,10,10));
+    data.module.setFinalMeshPosition(Quat(0,0,0,0), float3(-15,0,-30), float3(10,10,10));
     
     var me = scene.GetEntityByName("ObjectCaptureApplication");
     var inputmapper = me.GetOrCreateComponent("EC_InputMapper", 2, false);
@@ -28,6 +28,7 @@ function ObjectCapture()
 
     inputmapper.RegisterMapping("Y", "Capture", 1); // 1 = keypress
     inputmapper.RegisterMapping("T", "rewindCloud", 1);
+    inputmapper.RegisterMapping("R", "restartCapturing", 1);
     inputmapper.RegisterMapping("U", "Finalize", 1);
     inputmapper.RegisterMapping("I", "startCapturing", 1);
     inputmapper.RegisterMapping("O", "stopCapturing", 1);
@@ -36,6 +37,7 @@ function ObjectCapture()
     me.Action("Finalize").Triggered.connect(finalizeCloud);
     me.Action("startCapturing").Triggered.connect(startCapturing);
     me.Action("stopCapturing").Triggered.connect(stopCapturing);
+    me.Action("restartCapturing").Triggered.connect(restartCapturing);
     data.module.assetUploaded.connect(assetUploaded);
 
     var timer = new QTimer();
@@ -45,6 +47,8 @@ function ObjectCapture()
 
     initializePlaceholders(10);
     initializeUi();
+
+    data.initialized = true;
 }
 
 function initializePlaceholders(numberOfPlacehorders)
@@ -150,6 +154,16 @@ function stopCapturing()
     print("Stopping capture interface.");
     if (data.module != null)
         data.module.stopCapturing();
+}
+
+function restartCapturing()
+{
+    if (!data.initialized)
+        ObjectCapture();
+
+    print ("Restarting capturing interface.");
+    if (data.module != null)
+        data.module.restartCapturing();
 }
 
 function captureCloud()
@@ -268,6 +282,9 @@ if (!server.IsRunning())
     var menu = ui.MainWindow().menuBar();
     var captureMenu = menu.addMenu("&Capture");
     captureMenu.addAction("Start ObjectCapture").triggered.connect(InitializeObjectCapture);
+    captureMenu.addAction("Restart Capturing").triggered.connect(restartCapturing);
+
+    data.initialized = false;
 }
 
 function InitializeObjectCapture()
