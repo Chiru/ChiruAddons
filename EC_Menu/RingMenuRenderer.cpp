@@ -168,7 +168,7 @@ void RingMenuRenderer::HandleMouseInput(MouseEvent *mouse, RaycastResult *result
         if (speed_ == 0)
         {
             // SUBMENU HANDLER
-            if (result->entity == MenuItemList_.at(selected_)->ParentEntity() && !subMenu_)
+            if (selected_ < MenuItemList_.length() && result->entity == MenuItemList_.at(selected_)->ParentEntity() && !subMenu_)
             {
                 if (!MenuItemList_.at(selected_)->OpenSubMenu())
                 {
