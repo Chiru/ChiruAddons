@@ -41,6 +41,16 @@ bool MenuDataModel::AddItem(QString mesh, QStringList materials)
 
 }
 
+bool MenuDataModel::AddItem(QWidget *widget, int widgetsubmesh, QString meshref, QStringList materialref)
+{
+    MenuDataItem *item = new MenuDataItem(/*IdGenerator()*/);
+    item->SetMeshRef(meshref);
+    item->SetMaterialRef(materialref);
+    item->SetWidget(widget, widgetsubmesh);
+    menudataitems_.append(item);
+    return true;
+}
+
 bool MenuDataModel::AddItemToIndex(MenuDataItem *menudataitem, int index)
 {
     if(index>0 && index < menudataitems_.count())
