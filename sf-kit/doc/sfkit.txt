@@ -1,0 +1,93 @@
+SF-Kit documentation
+
+Introduction
+
+In this document we explain how the SF-Kit API works, how you can
+configure two provided example adapters (Twitter and yle news) and
+used them with Service Fusion, and how new adapters for external
+services can be implemented for the Chiru Service Fusion platform.
+
+What is it
+
+Service Fusion is a 3D virtual environment concept implemented on top
+of realXtend Tundra. The basic idea is exposing and interfacing with
+various third party services like news feeds, ticketing services, social networks and so on.
+These can be then used and interacted with through the 3D virtual space.
+
+Audience
+
+This document is intended for developers writing applications for the
+SF platform, and secondarily to users planning to deploy the SF
+platform using ready made components.
+
+We assume you are familiar with basic concepts & operation of
+realXtend Tundra, basics of Python and Javascript, and overall
+background of Service Fusion (which is documented
+elsewhere). Developing your own services will require familiarity with
+accessing the data sources you want to use, such as Web APIs, screen
+scraping or RSS feeds.
+
+To get started with the SF system you need a system running Tundra
+built with the add-on C++ modules required by Service Fusion (see
+https://github.com/Chiru/ChiruAddons/blob/master/ServiceFusionReadMe.txt). You
+also need the Python module enabled in the Tundra build.
+
+SF-Kit architecture
+
+SF-Kit consists of two parts: the SF-Kit Data API and the SF-Kit Scene
+API.  Adapters built using SF-Kit thus also have two loosely coupled
+parts.
+
+The data side is a Python program where you use the SF-Kit library to
+retrieve and store your data and send it to the scene side.  The data
+side Python module and samples live in the ChiruAddons repository
+under the sf-kit directory.
+
+The Scene side (or Tundra side) is a JavaScript program running inside
+Tundra as a Script component attached to a Tundra scene entity
+(ref. Tundra's entity-component model) scene-specific script, using
+the SF-Kit library to communicate with the data side and interact with
+the Tundra scene.
+
+Included samples
+
+SF-Kit includes two example adapters, one for Twitter and one for YLE
+News.
+
+The YLE News example demonstrates using a basic non-interactive
+RSS feed as a data source. Theis sample depends on the third party
+"feedparser" Python module, so install that before running it.
+
+The Twitter adapter uses the Twitter API whcih is a REST-style
+Web API with data formatted as JSON, which custom queries. This is
+a common type of Web API.
+
+Operation
+
+On the scene side, you should configure the scene so that there's an
+entity with a visual container which will receive data from the data
+side of the adapter.  The entity's name is used to locate it.  This
+can be done by eg. copying an existing entity using the scene editor
+or editing the scene description XML (the .txml file).
+
+On the data side, you should edit the Python program for any
+configurable parameters (eg. customize what kind of data to bring in,
+set service_name to match the name of the Tundra-side entity it will
+communicate with)
+
+Then you run your adapter program in the usual Python way: type
+python sf_twitter.py in shell or doubleclick sf_twitter.py in your GUI.
+operation - starting sfkit client and configuring scene
+
+implementing your own services
+  data api component
+  ui side
+
+debugging
+Here are some common failure modes that you may encounter:
+ [error message] [possible cause].
+ [error message] [possible cause] etc.
+
+advanced, network transparency.
+
+advanced, using sf-api data from non-tundra apps.
