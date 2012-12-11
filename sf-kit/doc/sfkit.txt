@@ -43,6 +43,11 @@ retrieve and store your data and send it to the scene side.  The data
 side Python module and samples live in the ChiruAddons repository
 under the sf-kit directory.
 
+Behind the scenes, the Data API side will interact with both the
+running Tundra (over a TCP socket using JSON) and the service
+that it's interfacing to. The data from the service is periodically
+fetched and saved into a database that also servces as a cache.
+
 The Scene side (or Tundra side) is a JavaScript program running inside
 Tundra as a Script component attached to a Tundra scene entity
 (ref. Tundra's entity-component model) scene-specific script, using
@@ -79,15 +84,39 @@ Then you run your adapter program in the usual Python way: type
 python sf_twitter.py in shell or doubleclick sf_twitter.py in your GUI.
 operation - starting sfkit client and configuring scene
 
-implementing your own services
-  data api component
-  ui side
+Implementing new services
 
-debugging
-Here are some common failure modes that you may encounter:
- [error message] [possible cause].
- [error message] [possible cause] etc.
+First, familiarize yourself with the provided sample services. The
+YLE one is a little simpler.
 
-advanced, network transparency.
+Data side
 
-advanced, using sf-api data from non-tundra apps.
+Basically you just import the sfkit module, and define
+a callback function which fetch data from your service over
+the network.
+
+The beef in the provider will be the fetch callback
+that you provide to sfkit (parameter 1 for add_source).
+This function will be called periodically by the sfkit once
+you start its serve loop. The scene side script can provide
+the query parameter to it, so the scene can eg. do searches
+or switch between subcategories of items in the data feed.
+
+Other parameters in the add_source call are the refresh
+period, which governs the frequency of calls to
+your fetch callback absent query changes or startup
+events in the scene. 
+
+The name parameter is used to find the named entity on the
+Scene side. This entity should have an attached EC_Script component
+referencing your scene side script.
+
+On the scene side it is again best to familiarize yourself
+with the provided examples. Basically you just include sfdata.js
+and use SetInfoHandler & SetDropHandler to register callbacks
+that will be be fed the data from your data-api component.
+You can call SetInfoQuery to set the query parameter.
+
+TBD. Debugging tips
+TBD. Network transparency
+TBD. Using sf-api data from non-tundra apps.
