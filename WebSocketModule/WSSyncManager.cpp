@@ -222,6 +222,8 @@ void WSSyncManager::WriteComponentFullUpdate(ptree& components, ComponentPtr com
 */
     ptree component;
     component.put<string>("typeName", comp->TypeName().toStdString());
+    component.put<string>("typeId", ToString(comp->TypeId()));
+    component.put<string>("name", comp->Name().toStdString());
 
     ptree attributes;
 
@@ -233,7 +235,10 @@ void WSSyncManager::WriteComponentFullUpdate(ptree& components, ComponentPtr com
     const AttributeVector& attrs = comp->Attributes();
     for (uint i = 0; i < numStaticAttrs; ++i){
         //attrs[i]->ToBinary(attrDs);
-        attributes.put<string>(attrs[i]->Name().toStdString(), attrs[i]->ToString());
+        ptree attribute;
+        attribute.put<string>("name", attrs[i]->Name().toStdString());
+        attribute.put<string>("data", attrs[i]->ToString());
+        attributes.put_child(ToString(i), attribute);
     }
 
     // Dynamic-structured attributes (use EOF to detect so do not need to send their amount)
@@ -247,12 +252,11 @@ void WSSyncManager::WriteComponentFullUpdate(ptree& components, ComponentPtr com
             attrDs.AddString(attrs[i]->Name().toStdString());
             attrs[i]->ToBinary(attrDs);
             */
-            LogInfo(ToString(attrs[i]->TypeId()));
             ptree attribute;
             attribute.put<uint8_t>("typeId", attrs[i]->TypeId());
             attribute.put<string>("name", attrs[i]->Name().toStdString());
             attribute.put<string>("data", attrs[i]->ToString());
-            attributes.put_child(attrs[i]->Name().toStdString(), attribute);
+            attributes.put_child(ToString(i), attribute);
         }
     }
 
@@ -262,7 +266,7 @@ void WSSyncManager::WriteComponentFullUpdate(ptree& components, ComponentPtr com
 
 
     component.put_child("attributes", attributes);
-    components.put_child(ToString(comp->TypeId()), component);
+    components.put_child(ToString(comp->Id() & UniqueIdGenerator::LAST_REPLICATED_ID), component);
 }
 
 
@@ -1116,7 +1120,7 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
             */
 
             ptree msg;
-            msg.put<unsigned int>("entityId", entityState.id);
+            msg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
             SendMessage(clientId, msg, "EntityRemoved");
             ++numMessagesSent;
         }
@@ -1133,7 +1137,7 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
             //ds.Add<u8>(entity->IsTemporary() ? 1 : 0);
 
             ptree msg;
-            msg.put<unsigned int>("entityId", entityState.id);
+            msg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
             msg.put<uint8_t>("isTemporary", entity->IsTemporary() ? 1 : 0);
             msg.put<string>("name", entity->Name().toStdString());
 
@@ -1176,12 +1180,20 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
         // Entity has changed
         else if (entity)
         {
+            ptree componentsRemoved;
+            ptree componentsAdded;
+            ptree attributesAdded;
+            ptree attributesChanged;
+            ptree attributesRemoved;
+
             // Components or attributes have been added, changed, or removed. Prepare the dataserializers
+            /*
             kNet::DataSerializer removeCompsDs(removeCompsBuffer_, 1024);
             kNet::DataSerializer removeAttrsDs(removeAttrsBuffer_, 1024);
             kNet::DataSerializer createCompsDs(createCompsBuffer_, 64 * 1024);
             kNet::DataSerializer createAttrsDs(createAttrsBuffer_, 16 * 1024);
             kNet::DataSerializer editAttrsDs(editAttrsBuffer_, 64 * 1024);
+            */
 
             while (!entityState.dirtyQueue.empty())
             {
@@ -1191,6 +1203,7 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
 
                 ComponentPtr comp = entity->GetComponentById(compState.id);
                 bool removeCompState = false;
+
                 if (!comp)
                 {
                     if (!compState.removed)
@@ -1205,34 +1218,45 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                         continue;
                 }
 
+
                 // Remove component
                 if (compState.removed)
-                {
+                {                    
                     removeCompState = true;
 
+                    /*
                     // If first component, write the entity ID first
-                    if (!removeCompsDs.BytesFilled())
+                    if (componentsRemovedMsg.empty())
                     {
                         removeCompsDs.AddString(sceneId);
                         removeCompsDs.AddVLE<kNet::VLE8_16_32>(entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
-                    }
+                    }*/
+
                     // Then add component ID
-                    removeCompsDs.AddVLE<kNet::VLE8_16_32>(compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+                    //removeCompsDs.AddVLE<kNet::VLE8_16_32>(compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+
+                    componentsRemoved.push_back(std::make_pair("",ToString(compState.id & UniqueIdGenerator::LAST_REPLICATED_ID)));
                 }
+
                 // New component
                 else if (compState.isNew)
                 {
                     // If first component, write the entity ID first
-                    if (!createCompsDs.BytesFilled())
+                    /*
+                    if (componentsAdded.empty())
                     {
                         createCompsDs.AddString(sceneId);
                         createCompsDs.AddVLE<kNet::VLE8_16_32>(entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
                     }
+                    */
+
                     // Then add the component data
-                    WriteComponentFullUpdate(createCompsDs, comp);
+                    WriteComponentFullUpdate(componentsAdded, comp);
+                    //WriteComponentFullUpdate(createCompsDs, comp);
                     // Mark the component undirty in the receiver's syncstate
                     state->MarkComponentProcessed(entity->Id(), comp->Id());
                 }
+
                 // Added/removed/edited attributes
                 else if (comp)
                 {
@@ -1244,9 +1268,12 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                         // Clear the corresponding dirty flags, so that we don't redundantly send attribute edited data.
                         compState.dirtyAttributes[attrIndex >> 3] &= ~(1 << (attrIndex & 7));
 
+                        ptree attribute;
+
+                        // Create attribute.
                         if (i->second)
                         {
-                            // Create attribute. Make sure it exists and is dynamic.
+                            // Make sure it exists and is dynamic.
                             if (attrIndex >= attrs.size() || !attrs[attrIndex])
                                 LogError("CreateAttribute for nonexisting attribute index " + QString::number(attrIndex) + " was queued for component " + comp->TypeName() + " in " + entity->ToString() + ". Discarding.");
                             else if (!attrs[attrIndex]->IsDynamic())
@@ -1254,38 +1281,61 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                             else
                             {
                                 // If first attribute, write the entity ID first
-                                if (!createAttrsDs.BytesFilled())
+                                /*
+                                if (attributesAdded.empty())
                                 {
                                     createAttrsDs.AddString(sceneId);
                                     createAttrsDs.AddVLE<kNet::VLE8_16_32>(entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
                                 }
+                                */
 
                                 IAttribute* attr = attrs[attrIndex];
+                                /*
                                 createAttrsDs.AddVLE<kNet::VLE8_16_32>(compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
                                 createAttrsDs.Add<u8>(attrIndex); // Index
                                 createAttrsDs.Add<u8>(attr->TypeId());
                                 createAttrsDs.AddString(attr->Name().toStdString());
                                 attr->ToBinary(createAttrsDs);
+                                */
+
+                                attribute.put<unsigned int>("compId", compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+                                attribute.put<uint8_t>("typeId", attr->TypeId());
+                                attribute.put<string>("name", attr->Name().toStdString());
+                                attribute.put<string>("data", attr->ToString());
+                                attributesAdded.put_child(ToString(attrIndex), attribute);
                             }
                         }
+
+                        // Remove attribute
                         else
                         {
-                            // Remove attribute
+
                             // If first attribute, write the entity ID first
-                            if (!removeAttrsDs.BytesFilled())
+                            /*
+                            if (attributesRemovedMsg.empty())
                             {
                                 removeAttrsDs.AddString(sceneId);
                                 removeAttrsDs.AddVLE<kNet::VLE8_16_32>(entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
                             }
+
                             removeAttrsDs.AddVLE<kNet::VLE8_16_32>(compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
                             removeAttrsDs.Add<u8>(attrIndex);
+                            */
+
+                            attribute.put<unsigned int>("compId", compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+                            attributesRemoved.put_child(ToString(attrIndex), attribute);
+
                         }
                     }
                     compState.newAndRemovedAttributes.clear();
 
+
+                    // Attributes Changed
+
                     // Now, if remaining dirty bits exist, they must be sent in the edit attributes message. These are the majority of our network data.
                     changedAttributes_.clear();
                     unsigned numBytes = (attrs.size() + 7) >> 3;
+
                     for (unsigned i = 0; i < numBytes; ++i)
                     {
                         u8 byte = compState.dirtyAttributes[i];
@@ -1304,22 +1354,34 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                             }
                         }
                     }
+
                     if (changedAttributes_.size())
                     {
                         // If first component for which attribute changes are sent, write the entity ID first
-                        if (!editAttrsDs.BytesFilled())
+                        /*
+                        if (attributesChangedMsg.empty())
                         {
                             editAttrsDs.AddString(sceneId);
                             editAttrsDs.AddVLE<kNet::VLE8_16_32>(entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
-                        }
-                        editAttrsDs.AddVLE<kNet::VLE8_16_32>(compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
 
+                        }
+
+
+
+                        editAttrsDs.AddVLE<kNet::VLE8_16_32>(compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+                        */
+
+                        ptree editedAttr;
+                        editedAttr.put<unsigned int>("compId", compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+
+                        /*
                         // Create a nested dataserializer for the actual attribute data, so we can skip components
                         kNet::DataSerializer attrDataDs(attrDataBuffer_, 16 * 1024);
 
                         // There are changed attributes. Check if it is more optimal to send attribute indices, or the whole bitmask
                         unsigned bitsMethod1 = changedAttributes_.size() * 8 + 8;
                         unsigned bitsMethod2 = attrs.size();
+
                         // Method 1: indices
                         if (bitsMethod1 <= bitsMethod2)
                         {
@@ -1343,13 +1405,20 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                                     attrs[i]->ToBinary(attrDataDs);
                                 }
                                 else
-                                    attrDataDs.Add<kNet::bit>(0);
+                                   attrDataDs.Add<kNet::bit>(0);
                             }
                         }
 
                         // Add the attribute data array to the main serializer
-                        editAttrsDs.AddVLE<kNet::VLE8_16_32>(attrDataDs.BytesFilled());
-                        editAttrsDs.AddArray<u8>((unsigned char*)attrDataBuffer_, attrDataDs.BytesFilled());
+                        //editAttrsDs.AddVLE<kNet::VLE8_16_32>(attrDataDs.BytesFilled());
+                        //editAttrsDs.AddArray<u8>((unsigned char*)attrDataBuffer_, attrDataDs.BytesFilled());
+                        */
+
+                        for (unsigned i = 0; i < changedAttributes_.size(); ++i)
+                        {
+                            editedAttr.put<string>("data", attrs[changedAttributes_[i]]->ToString());
+                            attributesChanged.put_child(ToString((int)changedAttributes_[i]), editedAttr);
+                        }
 
                         // Now zero out all remaining dirty bits
                         for (unsigned i = 0; i < numBytes; ++i)
@@ -1362,29 +1431,58 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
             }
 
             // Send the messages which have data
-            if (removeCompsDs.BytesFilled())
+            if (!componentsRemoved.empty())
             {
-                QueueMessage(clientId, cRemoveComponentsMessage, true, true, removeCompsDs);
+                ptree componentsRemovedMsg;
+                componentsRemovedMsg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+                componentsRemovedMsg.put_child("components", componentsRemoved);
+
+                //Entity changed message
+                SendMessage(clientId, componentsRemovedMsg, "ComponentsRemoved");
+                //QueueMessage(clientId, cRemoveComponentsMessage, true, true, removeCompsDs);
                 ++numMessagesSent;
             }
-            if (removeAttrsDs.BytesFilled())
+            if (!componentsAdded.empty())
             {
-                QueueMessage(clientId, cRemoveAttributesMessage, true, true, removeAttrsDs);
+                ptree componentsAddedMsg;
+                componentsAddedMsg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+                componentsAddedMsg.put_child("components", componentsAdded);
+
+                SendMessage(clientId, componentsAddedMsg, "ComponentsAdded");
+                //QueueMessage(clientId, cCreateComponentsMessage, true, true, createCompsDs);
                 ++numMessagesSent;
             }
-            if (createCompsDs.BytesFilled())
+            if (!attributesRemoved.empty())
             {
-                QueueMessage(clientId, cCreateComponentsMessage, true, true, createCompsDs);
+
+                ptree attributesRemovedMsg;
+                attributesRemovedMsg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+                attributesRemovedMsg.put_child("attrs", attributesRemoved);
+
+                SendMessage(clientId, attributesRemovedMsg, "AttributesRemoved");
+                //QueueMessage(clientId, cRemoveAttributesMessage, true, true, removeAttrsDs);
                 ++numMessagesSent;
             }
-            if (createAttrsDs.BytesFilled())
+
+            if (!attributesAdded.empty())
             {
-                QueueMessage(clientId, cCreateAttributesMessage, true, true, createAttrsDs);
+                ptree attributesAddedMsg;
+                attributesAddedMsg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+                attributesAddedMsg.put_child("attrs", attributesAdded);
+
+                SendMessage(clientId, attributesAddedMsg, "AttributesAdded");
+                //QueueMessage(clientId, cCreateAttributesMessage, true, true, createAttrsDs);
                 ++numMessagesSent;
             }
-            if (editAttrsDs.BytesFilled())
+            if (!attributesChanged.empty())
             {
-                QueueMessage(clientId, cEditAttributesMessage, true, true, editAttrsDs);
+
+                ptree attributesChangedMsg;
+                attributesChangedMsg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+                attributesChangedMsg.put_child("attrs", attributesChanged);
+
+                SendMessage(clientId, attributesChangedMsg, "AttributesChanged");
+                //QueueMessage(clientId, cEditAttributesMessage, true, true, editAttrsDs);
                 ++numMessagesSent;
             }
 
