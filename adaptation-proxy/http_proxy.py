@@ -10,10 +10,16 @@ from cStringIO import StringIO
 from gevent.server import StreamServer
 from gevent.pool import Pool
 import gevent.socket
-
+from socket import IPPROTO_TCP, TCP_NODELAY
 from urlparse import urlparse
 import cgi
 from collections import namedtuple
+
+import time
+
+def print_elapsed(start_time, text):
+    e = time.time() - start_time
+    print text % (e,)
 
 PROXY_LISTEN_PORT = 8088
 
@@ -188,6 +194,7 @@ class buffered_socket(object):
 def new_connection(sock, address):
     bs = buffered_socket(sock)
     sock.settimeout(20.0)
+    sock.setsockopt(IPPROTO_TCP, TCP_NODELAY, 1)
     new_connection2(bs, address)
 
 def mock_connection(indata, address):
@@ -222,7 +229,9 @@ def new_connection2(bs, address):
             break
 
         print 'proxying request'
+        t = time.time()
         do_proxy(req, bs)
+        print_elapsed(t, "do_proxy took %.2f seconds")
         print 'proxying done'
         if not bs.keep_alive:
             break
@@ -254,32 +263,32 @@ def do_proxy(req, bs):
 
         # headers that are processed by us or urllib2
         delete_headers = 'transfer-encoding proxy-connection'
-        for tekey in delete_headers:
+        for tekey in delete_headers.split():
             if tekey in response.headers:
                 del response.headers[tekey]
 
         xc_id = response.headers.get('x-transcode-profile-id', '')
+        xcode_profile = get_profile(xc_id)
         if response.headers.get('content-type', '').lower() == 'image/jpeg':
-            xcode_profile = get_profile(xc_id)
             print 'jpeg seen, worsening it...'
             data = worsen.worsen_jpeg(data, xcode_profile)
             response.headers['content-length'] = str(len(data))
 
         if response.headers.get('content-type', '').lower() in ('image/png', 'image/gif'):
-            print 'png seen, worsening it...'
-            data = worsen.worsen_png(data)
+            print 'png or gif seen, worsening it...'
+            data = worsen.worsen_png(data, xcode_profile)
             response.headers['content-length'] = str(len(data))
         send_response_headers(bs, '%s %s' % (response.code, response.msg),
                       response.headers.items())
         bs.write(data)
 
 profiles = {
-    'test-1': { 'jpeg-quality': 25, 'png-colors': 32}
+    'test-1': { 'jpeg-quality': 25, 'png-colors': 32},
     'test-2': { 'jpeg-quality': 5, 'png-colors': 8 }
 }
  
-
-
+def get_profile(id):
+    return profiles.get(id, {})
 
 def join(url1, *rest):
     if not rest:

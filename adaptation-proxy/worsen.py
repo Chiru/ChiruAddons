@@ -36,7 +36,7 @@ def worsen_png(data, profile):
     im2.save(outf, 'PNG', optimize=True)
     return outf.getvalue()
 
-def worsen_jpeg(data):
+def worsen_jpeg(data, profile):
     q = profile.get('jpeg-quality')
     if not q:
         return data
