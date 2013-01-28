@@ -222,7 +222,7 @@ void WSSyncManager::WriteComponentFullUpdate(ptree& components, ComponentPtr com
 */
     ptree component;
     component.put<string>("typeName", comp->TypeName().toStdString());
-    component.put<string>("typeId", ToString(comp->TypeId()));
+    component.put<uint8_t>("typeId", comp->TypeId());
     component.put<string>("name", comp->Name().toStdString());
 
     ptree attributes;
@@ -237,7 +237,8 @@ void WSSyncManager::WriteComponentFullUpdate(ptree& components, ComponentPtr com
         //attrs[i]->ToBinary(attrDs);
         ptree attribute;
         attribute.put<string>("name", attrs[i]->Name().toStdString());
-        attribute.put<string>("data", attrs[i]->ToString());
+        attribute.put<uint8_t>("typeId",attrs[i]->TypeId());
+        attribute.put<string>("val", attrs[i]->ToString());
         attributes.put_child(ToString(i), attribute);
     }
 
@@ -255,7 +256,7 @@ void WSSyncManager::WriteComponentFullUpdate(ptree& components, ComponentPtr com
             ptree attribute;
             attribute.put<uint8_t>("typeId", attrs[i]->TypeId());
             attribute.put<string>("name", attrs[i]->Name().toStdString());
-            attribute.put<string>("data", attrs[i]->ToString());
+            attribute.put<string>("val", attrs[i]->ToString());
             attributes.put_child(ToString(i), attribute);
         }
     }
@@ -1301,7 +1302,7 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                                 attribute.put<unsigned int>("compId", compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
                                 attribute.put<uint8_t>("typeId", attr->TypeId());
                                 attribute.put<string>("name", attr->Name().toStdString());
-                                attribute.put<string>("data", attr->ToString());
+                                attribute.put<string>("val", attr->ToString());
                                 attributesAdded.put_child(ToString(attrIndex), attribute);
                             }
                         }
@@ -1416,7 +1417,7 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
 
                         for (unsigned i = 0; i < changedAttributes_.size(); ++i)
                         {
-                            editedAttr.put<string>("data", attrs[changedAttributes_[i]]->ToString());
+                            editedAttr.put<string>("val", attrs[changedAttributes_[i]]->ToString());
                             attributesChanged.put_child(ToString((int)changedAttributes_[i]), editedAttr);
                         }
 
