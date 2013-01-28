@@ -75,6 +75,9 @@ side of the adapter.  The entity's name is used to locate it.  This
 can be done by eg. copying an existing entity using the scene editor
 or editing the scene description XML (the .txml file).
 
+You also need the poll_asyncore Python plugin enabled in your
+Tundra config 
+
 On the data side, you should edit the Python program for any
 configurable parameters (eg. customize what kind of data to bring in,
 set service_name to match the name of the Tundra-side entity it will
