@@ -996,7 +996,7 @@
  </entity>
  <entity id="95">
   <component type="EC_Name" sync="true">
-   <attribute value="yle-news" name="name"/>
+   <attribute value="twitter" name="name"/>
    <attribute value="" name="description"/>
   </component>
   <component type="EC_DynamicComponent" sync="true" name="sf_drag_spec">
@@ -1026,7 +1026,7 @@
    <attribute value="" name="Script class name"/>
   </component>
   <component type="EC_Script" sync="true">
-   <attribute value="YleNewsContainer.js" name="Script ref"/>
+   <attribute value="TwitterContainer.js" name="Script ref"/>
    <attribute value="true" name="Run on load"/>
    <attribute value="0" name="Run mode"/>
    <attribute value="" name="Script application name"/>

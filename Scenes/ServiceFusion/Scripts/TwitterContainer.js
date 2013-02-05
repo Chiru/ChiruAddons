@@ -1,5 +1,11 @@
 engine.IncludeFile("sfdata.js");
 
+SetDropHandler(GotDrop);
+
+function GotDrop(entity) {
+    SetInfoQuery("CIE_Updates")
+}
+
 SetInfoHandler(GotNews);
 
 function GotNews(json_info) {

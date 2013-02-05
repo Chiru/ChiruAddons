@@ -180,7 +180,7 @@ function SetInfoHandler(fun) {
 
 function SetInfoQuery(query) {
     var exectype_local = 1;
-    me.Exec(exectype_local, "SetQuery", query);
+    me.Exec(exectype_local, "SetQuery", me.name, query);
 }
 
 
