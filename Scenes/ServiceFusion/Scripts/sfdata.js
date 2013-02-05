@@ -174,5 +174,112 @@ function SetDropHandler(fun) {
 }
 
 function SetInfoHandler(fun) {
-    me.Action("ServiceInfo").Triggered.connect(GotNews);
+    print("sfdata: ent " + me.id + " info handler set to " +fun);
+    me.Action("ServiceInfo").Triggered.connect(fun);
+}
+
+function SetInfoQuery(query) {
+    var exectype_local = 1;
+    me.Exec(exectype_local, "SetQuery", query);
+}
+
+
+
+ui.GraphicsView().DragEnterEvent.connect(UserHints);
+var hilight_entities = [];
+
+function UserHints(e)
+{
+    print("in DragEnterEvent slot");
+
+    var data = e.mimeData().data("application/x-hotspot").toString();
+    if (data.length <= 0)
+	return;
+
+    var ray = CurrentMouseRay();
+    var r = scene.ogre.Raycast(ray, -1);
+    var drag_source_entity = r.entity;
+
+    if (!drag_source_entity.dynamiccomponent) {
+	print("no dc in drag source")
+	return;
+    }
+
+    var drag_originate_format = drag_source_entity.dynamiccomponent.GetAttribute("drag_originate_format");
+    if (!drag_originate_format) {
+	print("no data format in drag source");
+	return;
+    }
+
+    var dc_entities = scene.EntitiesWithComponent("EC_DynamicComponent", "sf_data_spec");
+    for (var i in dc_entities) {
+	var ent = dc_entities[i];
+	var drag_accept_format = ent.dynamiccomponent.GetAttribute("drag_accept_format");
+	if (!drag_accept_format)
+	    continue;
+	print("found entity " + ent.id + " with drag_accept_fornat=" + drag_accept_format);
+	if (drag_accept_format === drag_originate_format) {
+	    hilight_entities.push(ent);
+	    print(".. and it matched wanted data format");
+	}
+    }
+    HilightEntities();
+}
+
+function HilightEntities()
+{
+    var i, j = 0;
+    for(i=0; i<hilight_entities.length; i++)
+    {
+       // print("---------highlight " + entities[i].name);
+        var mesh = hilight_entities[i].GetComponent("EC_Mesh");
+
+        if(hilight_entities[i].GetComponent("EC_Material"))
+            continue;
+        j=0;
+       // Hack to determine the length of the meshMaterial list (not exposed to script).
+        while (typeof mesh.meshMaterial[j] !== "undefined") 
+        {
+            var input_mat = mesh.meshMaterial[j];
+            var material_component = hilight_entities[i].CreateComponent("EC_Material");
+            material_component.inputMat = input_mat;
+
+            p = [];
+            p[0] = "emissive=0.7 0.7 0.0 1";
+            material_component.parameters = p;
+            j++;
+        }
+    }
+
+    ui.GraphicsView().DropEvent.connect(removeHighlight);
+}
+
+function removeHighlight()
+{
+
+    if (!hilight_entities.length)
+        return;
+
+    var i, j = 0;
+    for (i = 0; i < hilight_entities.length; i++)
+    {
+        var mesh = hilight_entities[i].GetComponent("EC_Mesh");
+
+            j=0;
+            while(typeof mesh.meshMaterial[j] !== "undefined") 
+            {
+                hilight_entities[i].RemoveComponent("EC_Material");
+                j++;
+            }
+
+            j=0;
+            while(typeof mesh.meshMaterial[j] !== "undefined") 
+            {
+                var material = mesh.meshMaterial[j];
+                asset.RequestAsset(material, "OgreMaterial", true);
+                j++;
+            }
+    }
+    hilight_entities = [];
+    ui.GraphicsView().DropEvent.disconnect(removeHighlight);
 }

@@ -15,6 +15,9 @@
   <jsplugin path="cameraapplication.js" />
   <jsplugin path="LoadingScreen.js" />
 
+  <plugin path="PythonScriptModule" />          <!-- Depends on OgreRenderingModule, TundraProtocolModule -->
+  <pyplugin path="poll_asyncore.py"/>
+
   <option name="--trustserverstorages" />
   <option name="--accept_unknown_http_sources" />
   <option name="--accept_unknown_local_sources" />

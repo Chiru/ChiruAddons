@@ -221,6 +221,10 @@ function AnimateInfoBubbles(dt)
         var infoBubbleVisible = e.dynamiccomponent.GetAttribute("infoBubbleVisible");
         var infoBubbleId = e.dynamiccomponent.GetAttribute("infoBubbleId");
         var infoBubble = scene.EntityById(infoBubbleId);
+	if (infoBubble === null) {
+	    print("no infobubble found for enttiy id " + infoBubbleId);
+	    continue;
+	}
         var start = infoBubbleVisible ? cInfoBubbleHiddenScale : cInfoBubbleVisibleScale;
         var dest = infoBubbleVisible ? cInfoBubbleVisibleScale : cInfoBubbleHiddenScale;
 

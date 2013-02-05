@@ -996,8 +996,11 @@
  </entity>
  <entity id="95">
   <component type="EC_Name" sync="true">
-   <attribute value="LyricsContainer" name="name"/>
+   <attribute value="yle-news" name="name"/>
    <attribute value="" name="description"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="sf_drag_spec">
+   <attribute type="string" name="drag_originate_format" value="title+text"/>
   </component>
   <component type="EC_Mesh" sync="true">
    <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
@@ -1023,7 +1026,7 @@
    <attribute value="" name="Script class name"/>
   </component>
   <component type="EC_Script" sync="true">
-   <attribute value="LyricsContainer.js" name="Script ref"/>
+   <attribute value="YleNewsContainer.js" name="Script ref"/>
    <attribute value="true" name="Run on load"/>
    <attribute value="0" name="Run mode"/>
    <attribute value="" name="Script application name"/>
@@ -1072,6 +1075,9 @@
    <attribute value="1" name="Selection layer"/>
    <attribute value="" name="Parent entity ref"/>
    <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="sf_drag_spec">
+   <attribute type="string" name="drag_accept_format" value="title+text"/>
   </component>
   <component type="EC_Name" sync="true">
    <attribute value="oululive_tablet" name="name"/>
@@ -1233,4 +1239,14 @@
    <attribute value="" name="description"/>
   </component>
  </entity>
+ <entity id="100" sync="1">
+  <component type="EC_Script" sync="true" name="Screen">
+   <attribute value="ActionTest.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  </entity>
 </scene>
+

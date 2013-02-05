@@ -9,6 +9,7 @@ function GotDrop(entity) {
 SetInfoHandler(GotNews);
 
 function GotNews(json_info) {
+    print("GotNews called");
     info = JSON.parse(json_info);
     print("setting title to " + info.title);
     widgets.titleLabel.text = info.title;

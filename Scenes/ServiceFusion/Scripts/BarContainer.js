@@ -50,19 +50,21 @@ function SongContainer(parent)
     titleWidget.show();
     
     var self = this;
-    djonline_get_playlist("ottok", function(songs) {
-        {
-            var displayCount = 5;
-	    debugmsg("got playlist with " + songs.length + " songs");
-            for (var i = 0; i < songs.length; ++i)
-            {
-                if (i < displayCount) {
-                    self.DisplaySong(songs[i]);
-                } else
-                    break;
-            }
-        }
-    });
+    return;
+    // djonline_get_playlist("ottok", function(songs) {
+    //     {
+    //         var displayCount = 5;
+    // 	    debugmsg("got playlist with " + songs.length + " songs");
+    //         for (var i = 0; i < songs.length; ++i)
+    //         {
+    //             if (i < displayCount) {
+    //                 self.DisplaySong(songs[i]);
+    //             } else
+    //                 break;
+    //         }
+    //     }
+    // });
+
 }
 SongContainer.prototype = new BaseContainer();
 
