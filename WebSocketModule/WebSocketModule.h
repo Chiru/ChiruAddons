@@ -57,9 +57,6 @@ private:
 
     unsigned short websocketPort;
 
-    string remoteStorageUrl;
-
-
 
 };
 

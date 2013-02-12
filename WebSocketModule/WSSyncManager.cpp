@@ -123,18 +123,17 @@ void WSSyncManager::processEvent(QString event, QString data, u8 clientId)
         connection->userID = clientId;
         connections.push_back(connection);
 
+
+        // Getting the base url for default storage
+        AssetStoragePtr storage = framework_->Asset()->GetDefaultAssetStorage();
+        string remoteStorageUrl = storage->BaseURL().toStdString();
+
+        // Sending base storage url to web client
+        ptree msg;
+        msg.put<string>("url", remoteStorageUrl);
+        SendMessage(clientId, msg, "RemoteStorage" );
+
         NewUserConnected(connection);
-
-        /*
-        string json;
-
-        ptree data;
-        data.put<string>("list", assetList.join(", ").toStdString());
-        data.put<string>("storageUrl", remoteStorageUrl);
-
-        json = websocketManager_->createEventMsg("colladaList", data);
-        websocketManager_->sendJsonToClient(json, clientId.toStdString());
-*/
     }
 }
 
