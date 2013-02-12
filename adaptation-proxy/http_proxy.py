@@ -15,6 +15,8 @@ from urlparse import urlparse
 import cgi
 from collections import namedtuple
 
+from gevent.monkey import patch_socket
+
 import time
 
 def print_elapsed(start_time, text):
@@ -259,28 +261,44 @@ def do_proxy(req, bs):
         return ['<h1>%s</h1><h2>%s</h2><pre>%s</pre>' % (error_str, cgi.escape(req.path), cgi.escape(tb))]
     else:
         
-        data = response.read()
-
         # headers that are processed by us or urllib2
-        delete_headers = 'transfer-encoding proxy-connection'
+        delete_headers = 'transfer-encoding proxy-connection content-length'
         for tekey in delete_headers.split():
             if tekey in response.headers:
                 del response.headers[tekey]
 
         xc_id = response.headers.get('x-transcode-profile-id', '')
         xcode_profile = get_profile(xc_id)
+        data = None
         if response.headers.get('content-type', '').lower() == 'image/jpeg':
             print 'jpeg seen, worsening it...'
+            data = response.read()
             data = worsen.worsen_jpeg(data, xcode_profile)
             response.headers['content-length'] = str(len(data))
 
         if response.headers.get('content-type', '').lower() in ('image/png', 'image/gif'):
             print 'png or gif seen, worsening it...'
+            data = response.read()
             data = worsen.worsen_png(data, xcode_profile)
             response.headers['content-length'] = str(len(data))
+
+        response.headers['transfer-encoding'] = 'chunked'
         send_response_headers(bs, '%s %s' % (response.code, response.msg),
                       response.headers.items())
-        bs.write(data)
+        if data is not None:
+            response = StringIO(data)
+        send_chunked(response, bs)
+
+def send_chunked(response, bs):
+    chunksize = 16*1024
+
+    while True:
+        chunk = response.read(chunksize)
+        if not chunk:
+            break
+        bs.write('%x\r\n%s\r\n' % (len(chunk), chunk))
+        
+    bs.write('0\r\n')
 
 profiles = {
     'test-1': { 'jpeg-quality': 25, 'png-colors': 32},
@@ -314,6 +332,7 @@ if __name__ == '__main__':
     if '-t' in sys.argv:
         test_simple_req()
     else:
+        patch_socket()
         print 'Serving on %s...' % PROXY_LISTEN_PORT
         pool = Pool(10000) # set a maximum for concurrency
         print 'using timeout', gevent.socket.getdefaulttimeout()
