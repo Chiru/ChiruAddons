@@ -37,10 +37,6 @@ public:
 
 public slots:
 
-    // Starts a server side process
-    void mainProcess();
-
-
 
 private slots:
     void registerSyncManager(const QString);

@@ -37,25 +37,31 @@ void WebSocketModule::Load()
 
 void WebSocketModule::Initialize()
 {
-    // Getting needed pointers
-    tundra_ = framework_->GetModule<TundraLogic::TundraLogicModule>();
-    server_ = tundra_->GetServer().get();
 
+    // Initializing the module only if we are running on a server
+    // Checking commandline parameters for "--server" is a temporary way of checking if we are a server until a better solution is found
+    // The problem here is that SceneAdded signals are emitted before ServerStarted signal
+    /// TODO: Fix a crash that occurs when native tundra client that runs a websocketmodule, tries to connect to a tundra server that also runs a websocket module
+    /// on a same computer. This crash is avoided by running the tundra client e.g. with --config viewer-browser.xml which has no websocket module
 
-    /// Initializing signal listeners
+    if(framework_->HasCommandLineParameter("--server")){
+        LogDebug("WebSocketModule: I am a server!");
 
-    bool check = connect(framework_->Scene(), SIGNAL(SceneAdded(QString)),
-                         this, SLOT(registerSyncManager(QString)));
-    Q_ASSERT(check);
-    check = connect(framework_->Scene(), SIGNAL(SceneRemoved(QString)),
-                    this, SLOT(removeSyncManager(QString)));
-    Q_ASSERT(check);
+        // Getting needed pointers
+        tundra_ = framework_->GetModule<TundraLogic::TundraLogicModule>();
+        server_ = tundra_->GetServer().get();
 
-    // Starts the main process when server is ready
-    check = connect(server_, SIGNAL(ServerStarted()),
-                         this, SLOT(mainProcess()), Qt::QueuedConnection);
-    Q_ASSERT(check);
+        // Listening scene added/remove signals and registering the WSSyncManager
+        bool check = connect(framework_->Scene(), SIGNAL(SceneAdded(QString)),
+                             this, SLOT(registerSyncManager(QString)));
+        Q_ASSERT(check);
 
+        check = connect(framework_->Scene(), SIGNAL(SceneRemoved(QString)),
+                        this, SLOT(removeSyncManager(QString)));
+        Q_ASSERT(check);
+    }else{
+        LogDebug("WebSocketModule: I am a client!");
+    }
 
 }
 
@@ -67,16 +73,18 @@ void WebSocketModule::Uninitialize()
 
 void WebSocketModule::Update(f64 frametime)
 {
+    if(syncmanager_){
         syncmanager_->Update(frametime);
+    }
 }
+
 
 void WebSocketModule::registerSyncManager(const QString name) {
     // Do not create syncmanager for dummy TundraServer scene.
     if (name == "TundraServer")
         return;
 
-
-    // If scene is real deal, create websocketManager and syncManager
+    // If scene is a real deal, create websocketManager and syncManager
 
     // Initializing the websocket port
     if(framework_->HasCommandLineParameter("--wsport"))
@@ -97,21 +105,12 @@ void WebSocketModule::registerSyncManager(const QString name) {
     syncmanager_ = new WSSyncManager(tundra_, websocketmanager_);
     ScenePtr scene = framework_->Scene()->GetScene(name);
     syncmanager_->RegisterToScene(scene);
+
 }
 
 void WebSocketModule::removeSyncManager(const QString name){
     //--
 }
-
-void WebSocketModule::mainProcess()
-{
-
-
-
-}
-
-
-
 
 
 } // End of namespace
