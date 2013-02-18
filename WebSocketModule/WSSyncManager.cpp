@@ -47,9 +47,11 @@ WSSyncManager::WSSyncManager(TundraLogicModule* owner, WebSocketManager* wsmanag
     updateAcc_(0.0),
     sceneUUID("")
 {
-    KristalliProtocolModule *kristalli = framework_->GetModule<KristalliProtocolModule>();
+
+    /// TODO: Handle all important kristalli messages correctly to enable real webclient <-> tundra server communication.
+    /*KristalliProtocolModule *kristalli = framework_->GetModule<KristalliProtocolModule>();
     connect(kristalli, SIGNAL(NetworkMessageReceived(kNet::MessageConnection *, kNet::packet_id_t, kNet::message_id_t, const char *, size_t)),
-        this, SLOT(HandleKristalliMessage(kNet::MessageConnection*, kNet::packet_id_t, kNet::message_id_t, const char*, size_t)));
+        this, SLOT(HandleKristalliMessage(kNet::MessageConnection*, kNet::packet_id_t, kNet::message_id_t, const char*, size_t)));*/
 
 
     if(websocketmanager_){
