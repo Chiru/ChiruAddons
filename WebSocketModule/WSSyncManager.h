@@ -13,6 +13,7 @@
 #include <kNet/Types.h>
 
 #include <QObject>
+#include <jsoncpp/json/json.h>
 
 class Framework;
 
@@ -95,11 +96,11 @@ private slots:
 private:
     /// Queue a message to the receiver from a given DataSerializer.
     void QueueMessage(u8 clientId, kNet::message_id_t id, bool reliable, bool inOrder, kNet::DataSerializer& ds);
-    void SendMessage(u8 clientId, ptree msg, string event);
+    void SendMessage(u8 clientId, Json::Value msg, string event);
     
     /// Craft a component full update, with all static and dynamic attributes.
     void WriteComponentFullUpdate(kNet::DataSerializer& ds, ComponentPtr comp);
-    void WriteComponentFullUpdate(ptree& components, ComponentPtr comp);
+    void WriteComponentFullUpdate(Json::Value &components, ComponentPtr comp);
     
     /// Handle entity action message.
     void HandleEntityAction(kNet::MessageConnection* source, MsgEntityAction& msg);

@@ -125,14 +125,14 @@ void WSSyncManager::processEvent(QString event, QString data, u8 clientId)
         connection->userID = clientId;
         connections.push_back(connection);
 
-
         // Getting the base url for default storage
         AssetStoragePtr storage = framework_->Asset()->GetDefaultAssetStorage();
         string remoteStorageUrl = storage->BaseURL().toStdString();
-
+        LogDebug("Sending url to client");
         // Sending base storage url to web client
-        ptree msg;
-        msg.put<string>("url", remoteStorageUrl);
+
+        Json::Value msg;
+        msg = remoteStorageUrl;
         SendMessage(clientId, msg, "RemoteStorage" );
 
         NewUserConnected(connection);
@@ -179,8 +179,6 @@ void WSSyncManager::NewUserConnected(const UserConnectionPtr &user)
 
 }
 
-
-
 void WSSyncManager::WriteComponentFullUpdate(kNet::DataSerializer& ds, ComponentPtr comp)
 {
     // Component identification
@@ -214,19 +212,15 @@ void WSSyncManager::WriteComponentFullUpdate(kNet::DataSerializer& ds, Component
     ds.AddArray<u8>((unsigned char*)attrDataBuffer_, attrDs.BytesFilled());
 }
 
-void WSSyncManager::WriteComponentFullUpdate(ptree& components, ComponentPtr comp)
+void WSSyncManager::WriteComponentFullUpdate(Json::Value &components, ComponentPtr comp)
 {
-    // Component identification
-    /*ds.AddVLE<kNet::VLE8_16_32>(comp->Id() & UniqueIdGenerator::LAST_REPLICATED_ID);
-    ds.AddVLE<kNet::VLE8_16_32>(comp->TypeId());
-    ds.AddString(comp->Name().toStdString());
-*/
-    ptree component;
-    component.put<string>("typeName", comp->TypeName().toStdString());
-    component.put<uint8_t>("typeId", comp->TypeId());
-    component.put<string>("name", comp->Name().toStdString());
+    Json::Value component;
 
-    ptree attributes;
+    component[comp->Id() & UniqueIdGenerator::LAST_REPLICATED_ID]["typeName"] = comp->TypeName().toStdString();
+    component[comp->Id() & UniqueIdGenerator::LAST_REPLICATED_ID]["typeId"] = comp->TypeId();
+    component[comp->Id() & UniqueIdGenerator::LAST_REPLICATED_ID]["name"] = comp->Name().toStdString();
+
+    Json::Value attributes;
 
     // Create a nested dataserializer for the attributes, so we can survive unknown or incompatible components
     //kNet::DataSerializer attrDs(attrDataBuffer_, 16 * 1024);
@@ -235,12 +229,52 @@ void WSSyncManager::WriteComponentFullUpdate(ptree& components, ComponentPtr com
     unsigned numStaticAttrs = comp->NumStaticAttributes();
     const AttributeVector& attrs = comp->Attributes();
     for (uint i = 0; i < numStaticAttrs; ++i){
+
         //attrs[i]->ToBinary(attrDs);
-        ptree attribute;
-        attribute.put<string>("name", attrs[i]->Name().toStdString());
-        attribute.put<uint8_t>("typeId",attrs[i]->TypeId());
-        attribute.put<string>("val", attrs[i]->ToString());
-        attributes.put_child(ToString(i), attribute);
+
+        Json::Value attribute;
+        attribute["name"] = attrs[i]->Name().toStdString();
+        attribute["typeId"] = attrs[i]->TypeId();
+
+        QString value;
+        QStringList valuelist;
+        Json::Value arrayNode;
+
+        switch(attrs[i]->TypeId())
+        {
+            case cAttributeFloat2:
+            case cAttributeFloat3:
+            case cAttributeFloat4:
+            case cAttributeQuat:
+            case cAttributeColor:
+                value = QString::fromStdString(attrs[i]->ToString());
+                valuelist = value.split(" ");
+            break;
+
+            case cAttributeTransform:
+                value = QString::fromStdString(attrs[i]->ToString());
+                valuelist = value.split(",");
+            break;
+
+            case cAttributeAssetReferenceList:
+                value = QString::fromStdString(attrs[i]->ToString());
+                valuelist = value.split(";");
+            break;
+
+            default:
+                attribute["val"] = attrs[i];
+            break;
+        }
+
+        if(!valuelist.isEmpty())
+        {
+            for(QStringList::Iterator it = valuelist.begin(); it != valuelist.end(); ++it)
+                arrayNode.append((*it).toFloat());
+
+                attribute["val"] = arrayNode;
+        }
+
+        attributes[ToString(i)] = attribute;
     }
 
     // Dynamic-structured attributes (use EOF to detect so do not need to send their amount)
@@ -248,32 +282,56 @@ void WSSyncManager::WriteComponentFullUpdate(ptree& components, ComponentPtr com
     {
         if (attrs[i] && attrs[i]->IsDynamic())
         {
-            /*
-            attrDs.Add<u8>(i); // Index
-            attrDs.Add<u8>(attrs[i]->TypeId());
-            attrDs.AddString(attrs[i]->Name().toStdString());
-            attrs[i]->ToBinary(attrDs);
-            */
-            ptree attribute;
-            attribute.put<uint8_t>("typeId", attrs[i]->TypeId());
-            attribute.put<string>("name", attrs[i]->Name().toStdString());
-            attribute.put<string>("val", attrs[i]->ToString());
-            attributes.put_child(ToString(i), attribute);
+            Json::Value attribute;
+            attribute["typeId"] = attrs[i]->TypeId();
+            attribute["name"] = attrs[i]->Name().toStdString();
+
+            QString value;
+            QStringList valuelist;
+            Json::Value arrayNode;
+
+            switch(attrs[i]->TypeId())
+            {
+                case cAttributeFloat2:
+                case cAttributeFloat3:
+                case cAttributeFloat4:
+                case cAttributeQuat:
+                case cAttributeColor:
+                    value = QString::fromStdString(attrs[i]->ToString());
+                    valuelist = value.split(" ");
+                break;
+
+                case cAttributeTransform:
+                    value = QString::fromStdString(attrs[i]->ToString());
+                    valuelist = value.split(",");
+                break;
+
+                case cAttributeAssetReferenceList:
+                    value = QString::fromStdString(attrs[i]->ToString());
+                    valuelist = value.split(";");
+                break;
+
+                default:
+                    attribute["val"] = attrs[i];
+                break;
+            }
+
+            if(!valuelist.isEmpty())
+            {
+                for(QStringList::Iterator it = valuelist.begin(); it != valuelist.end(); ++it)
+                    arrayNode.append((*it).toFloat());
+
+                    attribute["val"] = arrayNode;
+            }
+
+            attributes[ToString(i)] = attribute;
         }
     }
 
-    // Add the attribute array to the main serializer
-    //ds.AddVLE<kNet::VLE8_16_32>(attrDs.BytesFilled());
-    //ds.AddArray<u8>((unsigned char*)attrDataBuffer_, attrDs.BytesFilled());
+    component = attributes;
 
-
-    component.put_child("attributes", attributes);
-    components.put_child(ToString(comp->Id() & UniqueIdGenerator::LAST_REPLICATED_ID), component);
+    components[ToString(comp->Id() & UniqueIdGenerator::LAST_REPLICATED_ID)] = component;
 }
-
-
-
-
 
 SceneSyncState* WSSyncManager::SceneState(int connectionId) const
 {
@@ -1046,8 +1104,8 @@ void WSSyncManager::QueueMessage(u8 clientId, kNet::message_id_t id, bool reliab
 
     string json;
 
-    ptree data;
-    data.put<string>("data", "msg");
+    Json::Value data;
+    data = "msg";
 
     json = websocketmanager_->createEventMsg("data", data);
     LogInfo(QString::fromStdString(json));
@@ -1056,7 +1114,7 @@ void WSSyncManager::QueueMessage(u8 clientId, kNet::message_id_t id, bool reliab
 */
 }
 
-void WSSyncManager::SendMessage(u8 clientId, ptree msg, string event) {
+void WSSyncManager::SendMessage(u8 clientId, Json::Value msg, string event) {
 
     string json;
     json = websocketmanager_->createEventMsg(event, msg);
@@ -1074,6 +1132,8 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
     int numMessagesSent = 0;
     bool isServer = owner_->IsServer();
     UNREFERENCED_PARAM(isServer)
+
+    LogDebug("ProcessSyncState");
 
     // Process the state's dirty entity queue.
     /// \todo Limit and prioritize the data sent. For now the whole queue is processed, regardless of whether the connection is being saturated.
@@ -1114,15 +1174,9 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
             }
             else
                 removeState = true;
-            /*
-            kNet::DataSerializer ds(removeEntityBuffer_, 1024);
-            ds.AddString(sceneId);
-            ds.AddVLE<kNet::VLE8_16_32>(entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
-            QueueMessage(clientId, cRemoveEntityMessage, true, true, ds);
-            */
 
-            ptree msg;
-            msg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+            Json::Value msg;
+            msg["entityId"] = entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID;
             SendMessage(clientId, msg, "EntityRemoved");
             ++numMessagesSent;
         }
@@ -1138,12 +1192,13 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
             // Do not write the temporary flag as a bit to not desync the byte alignment at this point, as a lot of data potentially follows
             //ds.Add<u8>(entity->IsTemporary() ? 1 : 0);
 
-            ptree msg;
-            msg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
-            msg.put<uint8_t>("isTemporary", entity->IsTemporary() ? 1 : 0);
-            msg.put<string>("name", entity->Name().toStdString());
+            Json::Value msg;
 
-            ptree comps;
+            msg["entityID"] = entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID;
+            msg["isTemporary"] = entity->IsTemporary() ? 1 : 0;
+            msg["name"] = entity->Name().toStdString();
+
+            Json::Value comps;
 
             const Entity::ComponentMap& components = entity->Components();
             // Count the amount of replicated components
@@ -1154,7 +1209,7 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                     ++numReplicatedComponents;
             }
             //ds.AddVLE<kNet::VLE8_16_32>(numReplicatedComponents);
-            msg.put<uint> ("numReplComps", numReplicatedComponents);
+            msg["numReplComps"] = numReplicatedComponents;
 
             // Serialize each replicated component
             for (Entity::ComponentMap::const_iterator i = components.begin(); i != components.end(); ++i)
@@ -1168,7 +1223,7 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                 state->MarkComponentProcessed(entity->Id(), comp->Id());
             }
 
-            msg.put_child("components", comps);
+            msg["components"] = comps;
 
             //QueueMessage(clientId, cCreateEntityMessage, true, true, ds);
             SendMessage(clientId, msg, "EntityAdded");
@@ -1182,20 +1237,11 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
         // Entity has changed
         else if (entity)
         {
-            ptree componentsRemoved;
-            ptree componentsAdded;
-            ptree attributesAdded;
-            ptree attributesChanged;
-            ptree attributesRemoved;
-
-            // Components or attributes have been added, changed, or removed. Prepare the dataserializers
-            /*
-            kNet::DataSerializer removeCompsDs(removeCompsBuffer_, 1024);
-            kNet::DataSerializer removeAttrsDs(removeAttrsBuffer_, 1024);
-            kNet::DataSerializer createCompsDs(createCompsBuffer_, 64 * 1024);
-            kNet::DataSerializer createAttrsDs(createAttrsBuffer_, 16 * 1024);
-            kNet::DataSerializer editAttrsDs(editAttrsBuffer_, 64 * 1024);
-            */
+            Json::Value componentsRemoved;
+            Json::Value componentsAdded;
+            Json::Value attributesAdded;
+            Json::Value attributesChanged;
+            Json::Value attributesRemoved;
 
             while (!entityState.dirtyQueue.empty())
             {
@@ -1220,7 +1266,6 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                         continue;
                 }
 
-
                 // Remove component
                 if (compState.removed)
                 {                    
@@ -1237,7 +1282,7 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                     // Then add component ID
                     //removeCompsDs.AddVLE<kNet::VLE8_16_32>(compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
 
-                    componentsRemoved.push_back(std::make_pair("",ToString(compState.id & UniqueIdGenerator::LAST_REPLICATED_ID)));
+                    componentsRemoved[""] = ToString(compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
                 }
 
                 // New component
@@ -1270,7 +1315,7 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                         // Clear the corresponding dirty flags, so that we don't redundantly send attribute edited data.
                         compState.dirtyAttributes[attrIndex >> 3] &= ~(1 << (attrIndex & 7));
 
-                        ptree attribute;
+                        Json::Value attribute;
 
                         // Create attribute.
                         if (i->second)
@@ -1300,11 +1345,11 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                                 attr->ToBinary(createAttrsDs);
                                 */
 
-                                attribute.put<unsigned int>("compId", compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
-                                attribute.put<uint8_t>("typeId", attr->TypeId());
-                                attribute.put<string>("name", attr->Name().toStdString());
-                                attribute.put<string>("val", attr->ToString());
-                                attributesAdded.put_child(ToString(attrIndex), attribute);
+                                attribute["compId"] = compState.id & UniqueIdGenerator::LAST_REPLICATED_ID;
+                                attribute["typeId"] = attr->TypeId();
+                                attribute["name"] = attr->Name().toStdString();
+                                attribute["val"] = attr->ToString();
+                                attributesAdded[ToString(attrIndex)] = attribute;
                             }
                         }
 
@@ -1324,9 +1369,8 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                             removeAttrsDs.Add<u8>(attrIndex);
                             */
 
-                            attribute.put<unsigned int>("compId", compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
-                            attributesRemoved.put_child(ToString(attrIndex), attribute);
-
+                            attribute["compId"] = compState.id & UniqueIdGenerator::LAST_REPLICATED_ID;
+                            attributesRemoved[ToString(attrIndex)] = attribute;
                         }
                     }
                     compState.newAndRemovedAttributes.clear();
@@ -1368,13 +1412,11 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
 
                         }
 
-
-
                         editAttrsDs.AddVLE<kNet::VLE8_16_32>(compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
                         */
 
-                        ptree editedAttr;
-                        editedAttr.put<unsigned int>("compId", compState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
+                        Json::Value editedAttr;
+                        editedAttr["compId"] = compState.id & UniqueIdGenerator::LAST_REPLICATED_ID;
 
                         /*
                         // Create a nested dataserializer for the actual attribute data, so we can skip components
@@ -1418,8 +1460,8 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
 
                         for (unsigned i = 0; i < changedAttributes_.size(); ++i)
                         {
-                            editedAttr.put<string>("val", attrs[changedAttributes_[i]]->ToString());
-                            attributesChanged.put_child(ToString((int)changedAttributes_[i]), editedAttr);
+                            editedAttr["val"] = attrs[changedAttributes_[i]]->ToString();
+                            attributesChanged[ToString((int)changedAttributes_[i])] = editedAttr;
                         }
 
                         // Now zero out all remaining dirty bits
@@ -1435,9 +1477,9 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
             // Send the messages which have data
             if (!componentsRemoved.empty())
             {
-                ptree componentsRemovedMsg;
-                componentsRemovedMsg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
-                componentsRemovedMsg.put_child("components", componentsRemoved);
+                Json::Value componentsRemovedMsg;
+                componentsRemovedMsg["entityId"] = entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID;
+                componentsRemovedMsg["components"] = componentsRemoved;
 
                 //Entity changed message
                 SendMessage(clientId, componentsRemovedMsg, "ComponentsRemoved");
@@ -1446,9 +1488,9 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
             }
             if (!componentsAdded.empty())
             {
-                ptree componentsAddedMsg;
-                componentsAddedMsg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
-                componentsAddedMsg.put_child("components", componentsAdded);
+                Json::Value componentsAddedMsg;
+                componentsAddedMsg["entityId"] = entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID;
+                componentsAddedMsg["components"] = componentsAdded;
 
                 SendMessage(clientId, componentsAddedMsg, "ComponentsAdded");
                 //QueueMessage(clientId, cCreateComponentsMessage, true, true, createCompsDs);
@@ -1456,10 +1498,9 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
             }
             if (!attributesRemoved.empty())
             {
-
-                ptree attributesRemovedMsg;
-                attributesRemovedMsg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
-                attributesRemovedMsg.put_child("attrs", attributesRemoved);
+                Json::Value attributesRemovedMsg;
+                attributesRemovedMsg["entityId"] = entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID;
+                attributesRemovedMsg["attrs"] = attributesRemoved;
 
                 SendMessage(clientId, attributesRemovedMsg, "AttributesRemoved");
                 //QueueMessage(clientId, cRemoveAttributesMessage, true, true, removeAttrsDs);
@@ -1468,9 +1509,9 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
 
             if (!attributesAdded.empty())
             {
-                ptree attributesAddedMsg;
-                attributesAddedMsg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
-                attributesAddedMsg.put_child("attrs", attributesAdded);
+                Json::Value attributesAddedMsg;
+                attributesAddedMsg["entityId"] = entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID;
+                attributesAddedMsg["attrs"] = attributesAdded;
 
                 SendMessage(clientId, attributesAddedMsg, "AttributesAdded");
                 //QueueMessage(clientId, cCreateAttributesMessage, true, true, createAttrsDs);
@@ -1478,10 +1519,9 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
             }
             if (!attributesChanged.empty())
             {
-
-                ptree attributesChangedMsg;
-                attributesChangedMsg.put<unsigned int>("entityId", entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID);
-                attributesChangedMsg.put_child("attrs", attributesChanged);
+                Json::Value attributesChangedMsg;
+                attributesChangedMsg["entityId"] = entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID;
+                attributesChangedMsg["attrs"] = attributesChanged;
 
                 SendMessage(clientId, attributesChangedMsg, "AttributesChanged");
                 //QueueMessage(clientId, cEditAttributesMessage, true, true, editAttrsDs);
@@ -1509,6 +1549,7 @@ bool WSSyncManager::ValidateAction(kNet::MessageConnection* source, unsigned mes
 
     // And for now, always also trust scene actions from clients, if they are known and authenticated
     UserConnectionPtr user = owner_->GetKristalliModule()->GetUserConnection(source);
+
     if (!user || user->properties["authenticated"] != "true")
         return false;
 

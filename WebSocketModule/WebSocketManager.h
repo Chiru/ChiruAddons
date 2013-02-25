@@ -12,6 +12,7 @@
 #include <set>
 #include <exception>
 #include <qstring.h>
+#include <jsoncpp/json/json.h>
 
 #include "StableHeaders.h"
 
@@ -52,10 +53,10 @@ public:
     map<u8, server::connection_ptr>::iterator findClient(u8 clientId);
 
     // Parses a JSON string and creates a ptree from the JSON data
-    int parseJson(string s, ptree&pt);
+    Json::Value parseJson(string s);
 
     // Creates an event message and converts it to a JSON string
-    string createEventMsg(string event, ptree &data);
+    string createEventMsg(string event, Json::Value &data);
 
     // Sends a JSON message to a spesific connected client
     void sendJsonToClient(string jsonString, u8 clientId);

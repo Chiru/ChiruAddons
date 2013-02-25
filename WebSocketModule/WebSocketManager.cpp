@@ -64,21 +64,24 @@ void WebSocketManager::on_fail(connection_ptr con)
 
 void WebSocketManager::on_message(connection_ptr con, message_ptr msg)
 {
-    LogDebug("Got message: " + msg->get_payload());
-    ptree pt;
+    //LogDebug("Got message: " + msg->get_payload());
+
+    Json::Value root;
 
     //Parses the message as JSON
-    if(parseJson(msg->get_payload(), pt) != -1) {
+    root = parseJson(msg->get_payload());
 
-        //Checking if JSON string has event information and data
-        QString event = QString::fromStdString(pt.get<string>("event", "empty"));
+    if(root != 0)
+    {
+        LogDebug(QString((root.toStyledString()).c_str()));
 
-        if (event == "empty")
+        QString event = QString::fromStdString(root.get("event","empty").asString());    //defaults to empty
+        QString data  = QString::fromStdString(root.get("data", "empty").asString());
+
+        if(event == "empty")
             return;
 
-        QString data = QString::fromStdString(pt.get<string>("data", "empty"));
-
-        if (data == "empty")
+        if(data == "empty")
             return;
 
         const map<u8, connection_ptr>::const_iterator it = std::find_if(
@@ -87,6 +90,8 @@ void WebSocketManager::on_message(connection_ptr con, message_ptr msg)
 
         emit gotEvent(event, data, it->first);
     }
+    else
+        LogDebug("parseJson apparently failed");
 
 }
 
@@ -172,28 +177,31 @@ void WebSocketManager::cleanConnections()
     }
 }
 
-int WebSocketManager::parseJson(string s, ptree &pt)
+Json::Value WebSocketManager::parseJson(string s)
 {
-    try
+    // Let's parse it
+    Json::Value root;
+    Json::Reader reader;
+
+    bool parsedSuccess = reader.parse(s, root, false);
+
+    if(!parsedSuccess)
     {
-        stringstream ss;
-        ss << s;
-        boost::property_tree::json_parser::read_json(ss, pt);
+        cout<<"Failed to parse JSON"<<endl <<reader.getFormatedErrorMessages() <<endl;
         return 0;
     }
-    catch(const boost::property_tree::json_parser::json_parser_error& e)
+    else
     {
-        LogError("WSManager JSON parse error: " + QString::fromLocal8Bit(e.what()));
-        return -1;
+        return root;
     }
-
 }
 
-string WebSocketManager::createEventMsg(string event, ptree &data)
+string WebSocketManager::createEventMsg(string event, Json::Value &data)
 {
-    ptree json;
-    json.put<string>("event", event);
-
+    Json::Value json;
+    json["data"] = data;
+    json["event"] = event;
+/*
     if(data.size() > 1)
         json.put_child("data", data);
     else
@@ -201,8 +209,8 @@ string WebSocketManager::createEventMsg(string event, ptree &data)
 
     stringstream buffer;
     write_json(buffer, json);
-
-    return buffer.str();
+*/
+    return json.toStyledString();
 }
 
 
