@@ -31,7 +31,7 @@ link_entity_components(src/ChiruAddons/EC_Portal)
 link_entity_components(src/ChiruAddons/EC_Menu)
 
 #seems to be needed if websocketpp is installed as shared
-target_link_libraries(${TARGET_NAME} websocketpp)
+target_link_libraries(${TARGET_NAME} websocketpp jsoncpp)
 
 SetupCompileFlagsWithPCH()
 
