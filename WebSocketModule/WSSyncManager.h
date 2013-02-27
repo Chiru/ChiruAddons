@@ -102,6 +102,8 @@ private:
     void WriteComponentFullUpdate(kNet::DataSerializer& ds, ComponentPtr comp);
     void WriteComponentFullUpdate(Json::Value &components, ComponentPtr comp);
     
+    void ParseAttributes(Json::Value &attribute, IAttribute* attr);
+
     /// Handle entity action message.
     void HandleEntityAction(kNet::MessageConnection* source, MsgEntityAction& msg);
     /// Handle create entity message.
