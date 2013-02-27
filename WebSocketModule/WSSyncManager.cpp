@@ -249,30 +249,47 @@ void WSSyncManager::WriteComponentFullUpdate(Json::Value &components, ComponentP
             case cAttributeColor:
                 value = QString::fromStdString(attrs[i]->ToString());
                 valuelist = value.split(" ");
+                for(QStringList::Iterator it = valuelist.begin(); it != valuelist.end(); ++it)
+                    arrayNode.append((*it).toFloat());
             break;
 
             case cAttributeTransform:
                 value = QString::fromStdString(attrs[i]->ToString());
                 valuelist = value.split(",");
+                for(QStringList::Iterator it = valuelist.begin(); it != valuelist.end(); ++it)
+                    arrayNode.append((*it).toFloat());
             break;
 
             case cAttributeAssetReferenceList:
                 value = QString::fromStdString(attrs[i]->ToString());
                 valuelist = value.split(";");
+                for(QStringList::Iterator it = valuelist.begin(); it != valuelist.end(); ++it)
+                    arrayNode.append((*it).toStdString());
+            break;
+
+            case cAttributeBool:
+                attribute["val"] = attrs[i]->ToString() == "true" ? true : false;
+            break;
+
+            case cAttributeInt:
+                attribute["val"] = QString::fromStdString(attrs[i]->ToString()).toInt();
+            break;
+
+            case cAttributeUInt:
+                attribute["val"] = QString::fromStdString(attrs[i]->ToString()).toUInt();
+            break;
+
+            case cAttributeReal:
+                attribute["val"] = QString::fromStdString(attrs[i]->ToString()).toFloat();
             break;
 
             default:
-                attribute["val"] = attrs[i];
+                attribute["val"] = attrs[i]->ToString();
             break;
         }
 
         if(!valuelist.isEmpty())
-        {
-            for(QStringList::Iterator it = valuelist.begin(); it != valuelist.end(); ++it)
-                arrayNode.append((*it).toFloat());
-
-                attribute["val"] = arrayNode;
-        }
+            attribute["val"] = arrayNode;
 
         attributes[ToString(i)] = attribute;
     }
@@ -299,30 +316,47 @@ void WSSyncManager::WriteComponentFullUpdate(Json::Value &components, ComponentP
                 case cAttributeColor:
                     value = QString::fromStdString(attrs[i]->ToString());
                     valuelist = value.split(" ");
+                    for(QStringList::Iterator it = valuelist.begin(); it != valuelist.end(); ++it)
+                        arrayNode.append((*it).toFloat());
                 break;
 
                 case cAttributeTransform:
                     value = QString::fromStdString(attrs[i]->ToString());
                     valuelist = value.split(",");
+                    for(QStringList::Iterator it = valuelist.begin(); it != valuelist.end(); ++it)
+                        arrayNode.append((*it).toFloat());
                 break;
 
                 case cAttributeAssetReferenceList:
                     value = QString::fromStdString(attrs[i]->ToString());
                     valuelist = value.split(";");
+                    for(QStringList::Iterator it = valuelist.begin(); it != valuelist.end(); ++it)
+                        arrayNode.append((*it).toStdString());
+                break;
+
+                case cAttributeBool:
+                    attribute["val"] = attrs[i]->ToString() == "true" ? true : false;
+                break;
+
+                case cAttributeInt:
+                    attribute["val"] = QString::fromStdString(attrs[i]->ToString()).toInt();
+                break;
+
+                case cAttributeUInt:
+                    attribute["val"] = QString::fromStdString(attrs[i]->ToString()).toUInt();
+                break;
+
+                case cAttributeReal:
+                    attribute["val"] = QString::fromStdString(attrs[i]->ToString()).toFloat();
                 break;
 
                 default:
-                    attribute["val"] = attrs[i];
+                    attribute["val"] = attrs[i]->ToString();
                 break;
             }
 
             if(!valuelist.isEmpty())
-            {
-                for(QStringList::Iterator it = valuelist.begin(); it != valuelist.end(); ++it)
-                    arrayNode.append((*it).toFloat());
-
-                    attribute["val"] = arrayNode;
-            }
+                attribute["val"] = arrayNode;
 
             attributes[ToString(i)] = attribute;
         }
@@ -1096,9 +1130,7 @@ void WSSyncManager::QueueMessage(u8 clientId, kNet::message_id_t id, bool reliab
     msg->inOrder = inOrder;
     msg->priority = 100; // Fixed priority as in those defined with xml
     connection->EndAndQueueMessage(msg);
-    */
 
-/*
     char* msg;
     //memcpy(msg, ds.GetData(), ds.BytesFilled());
 
@@ -1151,6 +1183,7 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                 LogWarning("Entity " + QString::number(entityState.id) + " has gone missing from the scene without the remove properly signalled. Removing from replication state");
             entityState.isNew = false;
             removeState = true;
+
         }
         else
         {
@@ -1195,7 +1228,6 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
             Json::Value msg;
 
             msg["entityID"] = entityState.id & UniqueIdGenerator::LAST_REPLICATED_ID;
-            msg["isTemporary"] = entity->IsTemporary() ? 1 : 0;
             msg["name"] = entity->Name().toStdString();
 
             Json::Value comps;
