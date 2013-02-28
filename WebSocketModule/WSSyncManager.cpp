@@ -289,7 +289,7 @@ void WSSyncManager::ParseAttributes(Json::Value &attribute, IAttribute* attr)
         break;
 
         case cAttributeBool:
-            attribute["val"] = attr->ToString() == "true" ? true : false;
+            attribute["val"] = attr->ToString() == "true";
         break;
 
         case cAttributeInt:
@@ -1395,7 +1395,6 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                         */
 
                         Json::Value editedAttr;
-                        editedAttr["compId"] = compState.id & UniqueIdGenerator::LAST_REPLICATED_ID;
 
                         /*
                         // Create a nested dataserializer for the actual attribute data, so we can skip components
@@ -1441,7 +1440,7 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
                         {
                             ParseAttributes(editedAttr, attrs[changedAttributes_[i]]);
                             //editedAttr["val"] = attrs[changedAttributes_[i]]->ToStri;ng();
-                            attributesChanged[ToString((int)changedAttributes_[i])] = editedAttr;
+                            attributesChanged[ToString(compState.id & UniqueIdGenerator::LAST_REPLICATED_ID)][ToString((int)changedAttributes_[i])] = editedAttr["val"];
                         }
 
                         // Now zero out all remaining dirty bits
