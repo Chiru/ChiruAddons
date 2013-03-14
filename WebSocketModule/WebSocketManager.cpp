@@ -34,7 +34,7 @@ void WebSocketManager::on_open(connection_ptr con)
 
     u8 clientId = AllocateNewConnectionID();
 
-    LogInfo("Web Client " + ToString((int)clientId) + " connected.");
+    LogDebug("Web Client " + ToString((int)clientId) + " connected.");
 
     //Adding the new connection to the list of connections
     connections.insert(pair<u8, connection_ptr>(clientId, con));
@@ -48,7 +48,15 @@ void WebSocketManager::on_open(connection_ptr con)
 void WebSocketManager::on_close(connection_ptr con)
 {
 
-    LogInfo("Web Client  disconnected.");
+    LogDebug("Web Client disconnected.");
+
+    const map<u8, connection_ptr>::const_iterator it = std::find_if(
+       connections.begin(), connections.end(), boost::bind(&map<u8, connection_ptr>::value_type::second, _1) == con
+    );
+
+
+    // Emitting disconnected event
+    emit gotEvent("disconnected", "", it->first);
 
     removeConnection(con);
 
@@ -56,7 +64,14 @@ void WebSocketManager::on_close(connection_ptr con)
 
 void WebSocketManager::on_fail(connection_ptr con)
 {
-    LogInfo("Connection to Web Client failed.");
+    LogDebug("Connection to Web Client failed.");
+
+    const map<u8, connection_ptr>::const_iterator it = std::find_if(
+       connections.begin(), connections.end(), boost::bind(&map<u8, connection_ptr>::value_type::second, _1) == con
+   );
+
+    // Emitting disconnected event
+    emit gotEvent("disconnected", "", it->first);
 
     removeConnection(con);
 

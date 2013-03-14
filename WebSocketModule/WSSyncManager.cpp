@@ -136,6 +136,18 @@ void WSSyncManager::processEvent(QString event, QString data, u8 clientId)
         SendMessage(clientId, msg, "RemoteStorage" );
 
         NewUserConnected(connection);
+
+    } else if (event == "disconnected"){
+
+        // Disconnecting the web client user from SyncManager
+        foreach(UserConnectionPtr c, connections)
+        {
+            if (c->userID == clientId){
+                UserDisconnected(c);
+                break;
+            }
+        }
+
     }
 }
 
@@ -176,6 +188,22 @@ void WSSyncManager::NewUserConnected(const UserConnectionPtr &user)
         entity_id_t id = entity->Id();
         user->syncState->MarkEntityDirty(id);
     }
+
+}
+
+void WSSyncManager::UserDisconnected(const UserConnectionPtr &user) {
+
+    disconnect(user.get(), SIGNAL(ActionTriggered(UserConnection*, Entity*, const QString&, const QStringList&)),
+               this, SLOT(OnUserActionTriggered(UserConnection*, Entity*, const QString&, const QStringList&)));
+
+    for(UserConnectionList::iterator iter = connections.begin(); iter != connections.end(); ++iter)
+        if ((*iter).get() == user.get())
+        {
+
+            ::LogInfo("Web User disconnected, connection ID " + ToString((int)(*iter)->userID));
+            connections.erase(iter);
+            return;
+        }
 
 }
 

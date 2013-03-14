@@ -41,6 +41,8 @@ public:
     /// Create new replication state for user and dirty it (server operation only)
     void NewUserConnected(const UserConnectionPtr &user);
 
+    void UserDisconnected(const UserConnectionPtr &user);
+
 public slots:
     /// Set update period (seconds)
     void SetUpdatePeriod(float period);
