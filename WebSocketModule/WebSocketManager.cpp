@@ -88,10 +88,9 @@ void WebSocketManager::on_message(connection_ptr con, message_ptr msg)
 
     if(root != 0)
     {
-        LogDebug(QString((root.toStyledString()).c_str()));
-
-        QString event = QString::fromStdString(root.get("event","empty").asString());    //defaults to empty
-        QString data  = QString::fromStdString(root.get("data", "empty").asString());
+        //LogDebug(root.toStyledString());
+        Json::Value event = root.get("event", "empty");
+        Json::Value data = root.get("data", "empty");
 
         if(event == "empty")
             return;
@@ -99,11 +98,20 @@ void WebSocketManager::on_message(connection_ptr con, message_ptr msg)
         if(data == "empty")
             return;
 
+        // Making sure that the event name is a string, so we don't get an exception
+        if(!event.isString())
+            return;
+
+        QString eventName = QString::fromStdString(event.asString());
+
+
         const map<u8, connection_ptr>::const_iterator it = std::find_if(
            connections.begin(), connections.end(), boost::bind(&map<u8, connection_ptr>::value_type::second, _1) == con
-       );
+        );
 
-        emit gotEvent(event, data, it->first);
+        if(it != connections.end()){
+           emit gotEvent(eventName, data, it->first);
+        }
     }
     else
         LogDebug("parseJson apparently failed");

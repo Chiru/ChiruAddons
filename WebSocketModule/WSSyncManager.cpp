@@ -56,9 +56,11 @@ WSSyncManager::WSSyncManager(TundraLogicModule* owner, WebSocketManager* wsmanag
 
     if(websocketmanager_){
         qRegisterMetaType<u8>("u8");
+        qRegisterMetaType<Json::Value>("Json::Value");
+
         // Listening for event signals from websocket manager
-        bool check = connect(websocketmanager_, SIGNAL(gotEvent(QString, QString, u8)),
-                             SLOT(processEvent(QString, QString, u8)));
+        bool check = connect(websocketmanager_, SIGNAL(gotEvent(QString, Json::Value, u8)),
+                             SLOT(processEvent(QString, Json::Value, u8)));
         Q_ASSERT(check);
     }else{
         LogError("WSSyncManager::WSSyncManager: Pointer to WebSocketManager not valid!");
@@ -113,7 +115,7 @@ void WSSyncManager::Update(f64 frametime)
 
 }
 
-void WSSyncManager::processEvent(QString event, QString data, u8 clientId)
+void WSSyncManager::processEvent(QString event, Json::Value data, u8 clientId)
 {
     if(event.isEmpty())
         return;
@@ -148,6 +150,9 @@ void WSSyncManager::processEvent(QString event, QString data, u8 clientId)
             }
         }
 
+    } else {
+        LogDebug("Got event from web client:" + event);
+        LogDebug(data.toStyledString());
     }
 }
 
@@ -164,7 +169,7 @@ void WSSyncManager::NewUserConnected(const UserConnectionPtr &user)
 
     //This is just a quick solution
 
-    LogDebug("New  (web) user connected: " + ToString((int)user->ConnectionId()));
+    LogInfo("New web client user connected: " + ToString((int)user->ConnectionId()));
 
 
     /// TODO: Make this better later
@@ -200,7 +205,7 @@ void WSSyncManager::UserDisconnected(const UserConnectionPtr &user) {
         if ((*iter).get() == user.get())
         {
 
-            ::LogInfo("Web User disconnected, connection ID " + ToString((int)(*iter)->userID));
+            ::LogInfo("Web client user disconnected, connection ID " + ToString((int)(*iter)->userID));
             connections.erase(iter);
             return;
         }

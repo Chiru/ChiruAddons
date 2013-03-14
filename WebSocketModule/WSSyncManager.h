@@ -93,7 +93,7 @@ private slots:
     void HandleKristalliMessage(kNet::MessageConnection* source, kNet::packet_id_t, kNet::message_id_t id, const char* data, size_t numBytes);
 
     /// Processes events and data that came from websocket manager
-    void processEvent(QString event, QString data, u8 clientId);
+    void processEvent(QString event, Json::Value data, u8 clientId);
 
 private:
     /// Queue a message to the receiver from a given DataSerializer.

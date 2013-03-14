@@ -113,7 +113,7 @@ private:
 signals:
 
     // Emitted if we get a proper event message with data
-    void gotEvent(QString event, QString data, u8 clientId);
+    void gotEvent(QString event, Json::Value data, u8 clientId);
 
 };
 
