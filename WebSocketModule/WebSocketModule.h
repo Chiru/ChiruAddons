@@ -7,14 +7,14 @@
 
 #include <kNet.h>
 #include <QObject>
-
+#include <boost/enable_shared_from_this.hpp>
 
 namespace WebSocketSync
 {
 
 using namespace std;
 
-class WebSocketModule : public IModule
+class WebSocketModule : public IModule, public boost::enable_shared_from_this<WebSocketModule>
 {
     Q_OBJECT
 
@@ -33,6 +33,8 @@ public:
 
     /// IModule override.
     void Update(f64 frametime);
+
+    WSSyncManager* GetSyncManager();
 
 
 public slots:

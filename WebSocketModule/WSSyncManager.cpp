@@ -26,12 +26,19 @@
 #include "WebSocketManager.h"
 
 #include <kNet.h>
+#include <kNet/UDPMessageConnection.h>
+#include "MsgLogin.h"
 
 #include <cstring>
 
 #include <boost/make_shared.hpp>
 
 #include "MemoryLeakCheck.h"
+
+#include "QScriptEngineHelpers.h"
+#include <QScriptEngine>
+
+Q_DECLARE_METATYPE(WebSocketSync::WSSyncManager*)
 
 // This variable is used for the interpolation stop check
 kNet::MessageConnection* currentSender = 0;
@@ -49,10 +56,10 @@ WSSyncManager::WSSyncManager(TundraLogicModule* owner, WebSocketManager* wsmanag
 {
 
     /// TODO: Handle all important kristalli messages correctly to enable real webclient <-> tundra server communication.
-    /*KristalliProtocolModule *kristalli = framework_->GetModule<KristalliProtocolModule>();
+    KristalliProtocolModule *kristalli = framework_->GetModule<KristalliProtocolModule>();
+    /*
     connect(kristalli, SIGNAL(NetworkMessageReceived(kNet::MessageConnection *, kNet::packet_id_t, kNet::message_id_t, const char *, size_t)),
         this, SLOT(HandleKristalliMessage(kNet::MessageConnection*, kNet::packet_id_t, kNet::message_id_t, const char*, size_t)));*/
-
 
     if(websocketmanager_){
         qRegisterMetaType<u8>("u8");
@@ -62,9 +69,12 @@ WSSyncManager::WSSyncManager(TundraLogicModule* owner, WebSocketManager* wsmanag
         bool check = connect(websocketmanager_, SIGNAL(gotEvent(QString, Json::Value, u8)),
                              SLOT(processEvent(QString, Json::Value, u8)));
         Q_ASSERT(check);
+
     }else{
         LogError("WSSyncManager::WSSyncManager: Pointer to WebSocketManager not valid!");
     }
+
+    framework_->RegisterDynamicObject("wssyncmanager", this);
 }
 
 
@@ -115,6 +125,7 @@ void WSSyncManager::Update(f64 frametime)
 
 }
 
+
 void WSSyncManager::processEvent(QString event, Json::Value data, u8 clientId)
 {
     if(event.isEmpty())
@@ -122,6 +133,10 @@ void WSSyncManager::processEvent(QString event, Json::Value data, u8 clientId)
 
     // Sends information related to remote storage to the connected web client
     if (event == "connected"){
+        /*KristalliProtocolModule *kristalli = framework_->GetModule<KristalliProtocolModule>();
+        Ptr(kNet::MessageConnection) connection;
+        connection = new kNet::UDPMessageConnection(kristalli->GetNetwork(), 0, 0, kNet::ConnectionPending);
+        kristalli->NewConnectionEstablished(connection);*/
 
         UserConnectionPtr connection = boost::make_shared<UserConnection>();
         connection->userID = clientId;
@@ -131,11 +146,13 @@ void WSSyncManager::processEvent(QString event, Json::Value data, u8 clientId)
         AssetStoragePtr storage = framework_->Asset()->GetDefaultAssetStorage();
         string remoteStorageUrl = storage->BaseURL().toStdString();
         LogDebug("Sending url to client");
-        // Sending base storage url to web client
 
+
+        // Sending base storage url to web client
         Json::Value msg;
-        msg = remoteStorageUrl;
-        SendMessage(clientId, msg, "RemoteStorage" );
+        msg["RemoteStorage"] =  remoteStorageUrl;
+        msg["UserID"] = clientId;
+        SendMessage(clientId, msg, "UserData" );
 
         NewUserConnected(connection);
 
@@ -151,8 +168,20 @@ void WSSyncManager::processEvent(QString event, Json::Value data, u8 clientId)
         }
 
     } else {
-        LogDebug("Got event from web client:" + event);
-        LogDebug(data.toStyledString());
+        UserConnectionList& users = connections;
+        UserConnectionPtr user;
+        for(UserConnectionList::iterator i = users.begin(); i != users.end(); ++i)
+        {
+            if ((*i)->userID == clientId)
+                user = user.get();
+        }
+        return 0;
+
+        if(event == "AttributesUpdated"){
+            LogDebug("Got event from web client:" + event);
+            LogDebug(data.toStyledString());
+            handleEditAttributes(user, data);
+        }
     }
 }
 
@@ -194,6 +223,8 @@ void WSSyncManager::NewUserConnected(const UserConnectionPtr &user)
         user->syncState->MarkEntityDirty(id);
     }
 
+    emit UserConnected(user->userID, user.get());
+
 }
 
 void WSSyncManager::UserDisconnected(const UserConnectionPtr &user) {
@@ -206,9 +237,13 @@ void WSSyncManager::UserDisconnected(const UserConnectionPtr &user) {
         {
 
             ::LogInfo("Web client user disconnected, connection ID " + ToString((int)(*iter)->userID));
+            emit UserDisconnected((int)(*iter)->userID, (*iter).get());
+
             connections.erase(iter);
             return;
         }
+
+
 
 }
 
@@ -1144,7 +1179,7 @@ void WSSyncManager::ProcessSyncState(u8 clientId, SceneSyncState* state)
     bool isServer = owner_->IsServer();
     UNREFERENCED_PARAM(isServer)
 
-    LogDebug("ProcessSyncState");
+    //LogDebug("ProcessSyncState");
 
     // Process the state's dirty entity queue.
     /// \todo Limit and prioritize the data sent. For now the whole queue is processed, regardless of whether the connection is being saturated.
@@ -2294,11 +2329,12 @@ void WSSyncManager::HandleRemoveAttributes(kNet::MessageConnection* source, cons
     }
 }
 
-void WSSyncManager::HandleEditAttributes(kNet::MessageConnection* source, const char* data, size_t numBytes)
+*/
+void WSSyncManager::HandleEditAttributes(UserConnectionPtr user, data)
 {
     assert(source);
     // Get matching syncstate for reflecting the changes
-    SceneSyncState* state = GetSceneSyncState(source);
+    SceneSyncState* state = GetSceneSyncState(user);
     ScenePtr scene = GetRegisteredScene();
     if (!scene || !state)
     {
@@ -2436,6 +2472,7 @@ void WSSyncManager::HandleEditAttributes(kNet::MessageConnection* source, const 
     }
 }
 
+/*
 void WSSyncManager::HandleCreateEntityReply(kNet::MessageConnection* source, const char* data, size_t numBytes)
 {
     assert(source);
@@ -2630,7 +2667,7 @@ void WSSyncManager::HandleEntityAction(kNet::MessageConnection* source, MsgEntit
 }
 */
 
-SceneSyncState* WSSyncManager::GetSceneSyncState(kNet::MessageConnection* connection)
+SceneSyncState* WSSyncManager::GetSceneSyncState(UserConnectionPtr user)
 {
     if (!owner_->IsServer())
         return &server_syncstate_;
@@ -2638,10 +2675,36 @@ SceneSyncState* WSSyncManager::GetSceneSyncState(kNet::MessageConnection* connec
     UserConnectionList& users = connections;
     for(UserConnectionList::iterator i = users.begin(); i != users.end(); ++i)
     {
-        if ((*i)->connection == connection)
+        if ((*i).get() == user.get())
             return (*i)->syncState.get();
     }
     return 0;
 }
+
+namespace
+{
+
+template<typename T>
+QScriptValue qScriptValueFromNull(QScriptEngine *engine, const T &v)
+{
+    return QScriptValue();
+}
+
+template<typename T>
+void qScriptValueToNull(const QScriptValue &value, T &v)
+{
+}
+
+
+} // ~unnamed namespace
+
+
+void WSSyncManager::OnScriptEngineCreated(QScriptEngine* engine)
+{
+    qScriptRegisterQObjectMetaType<WSSyncManager*>(engine);
+
+}
+
+
 
 }

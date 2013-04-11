@@ -56,10 +56,16 @@ public slots:
     SceneSyncState* SceneState(int connectionId) const;
     SceneSyncState* SceneState(const UserConnectionPtr &connection) const; /**< @overload @param connection Client connection.*/
 
+    /// Initialize server datatypes for a script engine
+    void OnScriptEngineCreated(QScriptEngine* engine);
+
 signals:
     /// This signal is emitted when a new user connects and a new SceneSyncState is created for the connection.
     /// @note See signals of the SceneSyncState object to build prioritization logic how the sync state is filled.
     void SceneStateCreated(UserConnection *user, SceneSyncState *state);
+
+    void UserConnected(int connectionID, UserConnection *user);
+    void UserDisconnected(int connectionID, UserConnection *user);
     
 private slots:
     /// Trigger EC sync because of component attributes changing
@@ -91,6 +97,7 @@ private slots:
 
     /// Handle a Kristalli protocol message
     void HandleKristalliMessage(kNet::MessageConnection* source, kNet::packet_id_t, kNet::message_id_t id, const char* data, size_t numBytes);
+
 
     /// Processes events and data that came from websocket manager
     void processEvent(QString event, Json::Value data, u8 clientId);
@@ -185,5 +192,7 @@ private:
     std::vector<u8> changedAttributes_;
     std::string sceneUUID;
 };
+
+
 
 }

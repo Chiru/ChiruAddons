@@ -108,6 +108,10 @@ void WebSocketModule::registerSyncManager(const QString name) {
 
 }
 
+WSSyncManager* WebSocketModule::GetSyncManager(){
+    return syncmanager_;
+}
+
 void WebSocketModule::removeSyncManager(const QString name){
     //--
 }
