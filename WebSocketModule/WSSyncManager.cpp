@@ -150,9 +150,9 @@ void WSSyncManager::processEvent(QString event, Json::Value data, u8 clientId)
 
         // Sending base storage url to web client
         Json::Value msg;
-        msg["RemoteStorage"] =  remoteStorageUrl;
         msg["UserID"] = clientId;
         SendMessage(clientId, msg, "UserData" );
+        SendMessage(clientId, remoteStorageUrl, "RemoteStorage" );
 
         NewUserConnected(connection);
 
@@ -168,12 +168,13 @@ void WSSyncManager::processEvent(QString event, Json::Value data, u8 clientId)
         }
 
     } else {
+        /*
         UserConnectionList& users = connections;
         UserConnectionPtr user;
         for(UserConnectionList::iterator i = users.begin(); i != users.end(); ++i)
         {
-            if ((*i)->userID == clientId)
-                user = user.get();
+            if ((*i)->userID == clientId){
+                user = *i;
         }
         return 0;
 
@@ -182,6 +183,7 @@ void WSSyncManager::processEvent(QString event, Json::Value data, u8 clientId)
             LogDebug(data.toStyledString());
             handleEditAttributes(user, data);
         }
+        */
     }
 }
 
@@ -2330,9 +2332,10 @@ void WSSyncManager::HandleRemoveAttributes(kNet::MessageConnection* source, cons
 }
 
 */
-void WSSyncManager::HandleEditAttributes(UserConnectionPtr user, data)
+/*
+void WSSyncManager::HandleEditAttributes(UserConnectionPtr user, Json::Value data)
 {
-    assert(source);
+    assert(user);
     // Get matching syncstate for reflecting the changes
     SceneSyncState* state = GetSceneSyncState(user);
     ScenePtr scene = GetRegisteredScene();
@@ -2471,6 +2474,7 @@ void WSSyncManager::HandleEditAttributes(UserConnectionPtr user, data)
         state->entities[entityID].components[owner->Id()].dirtyAttributes[attrIndex >> 3] &= ~(1 << (attrIndex & 7));
     }
 }
+*/
 
 /*
 void WSSyncManager::HandleCreateEntityReply(kNet::MessageConnection* source, const char* data, size_t numBytes)

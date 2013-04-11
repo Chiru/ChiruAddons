@@ -14,8 +14,10 @@
 
 #include <QObject>
 #include <jsoncpp/json/json.h>
+#include <QScriptEngine>
 
 class Framework;
+class QSCriptEngine;
 
 namespace WebSocketSync
 {
@@ -122,7 +124,7 @@ private:
     /// Handle create attributes message.
     void HandleCreateAttributes(kNet::MessageConnection* source, const char* data, size_t numBytes);
     /// Handle edit attributes message.
-    void HandleEditAttributes(kNet::MessageConnection* source, const char* data, size_t numBytes);
+    void HandleEditAttributes(UserConnectionPtr user, Json::Value data);
     /// Handle remove attributes message.
     void HandleRemoveAttributes(kNet::MessageConnection* source, const char* data, size_t numBytes);
     /// Handle remove components message.
@@ -154,7 +156,7 @@ private:
     
     /// Get a syncstate that matches the messageconnection, for reflecting arrived changes back
     /** For client, this will always be server_syncstate_. */
-    SceneSyncState* GetSceneSyncState(kNet::MessageConnection* connection);
+    SceneSyncState* GetSceneSyncState(UserConnectionPtr user);
 
     ScenePtr GetRegisteredScene() const { return scene_.lock(); }
 
