@@ -1,0 +1,226 @@
+#!/usr/bin/env python
+
+from lxml import etree
+import time
+import itertools
+import tempfile, atexit
+import subprocess
+import os, sys
+
+def flatten_once(seq):
+    return itertools.chain.from_iterable(seq)
+
+class timer:
+    def __init__(self):
+        self.reference = time.time()
+
+    def log(self, desc):
+        now = time.time()
+        elapsed = now - self.reference
+        # print '%s: %.3f ms' % (desc, elapsed*1000.0)
+        self.reference = now
+
+def facelist_used_indices(fl):
+    used = set()
+    map(used.add, flatten_once(fl))
+    return used
+
+def get_vbdata(vbxml):
+    elem = []
+    anames = []
+    if vbxml.attrib.get('positions'):
+        elem.append('position')
+        anames.append(('x', 'y', 'z'))
+    if vbxml.attrib.get('normals'):
+        elem.append('normal')
+        anames.append(('x', 'y', 'z'))
+    if vbxml.attrib.get('texture_coords'):
+        elem.append('texcoord')
+        anames.append(('u', 'v'))
+
+    for elem, anames in zip(elem, anames):
+        vbdata = []
+        for v in vbxml.findall('./vertex/' + elem):
+            t = tuple(float(v.attrib[X]) for X in anames)
+            vbdata.append(t)
+        yield elem, vbxml.attrib, vbdata
+
+def parse_submesh(s):
+    faces = get_faces(s.find('./faces'))
+    vbufs = []
+    for vbxml in s.findall('./geometry/vertexbuffer'):
+        for vb in get_vbdata(vbxml):
+            vbufs.append(vb)
+    return s.attrib, faces, vbufs
+
+def get_faces(xml):
+    faces = []
+    for f in xml.findall('./face'):
+        triple = tuple(int(f.attrib[X]) for X in ('v1', 'v2', 'v3'))
+        faces.append(triple)
+    return faces
+
+def lowpoly_map(sm, lp):
+    lowpoly_smi, lowpoly_faces, lowpoly_index_set = lp
+    attrib, faces, index_set, vbufs = sm
+    #print len(lowpoly_faces), len(lowpoly_index_set), len(faces)
+    elemtag, attrib, pos_vbuf = vbufs[0]
+    assert elemtag == 'position'
+    norm_vbuf = vbufs[1][2]
+    assert vbufs[1][0] == 'normal', vbufs[1][0]
+    tex_vbuf = vbufs[2][2]
+    assert vbufs[2][0] == 'texcoord', vbufs[2][0]
+    lowpoly_pos_vbuf = []
+    lowpoly_norm_vbuf = []
+    lowpoly_tex_vbuf = []
+    h2l = {}
+    hi_i = 0
+    lo_i = 0
+    for coord in pos_vbuf:
+        if hi_i in lowpoly_index_set:
+            lowpoly_pos_vbuf.append(pos_vbuf[hi_i])
+            lowpoly_norm_vbuf.append(norm_vbuf[hi_i])
+            lowpoly_tex_vbuf.append(tex_vbuf[hi_i])
+            h2l[hi_i] = lo_i
+            lo_i += 1
+        hi_i += 1
+
+    lowpoly_vbufs = [lowpoly_pos_vbuf, lowpoly_norm_vbuf, lowpoly_tex_vbuf]
+    return h2l, lowpoly_vbufs
+
+def rewrite_sm(h2l_map, lo_vbufs, sm_xml, lo_faces):
+    facesxml = sm_xml.find('./faces')
+    faces = get_faces(facesxml)
+    facesxml.attrib['count'] = str(len(lo_faces))
+    for f in facesxml.findall('./face'):
+        facesxml.remove(f)
+    for f in lo_faces:
+        e = etree.Element("face")
+        e.attrib["v1"], e.attrib["v2"], e.attrib["v3"] = map(str, map(lambda x: h2l_map[x], f))
+        e.attrib["rewritten"] = 'yep'
+        facesxml.append(e)
+
+    order = 'positions', 'normals', 'texture_coords'
+    pos_xml = sm_xml.findall('./geometry/vertexbuffer/vertex/position')
+    norm_xml = sm_xml.findall('./geometry/vertexbuffer/vertex/normal')
+    tex_xml = sm_xml.findall('./geometry/vertexbuffer/vertex/texcoord')
+    lo_pos_vbuf, lo_norm_vbuf, lo_tex_vbuf = lo_vbufs
+    sm_xml.find('./geometry').attrib['vertexcount'] = str(len(lo_pos_vbuf))
+
+    def nuke_vertex(tree):
+        for v_xml in tree.findall('./vertex'):
+            nuke(v_xml)
+
+    pos_xml.attrib['positions']
+    # nuke_vertex(pos_xml)
+    for xyz in lo_pos_vbuf:
+        ve = etree.Element('vertex')
+        pe = etree.Element('position')
+        pe.attrib['x'], pe.attrib['y'], pe.attrib['z'] = map(str, xyz)
+        pe.attrib['rewritten'] = 'yep'
+        ve.append(pe)
+        pos_xml.append(ve)
+
+
+    norm_xml.attrib['normals']
+    nuke_vertex(norm_xml)
+    
+    for xyz in lo_norm_vbuf:
+        ve = etree.Element('vertex')
+        pe = etree.Element('normal')
+        pe.attrib['x'], pe.attrib['y'], pe.attrib['z'] = map(str, xyz)
+        pe.attrib['rewritten'] = 'yep'
+        ve.append(pe)
+        norm_xml.append(ve)
+
+    assert tex_xml.attrib.has_key('texture_coords'), repr(norm_xml.attrib.items())
+    nuke_vertex(tex_xml)
+    
+    for uv in lo_tex_vbuf:
+        ve = etree.Element('vertex')
+        pe = etree.Element('texcoord')
+        pe.attrib['u'], pe.attrib['v'] = map(str, uv)
+        pe.attrib['rewritten'] = 'yep'
+        ve.append(pe)
+        tex_xml.append(ve)
+
+
+def nuke(elem):
+    elem.getparent().remove(elem)
+
+def make_tempfile(suffix):
+    fd, path = tempfile.mkstemp(suffix)
+    os.close(fd)
+    return path
+
+def writefile(path, s):
+    of = open(path, "w")
+    of.write(s)
+    of.close()
+
+def runconverter(args):
+    davenull = open("/dev/null", "r+")
+    subprocess.check_call(["OgreXMLConverter", "-q", "-log", "/dev/null"] +args,
+                          stdout=davenull, stderr=davenull)
+    davenull.close()
+
+def main():
+    t = timer()
+
+    tmpxml1path = make_tempfile('-1.mesh.xml')
+    tmpxml2path = make_tempfile('-2.mesh.xml')
+    tmpmesh1path = make_tempfile('-1.mesh')
+    tmpmesh2path = make_tempfile('-2.mesh')
+
+    reduce_percent = 50
+
+    indata = sys.stdin.read()
+    writefile(tmpmesh1path, indata)
+
+    runconverter([tmpmesh1path, tmpxml2path])
+    runconverter(["-l", "1", "-p", str(reduce_percent),
+                  tmpxml2path, tmpmesh2path])
+    runconverter([tmpmesh2path, tmpxml1path])
+
+    x = etree.parse(open(tmpxml1path))
+    t.log('xml parse')
+
+    sm = x.findall("submeshes/submesh")
+    t.log("find submeshes")
+    smdata = []
+    for s in sm:
+        attrib, faces, vbufs = parse_submesh(s)
+        # see what face indices are used in all the submeshes
+        index_set = facelist_used_indices(faces)
+        smdata.append((attrib, faces, index_set, vbufs))
+    t.log("got submeshes")
+
+    lodfl = x.findall("levelofdetail/lodgenerated/lodfacelist")
+    t.log("find lod facelists")
+    loddata = []
+    for fl in lodfl:
+        faces = get_faces(fl)
+        smindex = int(fl.attrib['submeshindex'])
+        index_set = facelist_used_indices(faces)
+        loddata.append((smindex, faces, index_set))
+    t.log("got lod indices")
+    loddata.sort() # make sure they're in submesh index order    
+    h2l_maps = []
+    for one_sm, one_lod in zip(smdata, loddata):
+        h2l_maps.append(lowpoly_map(one_sm, one_lod))
+    t.log("make lowpoly mapping")
+    nuke(x.find('levelofdetail'))
+    for (m, lo_vbufs), sxml, onesmdata, onelod in zip(h2l_maps, sm, smdata, loddata):
+        lo_faces = onelod[1]
+        rewrite_sm(m, lo_vbufs, sxml, lo_faces)
+    t.log("rewrite vertex indices")
+
+
+    writefile(tmpxml2path, etree.tostring(x))
+    runconverter([tmpxml2path, tmpmesh1path])
+    sys.stdout.write(open(tmpmesh1path).read())
+    
+if __name__ == '__main__':
+    main()
+
+

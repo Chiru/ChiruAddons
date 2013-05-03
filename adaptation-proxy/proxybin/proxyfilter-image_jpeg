@@ -1,0 +1,12 @@
+#!/bin/bash
+
+tmpfn=`mktemp /tmp/XXXXX.jpg`
+trap "rm -f $tmpfn" EXIT
+
+# write to temp file from stdin
+cat > $tmpfn
+
+# modify jpeg in place
+jpegoptim -q --strip-all -m5 $tmpfn > /dev/null 2>&1
+
+cat $tmpfn

@@ -1,0 +1,10 @@
+#!/bin/sh
+echo piping type $1 >&2
+echo headers >&2
+# env  >&2
+if test "$1" = gzip; then
+	exec gzip
+else
+	exec cat
+fi
+
