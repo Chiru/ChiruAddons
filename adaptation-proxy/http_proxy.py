@@ -9,6 +9,7 @@ import mimetools
 from cStringIO import StringIO
 from gevent.server import StreamServer
 from gevent.pool import Pool
+from gevent import sleep
 import gevent.socket
 from socket import IPPROTO_TCP, TCP_NODELAY
 from urlparse import urlparse
@@ -18,6 +19,15 @@ from collections import namedtuple
 from gevent.monkey import patch_socket
 
 import time
+
+inflight = []
+inflight_limit = 10
+
+def req_id_gen():
+    for i in xrange(sys.maxint):
+        yield i
+
+make_req_id = req_id_gen().next
 
 def print_elapsed(start_time, text):
     e = time.time() - start_time
@@ -78,7 +88,7 @@ def parse_request(raw_requestline, bs):
 
     header_sep = re.compile(r"\r?\n\r?\n", re.MULTILINE)
     headerbuf = bs.read_until(header_sep)
-    print 'headerbuf', repr(headerbuf)
+    print 'reqline', raw_requestline.strip(), hex(id(raw_requestline))
     sio_fp = StringIO(headerbuf)
     req_headers = mimetools.Message(sio_fp)
     print 'headers done'
@@ -111,6 +121,8 @@ def parse_request(raw_requestline, bs):
     else:
         closed = True
 
+    bs.keep_alive = pc_status == 'keep-alive'
+
     return http_req(method.upper(), path, req_headers, req_body, closed)
 
 http_req = namedtuple('http_req', 'method path headers req_body closed')
@@ -140,14 +152,17 @@ class buffered_socket(object):
             def getoffset():
                 m = sep.search(self.buf)
                 return m.end() if m else -1
+
             
         nloffset = None
         while True:
             nloffset = getoffset()
+            #print 'sep offset', nloffset
             if nloffset != -1:
                 break
 
             data = self.sock.recv(32768)
+            print 'recv', repr(data[:20])
             if data == '': # eof
                 self.closed = True
                 break
@@ -156,14 +171,17 @@ class buffered_socket(object):
                 return self.get_bytes(maxlen)
 
         if nloffset == -1:
+            #print 'eof'
             # no newline found, we must be here because of EOF
             s = self.buf
             self.buf = ''
+            #print 'return', len(s), 'and clear buf'
             return s
         else:
             nloffset += 1
             s = self.buf[:nloffset]
             self.buf = self.buf[nloffset:]
+            #print 'return', repr(s[:20]), 'new buf id', hex(id(self.buf)), repr(self.buf[:20])
             return s
 
     def read_line(self, *args, **kw):
@@ -173,6 +191,7 @@ class buffered_socket(object):
         while len(self.buf) < n:
             nread = min(32768, n-len(self.buf))
             data = self.sock.recv(nread)
+            print 'recv', repr(data[:20])
             if data == '': # eof
                 self.closed = True
                 break
@@ -205,13 +224,20 @@ def mock_connection(indata, address):
     new_connection2(bs, address)
 
 def new_connection2(bs, address):
-
     while True:
-        print 'reading request...'
+        while len(inflight) > inflight_limit:
+            print 'inflight limit hit, sleeping before accepting new reqs'
+            sleep(1)
+
+        reqid = make_req_id()
+        inflight.append(reqid)
+        req_requestline = None
+        print 'reading request', reqid
         try:
             raw_requestline = bs.read_line(65537)
             # spec says we SHOULD ignore at least 1 empty line:
             if raw_requestline.replace('\r', '') == '\n':
+                print 'empty line, skipping'
                 raw_requestline = bs.read_line(65537)
 
             if len(raw_requestline) > 65536:
@@ -230,26 +256,31 @@ def new_connection2(bs, address):
             print "Request timed out:", e
             break
 
-        print 'proxying request'
+        print 'proxying request', reqid
         t = time.time()
         do_proxy(req, bs)
         print_elapsed(t, "do_proxy took %.2f seconds")
-        print 'proxying done'
+        print 'proxying done', reqid
+        inflight.remove(reqid)
         if not bs.keep_alive:
             break
-
     bs.close()
 
 def do_proxy(req, bs):
+    # todo: copy headers from the request.
+
     parsed = urlparse(req.path)
+    print 'do_proxy top'
     try:
         if parsed.scheme != 'http':
             send_error_and_close(bs, status_bad_gateway) 
             return 
+        print 'calling urlopen'
         try:
             response = urllib2.urlopen(req.path)
         except urllib2.HTTPError, ex:
             response = ex
+        print 'done'
         print '%s: %s %s' % (req.path, response.code, response.msg)
         host = parsed.scheme + '://' + parsed.netloc
     except Exception, ex:
@@ -261,8 +292,9 @@ def do_proxy(req, bs):
         return ['<h1>%s</h1><h2>%s</h2><pre>%s</pre>' % (error_str, cgi.escape(req.path), cgi.escape(tb))]
     else:
         
+        print 'looking at headers'
         # headers that are processed by us or urllib2
-        delete_headers = 'transfer-encoding proxy-connection content-length'
+        delete_headers = 'transfer-encoding proxy-connection content-length connection'
         for tekey in delete_headers.split():
             if tekey in response.headers:
                 del response.headers[tekey]
@@ -283,11 +315,14 @@ def do_proxy(req, bs):
             response.headers['content-length'] = str(len(data))
 
         response.headers['transfer-encoding'] = 'chunked'
+        print 'send resp headers'
         send_response_headers(bs, '%s %s' % (response.code, response.msg),
                       response.headers.items())
         if data is not None:
             response = StringIO(data)
+        print 'send_chunked'
         send_chunked(response, bs)
+        print 'send_chunked done'
 
 def send_chunked(response, bs):
     chunksize = 16*1024
