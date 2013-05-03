@@ -1,6 +1,9 @@
 == Purpouse of the proxy ==
 
-The programmable proxy implements a way to script web content rewriting (aka. Content Adaptation) in web proxies. A content adaptation script is a simple script that change the data passed to it.
+The programmable proxy implements a way to script web content
+rewriting (aka. Content Adaptation) in web proxies. A content
+adaptation script is a simple script that change the data passed to
+it.
 
 == System architecture ==
 
@@ -64,8 +67,6 @@ wlan settings, when you change parameters for a wlan it has an
 "advanced" checkbox and that reveals the proxy settings.
 So type in the addr for the Squid proxy at the faster network,
 eg. 
-
-The programmable proxy implements a way to script web content rewriting (aka. Content Adaptation) in web proxies. A content adaptation script is a simple script that change the data passed to it.
 
 == System architecture ==
 
@@ -142,7 +143,9 @@ The code is simple & short, the handleIcap function handles
 the ICAP "RESPMOD" request which sends in the response for
 modification.  
 
-The rewriting scripts are simply executables in path named according to the rule "proxyfilter-<x>" where <x> is the real content-type with / replaced with _ etc. For example "proxyfilter-image_jpeg".
+The rewriting scripts are simply executables in path named according
+to the rule "proxyfilter-<x>" where <x> is the real content-type with
+/ replaced with _ etc. For example "proxyfilter-image_jpeg".
 
 The scripts receive original content from standard input and write
 transformed content to standard output. In addition they have access to
@@ -158,15 +161,12 @@ the chiru-icap library): type "go get"
 4. build the binary: "go build -o chiru-caproxy"
 5. running: just execute the binary, it'll listen on port 11344.
 But you should have the content rewriting scripts in path. To
-use the scripts in the repo, run it like
-"
+use the scripts in the repo, run it something like
+"PATH=$PATH:$HOME/src/ChiruAddons/adaptation-proxy/proxybin ./chiru-caproxy"
 If you're running squid on a different machine you can verify connectivity
 by using telnet <hostname> 11344 (hostname being the machine running chiru-caproxy)
 6. If your squid is set up, things should be working now. You'll get some
 print output from chiru-caproxy when it's handling requests.
-
-TODO: proxy fetch & build instructions.  Pointers to 
-rewriting scripts.
 
 Ogre mesh rewriting:
 
