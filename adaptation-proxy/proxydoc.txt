@@ -149,9 +149,24 @@ transformed content to standard output. In addition they have access to
 HTTP headers via environment variables, in the same way as CGI scripts
 (ie. HTTP_ + header name in caps).
 
+Building the proxy:
+
+1. Check out ChiruAddons git repo and install go 1.0.x
+2. set your GOPATH to point at the adaptation proxy dir: something like "export GOPATH=$HOME/src/ChiruAddons/adaptation-proxy"
+3. Use the go get command to get the dependencies (in this case,
+the chiru-icap library): type "go get"
+4. build the binary: "go build -o chiru-caproxy"
+5. running: just execute the binary, it'll listen on port 11344.
+But you should have the content rewriting scripts in path. To
+use the scripts in the repo, run it like
+"
+If you're running squid on a different machine you can verify connectivity
+by using telnet <hostname> 11344 (hostname being the machine running chiru-caproxy)
+6. If your squid is set up, things should be working now. You'll get some
+print output from chiru-caproxy when it's handling requests.
+
 TODO: proxy fetch & build instructions.  Pointers to 
 rewriting scripts.
-
 
 Ogre mesh rewriting:
 
