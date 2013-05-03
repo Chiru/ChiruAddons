@@ -1,0 +1,166 @@
+== Purpouse of the proxy ==
+
+The programmable proxy implements a way to script web content rewriting (aka. Content Adaptation) in web proxies. A content adaptation script is a simple script that change the data passed to it.
+
+== System architecture ==
+
+We use the Squid caching proxy and interface to it via ICAP. ICAP =
+Internet Content Adaptation Protocol, a standard way to do this.
+So Squid is the ICAP client and our programmable proxy is an ICAP server.
+
+This terminology is slightly confusing since in HTTP and ICAP terms
+our "programmable proxy" is not the proxy - it's the icap server
+and squid is the http proxy. But it was named this way to be
+less confusing for less technical audiences.
+
+So the setup is: HTTP clients are confiqured to use Squid as the HTTP
+proxy and Squid is configured to send responses through our
+programmable proxy.
+
+== Configuration ==
+
+I used a demo setup with 2 machines, one running squid + proxy
+and one doing net connection sharing and using netem to simulate
+a slow net. The network graph (System Monitor app) was running
+on the netem/connection sharing laptop.
+
+The Squid configuration should have this:
+
+--------- 8< -------------------
+icap_enable on
+icap_service chiru_mangler respmod_precache icap://127.0.0.1:11344/mangle
+
+acl localhost src 127.0.0.1/32 ::1
+acl from_uonet src 130.231.0.0/16
+adaptation_access chiru_mangler allow localhost
+adaptation_access chiru_mangler allow from_uonet
+--------- 8< -------------------
+
+The icap:// address points to the programmable proxy. In the above
+example it's running on the same machine as squid so we point to the
+loopback ip address. the adaptation_access limits who can access the
+proxy. Note! It's important to restrict access, since otherwise
+spammers will scan the net, find your proxy and do Bad Things - and it
+will look like you are doing them!
+
+Wireless setup with netem for the demo is done by connecting the
+netem laptop to a fast-ish wlan (eg univ-guest), and connecting
+the Airport base station to the laptop ethernet port. Then enable
+connection sharing on that ethernet port ("shared to other computers"
+in the connection editor). Now the traffic should work. To enable
+netem, enable it with tc. For the demo video I used:
+
+--------- 8< -------------------
+tc qdisc del dev eth0 root # delete any pre-existing queuing discipline
+tc qdisc add dev eth0 root handle 1: tbf rate 384 kbit buffer 1600 limit 3000
+tc qdisc add dev eth0 parent 1: netem delay 50ms 20ms distribution normal
+--------- 8< -------------------
+
+For the demo case of showing the JPEG image loading and transcoding,
+use 2 Android tablets both connected to the slowed down wlan.
+The machine running the proxy is connected to the fast network.
+For one of them, tell it to use a web proxy. This is in the
+wlan settings, when you change parameters for a wlan it has an
+"advanced" checkbox and that reveals the proxy settings.
+So type in the addr for the Squid proxy at the faster network,
+eg. 
+
+The programmable proxy implements a way to script web content rewriting (aka. Content Adaptation) in web proxies. A content adaptation script is a simple script that change the data passed to it.
+
+== System architecture ==
+
+We use the Squid caching proxy and interface to it via ICAP. ICAP =
+Internet Content Adaptation Protocol, a standard way to do this.
+So Squid is the ICAP client and our programmable proxy is an ICAP server.
+
+This terminology is slightly confusing since in HTTP and ICAP terms
+our "programmable proxy" is not the proxy - it's the icap server
+and squid is the http proxy. But it was named this way to be
+less confusing for less technical audiences.
+
+So the setup is: HTTP clients are confiqured to use Squid as the HTTP
+proxy and Squid is configured to send responses through our
+programmable proxy.
+
+== Configuration ==
+
+I used a demo setup with 2 machines, one running squid + proxy
+and one doing net connection sharing and using netem to simulate
+a slow net.
+
+The Squid configuration should have this:
+
+--------- 8< -------------------
+icap_enable on
+icap_service chiru_mangler respmod_precache icap://127.0.0.1:11344/mangle
+
+acl localhost src 127.0.0.1/32 ::1
+acl from_uonet src 130.231.0.0/16
+adaptation_access chiru_mangler allow localhost
+adaptation_access chiru_mangler allow from_uonet
+--------- 8< -------------------
+
+The icap:// address points to the programmable proxy. In the above
+example it's running on the same machine as squid so we point to the
+loopback ip address. the adaptation_access limits who can access the
+proxy. Note! It's important to restrict access, since otherwise
+spammers will scan the net, find your proxy and do Bad Things - and it
+will look like you are doing them!
+
+Wireless setup with netem for the demo is done by connecting the
+netem laptop to a fast-ish wlan (eg univ-guest), and connecting
+the Airport base station to the laptop ethernet port. Then enable
+connection sharing on that ethernet port ("shared to other computers"
+in the connection editor). Now the traffic should work. To enable
+netem, enable it with tc. For the demo video I used:
+
+--------- 8< -------------------
+tc qdisc del dev eth0 root # delete any pre-existing queuing discipline
+tc qdisc add dev eth0 root handle 1: tbf rate 384 kbit buffer 1600 limit 3000
+tc qdisc add dev eth0 parent 1: netem delay 50ms 20ms distribution normal
+--------- 8< -------------------
+
+For the demo case of showing the JPEG image loading and transcoding,
+use 2 Android tablets both connected to the slowed down wlan.
+The machine running the proxy is connected to the fast network.
+For one of them, tell it to use a web proxy. This is in the
+wlan settings, when you change parameters for a wlan it has an
+"advanced" checkbox and that reveals the proxy settings.
+So type in the addr for the Squid proxy at the faster network.
+The port is 3128 by default in Squid.
+
+
+ - implementation 
+
+The proxy is written in the Go programming language. It's using
+the go-icap library from https://code.google.com/p/go-icap/ (BSD license)
+
+A couple of functions have been adapted from redwood-filter (BSD license),
+which uses go-icap.
+
+The code is simple & short, the handleIcap function handles
+the ICAP "RESPMOD" request which sends in the response for
+modification.  
+
+The rewriting scripts are simply executables in path named according to the rule "proxyfilter-<x>" where <x> is the real content-type with / replaced with _ etc. For example "proxyfilter-image_jpeg".
+
+The scripts receive original content from standard input and write
+transformed content to standard output. In addition they have access to
+HTTP headers via environment variables, in the same way as CGI scripts
+(ie. HTTP_ + header name in caps).
+
+TODO: proxy fetch & build instructions.  Pointers to 
+rewriting scripts.
+
+
+Ogre mesh rewriting:
+
+There's an half-finished ogre mesh rewriting script in
+ogrexml_parse_2.py that is based on the idea of using the
+OgreXMLConverter utility from Ogre to do mesh simplification.  The
+idea was to take the data from the automatic lod level-generation from
+OgreXMLConverter and replace the main mesh vertex data with the
+lod-reduced data. That utility however produced buggy results, and the
+script wasn't completely finished. However Jonne tipped me off that
+there latest Ogre 1.9 version has been rewritten and would be worth
+checking out.
