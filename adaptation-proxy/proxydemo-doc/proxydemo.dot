@@ -1,0 +1,32 @@
+digraph G {
+	web [label="Asset service", image="cfry_Cloud.png"];
+	subgraph cluster_0 {
+		style=filled;
+		color=lightgrey;
+		node [style=filled,color=white];
+		squid -> wlanap [label="4. HTTP resp"];
+		label = "Operator core network";
+                labeljust = "l"
+                progproxy [label="Chiru programmable proxy\n(ICAP server)", image="ajith_stacked_servers.png"];
+                squid -> progproxy [label="2. ICAP req"];
+                progproxy -> squid [label="3. ICAP resp"];
+	}
+        web -> squid [label="1. HTTP resp"];
+
+	subgraph cluster_1 {
+		node [style=filled];
+		mobile1; mobile2;
+		color=blue
+		label = "Wireless network";
+                labeljust="r"
+                wlanap -> mobile1 [label="5. HTTP resp"];
+                wlanap -> mobile2 [label=""];
+	}
+
+	//squid [label="Caching proxy\n(Squid)", image="ajith_stacked_servers.png"];
+        squid [label=<<table><tr><td><IMG SRC="ajith_stacked_servers.png"></IMG></td></tr></table>>]
+	wlanap [label="Wireless basestation\n(throttled bandwidth)", image="ispyisail_Wireless_WiFi_symbol.png"];
+	//squid -> mobile1;
+	mobile1 [label="Mobile device", image="android_phone_1281681216.png"];
+	mobile2 [label="Mobile device", image="android_phone_1281681216.png"];
+}

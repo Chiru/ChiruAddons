@@ -1,0 +1,34 @@
+digraph G {
+	web [shape=Mdiamond, label="WWW"];
+	subgraph cluster_0 {
+		style=filled;
+		color=lightgrey;
+		node [style=filled,color=white];
+		squid -> netem -> wlanap [label="HTTP"];
+                wlanap -> netem -> squid;
+		label = "Operator core network";
+                progproxy [label="ICAP server\n(Chiru programmable proxy)"];
+                squid -> progproxy [label="ICAP"];
+                progproxy -> squid;
+	}
+        web -> squid [label="HTTP"];
+        squid -> web;
+
+	subgraph cluster_1 {
+		node [style=filled];
+		mobile1; mobile2;
+		color=blue
+		label = "Wireless network";
+                wlanap -> mobile1 [label="HTTP"];
+                mobile1 -> wlanap;
+                wlanap -> mobile2 [label="HTTP"];
+                mobile2 -> wlanap;
+	}
+
+	squid [label="Caching proxy\n(Squid)"];
+        netem [label="bandwidth throttle\n(netem)"];
+	wlanap [label="Wireless basestation"];
+	//squid -> mobile1;
+	mobile1 [label="Mobile device"];
+	mobile2 [label="Mobile device"];
+}

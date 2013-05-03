@@ -1,0 +1,68 @@
+1. Explain use case
+
+a) application developers: can implement content adaptation rules in
+apps to eg. request highly compressed assets on low res
+devices. Improves app performance. Can make adaptations for any kind
+of asset. Lets app developers make informed, tried & tested tradeoffs re.
+content transformations.
+
+b) Network operators wanting to save on mobile network bandwidth and
+cut load times for users on mobile network. Per-website, per-device or
+per-network transformations. Operators already have proxies in their
+network infrastructure for caching purpouses, can plug into existing
+caching ifnra due to to use of standard adaptation (ICAP) protocol.
+
+[caveats:
+  caching vs profiles difficulty;
+  though filters in programmable proxy get access to http headers
+  and can do internal caching based on arbitrary stuff
+]
+
+
+2. Diagram of demo setup and devices involved.
+
+Flow of requests apparent from diagram. Mobile user makes
+request, it travels up the chain of basestation-netem-squid-web,
+response comes back through web-squid-our proxy-squid-netem-basestation
+
+Network is capped to make it slower.
+
+Proxy and squid communicate via industry standard ICAP protocol.
+Custom programmable proxy sw is a ICAP server that tries to
+execute cli scripts based on content-type. Supports streaming.
+
+Next mobile user accessing the same content will get chain of:
+basestation-netem-squid, response comes back through
+squid-netem-basestation. Ie. the transformation is also cached
+and no extra work needs to be done when the second user comes along.
+
+3. Demonstrations using tablets/phones
+
+3.1 - Basic 2d 
+
+Tablet #1 is connected to the test wlan and doesn't use proxy.
+This is simulating the situation where you have a slow network
+connection and are seeing slow load times for content. We
+simulate the case where this is your first visit to the
+website in question.
+
+Tablet #2 is connected to the same test wlan and uses the proxy
+for the web browser.
+
+Here we see tablet #1 reloading this image from reddit in about 15 seconds
+(for a 500 kb jpeg). 
+
+Here we see tablet tablet #2 reloading the same image using the same
+network fonnection using the proxy in a much shorter time.
+
+3.2 - Programmability
+
+Show how changing the JPEG quality setting changes the result.
+
+3.3 - Caching
+
+caching demo: 
+Can currently show from command line how test pic URL is loaded 2nd time in 8ms,
+didn't come up with a nicer demonstration yet.
+
+
