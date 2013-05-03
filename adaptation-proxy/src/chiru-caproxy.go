@@ -10,7 +10,7 @@ import (
 	"regexp"
 )
 
-var ISTag = "\"picworsen\""
+var ISTag = "\"chiru-caproxy\""
 
 func main() {
 	icap.ListenAndServe(":11344", icap.HandlerFunc(handleIcap))
