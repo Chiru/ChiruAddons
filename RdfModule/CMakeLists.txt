@@ -25,14 +25,13 @@ else()
     set(LIB_FILES libcurl.lib libdb43.lib librdf.lib raptor.lib rasqal.lib)
 endif()
 
-UseTundraCore()
-use_core_modules(TundraCore)
+use_core_modules(Framework)
 
 build_library(${TARGET_NAME} SHARED ${SOURCE_FILES} ${MOC_SRCS})
 
 link_package(QT4)
 #link_ogre()
-link_modules(TundraCore)
+link_modules(Framework)
 
 add_definitions(-DRDF_MODULE_EXPORTS)
 
