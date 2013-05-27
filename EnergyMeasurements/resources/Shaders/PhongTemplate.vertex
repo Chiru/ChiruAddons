@@ -1,0 +1,35 @@
+// http://aras-p.info/blog/2011/02/01/ios-shader-tricks-or-its-2001-all-over-again/
+
+attribute vec4 a_position;
+attribute vec2 a_uv;
+attribute vec3 a_normal;
+attribute vec4 a_tangent;
+
+uniform mat4 u_mvp;
+uniform mat4 u_world2object;
+uniform vec4 u_worldlightdir;
+uniform vec4 u_worldcampos;
+
+varying vec2 v_uv;
+varying vec3 v_lightdir;
+varying vec3 v_halfdir;
+
+void main()
+{
+	gl_Position = u_mvp * a_position;
+	v_uv = a_uv;
+	
+	vec3 bitan = cross (a_normal.xyz, a_tangent.xyz) * a_tangent.w;
+	mat3 tsprotation = mat3 (
+		a_tangent.x, bitan.x, a_normal.x,
+		a_tangent.y, bitan.y, a_normal.y,
+		a_tangent.z, bitan.z, a_normal.z);
+	
+	vec3 objLightDir = (u_world2object * u_worldlightdir).xyz;
+	vec3 objCamPos = (u_world2object * u_worldcampos).xyz;
+	vec3 objViewDir = objCamPos - a_position.xyz;
+	
+	v_lightdir = tsprotation * objLightDir;
+	vec3 viewdir = normalize(tsprotation * objViewDir);
+	v_halfdir = normalize (v_lightdir + viewdir);
+}

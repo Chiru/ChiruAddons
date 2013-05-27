@@ -1,0 +1,37 @@
+/*
+ * Neocortex Vertex shader
+ *
+ * Shaders which are applied to world objects, are assumed to be
+ * rendered through user definable camera. Hence, the API defines
+ * there shall be at least one Uniform defined, which is the
+ * world tranformation matrix. The matrix can be used to transform
+ * local vertices of the object into the World coordinates.
+ *
+ * Input attributes for the shader are as follows:
+ *  0: Vertices, named as a_Position
+ *  1: Texcoords, names as a_Texcoord
+ *  2: Normals, named as a_Normal
+ *  3: Color, named as a_color
+ */
+
+/*
+ * Attributes:
+ */
+attribute vec4 a_Position;
+attribute vec2 a_Texcoord;
+attribute vec3 a_Normal;
+attribute vec3 a_Color;
+
+/*
+ * Uniforms:
+ */
+uniform mat4 u_WorldTransform;
+
+/*
+ * Varying outputs, for the fragment shader:
+ */
+
+void main()
+{
+    gl_Position = u_WorldTransform * a_Position;
+}

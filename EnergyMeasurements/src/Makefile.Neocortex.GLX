@@ -1,0 +1,131 @@
+# Neocortex 3D
+
+INCDIRS=-I./
+LIBDIRS=-L./
+CFLAGS=-Wall -fPIC -DNC_GLX
+LIBS=-lGL -lGLEW -lX11 -lpng -ljpeg
+OUTPUT=libNeocortex.so
+
+MKDIR=mkdir
+CPP=g++
+RM=rm
+
+_OBJS=                            \
+    Neocortex_API.o               \
+    NeocortexDisplay.o            \
+    Scenegraph.o                  \
+    ScenegraphCamera.o            \
+    ScenegraphObject.o            \
+    ResourceManager.o             \
+    RTexture.o                    \
+    RTexture_DDS.o                \
+    RTexture_CRN.o                \
+    RTexture_JPG.o                \
+    RTexture_PNG.o                \
+    RTexture_ETC1.o               \
+    RTexture_TGA.o                \
+    RMesh.o                       \
+    RMesh_OgreXML.o               \
+    RMesh_OBJ.o                   \
+    RShader.o                     \
+    RShader_Shaders.o             \
+    RShaderManager.o              \
+    RMeshContainer.o              \
+    RMaterial.o                   \
+    GLWrapper.o                   \
+    GLMath.o                      \
+    UUID.o                        \
+    DebugLog.o                    \
+    pugixml/pugixml.o
+
+_VSHADERS=                          \
+    Simple.vh                       \
+    Texturemap_1Channel.vh          \
+    Texturemap_2Channel_Lightmap.vh \
+    Texturemap_3Channel.vh          \
+    Texturemap_4Channel.vh          \
+    PhongTemplate.vh
+
+_FSHADERS=                          \
+    Simple.fh                       \
+    Texturemap_1Channel.fh          \
+    Texturemap_2Channel_Lightmap.fh \
+    Texturemap_3Channel.fh          \
+    Texturemap_4Channel.fh          \
+    PhongTemplate.fh
+
+# Object target dir
+ODIR=NC-objs
+OBJS=$(patsubst %,$(ODIR)/%,$(_OBJS))
+
+# Shader target dir
+SDIR=Shaders
+VSHADERS=$(patsubst %,$(SDIR)/%,$(_VSHADERS))
+FSHADERS=$(patsubst %,$(SDIR)/%,$(_FSHADERS))
+
+HEADERS=                          \
+    Neocortex_API.h               \
+    NeocortexDisplay.h            \
+    Neocortex_GLHeaders.h         \
+    Scenegraph.h                  \
+    ScenegraphCamera.h            \
+    ScenegraphObject.h            \
+    ResourceManager.h             \
+    RTexture.h                    \
+    RMesh.h                       \
+    RShader.h                     \
+    RShader_Shaders.h             \
+    RShaderManager.h              \
+    RMeshContainer.h              \
+    RMaterial.h                   \
+    DebugLog.h                    \
+    GLMath.h                      \
+    UUID.h                        \
+    GLWrapper.h
+
+default: debug
+
+debug: CFLAGS += -D_DEBUG -g
+debug: all
+
+release: CFLAGS += -D_NDEBUG -O3 -ffast-math
+release: all
+
+#
+# Output dir targets:
+#
+${ODIR}:
+	${MKDIR} -p ${ODIR}
+
+pugidir:
+	${MKDIR} -p ${ODIR}/pugixml
+
+${SDIR}:
+	${MKDIR} -p ${SDIR}
+
+#
+# Generic rules for building objects
+#
+${ODIR}/%.o: %.cpp ${HEADERS}
+	${CPP} -c -o $@ $< $(CFLAGS) ${INCDIRS}
+
+${SDIR}/%.vh: ../resources/Shaders/%.vertex
+	python ../tools/CompileShader.py $< $@
+
+${SDIR}/%.fh: ../resources/Shaders/%.fragment
+	python ../tools/CompileShader.py $< $@
+
+#
+# Finally, the main build target with clean
+#
+all: ${ODIR} ${SDIR} pugidir ${VSHADERS} ${FSHADERS} ${OBJS}
+	${CPP} -o ${OUTPUT} -shared ${OBJS} ${LIBDIRS} ${LIBS}
+	h2xml Neocortex_API.h -o Neocortex_API.xml -I .
+	xml2py Neocortex_API.xml -o Neocortex_API.py -c -l ./${OUTPUT}
+	$(eval _BLD:=$(shell cat Neocortex_Version.h | grep BUILD | cut -f 3 -d " "))
+	$(eval _NB:=$(shell echo $(_BLD)+1|bc))
+	$(shell sed -i "s/$(_BLD)/$(_NB)/" Neocortex_Version.h)
+	gcc test.c -o test -L./ -lNeocortex -lpthread
+
+clean:
+	rm -rf ${OBJS} ${OUTPUT} ${ODIR} ${SDIR} Neocortex_API.xml Neocortex_API.py*

@@ -1,0 +1,14 @@
+const char Simple_fragment[] =
+    "#if defined(GL_ES) || (__VERSION__ >= 130)\n"
+    "precision mediump float;\n"
+    "#endif\n"
+    "\n"
+    "/*\n"
+    "* Samplers:\n"
+    "*/\n"
+    "uniform vec4 u_Ambient;\n"
+    "\n"
+    "void main()\n"
+    "{\n"
+    "gl_FragColor = u_Ambient;\n"
+    "}\n";

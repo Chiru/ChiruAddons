@@ -1,0 +1,84 @@
+/*
+ * Neocortex Fragmet shader:
+ *
+ * tbd
+ */
+
+#if 1
+/*
+ * Precision definition for the shader:
+ * (Valid for GLES2, and GL shading language >= 1.30)
+ */
+#if defined(GL_ES) || (__VERSION__ >= 130)
+precision mediump float;
+#endif
+
+
+/*
+ * Varying input params form vertex shader:
+ */
+varying vec2 v_Texcoord;
+
+/*
+ * Samplers:
+ */
+uniform sampler2D s_Texture0; // Basemap
+uniform sampler2D s_Texture1; // Not used here
+uniform sampler2D s_Texture2; // Not used here
+uniform sampler2D s_Texture3; // Not used here
+
+uniform vec4 u_Ambient;
+uniform vec4 u_Diffuse;
+uniform vec4 u_Specular;
+uniform vec4 u_Emissive;
+uniform float u_SpecularPower;
+
+void main()
+{
+     gl_FragColor = texture2D(s_Texture0, v_Texcoord);
+}
+#else
+
+#if defined(GL_ES) || (__VERSION__ >= 130)
+precision mediump float;
+#endif
+
+uniform vec4 u_Ambient;
+uniform vec4 u_Diffuse;
+uniform vec4 u_Specular;
+uniform float u_specularPower;
+
+uniform sampler2D s_Texture0;       // Basemap
+uniform sampler2D s_Texture1;       // Specular (not used)
+uniform sampler2D s_Texture2;       // Normal
+uniform sampler2D s_Texture3;       // -- not used --
+
+varying vec2 v_Texcoord;
+varying vec3 v_viewDirection;
+varying vec3 v_lightDirection;
+
+void main(void)
+{
+    vec4 baseColor = texture2D(s_Texture0, v_Texcoord);
+
+    vec3 normal = texture2D(s_Texture2, v_Texcoord);
+
+    normal = normalize(normal * 2.0 - 1.0);
+
+    vec3 lightDirection = normalize(v_lightDirection);
+    vec3 viewDirection = normalize(v_viewDirection);
+
+    float nDotL = dot(normal, lightDirection);
+
+    vec3 reflection = (2.0 * normal * nDotL) - reflection;
+
+    float rDotV = max(0.0, dot(reflection, viewDirection));
+
+    vec4 ambient = u_Diffuse * nDotL * baseColor;
+
+    vec4 specular = u_Specular * pow(rDotV, u_specularPower);
+
+    gl_FragColor = ambient + diffuse + specular;
+}
+
+#endif

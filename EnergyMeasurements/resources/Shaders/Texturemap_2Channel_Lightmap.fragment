@@ -1,0 +1,38 @@
+/*
+ * Neocortex Fragmet shader:
+ *
+ * tbd
+ */
+
+/*
+ * Precision definition for the shader:
+ * (Valid for GLES2, and GL shading language >= 1.30)
+ */
+#if defined(GL_ES) || (__VERSION__ >= 130)
+precision mediump float;
+#endif
+
+
+/*
+ * Varying input params form vertex shader:
+ */
+varying vec2 v_Texcoord;
+
+/*
+ * Samplers:
+ */
+uniform sampler2D s_Texture0; // Basemap
+uniform sampler2D s_Texture1; // Lightmap
+uniform sampler2D s_Texture2; // Not used here
+uniform sampler2D s_Texture3; // Not used here
+
+void main()
+{
+  vec4 baseColor;
+  vec4 lightColor;
+
+  baseColor  = texture2D(s_Texture0, v_Texcoord);
+  lightColor = texture2D(s_Texture1, v_Texcoord);
+  gl_FragColor = baseColor * (lightColor + 0.25);
+}
+

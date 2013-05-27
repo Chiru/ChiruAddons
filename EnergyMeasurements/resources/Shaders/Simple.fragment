@@ -1,0 +1,13 @@
+#if defined(GL_ES) || (__VERSION__ >= 130)
+precision mediump float;
+#endif
+
+/*
+ * Samplers:
+ */
+uniform vec4 u_Ambient;
+
+void main()
+{
+    gl_FragColor = u_Ambient;
+}

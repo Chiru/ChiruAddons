@@ -1,0 +1,25 @@
+uniform lowp vec4 u_lightcolor;
+uniform lowp vec4 u_matcolor;
+uniform mediump float u_spec;
+
+varying mediump vec2 v_uv;
+varying lowp vec3 v_lightdir;
+varying lowp vec3 v_halfdir;
+
+uniform sampler2D u_texcolor;
+uniform sampler2D u_texnormal;
+uniform sampler2D u_texLUT;
+
+void main()
+{
+	lowp vec4 albedo = texture2D (u_texcolor, v_uv);
+	lowp vec3 normal = texture2D (u_texnormal, v_uv).rgb * 2.0 - 1.0;
+	
+	lowp float diff = dot (normal, v_lightdir);
+	lowp float nh = dot (normal, v_halfdir);
+	lowp vec2 luv = vec2(diff,nh);
+	lowp vec4 l = texture2D (u_texLUT, luv);
+	
+	lowp vec4 c = albedo * l + l.a;
+	gl_FragColor = c;
+}
