@@ -1,0 +1,32 @@
+
+// blender material: Material.011
+material Material.011 
+{
+    receive_shadows on
+    technique b2ogre_1322817331.976755
+    {
+        pass b2ogre_1322817331.976782
+        {
+            ambient 0.12823930382728577 0.09035531431436539 0.0563235878944397 1.0
+            diffuse 0.10259144459056024 0.07228425252861159 0.04505887098698125 1.0
+            specular 0.5 0.5 0.5 1.0 12.5
+            emissive 0.0 0.0 0.0 1.0
+            alpha_to_coverage off
+            colour_write on
+            cull_hardware clockwise
+            depth_check on
+            depth_func less_equal
+            depth_write on
+            illumination_stage 
+            light_clip_planes off
+            light_scissor off
+            lighting on
+            normalise_normals off
+            polygon_mode solid
+            scene_blend one zero
+            scene_blend_op add
+            shading gouraud
+            transparent_sorting on
+        }
+    }
+}

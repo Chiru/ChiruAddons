@@ -1,0 +1,17 @@
+material calendar
+{
+    technique
+    {
+        pass
+        {
+            ambient 0 0 0 1
+            diffuse 0.843137 0.843137 0.843137 1
+            specular 0 0 0 1 1
+            emissive 1 1 1 1
+            texture_unit
+            {
+                texture local://calendarCompleteMap.png
+            }
+        }
+    }
+}

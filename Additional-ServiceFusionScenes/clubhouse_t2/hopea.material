@@ -1,0 +1,32 @@
+
+// blender material: hopea
+material hopea 
+{
+    receive_shadows on
+    technique b2ogre_1322817331.977381
+    {
+        pass b2ogre_1322817331.977409
+        {
+            ambient 0.8412031531333923 0.47566384077072144 0.3233183026313782 1.0
+            diffuse 0.6729625325346369 0.380531078286932 0.25865464595935705 1.0
+            specular 0.5 0.5 0.5 1.0 12.5
+            emissive 0.0 0.0 0.0 1.0
+            alpha_to_coverage off
+            colour_write on
+            cull_hardware clockwise
+            depth_check on
+            depth_func less_equal
+            depth_write on
+            illumination_stage 
+            light_clip_planes off
+            light_scissor off
+            lighting on
+            normalise_normals off
+            polygon_mode solid
+            scene_blend one zero
+            scene_blend_op add
+            shading gouraud
+            transparent_sorting on
+        }
+    }
+}

@@ -1,0 +1,22 @@
+material info_bubble_edge
+{
+	technique
+	{
+		scheme glow
+		pass
+		{
+			ambient 1 1 1 1
+			specular 0 0 0 1 63.2193
+			emissive .4 1 1 1
+
+			texture_unit
+			{
+				texture info_bubbleCompleteMap.png
+			}
+		}
+
+	}
+
+}
+
+

@@ -1,0 +1,40 @@
+
+// blender material: Material.002
+material Material.002 
+{
+    receive_shadows on
+    technique b2ogre_1322818372.189659
+    {
+        pass b2ogre_1322818372.189691
+        {
+            ambient 0.4868970513343811 0.29220667481422424 0.19736725091934204 1.0
+            diffuse 0.38951764687177004 0.2337653433347544 0.1578938030882746 1.0
+            specular 0.5 0.5 0.5 1.0 12.5
+            emissive 0.0 0.0 0.0 1.0
+            alpha_to_coverage off
+            colour_write on
+            cull_hardware clockwise
+            depth_check on
+            depth_func less_equal
+            depth_write on
+            illumination_stage 
+            light_clip_planes off
+            light_scissor off
+            lighting on
+            normalise_normals off
+            polygon_mode solid
+            scene_blend one zero
+            scene_blend_op add
+            shading gouraud
+            transparent_sorting on
+            texture_unit b2ogre_1322818372.190093
+            {
+                texture WoodFine0014_S.jpg
+                tex_address_mode wrap
+                scale 1.0 1.0
+                tex_coord_set 0
+                colour_op replace
+            }
+        }
+    }
+}

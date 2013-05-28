@@ -1,0 +1,32 @@
+
+// blender material: ruutu
+material ruutu 
+{
+    receive_shadows on
+    technique b2ogre_1322818372.18898
+    {
+        pass b2ogre_1322818372.189012
+        {
+            ambient 0.06071959435939789 0.06071959435939789 0.06071959435939789 1.0
+            diffuse 0.04857567621135228 0.04857567621135228 0.04857567621135228 1.0
+            specular 0.5 0.5 0.5 1.0 63.0
+            emissive 0.0 0.0 0.0 1.0
+            alpha_to_coverage off
+            colour_write on
+            cull_hardware clockwise
+            depth_check on
+            depth_func less_equal
+            depth_write on
+            illumination_stage 
+            light_clip_planes off
+            light_scissor off
+            lighting on
+            normalise_normals off
+            polygon_mode solid
+            scene_blend one zero
+            scene_blend_op add
+            shading gouraud
+            transparent_sorting on
+        }
+    }
+}

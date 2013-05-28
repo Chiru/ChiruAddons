@@ -1,0 +1,1336 @@
+<scene >
+	<entity id="100" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.015" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.023.mesh" />
+			<attribute name="Mesh materials" value="local://Material.material;local://walls.material;local://walltexture.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="101" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.014" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.021.mesh" />
+			<attribute name="Mesh materials" value="local://Material.material;local://walls.material;local://walltexture.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="102" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.013" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.020.mesh" />
+			<attribute name="Mesh materials" value="local://valkonen.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="103" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.008" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.019.mesh" />
+			<attribute name="Mesh materials" value="local://valkonen.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="105" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.012" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.018.mesh" />
+			<attribute name="Mesh materials" value="local://lattia.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="106" >
+		<component type="EC_Name" sync="true">
+                        <attribute value="radio_1" name="name"/>
+                        <attribute value="" name="description"/>
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="210.00,219.00,259.0,0.000000,180.000000,0.000000,8.000000,8.000000,8.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://radio_1.mesh" />
+			<attribute name="Mesh materials" value="local://radio.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+                <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+                <component type="EC_Script" sync="true">
+                        <attribute value="Radio.js" name="Script ref"/>
+                        <attribute value="true" name="Run on load"/>
+                        <attribute value="0" name="Run mode"/>
+                        <attribute value="" name="Script application name"/>
+                        <attribute value="" name="Script class name"/>
+                </component>
+	</entity>
+	<entity id="109" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.010" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="5.854660,3.248841,-0.284829,0.000000,0.000000,0.000000,1.408988,1.000000,1.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.015.mesh" />
+			<attribute name="Mesh materials" value="local://pahvilaatikko.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="110" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cylinder.004" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cylinder.016.mesh" />
+			<attribute name="Mesh materials" value="local://valkonen.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="112" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cylinder.002" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cylinder.014.mesh" />
+			<attribute name="Mesh materials" value="local://valkonen.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="113" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cylinder.001" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="-2.862090,3.248841,-6.795599,0.000000,0.000000,0.000000,1.000000,0.045859,1.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cylinder.013.mesh" />
+			<attribute name="Mesh materials" value="" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="114" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="kahvikuppi.004" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cylinder.006.mesh" />
+			<attribute name="Mesh materials" value="local://valkonen.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="117" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="kalenteri" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="287.00,235.00,72.00,0.000000,90.00,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://kalenteri.mesh" />
+			<attribute name="Mesh materials" value="local://kalenteri.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="118" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.009" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.004.mesh" />
+			<attribute name="Mesh materials" value="local://matto.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="120" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.003" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,-22.00,0.000000,0.000000,0.000000,0.000000,50.000000,60.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.002.mesh" />
+			<attribute name="Mesh materials" value="local://walls.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="121" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="kahvat.002" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.403.mesh" />
+			<attribute name="Mesh materials" value="" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="122" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="kahvat.001" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.402.mesh" />
+			<attribute name="Mesh materials" value="" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="123" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="paperipino.001" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.401.mesh" />
+			<attribute name="Mesh materials" value="local://valkonen.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="124" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="mapit_pun.001" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.400.mesh" />
+			<attribute name="Mesh materials" value="local://Material.008.material;local://musta.material;local://Material.004.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="125" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="mapit_musta.001" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.399.mesh" />
+			<attribute name="Mesh materials" value="local://musta.material;local://Material.004.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="126" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="pikkukukka" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.398.mesh" />
+			<attribute name="Mesh materials" value="local://Material.020.material;local://Material.007.material;local://Material.021.material;local://Material.009.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="127" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Torus.002" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Torus.002.mesh" />
+			<attribute name="Mesh materials" value="" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="130" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.007" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="-10.00,263.00,274.00,0.000000,90.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.010.mesh" />
+			<attribute name="Mesh materials" value="local://ruutu.material;local://Material.010.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+                <component type="EC_Script" sync="true" name="PresentationScreen">
+                        <attribute value="PresentationScreen.js" name="Script ref"/>
+                        <attribute value="true" name="Run on load"/>
+                        <attribute value="0" name="Run mode"/>
+                        <attribute value="" name="Script application name"/>
+                        <attribute value="" name="Script class name"/>
+                </component>
+	</entity>
+	<entity id="131" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="kasvi.001" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cylinder.001.mesh" />
+			<attribute name="Mesh materials" value="local://Material.021.material;local://Material.009.material;local://Material.020.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="133" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.005" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.009.mesh" />
+			<attribute name="Mesh materials" value="local://valkonen.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="134" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.004" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.008.mesh" />
+			<attribute name="Mesh materials" value="local://valkonen.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="135" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.001" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.007.mesh" />
+			<attribute name="Mesh materials" value="local://valkonen.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="136" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.005.mesh" />
+			<attribute name="Mesh materials" value="local://valkonen.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="137" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.000" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,40.00,0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.001.mesh" />
+			<attribute name="Mesh materials" value="local://Material.material;local://walls.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="138" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="table" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.003.mesh" />
+			<attribute name="Mesh materials" value="local://Material.002.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="139" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="tuoli.004" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.396.mesh" />
+			<attribute name="Mesh materials" value="local://Material.004.material;local://Material.005.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="140" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="tuoli.028" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.395.mesh" />
+			<attribute name="Mesh materials" value="local://Material.004.material;local://Material.005.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="144" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="Cube.002" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,-22.00,-100.000000,0.000000,0.000000,0.000000,50.000000,60.000000,70.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.000.mesh" />
+			<attribute name="Mesh materials" value="local://Material.material;local://walls.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="145" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="hylly_iso" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="-348.00,0.000000,426.00,0.000000,-90.00,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.016.mesh" />
+			<attribute name="Mesh materials" value="" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="146" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="hylly_pienempi" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.024.mesh" />
+			<attribute name="Mesh materials" value="" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="147" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="kulmasohva" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.369.mesh" />
+			<attribute name="Mesh materials" value="local://Material.007.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="148" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="mapit_musta" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.043.mesh" />
+			<attribute name="Mesh materials" value="local://musta.material;local://Material.004.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="149" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="mapit_pun" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.042.mesh" />
+			<attribute name="Mesh materials" value="local://Material.008.material;local://musta.material;local://Material.004.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="151" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="paperipino" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.050.mesh" />
+			<attribute name="Mesh materials" value="local://valkonen.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="154" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="tuoli" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.022.mesh" />
+			<attribute name="Mesh materials" value="local://Material.003.material;local://Material.004.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="155" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="kaupunni" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cylinder.009.mesh" />
+			<attribute name="Mesh materials" value="local://Material.006.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="156" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="kahvat" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cube.044.mesh" />
+			<attribute name="Mesh materials" value="" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+	<entity id="157" >
+		<component type="EC_Name" sync="1" >
+			<attribute name="name" value="kasvi" />
+			<attribute name="description" value="" />
+		</component>
+		<component type="EC_Placeable" sync="1" >
+			<attribute name="Transform" value="0.000000,0.000000,-0.000000,0.000000,0.000000,0.000000,50.000000,50.000000,50.000000" />
+			<attribute name="Show bounding box" value="false" />
+			<attribute name="Visible" value="true" />
+			<attribute name="Selection layer" value="1" />
+		</component>
+		<component type="EC_Mesh" sync="1" >
+			<attribute name="Mesh ref" value="local://Cylinder.184.mesh" />
+			<attribute name="Mesh materials" value="local://Material.021.material;local://Material.009.material;local://Material.020.material" />
+			<attribute name="Draw distance" value="0" />
+			<attribute name="Cast shadows" value="false" />
+		</component>
+	</entity>
+<entity id="158" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="SongContainer" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="-16.00,-5.00,8.00,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="local://info_bubble.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="local://info_bubble.material;local://lower_text.material;local://upper_text.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="100.0,59.827782,20.788528,0.000000,180.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Script" sync="true" name="Screen">
+   <attribute value="Screen.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_Script" sync="true">
+   <attribute value="cdRack.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" sync="true" name="Content">
+   <attribute value="Texture_ScreenContent_2" name="Output texture"/>
+   <attribute value="370" name="Texture width"/>
+   <attribute value="200" name="Texture height"/>
+   <attribute value="1" name="Submesh"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" sync="true" name="Title">
+   <attribute value="Texture_ScreenTitle_3" name="Output texture"/>
+   <attribute value="512" name="Texture width"/>
+   <attribute value="256" name="Texture height"/>
+   <attribute value="2" name="Submesh"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Screen">
+   <attribute type="string" value="radio_1" name="iconName"/>
+  </component>
+  <component type="EC_RigidBody" sync="true">
+   <attribute value="0" name="Mass"/>
+   <attribute value="0" name="Shape type"/>
+   <attribute value="16.000000 27.000000 1.000000" name="Size"/>
+   <attribute value="" name="Collision mesh ref"/>
+   <attribute value="0.5" name="Friction"/>
+   <attribute value="0" name="Restitution"/>
+   <attribute value="0" name="Linear damping"/>
+   <attribute value="0" name="Angular damping"/>
+   <attribute value="1.000000 1.000000 1.000000" name="Linear factor"/>
+   <attribute value="1.000000 1.000000 1.000000" name="Angular factor"/>
+   <attribute value="false" name="Kinematic"/>
+   <attribute value="false" name="Phantom"/>
+   <attribute value="false" name="Draw Debug"/>
+   <attribute value="0.000000 0.000000 0.000000" name="Linear velocity"/>
+   <attribute value="0.000000 0.000000 0.000000" name="Angular velocity"/>
+   <attribute value="-1" name="Collision Layer"/>
+   <attribute value="-1" name="Collision Mask"/>
+  </component>
+ </entity>
+<entity id="159" sync="1">
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="news_tablet.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="news_tablet.material;screen.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-163.45,255.39,259.56,0.000000,180.000000,0.000000,25.000000,25.000000,1.000000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Name" sync="true">
+   <attribute value="news_tablet" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" sync="true">
+   <attribute value="Texture_Screen_1" name="Output texture"/>
+   <attribute value="824" name="Texture width"/>
+   <attribute value="824" name="Texture height"/>
+   <attribute value="1" name="Submesh"/>
+  </component>
+  <component type="EC_Script" sync="true" name="Screen">
+   <attribute value="Screen.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_Script" sync="true" name="WebView">
+   <attribute value="WebView.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+ <component type="EC_Script" sync="true" name="WebViewInterface">
+   <attribute value="WebViewInterface.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Screen"/>
+  <component type="EC_RigidBody" sync="true">
+   <attribute value="0" name="Mass"/>
+   <attribute value="0" name="Shape type"/>
+   <attribute value="4.000000 6.000000 1.000000" name="Size"/>
+   <attribute value="" name="Collision mesh ref"/>
+   <attribute value="0.5" name="Friction"/>
+   <attribute value="0" name="Restitution"/>
+   <attribute value="0" name="Linear damping"/>
+   <attribute value="0" name="Angular damping"/>
+   <attribute value="1.000000 1.000000 1.000000" name="Linear factor"/>
+   <attribute value="1.000000 1.000000 1.000000" name="Angular factor"/>
+   <attribute value="false" name="Kinematic"/>
+   <attribute value="false" name="Phantom"/>
+   <attribute value="false" name="Draw Debug"/>
+   <attribute value="0.000000 0.000000 0.000000" name="Linear velocity"/>
+   <attribute value="0.000000 0.000000 0.000000" name="Angular velocity"/>
+   <attribute value="-1" name="Collision Layer"/>
+   <attribute value="-1" name="Collision Mask"/>
+  </component>
+ </entity>
+  <entity id="160" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="Twitter" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="213.00,159.00,96.00,0.000000,64.00,0.000000,10.000000,10.000000,10.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="Twitter3D.mesh" />
+      <attribute name="Mesh materials" value="Twitter3D.material;Twitter3D_2.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+    <component type="EC_Script" sync="true" name="twitter">
+      <attribute value="Twitter.js" name="Script ref"/>
+      <attribute value="true" name="Run on load"/>
+      <attribute value="0" name="Run mode"/>
+      <attribute value="" name="Script application name"/>
+      <attribute value="" name="Script class name"/>
+    </component>
+    <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  </entity>
+ <entity id="161" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="skype" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="274.00,185.00,224.00,0.000000,20.00,0.000000,11.000000,11.000000,11.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="skype3D.mesh" />
+      <attribute name="Mesh materials" value="skype3D.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+  </entity>
+<entity id="162" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="microphone" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="30.00,160.00,111.00,0.000000,0.00,0.000000,11.000000,11.000000,11.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="microphone3D.mesh" />
+      <attribute name="Mesh materials" value="microphone3D.material;microphone3D_2.material;microphone3D_3.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+  </entity>
+<entity id="163" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="binder" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="171.00,198.00,267.00,0.000000,35.00,0.000000,12.000000,12.000000,12.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="binder3D.mesh" />
+      <attribute name="Mesh materials" value="binder3D.material;binder3D_2.material;binder3D_3.material;binder3D_4.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+  </entity>
+<entity id="164" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="chrome" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="137.00,239.00,244.00,0.000000,180.00,0.000000,12.000000,12.000000,12.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="chrome3D.mesh" />
+      <attribute name="Mesh materials" value="chrome3D.material;chrome3D_2.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+    <component type="EC_Script" sync="true" name="google">
+      <attribute value="Google.js" name="Script ref"/>
+      <attribute value="true" name="Run on load"/>
+      <attribute value="0" name="Run mode"/>
+      <attribute value="" name="Script application name"/>
+      <attribute value="" name="Script class name"/>
+    </component>
+  </entity>
+<entity id="166" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="email" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="-133.00,164.00,98.00,0.000000,-105.00,0.000000,10.000000,10.000000,10.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="email3D.mesh" />
+      <attribute name="Mesh materials" value="email3D.material;email3D_2.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+  </entity>
+<entity id="168" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="calculator" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="-47.00,166.00,86.00,0.000000,90.00,0.000000,10.000000,10.000000,10.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="calculator3D.mesh" />
+      <attribute name="Mesh materials" value="calculator3D.material;calculator3D_2.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+  </entity>
+<entity id="169" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="videoCamera" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="-235.00,200.00,60.00,0.000000,222.00,0.000000,8.000000,8.000000,8.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="videoCamera3D.mesh" />
+      <attribute name="Mesh materials" value="videoCamera3D.material;videoCamera3D_2.material;videoCamera3D_3.material;videoCamera3D_4.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+  </entity>
+<entity id="170" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="chatBubble" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="274.00,272.00,224.00,0.000000,-20.00,0.000000,10.000000,10.000000,10.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="chatBubble3D.mesh" />
+      <attribute name="Mesh materials" value="chatBubble3D.material;chatBubble3D_2.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+  </entity>
+<entity id="171" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="camera" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="-232.00,199.00,104.00,0.000000,42.00,0.000000,10.000000,10.000000,10.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="camera3D.mesh" />
+      <attribute name="Mesh materials" value="camera3D.material;camera3D_2.material;camera3D_3.material;camera3D_4.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+  </entity>
+<entity id="172" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="youtube" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="258.00,212.00,271.00,0.000000,90.00,0.000000,10.000000,10.000000,10.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="youtube3D.mesh" />
+      <attribute name="Mesh materials" value="youtube3D.material;youtube3D_2.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+    <component type="EC_Script" sync="true" name="youtube">
+      <attribute value="Youtube.js" name="Script ref"/>
+      <attribute value="true" name="Run on load"/>
+      <attribute value="0" name="Run mode"/>
+      <attribute value="" name="Script application name"/>
+      <attribute value="" name="Script class name"/>
+    </component>
+  </entity>
+<entity id="173" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="firefox" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="137.00,289.00,244.00,0.000000,220,0.000000,12.000000,12.000000,12.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="firefox3D.mesh" />
+      <attribute name="Mesh materials" value="firefox3D.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+    <component type="EC_Script" sync="true" name="google">
+      <attribute value="Google.js" name="Script ref"/>
+      <attribute value="true" name="Run on load"/>
+      <attribute value="0" name="Run mode"/>
+      <attribute value="" name="Script application name"/>
+      <attribute value="" name="Script class name"/>
+    </component>
+  </entity>
+<entity id="175" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="facebook" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="274.00,255.00,224.00,0.000000,-90.00,0.000000,2.50000,1.50000,2.500000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="facebook3D.mesh" />
+      <attribute name="Mesh materials" value="facebook3D.material;facebook3D_2.material;facebook3D_3.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+  </entity>
+<entity id="177" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="word" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="110.00,266.00,239.00,0.000000,180.00,0.000000,12.00000,12.00000,12.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="word3D.mesh" />
+      <attribute name="Mesh materials" value="word3D.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+     <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
+  </entity>
+<entity id="178" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="powerPoint" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="110.00,286.00,239.00,0.000000,180.00,0.000000,12.00000,12.00000,12.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="powerPoint3D.mesh" />
+      <attribute name="Mesh materials" value="powerPoint3D.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+    <component type="EC_Script" sync="true" name="powerPointContainer">
+      <attribute value="powerPointContainer.js" name="Script ref"/>
+      <attribute value="true" name="Run on load"/>
+      <attribute value="0" name="Run mode"/>
+      <attribute value="" name="Script application name"/>
+      <attribute value="" name="Script class name"/>
+    </component>
+    <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
+  </entity>
+<entity id="179" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="pdf" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="110.00,246.00,239.00,0.000000,180.00,0.000000,12.00000,12.00000,12.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="pdf3D.mesh" />
+      <attribute name="Mesh materials" value="pdf3D.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+    <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
+  </entity>
+<entity id="180" sync="1">
+    <component type="EC_Mesh" sync="true">
+      <attribute value="-7.00,20.00,14.00,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+      <attribute value="local://info_bubble.mesh" name="Mesh ref"/>
+      <attribute value="" name="Skeleton ref"/>
+      <attribute value="local://info_bubble.material;local://lower_text.material;local://upper_text.material" name="Mesh materials"/>
+      <attribute value="0" name="Draw distance"/>
+      <attribute value="false" name="Cast shadows"/>
+    </component>
+    <component type="EC_Placeable" sync="true">
+      <attribute value="222.00,178.00,78.00,0.000000,180.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+      <attribute value="false" name="Show bounding box"/>
+      <attribute value="true" name="Visible"/>
+      <attribute value="1" name="Selection layer"/>
+      <attribute value="" name="Parent bone name"/>
+    </component>
+    <component type="EC_Name" sync="true">
+      <attribute value="twitter_screen" name="name"/>
+      <attribute value="" name="description"/>
+    </component>
+    <component type="EC_Script" sync="true" name="Screen">
+      <attribute value="Screen.js" name="Script ref"/>
+      <attribute value="true" name="Run on load"/>
+      <attribute value="0" name="Run mode"/>
+      <attribute value="" name="Script application name"/>
+      <attribute value="" name="Script class name"/>
+    </component>
+    <component type="EC_GraphicsViewCanvas" sync="true" name="Content">
+      <attribute value="Texture_ScreenContent_2" name="Output texture"/>
+      <attribute value="370" name="Texture width"/>
+      <attribute value="200" name="Texture height"/>
+      <attribute value="1" name="Submesh"/>
+    </component>
+    <component type="EC_GraphicsViewCanvas" sync="true" name="Title">
+      <attribute value="Texture_ScreenTitle_3" name="Output texture"/>
+      <attribute value="512" name="Texture width"/>
+      <attribute value="256" name="Texture height"/>
+      <attribute value="2" name="Submesh"/>
+    </component>
+    <component type="EC_DynamicComponent" sync="true" name="Screen">
+      <attribute type="string" value="Twitter" name="iconName"/>
+    </component>
+ </entity>
+<entity id="181" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="UserHints" />
+     <attribute name="description" value="" />
+    </component>
+    <component type="EC_Script" sync="true" name="UserHints">
+      <attribute value="UserHint.js" name="Script ref"/>
+      <attribute value="true" name="Run on load"/>
+      <attribute value="0" name="Run mode"/>
+      <attribute value="" name="Script application name"/>
+      <attribute value="" name="Script class name"/>
+    </component>
+  </entity>
+<entity id="182" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="kello" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="282.00,70.00,-139.00,0.000000,0.00,0.000000,35.00000,35.00000,35.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Mesh" sync="1" >
+      <attribute name="Mesh ref" value="kello.mesh" />
+      <attribute name="Mesh materials" value="kello.material" />
+      <attribute name="Draw distance" value="0" />
+      <attribute name="Cast shadows" value="false" />
+    </component>
+  </entity>
+ <entity id="183" >
+    <component type="EC_Name" sync="1" >
+      <attribute name="name" value="Light" />
+      <attribute name="description" value="" />
+    </component>
+    <component type="EC_Placeable" sync="1" >
+      <attribute name="Transform" value="306.84,258.93,237.02,0.000000,34.00,0.000000,1.000000,1.000000,1.000000" />
+      <attribute name="Show bounding box" value="false" />
+      <attribute name="Visible" value="true" />
+      <attribute name="Selection layer" value="1" />
+    </component>
+    <component type="EC_Light" sync="1" >
+      <attribute name="light type" value="2" />
+      <attribute name="diffuse color" value="1.0 1.0 1.0 1" />
+      <attribute name="specular color" value="1.0 1.0 1.0 1" />
+      <attribute name="cast shadows" value="false" />
+      <attribute name="light range" value="50.0" />
+      <attribute name="brightness" value="0.1" />
+      <attribute name="constant atten" value="0" />
+      <attribute name="linear atten" value="0.5952380715854594" />
+      <attribute name="quadratic atten" value="0.0" />
+    </component>
+  </entity>
+</scene>

@@ -1,0 +1,35 @@
+// Material.004 genrated by blender2ogre 0.5.8
+
+material Material.004 
+{
+    receive_shadows on 
+
+    technique
+    {
+        pass Material.004
+        {
+            ambient 0.06951174139976501 0.0699782595038414 0.06904520839452744 1.0
+            diffuse 0.05560939394845654 0.05598260843727898 0.05523616753870497 1.0
+            specular 0.0833333358168602 0.0833333358168602 0.0833333358168602 1.0 12.5
+            emissive 0.1 0.1 0.1 1.0
+
+            alpha_to_coverage off
+            colour_write on
+            cull_hardware clockwise
+            depth_check on
+            depth_func less_equal
+            depth_write on
+            illumination_stage 
+            light_clip_planes off
+            light_scissor off
+            lighting on
+            normalise_normals off
+            polygon_mode solid
+            scene_blend one zero
+            scene_blend_op add
+            shading gouraud
+            transparent_sorting on
+
+        }
+    }
+}

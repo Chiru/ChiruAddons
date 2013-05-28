@@ -1,0 +1,11 @@
+material calendar_event_block
+{
+    technique
+    {
+        pass
+        {
+            specular 0 0 0 1 10
+            emissive 1 1 1 1
+        }
+    }
+}

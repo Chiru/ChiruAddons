@@ -1,0 +1,32 @@
+
+// blender material: lasi
+material lasi 
+{
+    receive_shadows on
+    technique b2ogre_1322817331.89045
+    {
+        pass b2ogre_1322817331.890559
+        {
+            ambient 0.7140026092529297 0.789787769317627 0.800000011920929 0.6320754885673523
+            diffuse 0.5712020959139181 0.6318302248691055 0.6400000190734865 0.6320754885673523
+            specular 0.5 0.5 0.5 0.6320754885673523 12.5
+            emissive 0.0 0.0 0.0 0.6320754885673523
+            alpha_to_coverage off
+            colour_write on
+            cull_hardware clockwise
+            depth_check on
+            depth_func less_equal
+            depth_write on
+            illumination_stage 
+            light_clip_planes off
+            light_scissor off
+            lighting on
+            normalise_normals off
+            polygon_mode solid
+            scene_blend one zero
+            scene_blend_op add
+            shading gouraud
+            transparent_sorting on
+        }
+    }
+}

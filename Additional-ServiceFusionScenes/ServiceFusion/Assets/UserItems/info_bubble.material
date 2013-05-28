@@ -1,0 +1,16 @@
+material info_bubble
+{
+    technique
+    {
+        pass
+        {
+            ambient 0 0 0 1
+            specular 0 0 0 1 63.2193
+            emissive 1 1 1 1
+            texture_unit
+            {
+                texture local://info_bubbleCompleteMap.png
+            }
+        }
+    }
+}

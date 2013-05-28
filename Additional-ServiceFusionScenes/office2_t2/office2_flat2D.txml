@@ -1,0 +1,637 @@
+<!DOCTYPE Scene>
+<scene>
+ <entity id="67" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="Twitter" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-10.0000,-4.990000,-17.029999,0.000000,180.000000,0.000000,0.580000,0.580000,0.100000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="Twitter3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="Twitter3D.material;Twitter3D_2.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Script" sync="true" name="twitter">
+   <attribute value="Twitter.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon">
+   <attribute value="" type="string" name="searchWord"/>
+   <attribute value="" type="string" name="searchType"/>
+   <attribute value="" type="string" name="result"/>
+   <attribute value="false" type="bool" name="infoBubbleVisible"/>
+  </component>
+ </entity>
+ <entity id="68" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="skype" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-10.0000,-1.990000,-17.030001,0.000000,180.000000,0.000000,0.600000,0.600000,0.100000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="skype3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="skype3D.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+ </entity>
+ <entity id="69" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="microphone" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-2.34,-0.99,-17.030001,0.000000,180.000000,0.000000,0.600000,0.600000,0.100000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="microphone3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="microphone3D.material;microphone3D_2.material;microphone3D_3.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+ </entity>
+ <entity id="70" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="binder" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-6.340000,2.9,-17.030001,0.000000,180.000000,0.000000,0.600000,0.600000,0.100000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="binder3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="binder3D.material;binder3D_2.material;binder3D_3.material;binder3D_4.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+ </entity>
+ <entity id="71" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="chrome" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-4.340000,3.01,-17.030001,0.000000,0.000000,0.000000,0.600000,0.600000,0.100000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="chrome3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="chrome3D.material;chrome3D_2.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Script" sync="true" name="google">
+   <attribute value="Google.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+ </entity>
+ <entity id="72" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="email" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="6.66,-0.50,-17.030001,0.000000,90.000000,0.000000,0.100000,0.650000,0.650000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.800000,0.800000,1.000000" name="Transform"/>
+   <attribute value="email3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="email3D.material;email3D_2.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+ </entity>
+ <entity id="73" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="calculator" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="2.66,-0.50,-17.030001,0.000000,-79.000000,0.000000,0.100000,0.65,0.65" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="calculator3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="calculator3D.material;calculator3D_2.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+ </entity>
+ <entity id="75" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="chatBubble" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-10.34,5.01,-17.030001,0.000000,180.000000,0.000000,0.450000,0.450000,0.100000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="chatBubble3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="chatBubble3D.material;chatBubble3D_2.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+ </entity>
+ <entity id="76" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="camera" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="9.66,2.01,-17.030001,0.000000,-90.000000,0.000000,0.100000,0.600000,0.600000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="camera3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="camera3D.material;camera3D_2.material;camera3D_3.material;camera3D_4.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+ </entity>
+ <entity id="77" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="youtube" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-10.80,4.00,-19.03,0.000000,-90.000000,0.000000,0.100000,0.600000,0.600000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="youtube3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="youtube3D.material;youtube3D_2.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Script" sync="true" name="youtube">
+   <attribute value="Youtube.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+ </entity>
+ <entity id="78" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="firefox" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-4.340000,5.50,-17.030001,0.000000,0.000000,0.000000,0.600000,0.600000,0.100000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="firefox3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="firefox3D.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Script" sync="true" name="google">
+   <attribute value="Google.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+ </entity>
+ <entity id="79" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="facebook" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-10.34,2.01,-17.030001,0.000000,-90.000000,0.000000,0.10000,0.08500,0.135000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="facebook3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="facebook3D.material;facebook3D_2.material;facebook3D_3.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+ </entity>
+ <entity id="80" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="word" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-2.340000,4.01,-16.030001,0.000000,0.000000,0.000000,0.600000,0.600000,0.100000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="word3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="word3D.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
+ </entity>
+ <entity id="81" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="powerPoint" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-2.340000,5.010000,-16.030001,0.000000,0.000000,0.000000,0.600000,0.600000,0.100000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name= "UserItem">
+   <attribute type= "String" value="true" name="AttachedToCamera"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="powerPoint3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="powerPoint3D.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Script" sync="true" name="powerPointContainer">
+   <attribute value="powerPointContainer.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
+ </entity>
+ <entity id="82" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="pdf" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-2.340000,3.01,-16.030001,0.000000,0.000000,0.000000,0.600000,0.600000,0.100000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="pdf3D.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="pdf3D.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="UserItem"/>
+ </entity>
+ <entity id="83" sync="1">
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.00,0.00,0.00,0.000000,0.000000,0.000000,0.010000,0.010000,0.010000" name="Transform"/>
+   <attribute value="local://info_bubble.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="local://info_bubble.material;local://lower_text.material;local://upper_text.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="1.5,2,-1,0.000000,180.000000,0.000000,0.0900000,0.0900000,0.0900000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="Twitter" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Name" sync="true">
+   <attribute value="twitter_screen" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Script" sync="true" name="Screen">
+   <attribute value="Screen.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" sync="true" name="Content">
+   <attribute value="Texture_ScreenContent_21" name="Output texture"/>
+   <attribute value="370" name="Texture width"/>
+   <attribute value="200" name="Texture height"/>
+   <attribute value="1" name="Submesh"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" sync="true" name="Title">
+   <attribute value="Texture_ScreenTitle_22" name="Output texture"/>
+   <attribute value="512" name="Texture width"/>
+   <attribute value="256" name="Texture height"/>
+   <attribute value="2" name="Submesh"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Screen">
+   <attribute value="Twitter" type="string" name="iconName"/>
+  </component>
+ </entity>
+ <entity id="84" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="UserHints" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Script" sync="true" name="UserHints">
+   <attribute value="UserHint.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+ </entity>
+ <entity id="87" >
+  <component type="EC_Name" sync="true">
+   <attribute value="radio_1" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Placeable" sync="1" >
+   <attribute name="Transform" value="-8.00,3.70,-17.03,0.000000,0.000000,0.000000,0.330000,0.330000,0.100000" />
+   <attribute name="Show bounding box" value="false" />
+   <attribute name="Visible" value="true" />
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute name="Selection layer" value="1" />
+  </component>
+  <component type="EC_Mesh" sync="1" >
+   <attribute name="Mesh ref" value="local://radio_1.mesh" />
+   <attribute name="Mesh materials" value="local://radio.material" />
+   <attribute name="Draw distance" value="0" />
+   <attribute name="Cast shadows" value="false" />
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Icon"/>
+  <component type="EC_Script" sync="true">
+   <attribute value="Radio.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+ </entity>
+<entity id="88" sync="1">
+  <component type="EC_Name" sync="true">
+   <attribute value="SongContainer" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.00,0.00,0.00,0.000000,0.000000,0.000000,0.100000,0.100000,0.100000" name="Transform"/>
+   <attribute value="local://info_bubble.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="local://info_bubble.material;local://lower_text.material;local://upper_text.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="-0.5,-1.5,11,0.000000,0.000000,0.000000,0.100000,0.100000,0.100000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="radio_1" name="Parent entity ref"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Script" sync="true" name="Screen">
+   <attribute value="Screen.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_Script" sync="true">
+   <attribute value="cdRack.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" sync="true" name="Content">
+   <attribute value="Texture_ScreenContent_2" name="Output texture"/>
+   <attribute value="370" name="Texture width"/>
+   <attribute value="200" name="Texture height"/>
+   <attribute value="1" name="Submesh"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" sync="true" name="Title">
+   <attribute value="Texture_ScreenTitle_3" name="Output texture"/>
+   <attribute value="512" name="Texture width"/>
+   <attribute value="256" name="Texture height"/>
+   <attribute value="2" name="Submesh"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Screen">
+   <attribute type="string" value="radio_1" name="iconName"/>
+  </component>
+ </entity>
+ <entity id="89" >
+  <component type="EC_Name" sync="1" >
+   <attribute name="name" value="Cube.007" />
+   <attribute name="description" value="" />
+  </component>
+  <component type="EC_Placeable" sync="1" >
+   <attribute name="Transform" value="1.66,4.01,-17.03,0.000000,-90.000000,0.000000,0.100000,1.500000,1.500000" />
+   <attribute name="Show bounding box" value="false" />
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute name="Visible" value="true" />
+   <attribute name="Selection layer" value="1" />
+  </component>
+  <component type="EC_Mesh" sync="1" >
+   <attribute name="Mesh ref" value="local://Cube.010.mesh" />
+   <attribute name="Mesh materials" value="local://ruutu.material;local://Material.010.material" />
+   <attribute name="Draw distance" value="0" />
+   <attribute name="Cast shadows" value="false" />
+  </component>
+  <component type="EC_Script" sync="true" name="PresentationScreen">
+   <attribute value="PresentationScreen.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+ </entity>
+ <entity id="90" >
+  <component type="EC_Name" sync="1" >
+   <attribute name="name" value="background" />
+   <attribute name="description" value="" />
+  </component>
+  <component type="EC_Placeable" sync="1" >
+   <attribute name="Transform" value="-0.34,2.01,-20.03,90.000000,0.000000,180.000000,30.00000,1.000000,22.000000" />
+   <attribute name="Show bounding box" value="false" />
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute name="Visible" value="true" />
+   <attribute name="Selection layer" value="1" />
+  </component>
+  <component type="EC_Mesh" sync="1" >
+   <attribute name="Mesh ref" value="local://rect_plane.mesh" />
+   <attribute name="Mesh materials" value="local://2D_Background.material" />
+   <attribute name="Draw distance" value="0" />
+   <attribute name="Cast shadows" value="false" />
+  </component>
+  <component type="EC_Script" sync="true" name="ChangeBackGround">
+   <attribute value="ChangeBackGround.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+ </entity>
+<entity id="91" sync="1">
+  <component type="EC_Mesh" sync="true">
+   <attribute value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000" name="Transform"/>
+   <attribute value="news_tablet.mesh" name="Mesh ref"/>
+   <attribute value="" name="Skeleton ref"/>
+   <attribute value="news_tablet.material;screen.material" name="Mesh materials"/>
+   <attribute value="0" name="Draw distance"/>
+   <attribute value="false" name="Cast shadows"/>
+  </component>
+  <component type="EC_Placeable" sync="true">
+   <attribute value="7.00,4.01,-17.03,0.000000,0.000000,0.000000,1.000000,1.000000,0.100000" name="Transform"/>
+   <attribute value="false" name="Show bounding box"/>
+   <attribute value="true" name="Visible"/>
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute value="1" name="Selection layer"/>
+   <attribute value="" name="Parent entity ref"/>
+   <attribute value="" name="Parent bone name"/>
+  </component>
+  <component type="EC_Name" sync="true">
+   <attribute value="news_tablet" name="name"/>
+   <attribute value="" name="description"/>
+  </component>
+  <component type="EC_GraphicsViewCanvas" sync="true">
+   <attribute value="Texture_Screen_1" name="Output texture"/>
+   <attribute value="824" name="Texture width"/>
+   <attribute value="824" name="Texture height"/>
+   <attribute value="1" name="Submesh"/>
+  </component>
+  <component type="EC_Script" sync="true" name="Screen">
+   <attribute value="Screen.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_Script" sync="true" name="WebView">
+   <attribute value="WebView2D.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+ <component type="EC_Script" sync="true" name="WebViewInterface">
+   <attribute value="WebViewInterface.js" name="Script ref"/>
+   <attribute value="true" name="Run on load"/>
+   <attribute value="0" name="Run mode"/>
+   <attribute value="" name="Script application name"/>
+   <attribute value="" name="Script class name"/>
+  </component>
+  <component type="EC_DynamicComponent" sync="true" name="Screen"/>
+ </entity>
+ <entity id="92" >
+  <component type="EC_Name" sync="1" >
+   <attribute name="name" value="background2" />
+   <attribute name="description" value="" />
+  </component>
+  <component type="EC_Placeable" sync="1" >
+   <attribute name="Transform" value="-0.34,2.01,-20.03,90.000000,0.000000,180.000000,30.00000,1.000000,22.000000" />
+   <attribute name="Show bounding box" value="false" />
+   <attribute value="UiCamera" name="Parent entity ref"/>
+   <attribute name="Visible" value="false" />
+   <attribute name="Selection layer" value="1" />
+  </component>
+  <component type="EC_Mesh" sync="1" >
+   <attribute name="Mesh ref" value="local://rect_plane.mesh" />
+   <attribute name="Mesh materials" value="local://valkonen.material" />
+   <attribute name="Draw distance" value="0" />
+   <attribute name="Cast shadows" value="false" />
+  </component>
+ </entity>
+</scene>
